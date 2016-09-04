@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+  <metadata>
+    <id>Usa.Smart.Resolver</id>
+    <version>0.9.0.0</version>
+    <title>Smart.Resolver .NET</title>
+    <authors>machi_pon</authors>
+    <owners>machi_pon</owners>
+    <description>Smart container library for .NET</description>
+    <releaseNotes></releaseNotes>
+    <summary>Smart container library for .NET</summary>
+    <projectUrl>https://github.com/usausa/Smart-Net-Resolver</projectUrl>
+    <copyright></copyright>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <dependencies>
+      <dependency id="Usa.Smart.Core" version="0.5.0" />
+    </dependencies>
+    <tags>smart pcl ioc di</tags>
+  </metadata>
+  <files>
+    <!-- .NET 4.6.2 -->
+    <file src="Smart.Resolver.NET4\bin\Release\Smart.Resolver.dll" target="lib\net462\Smart.Resolver.dll" />
+    <file src="Smart.Resolver.NET4\bin\Release\Smart.Resolver.pdb" target="lib\net462\Smart.Resolver.pdb" />
+    <!--<file src="Smart.Resolver.NET4\bin\Release\Smart.Resolver.xml" target="lib\net462\Smart.Resolver.xml" />-->
+
+    <!-- PCL -->
+    <file src="Smart.Resolver.PCL\bin\Release\Smart.Resolver.dll" target="lib\portable-net45+win8+wpa81\Smart.Resolver.dll" />
+    <file src="Smart.Resolver.PCL\bin\Release\Smart.Resolver.pdb" target="lib\portable-net45+win8+wpa81\Smart.Resolver.pdb" />
+    <!--<file src="Smart.Resolver.PCL\bin\Release\Smart.Resolver.xml" target="lib\portable-net45+win8+wpa81\Smart.Resolver.xml" />-->
+  </files>
+</package>

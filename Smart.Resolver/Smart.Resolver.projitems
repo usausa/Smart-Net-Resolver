@@ -1,0 +1,59 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+    <HasSharedItems>true</HasSharedItems>
+    <SharedGUID>dab17e8d-d166-4714-9fe7-194e3fc1dfab</SharedGUID>
+  </PropertyGroup>
+  <PropertyGroup Label="Configuration">
+    <Import_RootNamespace>Smart</Import_RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)Resolver\Activators\ActivatePipeline.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Resolver\Activators\IActivatePipeline.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Resolver\Activators\IActivator.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Resolver\Activators\InitializeActivator.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Resolver\Attributes\ConstraintAttribute.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Resolver\Attributes\InjectAttribute.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Resolver\Attributes\NamedAttribute.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Resolver\Bindings\Binding.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Resolver\Bindings\BindingBuilder.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Resolver\Bindings\BindingMetadata.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Resolver\Bindings\IBinding.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Resolver\Bindings\IBindingMetadata.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Resolver\Bindings\IBindingRoot.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Resolver\Bindings\IBindingSyntax.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Resolver\Constraints\ChainConstraint.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Resolver\Constraints\IConstraint.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Resolver\Constraints\NameConstraint.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Resolver\IInitializable.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Resolver\IKernel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Resolver\Injectors\IInjector.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Resolver\Injectors\IInjectPipeline.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Resolver\Injectors\InjectPipeline.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Resolver\Injectors\PropertyInjector.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Resolver\IResolver.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Resolver\Metadatas\ConstructorMetadata.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Resolver\Metadatas\ISelector.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Resolver\Metadatas\PropertyMetadata.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Resolver\Metadatas\Selector.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Resolver\Parameters\CallbackParameter.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Resolver\Parameters\ConstantParameter.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Resolver\Scopes\IScope.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Resolver\Scopes\ISingletonScope.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Resolver\Scopes\IScopeStorage.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Resolver\Scopes\ISingletonScopeStorage.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Resolver\Scopes\SingletonScope.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Resolver\Scopes\SingletonScopeStorage.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Resolver\Parameters\IParameter.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Resolver\Providers\CallbackProvider.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Resolver\Providers\ConstantProvider.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Resolver\Providers\IProvider.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Resolver\Providers\StandardProvider.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Resolver\ResolverExtensions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Resolver\Metadatas\IMetadataFactory.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Resolver\Metadatas\TypeMetadata.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Resolver\Metadatas\MetadataFactory.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Resolver\StandardResolver.cs" />
+  </ItemGroup>
+</Project>
