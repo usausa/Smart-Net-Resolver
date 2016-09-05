@@ -29,6 +29,7 @@
         }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Reliability", "CA2001:AvoidCallingProblematicMethods", Justification = "Ignore")]
+        [Ignore]
         [TestMethod]
         public void BenchmarkScinarioForWebControllerAndService()
         {

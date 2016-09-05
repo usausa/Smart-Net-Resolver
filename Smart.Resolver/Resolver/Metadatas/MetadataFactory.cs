@@ -49,7 +49,12 @@
             return metadata;
         }
 
-        protected virtual IConstraint CreateConstraint(IEnumerable<ConstraintAttribute> attributes)
+        /// <summary>
+        ///
+        /// </summary>
+        /// <param name="attributes"></param>
+        /// <returns></returns>
+        private static IConstraint CreateConstraint(IEnumerable<ConstraintAttribute> attributes)
         {
             var constraints = attributes
                 .Select(_ => _.CreateConstraint())

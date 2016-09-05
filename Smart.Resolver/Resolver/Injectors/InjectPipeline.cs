@@ -34,11 +34,6 @@
         /// <param name="instance"></param>
         public void Inject(IKernel kernel, IBinding binding, TypeMetadata metadata, object instance)
         {
-            if (Injectors.Count == 0)
-            {
-                return;
-            }
-
             foreach (var injector in Injectors)
             {
                 injector.Inject(kernel, binding, metadata, instance);

@@ -9,7 +9,7 @@
     /// </summary>
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1001:TypesThatOwnDisposableFieldsShouldBeDisposable", Justification = "Ignore")]
     [TestClass]
-    public class StandardResolverTest
+    public class ProviderTest
     {
         private StandardResolver resolver;
 
@@ -26,24 +26,27 @@
         }
 
         [TestMethod]
-        public void SelfResolved()
+        public void ObjectCreatedByConstantProvider()
         {
-            var obj = resolver.Get<IResolver>();
+            var service = new Service();
+            resolver.Bind<IService>().ToConstant(service);
+            resolver.Bind<Controller>().ToSelf();
 
-            Assert.AreSame(resolver, obj);
+            var controller = resolver.Get<Controller>();
+
+            Assert.AreSame(service, controller.Service);
         }
 
         [TestMethod]
-        public void UseCaseForWebControllerAndService()
+        public void ObjectCreatedByCallbackProvider()
         {
-            resolver.Bind<IService>().To<Service>().InSingletonScope();
+            var service = new Service();
+            resolver.Bind<IService>().ToMethod(_ => service);
             resolver.Bind<Controller>().ToSelf();
 
-            var controller1 = (Controller)resolver.Get(typeof(Controller));
-            var controller2 = (Controller)resolver.Get(typeof(Controller));
+            var controller = resolver.Get<Controller>();
 
-            Assert.AreNotSame(controller1, controller2);
-            Assert.AreSame(controller1.Service, controller2.Service);
+            Assert.AreSame(service, controller.Service);
         }
     }
 }

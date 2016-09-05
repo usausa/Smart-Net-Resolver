@@ -10,7 +10,7 @@
     /// </summary>
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1001:TypesThatOwnDisposableFieldsShouldBeDisposable", Justification = "Ignore")]
     [TestClass]
-    public class ActivatorsTest
+    public class ActivatorTest
     {
         private StandardResolver resolver;
 
@@ -60,7 +60,7 @@
         [TestMethod]
         public void ObjectIsNotInitializedWhenActivatorDisabled()
         {
-            resolver.Configure(c => c.Get<IActivatePipeline>().Activators.Clear());
+            resolver.Configure(c => c.Remove<IActivatePipeline>());
             resolver.Bind<InitializableObject>().ToSelf();
 
             var obj = resolver.Get<InitializableObject>();

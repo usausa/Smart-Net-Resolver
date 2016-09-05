@@ -60,12 +60,19 @@
   </Choose>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Resolver\Mocks\HasPropertyObject.cs" />
+    <Compile Include="Resolver\Mocks\SimpleObject.cs" />
+    <Compile Include="Resolver\ConstraintTest.cs" />
+    <Compile Include="Resolver\ParameterTest.cs" />
+    <Compile Include="Resolver\ProviderTest.cs" />
+    <Compile Include="Resolver\PropertyInjectionTest.cs" />
+    <Compile Include="Resolver\ScopeTest.cs" />
     <Compile Include="Resolver\BenchmarkTest.cs" />
     <Compile Include="Resolver\Mocks\Controller.cs" />
     <Compile Include="Resolver\Mocks\IService.cs" />
     <Compile Include="Resolver\Mocks\Service.cs" />
     <Compile Include="Resolver\StandardResolverTest.cs" />
-    <Compile Include="Resolver\ActivatorsTest.cs" />
+    <Compile Include="Resolver\ActivatorTest.cs" />
     <Compile Include="Resolver\Mocks\InitializableObject.cs" />
   </ItemGroup>
   <ItemGroup>

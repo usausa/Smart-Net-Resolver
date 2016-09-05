@@ -28,11 +28,6 @@
         /// <param name="instance"></param>
         public void Activate(object instance)
         {
-            if (Activators.Count == 0)
-            {
-                return;
-            }
-
             foreach (var activator in Activators)
             {
                 activator.Activate(instance);

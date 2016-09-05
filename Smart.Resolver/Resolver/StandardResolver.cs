@@ -230,7 +230,8 @@
                 {
                     var binding = new Binding(type, new BindingMetadata());
                     list = new List<IBinding>();
-                    bindings[binding.Type] = list;
+                    bindings[type] = list;
+                    list.Add(binding);
                 }
 
                 return list;
