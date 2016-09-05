@@ -77,6 +77,7 @@
             Assert.IsTrue(obj.Disposed);
         }
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1034:NestedTypesShouldNotBeVisible", Justification = "Ingore")]
         public sealed class DisposeTrackingObject : IDisposable
         {
             public bool Disposed { get; private set; }
@@ -87,6 +88,7 @@
             }
         }
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1034:NestedTypesShouldNotBeVisible", Justification = "Ingore")]
         public class CustomScopeStorage : IScopeStorage
         {
             private static readonly ThreadLocal<Dictionary<IBinding, object>> Cache =
@@ -109,8 +111,10 @@
             }
         }
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1034:NestedTypesShouldNotBeVisible", Justification = "Ingore")]
         public class CustomScope : IScope
         {
+            [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1062:パブリック メソッドの引数の検証", Justification = "Ignore")]
             public IScopeStorage GetStorage(IKernel kernel)
             {
                 return kernel.Components.Get<CustomScopeStorage>();

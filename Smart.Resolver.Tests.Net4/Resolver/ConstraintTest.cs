@@ -74,6 +74,7 @@
             Assert.AreSame(obj.SimpleObject, barHoge);
         }
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1034:NestedTypesShouldNotBeVisible", Justification = "Ingore")]
         public class HasMetadataConstraint : IConstraint
         {
             public string Key { get; }
@@ -83,14 +84,16 @@
                 Key = key;
             }
 
+            [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1062:パブリック メソッドの引数の検証", Justification = "Ignore")]
             public bool Match(IBindingMetadata metadata)
             {
                 return metadata.Has(Key);
             }
         }
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1034:NestedTypesShouldNotBeVisible", Justification = "Ingore")]
         [AttributeUsage(AttributeTargets.Property | AttributeTargets.Parameter, AllowMultiple = true)]
-        public class HasMetadataAttribute : ConstraintAttribute
+        public sealed class HasMetadataAttribute : ConstraintAttribute
         {
             public string Key { get; }
 
@@ -105,6 +108,7 @@
             }
         }
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1034:NestedTypesShouldNotBeVisible", Justification = "Ingore")]
         public class NameConstraintInjectedObject
         {
             public SimpleObject SimpleObject { get; }
@@ -115,6 +119,7 @@
             }
         }
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1034:NestedTypesShouldNotBeVisible", Justification = "Ingore")]
         public class HasMetadataConstraintInjectedObject
         {
             public SimpleObject SimpleObject { get; }
@@ -125,6 +130,7 @@
             }
         }
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1034:NestedTypesShouldNotBeVisible", Justification = "Ingore")]
         public class ChainConstraintInjectedObject
         {
             public SimpleObject SimpleObject { get; }
