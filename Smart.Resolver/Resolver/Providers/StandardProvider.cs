@@ -1,7 +1,9 @@
 ﻿namespace Smart.Resolver.Providers
 {
     using System;
+    using System.Collections.Generic;
     using System.Globalization;
+    using System.Linq;
 
     using Smart.Resolver.Bindings;
     using Smart.Resolver.Injectors;
@@ -12,6 +14,12 @@
     /// </summary>
     public class StandardProvider : IProvider
     {
+        private static readonly Type EnumerableType = typeof(IEnumerable<>);
+
+        private static readonly Type CollectionType = typeof(ICollection<>);
+
+        private static readonly Type ListType = typeof(IList<>);
+
         private readonly Type type;
 
         /// <summary>
@@ -49,15 +57,36 @@
             object instance;
             if (constructor.GetParameters().Length > 0)
             {
-                // TODO
                 var arguments = new object[constructor.GetParameters().Length];
                 for (var i = 0; i < constructor.GetParameters().Length; i++)
                 {
                     var pi = constructor.GetParameters()[i];
                     var parameter = binding.GetConstructorArgument(pi.Name);
-                    arguments[i] = parameter != null
-                        ? parameter.Resolve(kernel)
-                        : kernel.Resolve(pi.ParameterType, metadata.TargetConstructor.Constraints[i]);
+                    if (parameter != null)
+                    {
+                        arguments[i] = parameter.Resolve(kernel);
+                        continue;
+                    }
+
+                    if (pi.ParameterType.IsArray)
+                    {
+                        var elementType = pi.ParameterType.GetElementType();
+                        arguments[i] = ConvertArray(elementType, kernel.ResolveAll(elementType, metadata.TargetConstructor.Constraints[i]));
+                        continue;
+                    }
+
+                    if (pi.ParameterType.GetIsGenericType())
+                    {
+                        var genericType = pi.ParameterType.GetGenericTypeDefinition();
+                        if ((genericType == EnumerableType) || (genericType == CollectionType) || (genericType == ListType))
+                        {
+                            var elementType = pi.ParameterType.GenericTypeArguments[0];
+                            arguments[i] = ConvertArray(elementType, kernel.ResolveAll(elementType, metadata.TargetConstructor.Constraints[i]));
+                            continue;
+                        }
+                    }
+
+                    arguments[i] = kernel.Resolve(pi.ParameterType, metadata.TargetConstructor.Constraints[i]);
                 }
 
                 instance = constructor.Invoke(arguments);
@@ -71,6 +100,20 @@
             pipeline?.Inject(kernel, binding, metadata, instance);
 
             return instance;
+        }
+
+        /// <summary>
+        ///
+        /// </summary>
+        /// <param name="elementType"></param>
+        /// <param name="source"></param>
+        /// <returns></returns>
+        private static Array ConvertArray(Type elementType, IEnumerable<object> source)
+        {
+            var sourceArray = source.ToArray();
+            var array = Array.CreateInstance(elementType, sourceArray.Length);
+            Array.Copy(sourceArray, 0, array, 0, sourceArray.Length);
+            return array;
         }
     }
 }
