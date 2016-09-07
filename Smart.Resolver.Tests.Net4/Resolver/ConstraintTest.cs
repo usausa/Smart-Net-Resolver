@@ -74,8 +74,7 @@
             Assert.AreSame(obj.SimpleObject, barHoge);
         }
 
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1034:NestedTypesShouldNotBeVisible", Justification = "Ingore")]
-        public class HasMetadataConstraint : IConstraint
+        protected class HasMetadataConstraint : IConstraint
         {
             public string Key { get; }
 
@@ -91,9 +90,8 @@
             }
         }
 
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1034:NestedTypesShouldNotBeVisible", Justification = "Ingore")]
         [AttributeUsage(AttributeTargets.Property | AttributeTargets.Parameter, AllowMultiple = true)]
-        public sealed class HasMetadataAttribute : ConstraintAttribute
+        protected sealed class HasMetadataAttribute : ConstraintAttribute
         {
             public string Key { get; }
 
@@ -108,8 +106,7 @@
             }
         }
 
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1034:NestedTypesShouldNotBeVisible", Justification = "Ingore")]
-        public class NameConstraintInjectedObject
+        protected class NameConstraintInjectedObject
         {
             public SimpleObject SimpleObject { get; }
 
@@ -119,8 +116,7 @@
             }
         }
 
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1034:NestedTypesShouldNotBeVisible", Justification = "Ingore")]
-        public class HasMetadataConstraintInjectedObject
+        protected class HasMetadataConstraintInjectedObject
         {
             public SimpleObject SimpleObject { get; }
 
@@ -130,8 +126,7 @@
             }
         }
 
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1034:NestedTypesShouldNotBeVisible", Justification = "Ingore")]
-        public class ChainConstraintInjectedObject
+        protected class ChainConstraintInjectedObject
         {
             public SimpleObject SimpleObject { get; }
 

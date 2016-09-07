@@ -121,8 +121,7 @@
             Assert.IsTrue(obj.Objects.Contains(bar, _ => _));
         }
 
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1034:NestedTypesShouldNotBeVisible", Justification = "Ingore")]
-        public class ArrayInjectedObject
+        protected class ArrayInjectedObject
         {
             [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1819:PropertiesShouldNotReturnArrays", Justification = "Ignore")]
             public SimpleObject[] Objects { get; }
@@ -133,8 +132,7 @@
             }
         }
 
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1034:NestedTypesShouldNotBeVisible", Justification = "Ingore")]
-        public class EnumerableInjectedObject
+        protected class EnumerableInjectedObject
         {
             public IEnumerable<SimpleObject> Objects { get; }
 
@@ -144,8 +142,7 @@
             }
         }
 
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1034:NestedTypesShouldNotBeVisible", Justification = "Ingore")]
-        public class CollectionInjectedObject
+        protected class CollectionInjectedObject
         {
             public ICollection<SimpleObject> Objects { get; }
 
@@ -155,8 +152,7 @@
             }
         }
 
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1034:NestedTypesShouldNotBeVisible", Justification = "Ingore")]
-        public class ListInjectedObject
+        protected class ListInjectedObject
         {
             public IList<SimpleObject> Objects { get; }
 
