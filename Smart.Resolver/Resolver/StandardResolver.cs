@@ -11,7 +11,6 @@
     using Smart.Resolver.Constraints;
     using Smart.Resolver.Injectors;
     using Smart.Resolver.Metadatas;
-    using Smart.Resolver.Providers;
     using Smart.Resolver.Scopes;
 
     /// <summary>
@@ -39,6 +38,7 @@
         public StandardResolver()
         {
             components.Register<IMetadataFactory>(new MetadataFactory());
+            components.Register<IBindingResolver>(new StandardBindingResolver());
             components.Register<IActivatePipeline>(new ActivatePipeline(
                 new InitializeActivator()));
             components.Register<IInjectPipeline>(new InjectPipeline(
@@ -229,13 +229,15 @@
                 IList<IBinding> list;
                 if (!bindings.TryGetValue(type, out list))
                 {
-                    var binding = new Binding(type, new BindingMetadata())
-                    {
-                        Provider = new StandardProvider(type)
-                    };
                     list = new List<IBinding>();
                     bindings[type] = list;
-                    list.Add(binding);
+
+                    var resolver = components.Get<IBindingResolver>();
+                    var binding = resolver?.Resolve(type);
+                    if (resolver != null)
+                    {
+                        list.Add(binding);
+                    }
                 }
 
                 return list;

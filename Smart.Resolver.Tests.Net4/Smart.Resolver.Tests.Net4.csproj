@@ -38,8 +38,8 @@
     <RunCodeAnalysis>true</RunCodeAnalysis>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Smart, Version=0.5.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Usa.Smart.Core.0.5.0\lib\net462\Smart.dll</HintPath>
+    <Reference Include="Smart, Version=0.5.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Usa.Smart.Core.0.5.1\lib\net462\Smart.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
@@ -60,6 +60,7 @@
   </Choose>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Resolver\BindingTest.cs" />
     <Compile Include="Resolver\Mocks\HasPropertyObject.cs" />
     <Compile Include="Resolver\Mocks\SimpleObject.cs" />
     <Compile Include="Resolver\ConstraintTest.cs" />
