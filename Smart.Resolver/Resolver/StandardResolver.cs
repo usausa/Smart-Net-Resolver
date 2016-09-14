@@ -234,7 +234,7 @@
 
                     var resolver = components.Get<IBindingResolver>();
                     var binding = resolver?.Resolve(type);
-                    if (resolver != null)
+                    if (binding != null)
                     {
                         list.Add(binding);
                     }
