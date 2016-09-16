@@ -6,7 +6,7 @@
     /// <summary>
     ///
     /// </summary>
-    public class StandardBindingResolver : IBindingResolver
+    public class SelfBindingResolver : IBindingResolver
     {
         private static readonly Type StringType = typeof(string);
 

@@ -24,7 +24,9 @@
     <Compile Include="$(MSBuildThisFileDirectory)Resolver\Bindings\IBindingResolver.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Resolver\Bindings\IBindingRoot.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Resolver\Bindings\IBindingSyntax.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Resolver\Bindings\StandardBindingResolver.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Resolver\Bindings\IMissingPipeline.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Resolver\Bindings\MissingPipeline.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Resolver\Bindings\SelfBindingResolver.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Resolver\Constraints\ChainConstraint.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Resolver\Constraints\IConstraint.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Resolver\Constraints\NameConstraint.cs" />

@@ -38,7 +38,8 @@
         public StandardResolver()
         {
             components.Register<IMetadataFactory>(new MetadataFactory());
-            components.Register<IBindingResolver>(new StandardBindingResolver());
+            components.Register<IMissingPipeline>(new MissingPipeline(
+                new SelfBindingResolver()));
             components.Register<IActivatePipeline>(new ActivatePipeline(
                 new InitializeActivator()));
             components.Register<IInjectPipeline>(new InjectPipeline(
@@ -232,11 +233,13 @@
                     list = new List<IBinding>();
                     bindings[type] = list;
 
-                    var resolver = components.Get<IBindingResolver>();
-                    var binding = resolver?.Resolve(type);
-                    if (binding != null)
+                    var pipeline = components.Get<IMissingPipeline>();
+                    if (pipeline != null)
                     {
-                        list.Add(binding);
+                        foreach (var binding in pipeline.Resolve(type))
+                        {
+                            list.Add(binding);
+                        }
                     }
                 }
 
