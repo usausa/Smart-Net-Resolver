@@ -15,11 +15,14 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		Smart.Resolver.nuspec = Smart.Resolver.nuspec
 		Smart.Resolver.ruleset = Smart.Resolver.ruleset
 		Smart.Resolver.sln.DotSettings = Smart.Resolver.sln.DotSettings
+		Smart.Resolver.Xamarin.nuspec = Smart.Resolver.Xamarin.nuspec
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Smart.Resolver.Tests.Net4", "Smart.Resolver.Tests.Net4\Smart.Resolver.Tests.Net4.csproj", "{3A675130-8288-47FA-A09A-570D0B955130}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Smart.Resolver.PCL", "Smart.Resolver.PCL\Smart.Resolver.PCL.csproj", "{51B56841-26CF-46AB-B6F1-092C85ED9521}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Smart.Resolver.Xamarin", "Smart.Resolver.Xamarin\Smart.Resolver.Xamarin.csproj", "{E5CC9AD6-7081-401B-8212-65C7FBF072B8}"
 EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
@@ -44,6 +47,10 @@ Global
 		{51B56841-26CF-46AB-B6F1-092C85ED9521}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{51B56841-26CF-46AB-B6F1-092C85ED9521}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{51B56841-26CF-46AB-B6F1-092C85ED9521}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E5CC9AD6-7081-401B-8212-65C7FBF072B8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E5CC9AD6-7081-401B-8212-65C7FBF072B8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E5CC9AD6-7081-401B-8212-65C7FBF072B8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E5CC9AD6-7081-401B-8212-65C7FBF072B8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

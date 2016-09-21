@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+  <metadata>
+    <id>Usa.Smart.Resolver.Xamarin</id>
+    <version>0.1.0.0</version>
+    <title>Smart.Resolver.Xamarin .NET</title>
+    <authors>machi_pon</authors>
+    <owners>machi_pon</owners>
+    <description>Smart container library Xamarin extensions for .NET</description>
+    <releaseNotes></releaseNotes>
+    <summary>Smart container library Xamarin extensions for .NET</summary>
+    <projectUrl>https://github.com/usausa/Smart-Net-Resolver</projectUrl>
+    <copyright></copyright>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <dependencies>
+      <dependency id="Usa.Smart.Core" version="0.5.1" />
+      <dependency id="Usa.Smart.Resolver" version="1.0.4" />
+    </dependencies>
+    <tags>smart pcl ioc di xamarin</tags>
+  </metadata>
+  <files>
+    <file src="Smart.Resolver.Xamarin\bin\Release\Smart.Resolver.Xamarin.dll" target="lib\portable-net45+win8+wpa81\Smart.Resolver.Xamarin.dll" />
+    <file src="Smart.Resolver.Xamarin\bin\Release\Smart.Resolver.Xamarin.pdb" target="lib\portable-net45+win8+wpa81\Smart.Resolver.Xamarin.pdb" />
+    <!--<file src="Smart.Resolver.Xamarin\bin\Release\Smart.Resolver.Xamarin.xml" target="lib\portable-net45+win8+wpa81\Smart.Resolver.Xamarin.xml" />-->
+  </files>
+</package>
