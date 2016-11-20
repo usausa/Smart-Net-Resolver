@@ -30,7 +30,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)Resolver\Constraints\ChainConstraint.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Resolver\Constraints\IConstraint.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Resolver\Constraints\NameConstraint.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Resolver\IInitializable.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Resolver\IKernel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Resolver\Injectors\IInjector.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Resolver\Injectors\IInjectPipeline.cs" />
