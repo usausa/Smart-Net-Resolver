@@ -8,7 +8,7 @@
     /// <summary>
     ///
     /// </summary>
-    public interface IResolver
+    public interface IResolver : IServiceProvider
     {
         /// <summary>
         ///

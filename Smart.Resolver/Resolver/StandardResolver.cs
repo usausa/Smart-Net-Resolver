@@ -297,5 +297,19 @@
             var pipeline = components.Get<IInjectPipeline>();
             pipeline?.Inject(this, new Binding(instance.GetType(), EmptyBindingMetadata), metadata, instance);
         }
+
+        // ------------------------------------------------------------
+        // IServiceProvider
+        // ------------------------------------------------------------
+
+        /// <summary>
+        ///
+        /// </summary>
+        /// <param name="serviceType"></param>
+        /// <returns></returns>
+        public object GetService(Type serviceType)
+        {
+            return Resolve(serviceType, null);
+        }
     }
 }
