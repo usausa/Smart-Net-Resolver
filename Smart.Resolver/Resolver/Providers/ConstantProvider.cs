@@ -1,5 +1,6 @@
 ﻿namespace Smart.Resolver.Providers
 {
+    using System;
     using Smart.Resolver.Bindings;
 
     /// <summary>
@@ -9,6 +10,11 @@
     public class ConstantProvider<T> : IProvider
     {
         private readonly T value;
+
+        /// <summary>
+        ///
+        /// </summary>
+        public Type TargetType => value.GetType();
 
         /// <summary>
         ///

@@ -15,6 +15,11 @@
         /// <summary>
         ///
         /// </summary>
+        public Type TargetType => typeof(T);
+
+        /// <summary>
+        ///
+        /// </summary>
         /// <param name="factory"></param>
         public CallbackProvider(Func<IKernel, T> factory)
         {

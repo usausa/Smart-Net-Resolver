@@ -1,6 +1,7 @@
 ﻿namespace Smart.Resolver.Bindings
 {
     using System;
+    using System.Collections.Generic;
 
     using Smart.Resolver.Providers;
 
@@ -12,18 +13,22 @@
         /// <summary>
         ///
         /// </summary>
+        /// <param name="context"></param>
         /// <param name="type"></param>
         /// <returns></returns>
-        public IBinding Resolve(Type type)
+        public IEnumerable<IBinding> Resolve(IResolverContext context, Type type)
         {
             if (!type.GetIsInterface())
             {
                 return null;
             }
 
-            return new Binding(type, new BindingMetadata())
+            return new[]
             {
-                Provider = new DependencyServiceProvider(type)
+                new Binding(type, new BindingMetadata())
+                {
+                    Provider = new DependencyServiceProvider(type)
+                }
             };
         }
     }

@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Linq;
 
     using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -39,6 +40,27 @@
         }
 
         [TestMethod]
+        public void ObjectBindingCreatedByOpenGenericBindingResolver()
+        {
+            resolver
+                .Bind(typeof(IGenericService<>))
+                .To(typeof(GenericService<>));
+
+            var obj = resolver.Get(typeof(IGenericService<int>));
+
+            Assert.IsNotNull(obj);
+            Assert.AreEqual(obj.GetType(), typeof(GenericService<int>));
+        }
+
+        protected interface IGenericService<T>
+        {
+        }
+
+        protected class GenericService<T> : IGenericService<T>
+        {
+        }
+
+        [TestMethod]
         public void ObjectBindingCreatedByCustomBindingResolver()
         {
             var typeMap = new Dictionary<Type, Type>
@@ -61,17 +83,20 @@
                 this.typeMap = typeMap;
             }
 
-            public IBinding Resolve(Type type)
+            public IEnumerable<IBinding> Resolve(IResolverContext context, Type type)
             {
                 Type targetType;
                 if (!typeMap.TryGetValue(type, out targetType))
                 {
-                    return null;
+                    return Enumerable.Empty<IBinding>();
                 }
 
-                return new Binding(type, new BindingMetadata())
+                return new[]
                 {
-                    Provider = new StandardProvider(targetType)
+                    new Binding(type, new BindingMetadata())
+                    {
+                        Provider = new StandardProvider(targetType)
+                    }
                 };
             }
         }

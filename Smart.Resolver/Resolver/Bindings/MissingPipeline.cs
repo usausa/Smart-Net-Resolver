@@ -26,11 +26,12 @@
         /// <summary>
         ///
         /// </summary>
+        /// <param name="context"></param>
         /// <param name="type"></param>
         /// <returns></returns>
-        public IEnumerable<IBinding> Resolve(Type type)
+        public IEnumerable<IBinding> Resolve(IResolverContext context, Type type)
         {
-            return Resolvers.Select(_ => _.Resolve(type)).Where(_ => _ != null);
+            return Resolvers.SelectMany(_ => _.Resolve(context, type));
         }
     }
 }

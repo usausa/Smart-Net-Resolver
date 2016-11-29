@@ -6,19 +6,13 @@
     /// <summary>
     ///
     /// </summary>
-    public interface IMissingPipeline
+    public interface IResolverContext
     {
         /// <summary>
         ///
         /// </summary>
-        IList<IBindingResolver> Resolvers { get; }
-
-        /// <summary>
-        ///
-        /// </summary>
-        /// <param name="context"></param>
         /// <param name="type"></param>
         /// <returns></returns>
-        IEnumerable<IBinding> Resolve(IResolverContext context, Type type);
+        IEnumerable<IBinding> FindBindings(Type type);
     }
 }

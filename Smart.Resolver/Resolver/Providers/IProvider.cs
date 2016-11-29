@@ -1,5 +1,6 @@
 ﻿namespace Smart.Resolver.Providers
 {
+    using System;
     using Smart.Resolver.Bindings;
 
     /// <summary>
@@ -7,6 +8,11 @@
     /// </summary>
     public interface IProvider
     {
+        /// <summary>
+        ///
+        /// </summary>
+        Type TargetType { get; }
+
         /// <summary>
         ///
         /// </summary>

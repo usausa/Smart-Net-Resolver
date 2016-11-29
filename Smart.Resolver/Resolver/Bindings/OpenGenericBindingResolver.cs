@@ -9,31 +9,26 @@
     /// <summary>
     ///
     /// </summary>
-    public class SelfBindingResolver : IBindingResolver
+    public class OpenGenericBindingResolver : IBindingResolver
     {
-        private static readonly Type StringType = typeof(string);
-
         /// <summary>
         ///
         /// </summary>
         /// <param name="context"></param>
         /// <param name="type"></param>
         /// <returns></returns>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods", Justification = "Framework only")]
         public IEnumerable<IBinding> Resolve(IResolverContext context, Type type)
         {
-            if (type.GetIsInterface() || type.GetIsAbstract() || type.GetIsValueType() || (type == StringType) ||
-                type.GetContainsGenericParameters())
+            if (!type.GetIsGenericType())
             {
                 return Enumerable.Empty<IBinding>();
             }
 
-            return new[]
+            return context.FindBindings(type.GetGenericTypeDefinition()).Select(_ => new Binding(type, new BindingMetadata())
             {
-                new Binding(type, new BindingMetadata())
-                {
-                    Provider = new StandardProvider(type)
-                }
-            };
+                Provider = new StandardProvider(_.Provider.TargetType.MakeGenericType(type.GenericTypeArguments))
+            });
         }
     }
 }

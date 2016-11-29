@@ -26,6 +26,8 @@
 
         private readonly Dictionary<Type, IList<IBinding>> bindings = new Dictionary<Type, IList<IBinding>>();
 
+        private readonly IResolverContext resolverContext;
+
         /// <summary>
         ///
         /// </summary>
@@ -37,9 +39,12 @@
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Reliability", "CA2000:DisposeObjectsBeforeLosingScope", Justification = "Ignore")]
         public StandardResolver()
         {
+            resolverContext = new ResolverContext(bindings);
+
             components.Register<IMetadataFactory>(new MetadataFactory());
             components.Register<IMissingPipeline>(new MissingPipeline(
-                new SelfBindingResolver()));
+                new SelfBindingResolver(),
+                new OpenGenericBindingResolver()));
             components.Register<IActivatePipeline>(new ActivatePipeline(
                 new InitializeActivator()));
             components.Register<IInjectPipeline>(new InjectPipeline(
@@ -236,7 +241,7 @@
                     var pipeline = components.Get<IMissingPipeline>();
                     if (pipeline != null)
                     {
-                        foreach (var binding in pipeline.Resolve(type))
+                        foreach (var binding in pipeline.Resolve(resolverContext, type))
                         {
                             list.Add(binding);
                         }

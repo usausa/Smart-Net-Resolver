@@ -17,9 +17,15 @@
         /// <summary>
         ///
         /// </summary>
+        public Type TargetType { get; }
+
+        /// <summary>
+        ///
+        /// </summary>
         /// <param name="type"></param>
         public DependencyServiceProvider(Type type)
         {
+            TargetType = type;
             var method = typeof(DependencyService).GetTypeInfo().GetDeclaredMethod("Get");
             genericMethod = method.MakeGenericMethod(type);
         }

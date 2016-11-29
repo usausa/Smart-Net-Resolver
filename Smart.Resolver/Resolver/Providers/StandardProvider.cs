@@ -20,7 +20,10 @@
 
         private static readonly Type ListType = typeof(IList<>);
 
-        private readonly Type type;
+        /// <summary>
+        ///
+        /// </summary>
+        public Type TargetType { get; }
 
         /// <summary>
         ///
@@ -33,7 +36,7 @@
                 throw new ArgumentNullException(nameof(type));
             }
 
-            this.type = type;
+            TargetType = type;
         }
 
         /// <summary>
@@ -46,12 +49,12 @@
         public object Create(IKernel kernel, IBinding binding)
         {
             var metadataFactory = kernel.Components.Get<IMetadataFactory>();
-            var metadata = metadataFactory.GetMetadata(type);
+            var metadata = metadataFactory.GetMetadata(TargetType);
             var constructor = metadata.TargetConstructor.Constructor;
             if (constructor == null)
             {
                 throw new InvalidOperationException(
-                    String.Format(CultureInfo.InvariantCulture, "No constructor avaiable. type = {0}", type.Name));
+                    String.Format(CultureInfo.InvariantCulture, "No constructor avaiable. type = {0}", TargetType.Name));
             }
 
             object instance;
