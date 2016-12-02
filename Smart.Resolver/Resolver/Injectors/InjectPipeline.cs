@@ -34,9 +34,9 @@
         /// <param name="instance"></param>
         public void Inject(IKernel kernel, IBinding binding, TypeMetadata metadata, object instance)
         {
-            foreach (var injector in Injectors)
+            for (var i = 0; i < Injectors.Count; i++)
             {
-                injector.Inject(kernel, binding, metadata, instance);
+                Injectors[i].Inject(kernel, binding, metadata, instance);
             }
         }
     }

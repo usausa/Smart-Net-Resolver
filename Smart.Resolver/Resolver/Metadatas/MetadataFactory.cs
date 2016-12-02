@@ -15,9 +15,9 @@
     /// </summary>
     public class MetadataFactory : IMetadataFactory
     {
-        private readonly ConcurrentDictionary<Type, TypeMetadata> metadatas = new ConcurrentDictionary<Type, TypeMetadata>();
+        private static readonly Type InjectType = typeof(InjectAttribute);
 
-        public ISelector Selector { get; set; } = new Selector();
+        private readonly ConcurrentDictionary<Type, TypeMetadata> metadatas = new ConcurrentDictionary<Type, TypeMetadata>();
 
         /// <summary>
         ///
@@ -33,20 +33,46 @@
                 return metadata;
             }
 
-            var constructor = Selector.SelectConstructor(type);
-            var constructorConstraint = constructor?.GetParameters()
-                .Select(_ => CreateConstraint(_.GetCustomAttributes<ConstraintAttribute>()))
+            var constructors = type.GetConstructors()
+                .OrderByDescending(_ => _.IsDefined(InjectType) ? 1 : 0)
+                .ThenByDescending(_ => _.GetParameters().Length)
+                .ThenByDescending(_ => _.GetParameters().Count(p => p.HasDefaultValue))
+                .Select(CreateConstructorMetadata)
                 .ToList();
 
-            var properties = Selector.SelectProperties(type)
-                .Select(_ => new PropertyMetadata(_.ToAccessor(), CreateConstraint(_.GetCustomAttributes<ConstraintAttribute>())))
+            var properties = type.GetProperties()
+                .Where(_ => _.IsDefined(InjectType))
+                .Select(CreatePropertyMetadata)
                 .ToList();
 
-            metadata = new TypeMetadata(new ConstructorMetadata(constructor, constructorConstraint), properties);
+            metadata = new TypeMetadata(constructors, properties);
 
             metadatas[type] = metadata;
 
             return metadata;
+        }
+
+        /// <summary>
+        ///
+        /// </summary>
+        /// <param name="ci"></param>
+        /// <returns></returns>
+        private static ConstructorMetadata CreateConstructorMetadata(ConstructorInfo ci)
+        {
+            var constraints = ci.GetParameters()
+                .Select(_ => CreateConstraint(_.GetCustomAttributes<ConstraintAttribute>())).ToList();
+
+            return new ConstructorMetadata(ci, constraints);
+        }
+
+        /// <summary>
+        ///
+        /// </summary>
+        /// <param name="pi"></param>
+        /// <returns></returns>
+        private static PropertyMetadata CreatePropertyMetadata(PropertyInfo pi)
+        {
+            return new PropertyMetadata(pi.ToAccessor(), CreateConstraint(pi.GetCustomAttributes<ConstraintAttribute>()));
         }
 
         /// <summary>

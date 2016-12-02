@@ -7,13 +7,13 @@
     /// </summary>
     public class TypeMetadata
     {
-        public ConstructorMetadata TargetConstructor { get; }
+        public IList<ConstructorMetadata> TargetConstructors { get; }
 
         public IList<PropertyMetadata> TargetProperties { get; }
 
-        public TypeMetadata(ConstructorMetadata targetConstructor, IList<PropertyMetadata> targetProperties)
+        public TypeMetadata(IList<ConstructorMetadata> targetConstructors, IList<PropertyMetadata> targetProperties)
         {
-            TargetConstructor = targetConstructor;
+            TargetConstructors = targetConstructors;
             TargetProperties = targetProperties;
         }
     }

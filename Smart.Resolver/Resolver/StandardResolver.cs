@@ -171,8 +171,9 @@
         /// </summary>
         /// <param name="type"></param>
         /// <param name="constraint"></param>
+        /// <param name="result"></param>
         /// <returns></returns>
-        public object TryResolve(Type type, IConstraint constraint)
+        public object TryResolve(Type type, IConstraint constraint, out bool result)
         {
             if (type == null)
             {
@@ -181,11 +182,13 @@
 
             if (ResolverType.IsAssignableFrom(type))
             {
+                result = true;
                 return this;
             }
 
             var binding = FindBinding(type, constraint, false);
-            return binding == null ? null : Resolve(binding);
+            result = binding != null;
+            return result ? Resolve(binding) : null;
         }
 
         /// <summary>
@@ -226,11 +229,14 @@
         {
             if (type == ResolverType)
             {
-                return new[] { this };
+                yield return new[] { this };
+                yield break;
             }
 
-            return (constraint != null ? GetBindings(type).Where(_ => constraint.Match(_.Metadata)) : GetBindings(type))
-                    .Select(Resolve);
+            foreach (var obj in (constraint != null ? GetBindings(type).Where(_ => constraint.Match(_.Metadata)) : GetBindings(type)).Select(Resolve))
+            {
+                yield return obj;
+            }
         }
 
         /// <summary>
@@ -243,13 +249,13 @@
         private IBinding FindBinding(Type type, IConstraint constraint, bool findFirst)
         {
             var list = GetBindings(type);
+            if (list.Count == 0)
+            {
+                return null;
+            }
+
             if (constraint == null)
             {
-                if (list.Count == 0)
-                {
-                    return null;
-                }
-
                 if (list.Count == 1)
                 {
                     return list[0];
@@ -265,8 +271,10 @@
             }
 
             IBinding target = null;
-            foreach (var binding in list)
+            for (var i = 0; i < list.Count; i++)
             {
+                var binding = list[i];
+
                 if (!constraint.Match(binding.Metadata))
                 {
                     continue;

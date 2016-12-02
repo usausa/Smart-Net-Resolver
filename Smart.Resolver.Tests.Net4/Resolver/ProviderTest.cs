@@ -121,6 +121,46 @@
             Assert.IsTrue(obj.Objects.Contains(bar, _ => _));
         }
 
+        [TestMethod]
+        public void ObjectIsCreatedByMaxParameterConstructor()
+        {
+            resolver.Bind<IService>().To<Service>().InSingletonScope();
+
+            var obj = resolver.Get<MultiConstructorObject>();
+
+            Assert.AreEqual(2, obj.Arguments);
+        }
+
+        [TestMethod]
+        public void ObjectIsCreatedByBestConstructor()
+        {
+            var obj = resolver.Get<MultiConstructorObject>();
+
+            Assert.AreEqual(1, obj.Arguments);
+        }
+
+        protected class MultiConstructorObject
+        {
+            public int Arguments { get; }
+
+            public SimpleObject SimpleObject { get; }
+
+            public IService Service { get; }
+
+            public MultiConstructorObject(SimpleObject simpleObject)
+            {
+                Arguments = 1;
+                SimpleObject = simpleObject;
+            }
+
+            public MultiConstructorObject(SimpleObject simpleObject, IService service)
+            {
+                Arguments = 2;
+                SimpleObject = simpleObject;
+                Service = service;
+            }
+        }
+
         protected class ArrayInjectedObject
         {
             [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1819:PropertiesShouldNotReturnArrays", Justification = "Ignore")]

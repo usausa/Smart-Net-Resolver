@@ -28,9 +28,9 @@
         /// <param name="instance"></param>
         public void Activate(object instance)
         {
-            foreach (var activator in Activators)
+            for (var i = 0; i < Activators.Count; i++)
             {
-                activator.Activate(instance);
+                Activators[i].Activate(instance);
             }
         }
     }

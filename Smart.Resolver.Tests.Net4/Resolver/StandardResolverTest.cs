@@ -36,8 +36,10 @@
         [TestMethod]
         public void SelfTryResolved()
         {
-            var obj = resolver.TryGet<IResolver>();
+            bool result;
+            var obj = resolver.TryGet<IResolver>(out result);
 
+            Assert.IsTrue(result);
             Assert.AreSame(resolver, obj);
         }
 
@@ -72,16 +74,20 @@
         {
             resolver.Bind<SimpleObject>().ToSelf().InTransientScope();
 
-            var obj = resolver.TryGet<SimpleObject>();
+            bool result;
+            var obj = resolver.TryGet<SimpleObject>(out result);
 
+            Assert.IsTrue(result);
             Assert.IsNotNull(obj);
         }
 
         [TestMethod]
         public void ObjectIsTryResolvedWhenBindIsNotExist()
         {
-            var obj = resolver.TryGet<SimpleObject>();
+            bool result;
+            var obj = resolver.TryGet<SimpleObject>(out result);
 
+            Assert.IsTrue(result);
             Assert.IsNotNull(obj);
         }
 
@@ -120,7 +126,8 @@
             resolver.Bind<SimpleObject>().ToSelf().InTransientScope();
             resolver.Bind<SimpleObject>().ToSelf().InTransientScope();
 
-            resolver.TryGet<SimpleObject>();
+            bool result;
+            resolver.TryGet<SimpleObject>(out result);
         }
 
         [TestMethod]
@@ -144,9 +151,10 @@
         [TestMethod]
         public void InterfaceIsNotTryResolvedWhenBindIsNotExist()
         {
-            var obj = resolver.TryGet<IService>();
+            bool result;
+            resolver.TryGet<IService>(out result);
 
-            Assert.IsNull(obj);
+            Assert.IsFalse(result);
         }
 
         [TestMethod]
@@ -155,6 +163,20 @@
             var result = resolver.CanGet<IService>();
 
             Assert.IsFalse(result);
+        }
+
+        [TestMethod]
+        public void ObjectIsAllResolvedWhenMultiBinding()
+        {
+            resolver.Bind<SimpleObject>().ToSelf().InSingletonScope().Named("foo");
+            resolver.Bind<SimpleObject>().ToSelf().InSingletonScope().Named("bar");
+
+            var objs = resolver.GetAll<SimpleObject>();
+
+            foreach (var obj in objs)
+            {
+                Assert.AreEqual(obj.GetType(), typeof(SimpleObject));
+            }
         }
 
         [TestMethod]

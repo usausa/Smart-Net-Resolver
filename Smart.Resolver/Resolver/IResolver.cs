@@ -23,8 +23,9 @@
         /// </summary>
         /// <param name="type"></param>
         /// <param name="constraint"></param>
+        /// <param name="result"></param>
         /// <returns></returns>
-        object TryResolve(Type type, IConstraint constraint);
+        object TryResolve(Type type, IConstraint constraint, out bool result);
 
         /// <summary>
         ///

@@ -40,11 +40,10 @@
     <Compile Include="$(MSBuildThisFileDirectory)Resolver\Injectors\PropertyInjector.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Resolver\IResolver.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Resolver\Metadatas\ConstructorMetadata.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Resolver\Metadatas\ISelector.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Resolver\Metadatas\PropertyMetadata.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Resolver\Metadatas\Selector.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Resolver\Parameters\CallbackParameter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Resolver\Parameters\ConstantParameter.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Resolver\ResolverHelper.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Resolver\Scopes\IScope.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Resolver\Scopes\ISingletonScope.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Resolver\Scopes\IScopeStorage.cs" />

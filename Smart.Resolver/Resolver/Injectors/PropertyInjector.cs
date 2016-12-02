@@ -23,8 +23,9 @@
                 return;
             }
 
-            foreach (var property in metadata.TargetProperties)
+            for (var i = 0; i < metadata.TargetProperties.Count; i++)
             {
+                var property = metadata.TargetProperties[i];
                 var parameter = binding.GetPropertyValue(property.Accessor.Name);
                 var value = parameter != null ? parameter.Resolve(kernel) : kernel.Resolve(property.Accessor.Type, property.Constraint);
                 property.Accessor.SetValue(instance, value);
