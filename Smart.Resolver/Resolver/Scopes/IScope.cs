@@ -1,7 +1,5 @@
 ﻿namespace Smart.Resolver.Scopes
 {
-    using Smart.Resolver.Bindings;
-
     /// <summary>
     ///
     /// </summary>

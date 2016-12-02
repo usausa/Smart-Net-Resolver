@@ -2,7 +2,6 @@
 {
     using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-    using Smart.Resolver.Attributes;
     using Smart.Resolver.Injectors;
     using Smart.Resolver.Mocks;
 
