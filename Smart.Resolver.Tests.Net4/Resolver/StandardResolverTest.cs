@@ -34,6 +34,130 @@
         }
 
         [TestMethod]
+        public void SelfTryResolved()
+        {
+            var obj = resolver.TryGet<IResolver>();
+
+            Assert.AreSame(resolver, obj);
+        }
+
+        [TestMethod]
+        public void SelfCanResolved()
+        {
+            var result = resolver.CanGet<IResolver>();
+
+            Assert.IsTrue(result);
+        }
+
+        [TestMethod]
+        public void ObjectIsResolvedWhenBindIsExist()
+        {
+            resolver.Bind<SimpleObject>().ToSelf().InTransientScope();
+
+            var obj = resolver.Get<SimpleObject>();
+
+            Assert.IsNotNull(obj);
+        }
+
+        [TestMethod]
+        public void ObjectIsResolvedWhenBindIsNotExist()
+        {
+            var obj = resolver.Get<SimpleObject>();
+
+            Assert.IsNotNull(obj);
+        }
+
+        [TestMethod]
+        public void ObjectIsTryResolvedWhenBindIsExist()
+        {
+            resolver.Bind<SimpleObject>().ToSelf().InTransientScope();
+
+            var obj = resolver.TryGet<SimpleObject>();
+
+            Assert.IsNotNull(obj);
+        }
+
+        [TestMethod]
+        public void ObjectIsTryResolvedWhenBindIsNotExist()
+        {
+            var obj = resolver.TryGet<SimpleObject>();
+
+            Assert.IsNotNull(obj);
+        }
+
+        [TestMethod]
+        public void ObjectCanResolvedWhenBindIsExist()
+        {
+            resolver.Bind<SimpleObject>().ToSelf().InTransientScope();
+
+            var result = resolver.CanGet<SimpleObject>();
+
+            Assert.IsTrue(result);
+        }
+
+        [TestMethod]
+        public void ObjectCanResolvedWhenBindIsNotExist()
+        {
+            var result = resolver.CanGet<SimpleObject>();
+
+            Assert.IsTrue(result);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(System.InvalidOperationException))]
+        public void ObjectIsNotResolvedWhenMultiBindIsExist()
+        {
+            resolver.Bind<SimpleObject>().ToSelf().InTransientScope();
+            resolver.Bind<SimpleObject>().ToSelf().InTransientScope();
+
+            resolver.Get<SimpleObject>();
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(System.InvalidOperationException))]
+        public void ObjectIsNotTryResolvedWhenMultiBindIsExist()
+        {
+            resolver.Bind<SimpleObject>().ToSelf().InTransientScope();
+            resolver.Bind<SimpleObject>().ToSelf().InTransientScope();
+
+            resolver.TryGet<SimpleObject>();
+        }
+
+        [TestMethod]
+        public void ObjectCanResolvedWhenMultiBindIsExist()
+        {
+            resolver.Bind<SimpleObject>().ToSelf().InTransientScope();
+            resolver.Bind<SimpleObject>().ToSelf().InTransientScope();
+
+            var result = resolver.CanGet<SimpleObject>();
+
+            Assert.IsTrue(result);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(System.InvalidOperationException))]
+        public void InterfaceIsNotResolvedWhenBindIsNotExist()
+        {
+            resolver.Get<IService>();
+        }
+
+        [TestMethod]
+        public void InterfaceIsNotTryResolvedWhenBindIsNotExist()
+        {
+            var obj = resolver.TryGet<IService>();
+
+            Assert.IsNull(obj);
+        }
+
+        [TestMethod]
+        public void InterfaceIsNotCanResolvedWhenBindIsNotExist()
+        {
+            var result = resolver.CanGet<IService>();
+
+            Assert.IsFalse(result);
+        }
+
+        [TestMethod]
         public void UseCaseForWebControllerAndService()
         {
             resolver.Bind<IService>().To<Service>().InSingletonScope();

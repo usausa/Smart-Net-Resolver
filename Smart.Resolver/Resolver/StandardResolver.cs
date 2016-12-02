@@ -151,6 +151,49 @@
         /// <param name="type"></param>
         /// <param name="constraint"></param>
         /// <returns></returns>
+        public bool CanResolve(Type type, IConstraint constraint)
+        {
+            if (type == null)
+            {
+                throw new ArgumentNullException(nameof(type));
+            }
+
+            if (ResolverType.IsAssignableFrom(type))
+            {
+                return true;
+            }
+
+            return FindBinding(type, constraint, true) != null;
+        }
+
+        /// <summary>
+        ///
+        /// </summary>
+        /// <param name="type"></param>
+        /// <param name="constraint"></param>
+        /// <returns></returns>
+        public object TryResolve(Type type, IConstraint constraint)
+        {
+            if (type == null)
+            {
+                throw new ArgumentNullException(nameof(type));
+            }
+
+            if (ResolverType.IsAssignableFrom(type))
+            {
+                return this;
+            }
+
+            var binding = FindBinding(type, constraint, false);
+            return binding == null ? null : Resolve(binding);
+        }
+
+        /// <summary>
+        ///
+        /// </summary>
+        /// <param name="type"></param>
+        /// <param name="constraint"></param>
+        /// <returns></returns>
         public object Resolve(Type type, IConstraint constraint)
         {
             if (type == null)
@@ -163,47 +206,14 @@
                 return this;
             }
 
-            var list = GetBindings(type);
-            IBinding target = null;
-
-            if (constraint == null)
-            {
-                if (list.Count == 1)
-                {
-                    target = list[0];
-                }
-                else if (list.Count > 1)
-                {
-                    throw new InvalidOperationException(
-                        String.Format(CultureInfo.InvariantCulture, "More than one component matched. type = {0}", type.Name));
-                }
-            }
-            else
-            {
-                foreach (var binding in list)
-                {
-                    if (!constraint.Match(binding.Metadata))
-                    {
-                        continue;
-                    }
-
-                    if (target != null)
-                    {
-                        throw new InvalidOperationException(
-                            String.Format(CultureInfo.InvariantCulture, "More than one component matched. type = {0}", type.Name));
-                    }
-
-                    target = binding;
-                }
-            }
-
-            if (target == null)
+            var binding = FindBinding(type, constraint, false);
+            if (binding == null)
             {
                 throw new InvalidOperationException(
                     String.Format(CultureInfo.InvariantCulture, "No such component registerd. type = {0}", type.Name));
             }
 
-            return Resolve(target);
+            return Resolve(binding);
         }
 
         /// <summary>
@@ -221,6 +231,62 @@
 
             return (constraint != null ? GetBindings(type).Where(_ => constraint.Match(_.Metadata)) : GetBindings(type))
                     .Select(Resolve);
+        }
+
+        /// <summary>
+        ///
+        /// </summary>
+        /// <param name="type"></param>
+        /// <param name="constraint"></param>
+        /// <param name="findFirst"></param>
+        /// <returns></returns>
+        private IBinding FindBinding(Type type, IConstraint constraint, bool findFirst)
+        {
+            var list = GetBindings(type);
+            if (constraint == null)
+            {
+                if (list.Count == 0)
+                {
+                    return null;
+                }
+
+                if (list.Count == 1)
+                {
+                    return list[0];
+                }
+
+                if (findFirst)
+                {
+                    return list[0];
+                }
+
+                throw new InvalidOperationException(
+                    String.Format(CultureInfo.InvariantCulture, "More than one component matched. type = {0}", type.Name));
+            }
+
+            IBinding target = null;
+            foreach (var binding in list)
+            {
+                if (!constraint.Match(binding.Metadata))
+                {
+                    continue;
+                }
+
+                if (findFirst)
+                {
+                    return binding;
+                }
+
+                if (target != null)
+                {
+                    throw new InvalidOperationException(
+                        String.Format(CultureInfo.InvariantCulture, "More than one component matched. type = {0}", type.Name));
+                }
+
+                target = binding;
+            }
+
+            return target;
         }
 
         /// <summary>

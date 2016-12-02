@@ -52,6 +52,7 @@
             Assert.AreEqual(obj.GetType(), typeof(GenericService<int>));
         }
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1040:AvoidEmptyInterfaces", Justification = "Ignore")]
         protected interface IGenericService<T>
         {
         }
