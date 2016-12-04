@@ -130,13 +130,13 @@
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods", Justification = "Extensions")]
         public static IEnumerable<T> GetAll<T>(this IResolver resolver)
         {
-            return resolver.ResolveAll(typeof(T), null).Cast<T>();
+            return (T[])ResolverHelper.ConvertArray(typeof(T), resolver.ResolveAll(typeof(T), null));
         }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods", Justification = "Extensions")]
         public static IEnumerable<object> GetAll(this IResolver resolver, Type type)
         {
-            return resolver.ResolveAll(type, null);
+            return resolver.ResolveAll(type, null).ToArray();
         }
     }
 }

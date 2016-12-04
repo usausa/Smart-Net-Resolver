@@ -229,14 +229,10 @@
         {
             if (type == ResolverType)
             {
-                yield return new[] { this };
-                yield break;
+                return new[] { this };
             }
 
-            foreach (var obj in (constraint != null ? GetBindings(type).Where(_ => constraint.Match(_.Metadata)) : GetBindings(type)).Select(Resolve))
-            {
-                yield return obj;
-            }
+            return (constraint != null ? GetBindings(type).Where(_ => constraint.Match(_.Metadata)) : GetBindings(type)).Select(Resolve);
         }
 
         /// <summary>
@@ -258,7 +254,7 @@
                 return list[list.Count - 1];
             }
 
-            for (var i = list.Count() - 1; i >= 0; i--)
+            for (var i = list.Count - 1; i >= 0; i--)
             {
                 if (constraint.Match(list[i].Metadata))
                 {
