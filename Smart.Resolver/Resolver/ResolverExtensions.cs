@@ -136,7 +136,7 @@
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods", Justification = "Extensions")]
         public static IEnumerable<object> GetAll(this IResolver resolver, Type type)
         {
-            return resolver.ResolveAll(type, null).ToArray();
+            return (object[])ResolverHelper.ConvertArray(type, resolver.ResolveAll(type, null));
         }
     }
 }
