@@ -20,7 +20,7 @@
         {
             if (!type.GetIsInterface())
             {
-                return null;
+                return Enumerable.Empty<IBinding>();
             }
 
             return new[]
