@@ -110,8 +110,7 @@
         }
 
         [TestMethod]
-        [ExpectedException(typeof(System.InvalidOperationException))]
-        public void ObjectIsNotResolvedWhenMultiBindIsExist()
+        public void ObjectIsResolvedWhenMultiBindIsExist()
         {
             resolver.Bind<SimpleObject>().ToSelf().InTransientScope();
             resolver.Bind<SimpleObject>().ToSelf().InTransientScope();
@@ -120,14 +119,15 @@
         }
 
         [TestMethod]
-        [ExpectedException(typeof(System.InvalidOperationException))]
-        public void ObjectIsNotTryResolvedWhenMultiBindIsExist()
+        public void ObjectIsTryResolvedWhenMultiBindIsExist()
         {
             resolver.Bind<SimpleObject>().ToSelf().InTransientScope();
             resolver.Bind<SimpleObject>().ToSelf().InTransientScope();
 
             bool result;
             resolver.TryGet<SimpleObject>(out result);
+
+            Assert.IsTrue(result);
         }
 
         [TestMethod]
