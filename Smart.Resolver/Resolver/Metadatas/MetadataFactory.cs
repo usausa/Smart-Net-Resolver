@@ -17,6 +17,12 @@
     {
         private static readonly Type InjectType = typeof(InjectAttribute);
 
+        private static readonly Type EnumerableType = typeof(IEnumerable<>);
+
+        private static readonly Type CollectionType = typeof(ICollection<>);
+
+        private static readonly Type ListType = typeof(IList<>);
+
         private readonly ConcurrentDictionary<Type, TypeMetadata> metadatas = new ConcurrentDictionary<Type, TypeMetadata>();
 
         /// <summary>
@@ -59,10 +65,41 @@
         /// <returns></returns>
         private static ConstructorMetadata CreateConstructorMetadata(ConstructorInfo ci)
         {
-            var constraints = ci.GetParameters()
-                .Select(_ => CreateConstraint(_.GetCustomAttributes<ConstraintAttribute>())).ToList();
+            var parameters = ci.GetParameters()
+                .Select(CreateParameterMetadata)
+                .ToList();
 
-            return new ConstructorMetadata(ci, constraints);
+            var constraints = ci.GetParameters()
+                .Select(_ => CreateConstraint(_.GetCustomAttributes<ConstraintAttribute>()))
+                .ToList();
+
+            return new ConstructorMetadata(ci, parameters, constraints);
+        }
+
+        /// <summary>
+        ///
+        /// </summary>
+        /// <param name="pi"></param>
+        /// <returns></returns>
+        private static ParameterMetadata CreateParameterMetadata(ParameterInfo pi)
+        {
+            // Array
+            if (pi.ParameterType.IsArray)
+            {
+                return new ParameterMetadata(pi, pi.ParameterType.GetElementType());
+            }
+
+            // IEnumerable type
+            if (pi.ParameterType.GetIsGenericType())
+            {
+                var genericType = pi.ParameterType.GetGenericTypeDefinition();
+                if ((genericType == EnumerableType) || (genericType == CollectionType) || (genericType == ListType))
+                {
+                    return new ParameterMetadata(pi, pi.ParameterType.GenericTypeArguments[0]);
+                }
+            }
+
+            return new ParameterMetadata(pi, null);
         }
 
         /// <summary>

@@ -13,12 +13,6 @@
     /// </summary>
     public class StandardProvider : IProvider
     {
-        private static readonly Type EnumerableType = typeof(IEnumerable<>);
-
-        private static readonly Type CollectionType = typeof(ICollection<>);
-
-        private static readonly Type ListType = typeof(IList<>);
-
         /// <summary>
         ///
         /// </summary>
@@ -87,44 +81,32 @@
         /// <returns></returns>
         private static object[] TryResolveParameters(IKernel kernel, IBinding binding, ConstructorMetadata cm, out bool result)
         {
-            var parameters = cm.Constructor.GetParameters();
-            if (parameters.Length == 0)
+            var parameters = cm.Parameters;
+            if (parameters.Count == 0)
             {
                 result = true;
                 return null;
             }
 
-            var arguments = new object[parameters.Length];
-            for (var i = 0; i < parameters.Length; i++)
+            var arguments = new object[parameters.Count];
+            for (var i = 0; i < parameters.Count; i++)
             {
-                var pi = parameters[i];
+                var parameter = parameters[i];
+                var pi = parameter.Parameter;
 
                 // Constructor argument
-                var parameter = binding.GetConstructorArgument(pi.Name);
-                if (parameter != null)
+                var argument = binding.GetConstructorArgument(pi.Name);
+                if (argument != null)
                 {
-                    arguments[i] = parameter.Resolve(kernel);
+                    arguments[i] = argument.Resolve(kernel);
                     continue;
                 }
 
-                // Array
-                if (pi.ParameterType.IsArray)
+                // Multiple
+                if (parameter.ElementType != null)
                 {
-                    var elementType = pi.ParameterType.GetElementType();
-                    arguments[i] = ResolverHelper.ConvertArray(elementType, kernel.ResolveAll(elementType, cm.Constraints[i]));
+                    arguments[i] = ResolverHelper.ConvertArray(parameter.ElementType, kernel.ResolveAll(parameter.ElementType, cm.Constraints[i]));
                     continue;
-                }
-
-                // IEnumerable type
-                if (pi.ParameterType.GetIsGenericType())
-                {
-                    var genericType = pi.ParameterType.GetGenericTypeDefinition();
-                    if ((genericType == EnumerableType) || (genericType == CollectionType) || (genericType == ListType))
-                    {
-                        var elementType = pi.ParameterType.GenericTypeArguments[0];
-                        arguments[i] = ResolverHelper.ConvertArray(elementType, kernel.ResolveAll(elementType, cm.Constraints[i]));
-                        continue;
-                    }
                 }
 
                 // Resolve
