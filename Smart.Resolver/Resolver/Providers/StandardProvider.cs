@@ -1,7 +1,6 @@
 ﻿namespace Smart.Resolver.Providers
 {
     using System;
-    using System.Collections.Generic;
     using System.Globalization;
 
     using Smart.Resolver.Bindings;
