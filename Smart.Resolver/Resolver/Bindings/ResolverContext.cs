@@ -15,8 +15,11 @@
 
         public IEnumerable<IBinding> FindBindings(Type type)
         {
-            IList<IBinding> list;
-            return bindings.TryGetValue(type, out list) ? list : Enumerable.Empty<IBinding>();
+            lock (bindings)
+            {
+                IList<IBinding> list;
+                return bindings.TryGetValue(type, out list) ? list : Enumerable.Empty<IBinding>();
+            }
         }
     }
 }
