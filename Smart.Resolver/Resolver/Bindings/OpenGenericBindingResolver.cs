@@ -25,9 +25,9 @@
                 return Enumerable.Empty<IBinding>();
             }
 
-            return context.FindBindings(type.GetGenericTypeDefinition()).Select(_ => new Binding(type, new BindingMetadata())
+            return context.FindBindings(type.GetGenericTypeDefinition()).Select(b => new Binding(type, new BindingMetadata())
             {
-                Provider = new StandardProvider(_.Provider.TargetType.MakeGenericType(type.GenericTypeArguments))
+                Provider = new StandardProvider(b.Provider.TargetType.MakeGenericType(type.GenericTypeArguments))
             });
         }
     }

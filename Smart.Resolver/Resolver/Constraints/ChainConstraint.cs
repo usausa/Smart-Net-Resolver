@@ -22,7 +22,7 @@
 
         public bool Match(IBindingMetadata metadata)
         {
-            return constraints.All(_ => _.Match(metadata));
+            return constraints.All(c => c.Match(metadata));
         }
     }
 }

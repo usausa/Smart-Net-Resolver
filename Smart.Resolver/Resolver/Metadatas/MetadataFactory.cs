@@ -40,14 +40,14 @@
             }
 
             var constructors = type.GetConstructors()
-                .OrderByDescending(_ => _.IsDefined(InjectType) ? 1 : 0)
-                .ThenByDescending(_ => _.GetParameters().Length)
-                .ThenByDescending(_ => _.GetParameters().Count(p => p.HasDefaultValue))
+                .OrderByDescending(c => c.IsDefined(InjectType) ? 1 : 0)
+                .ThenByDescending(c => c.GetParameters().Length)
+                .ThenByDescending(c => c.GetParameters().Count(p => p.HasDefaultValue))
                 .Select(CreateConstructorMetadata)
                 .ToList();
 
             var properties = type.GetProperties()
-                .Where(_ => _.IsDefined(InjectType))
+                .Where(p => p.IsDefined(InjectType))
                 .Select(CreatePropertyMetadata)
                 .ToList();
 
@@ -70,7 +70,7 @@
                 .ToList();
 
             var constraints = ci.GetParameters()
-                .Select(_ => CreateConstraint(_.GetCustomAttributes<ConstraintAttribute>()))
+                .Select(p => CreateConstraint(p.GetCustomAttributes<ConstraintAttribute>()))
                 .ToList();
 
             return new ConstructorMetadata(ci, parameters, constraints);
@@ -120,7 +120,7 @@
         private static IConstraint CreateConstraint(IEnumerable<ConstraintAttribute> attributes)
         {
             var constraints = attributes
-                .Select(_ => _.CreateConstraint())
+                .Select(a => a.CreateConstraint())
                 .ToArray();
 
             if (constraints.Length == 0)

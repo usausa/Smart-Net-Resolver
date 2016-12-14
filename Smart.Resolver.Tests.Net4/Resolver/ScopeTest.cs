@@ -56,7 +56,7 @@
         [TestMethod]
         public void ObjectInCustomScope()
         {
-            resolver.Configure(_ => _.Register(new CustomScopeStorage()));
+            resolver.Configure(c => c.Register(new CustomScopeStorage()));
             resolver.Bind<SimpleObject>().ToSelf().InScope(new CustomScope());
 
             var obj1 = resolver.Get<SimpleObject>();

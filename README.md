@@ -55,7 +55,7 @@ resolver.Bind<Controller>().ToSelf();
 
 ```csharp
 // Type IScheduler to factory method
-resolver.Bind<IScheduler>().ToMethod(_ => _.Get<ISchedulerFactory>().GetScheduler());
+resolver.Bind<IScheduler>().ToMethod(x => x.Get<ISchedulerFactory>().GetScheduler());
 ```
 
 * ToConstant
@@ -210,7 +210,7 @@ public class CustomScope : IScope
     }
 }
 
-resolver.Configure(_ => _.Register(new CustomScopeStorage()));
+resolver.Configure(x => x.Register(new CustomScopeStorage()));
 resolver.Bind<SimpleObject>().ToSelf().InScope(new CustomScope());
 ```
 

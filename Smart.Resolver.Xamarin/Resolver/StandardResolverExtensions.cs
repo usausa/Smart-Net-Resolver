@@ -21,7 +21,7 @@
                 throw new ArgumentNullException(nameof(resolver));
             }
 
-            return resolver.Configure(_ => _.Get<IMissingPipeline>().Resolvers.Add(new DependencyServiceBindingResolver()));
+            return resolver.Configure(c => c.Get<IMissingPipeline>().Resolvers.Add(new DependencyServiceBindingResolver()));
         }
     }
 }

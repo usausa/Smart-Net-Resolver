@@ -45,7 +45,7 @@
         public void ObjectCreatedByCallbackProvider()
         {
             var service = new Service();
-            resolver.Bind<IService>().ToMethod(_ => service);
+            resolver.Bind<IService>().ToMethod(k => service);
             resolver.Bind<Controller>().ToSelf();
 
             var controller = resolver.Get<Controller>();
@@ -66,8 +66,8 @@
 
             Assert.AreEqual(2, obj.Objects.Length);
             Assert.AreNotSame(foo, bar);
-            Assert.IsTrue(obj.Objects.Contains(foo, _ => _));
-            Assert.IsTrue(obj.Objects.Contains(bar, _ => _));
+            Assert.IsTrue(obj.Objects.Contains(foo, x => x));
+            Assert.IsTrue(obj.Objects.Contains(bar, x => x));
         }
 
         [TestMethod]
@@ -83,8 +83,8 @@
 
             Assert.AreEqual(2, obj.Objects.Count());
             Assert.AreNotSame(foo, bar);
-            Assert.IsTrue(obj.Objects.Contains(foo, _ => _));
-            Assert.IsTrue(obj.Objects.Contains(bar, _ => _));
+            Assert.IsTrue(obj.Objects.Contains(foo, x => x));
+            Assert.IsTrue(obj.Objects.Contains(bar, x => x));
         }
 
         [TestMethod]
@@ -100,8 +100,8 @@
 
             Assert.AreEqual(2, obj.Objects.Count);
             Assert.AreNotSame(foo, bar);
-            Assert.IsTrue(obj.Objects.Contains(foo, _ => _));
-            Assert.IsTrue(obj.Objects.Contains(bar, _ => _));
+            Assert.IsTrue(obj.Objects.Contains(foo, x => x));
+            Assert.IsTrue(obj.Objects.Contains(bar, x => x));
         }
 
         [TestMethod]
@@ -117,8 +117,8 @@
 
             Assert.AreEqual(2, obj.Objects.Count);
             Assert.AreNotSame(foo, bar);
-            Assert.IsTrue(obj.Objects.Contains(foo, _ => _));
-            Assert.IsTrue(obj.Objects.Contains(bar, _ => _));
+            Assert.IsTrue(obj.Objects.Contains(foo, x => x));
+            Assert.IsTrue(obj.Objects.Contains(bar, x => x));
         }
 
         [TestMethod]

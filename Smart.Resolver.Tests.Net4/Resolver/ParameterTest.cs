@@ -40,7 +40,7 @@
         public void ObjectIsInjectedOnCreationWithCallbackParameter()
         {
             resolver.Bind<IService>().To<Service>().InSingletonScope();
-            resolver.Bind<Controller>().ToSelf().WithConstructorArgument("service", _ => _.Get<IService>());
+            resolver.Bind<Controller>().ToSelf().WithConstructorArgument("service", k => k.Get<IService>());
 
             var controller = resolver.Get<Controller>();
             var service = resolver.Get<IService>();
@@ -63,7 +63,7 @@
         public void ObjectIsInjectedWhenInjectWithCallbavkParameterOnCreation()
         {
             resolver.Bind<SimpleObject>().ToSelf().InSingletonScope();
-            resolver.Bind<HasPropertyObject>().ToSelf().WithPropertyValue("Injected", _ => _.Get<SimpleObject>());
+            resolver.Bind<HasPropertyObject>().ToSelf().WithPropertyValue("Injected", k => k.Get<SimpleObject>());
 
             var obj = resolver.Get<HasPropertyObject>();
             var injected = resolver.Get<SimpleObject>();
