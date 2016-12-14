@@ -31,7 +31,7 @@
         /// <returns></returns>
         public IEnumerable<IBinding> Resolve(IResolverContext context, Type type)
         {
-            return Resolvers.SelectMany(b => b.Resolve(context, type));
+            return Resolvers.SelectMany(x => x.Resolve(context, type));
         }
     }
 }
