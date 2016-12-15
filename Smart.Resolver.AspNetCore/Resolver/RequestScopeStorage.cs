@@ -19,13 +19,22 @@
             this.accessor = accessor;
         }
 
-        public void Remember(IBinding binding, object instance)
+        public object GetOrAdd(IBinding binding, Func<IBinding, object> factory)
         {
             var context = accessor.HttpContext;
 
             object value;
             context.Items.TryGetValue(StorageKey, out value);
             var dictionary = (Dictionary<IBinding, object>)value;
+
+            object instance;
+            if ((dictionary != null) && dictionary.TryGetValue(binding, out instance))
+            {
+                return instance;
+            }
+
+            instance = factory(binding);
+
             if (dictionary == null)
             {
                 dictionary = new Dictionary<IBinding, object>();
@@ -33,22 +42,8 @@
             }
 
             dictionary[binding] = instance;
-        }
 
-        public object TryGet(IBinding binding)
-        {
-            var context = accessor.HttpContext;
-
-            object value;
-            context.Items.TryGetValue(StorageKey, out value);
-            var dictionary = (Dictionary<IBinding, object>)value;
-            if (dictionary == null)
-            {
-                return null;
-            }
-
-            object instance;
-            return dictionary.TryGetValue(binding, out instance) ? instance : null;
+            return instance;
         }
 
         public void Clear()

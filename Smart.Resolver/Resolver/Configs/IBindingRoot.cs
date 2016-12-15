@@ -1,4 +1,4 @@
-﻿namespace Smart.Resolver.Bindings
+﻿namespace Smart.Resolver.Configs
 {
     using System;
 

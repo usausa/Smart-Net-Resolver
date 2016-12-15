@@ -6,42 +6,43 @@
     using Microsoft.AspNetCore.Http;
     using Microsoft.Extensions.DependencyInjection;
 
-    using Smart.Resolver.Bindings;
+    using Smart.Resolver.Configs;
 
     public static class SmartResolverHelper
     {
-        public static IServiceProvider BuildServiceProvider(StandardResolver resolver, IEnumerable<ServiceDescriptor> descriptors)
+        public static IServiceProvider BuildServiceProvider(ResolverConfig config, IEnumerable<ServiceDescriptor> descriptors)
         {
             foreach (var descriptor in descriptors)
             {
                 if (descriptor.ImplementationType != null)
                 {
-                    resolver
+                    config
                         .Bind(descriptor.ServiceType)
                         .To(descriptor.ImplementationType)
                         .ConfigureScope(descriptor.Lifetime);
                 }
                 else if (descriptor.ImplementationFactory != null)
                 {
-                    resolver
+                    config
                         .Bind(descriptor.ServiceType)
                         .ToMethod(kernel => descriptor.ImplementationFactory(kernel.Get<IServiceProvider>()))
                         .ConfigureScope(descriptor.Lifetime);
                 }
                 else if (descriptor.ImplementationInstance != null)
                 {
-                    resolver
+                    config
                         .Bind(descriptor.ServiceType)
                         .ToConstant(descriptor.ImplementationInstance)
                         .ConfigureScope(descriptor.Lifetime);
                 }
             }
 
-            resolver.Bind<IServiceProvider>().To<SmartResolverServiceProvider>().InSingletonScope();
-            resolver.Bind<IServiceScopeFactory>().To<SmartResolverServiceScopeFactory>().InSingletonScope();
-            resolver.Bind<IHttpContextAccessor>().To<HttpContextAccessor>().InSingletonScope();
-            resolver.Bind<RequestScopeStorage>().ToSelf().InSingletonScope();
+            config.Bind<IServiceProvider>().To<SmartResolverServiceProvider>().InSingletonScope();
+            config.Bind<IServiceScopeFactory>().To<SmartResolverServiceScopeFactory>().InSingletonScope();
+            config.Bind<IHttpContextAccessor>().To<HttpContextAccessor>().InSingletonScope();
+            config.Bind<RequestScopeStorage>().ToSelf().InSingletonScope();
 
+            var resolver = config.ToResolver();
             return resolver.Get<IServiceProvider>();
         }
 

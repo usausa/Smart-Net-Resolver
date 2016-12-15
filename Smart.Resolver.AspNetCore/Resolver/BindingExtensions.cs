@@ -1,6 +1,6 @@
 ﻿namespace Smart.Resolver
 {
-    using Smart.Resolver.Bindings;
+    using Smart.Resolver.Configs;
 
     public static class BindingExtensions
     {

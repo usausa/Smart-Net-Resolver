@@ -2,74 +2,74 @@
 {
     using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-    using Smart.Resolver.Injectors;
     using Smart.Resolver.Mocks;
 
     /// <summary>
-    /// ActivatorsTest の概要の説明
+    ///
     /// </summary>
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1001:TypesThatOwnDisposableFieldsShouldBeDisposable", Justification = "Ignore")]
     [TestClass]
     public class PropertyInjectionTest
     {
-        private StandardResolver resolver;
-
-        [TestInitialize]
-        public void TestInitialize()
+        [TestMethod]
+        public void ObjectIsInjectedOnCreationWhenPropertyInjectorEnabled()
         {
-            resolver = new StandardResolver();
-        }
+            var config = new ResolverConfig();
+            config.UsePropertyInjector();
+            config.Bind<SimpleObject>().ToSelf();
+            config.Bind<HasPropertyObject>().ToSelf();
 
-        [TestCleanup]
-        public void TestCleanup()
-        {
-            resolver.Dispose();
+            using (var resolver = config.ToResolver())
+            {
+                var obj = resolver.Get<HasPropertyObject>();
+
+                Assert.IsNotNull(obj.Injected);
+            }
         }
 
         [TestMethod]
-        public void ObjectIsInjectedOnCreation()
+        public void ObjectIsInjectedByInjectWhenPropertyInjectorEnabled()
         {
-            resolver.Bind<SimpleObject>().ToSelf();
-            resolver.Bind<HasPropertyObject>().ToSelf();
+            var config = new ResolverConfig();
+            config.UsePropertyInjector();
+            config.Bind<SimpleObject>().ToSelf();
 
-            var obj = resolver.Get<HasPropertyObject>();
+            using (var resolver = config.ToResolver())
+            {
+                var obj = new HasPropertyObject();
+                resolver.Inject(obj);
 
-            Assert.IsNotNull(obj.Injected);
+                Assert.IsNotNull(obj.Injected);
+            }
         }
 
         [TestMethod]
-        public void ObjectIsInjectedByInject()
+        public void ObjectIsNotInjectedOnCreationWhenDefault()
         {
-            resolver.Bind<SimpleObject>().ToSelf();
+            var config = new ResolverConfig();
+            config.Bind<SimpleObject>().ToSelf();
+            config.Bind<HasPropertyObject>().ToSelf();
 
-            var obj = new HasPropertyObject();
-            resolver.Inject(obj);
+            using (var resolver = config.ToResolver())
+            {
+                var obj = resolver.Get<HasPropertyObject>();
 
-            Assert.IsNotNull(obj.Injected);
+                Assert.IsNull(obj.Injected);
+            }
         }
 
         [TestMethod]
-        public void ObjectIsNotInjectedOnCreationWhenInjectorDisabled()
+        public void ObjectIsNotInjectedByInjectWhenDefault()
         {
-            resolver.Configure(c => c.Remove<IInjectPipeline>());
-            resolver.Bind<SimpleObject>().ToSelf();
-            resolver.Bind<HasPropertyObject>().ToSelf();
+            var config = new ResolverConfig();
+            config.Bind<SimpleObject>().ToSelf();
 
-            var obj = resolver.Get<HasPropertyObject>();
+            using (var resolver = config.ToResolver())
+            {
+                var obj = new HasPropertyObject();
+                resolver.Inject(obj);
 
-            Assert.IsNull(obj.Injected);
-        }
-
-        [TestMethod]
-        public void ObjectIsNotInjectedByInjectWhenInjectorDisabled()
-        {
-            resolver.Configure(c => c.Remove<IInjectPipeline>());
-            resolver.Bind<SimpleObject>().ToSelf();
-
-            var obj = new HasPropertyObject();
-            resolver.Inject(obj);
-
-            Assert.IsNull(obj.Injected);
+                Assert.IsNull(obj.Injected);
+            }
         }
     }
 }

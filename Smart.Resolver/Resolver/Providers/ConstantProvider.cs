@@ -1,6 +1,8 @@
 ﻿namespace Smart.Resolver.Providers
 {
     using System;
+
+    using Smart.ComponentModel;
     using Smart.Resolver.Bindings;
 
     /// <summary>
@@ -25,13 +27,7 @@
             this.value = value;
         }
 
-        /// <summary>
-        ///
-        /// </summary>
-        /// <param name="kernel"></param>
-        /// <param name="binding"></param>
-        /// <returns></returns>
-        public object Create(IKernel kernel, IBinding binding)
+        public object Create(IResolver resolver, IComponentContainer components, IBinding binding)
         {
             return value;
         }

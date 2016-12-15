@@ -7,11 +7,13 @@
     /// </summary>
     public class TypeMetadata
     {
-        public IList<ConstructorMetadata> TargetConstructors { get; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1819:PropertiesShouldNotReturnArrays", Justification = "Performance")]
+        public ConstructorMetadata[] TargetConstructors { get; }
 
-        public IList<PropertyMetadata> TargetProperties { get; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1819:PropertiesShouldNotReturnArrays", Justification = "Performance")]
+        public PropertyMetadata[] TargetProperties { get; }
 
-        public TypeMetadata(IList<ConstructorMetadata> targetConstructors, IList<PropertyMetadata> targetProperties)
+        public TypeMetadata(ConstructorMetadata[] targetConstructors, PropertyMetadata[] targetProperties)
         {
             TargetConstructors = targetConstructors;
             TargetProperties = targetProperties;

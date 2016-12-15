@@ -2,7 +2,10 @@
 {
     using System;
     using System.Globalization;
+    using System.Linq;
+    using System.Threading;
 
+    using Smart.ComponentModel;
     using Smart.Resolver.Bindings;
     using Smart.Resolver.Injectors;
     using Smart.Resolver.Metadatas;
@@ -12,6 +15,10 @@
     /// </summary>
     public class StandardProvider : IProvider
     {
+        private volatile TypeMetadata metadata;
+
+        private volatile IInjector[] injectors;
+
         /// <summary>
         ///
         /// </summary>
@@ -31,36 +38,43 @@
             TargetType = type;
         }
 
-        /// <summary>
-        ///
-        /// </summary>
-        /// <param name="kernel"></param>
-        /// <param name="binding"></param>
-        /// <returns></returns>
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods", Justification = "Framework only")]
-        public object Create(IKernel kernel, IBinding binding)
+        public object Create(IResolver resolver, IComponentContainer components, IBinding binding)
         {
-            var metadataFactory = kernel.Components.Get<IMetadataFactory>();
-            var metadata = metadataFactory.GetMetadata(TargetType);
+            if (metadata == null)
+            {
+#pragma warning disable 420
+                Interlocked.CompareExchange(ref metadata, components.Get<IMetadataFactory>().GetMetadata(TargetType), null);
+#pragma warning restore 420
+            }
 
-            if (metadata.TargetConstructors.Count == 0)
+            if (injectors == null)
+            {
+#pragma warning disable 420
+                Interlocked.CompareExchange(ref injectors, components.GetAll<IInjector>().ToArray(), null);
+#pragma warning restore 420
+            }
+
+            if (metadata.TargetConstructors.Length == 0)
             {
                 throw new InvalidOperationException(
                     String.Format(CultureInfo.InvariantCulture, "No constructor avaiable. type = {0}", TargetType.Name));
             }
 
-            for (var i = 0; i < metadata.TargetConstructors.Count; i++)
+            for (var i = 0; i < metadata.TargetConstructors.Length; i++)
             {
                 var constructor = metadata.TargetConstructors[i];
 
                 bool result;
-                var arguments = TryResolveParameters(kernel, binding, constructor, out result);
+                var arguments = TryResolveParameters(resolver, binding, constructor, out result);
                 if (result)
                 {
                     var instance = constructor.Constructor.Invoke(arguments);
 
-                    var pipeline = kernel.Components.Get<IInjectPipeline>();
-                    pipeline?.Inject(kernel, binding, metadata, instance);
+                    for (var j = 0; j < injectors.Length; j++)
+                    {
+                        injectors[j].Inject(resolver, binding, metadata, instance);
+                    }
 
                     return instance;
                 }
@@ -73,44 +87,44 @@
         /// <summary>
         ///
         /// </summary>
-        /// <param name="kernel"></param>
+        /// <param name="resolver"></param>
         /// <param name="binding"></param>
         /// <param name="cm"></param>
         /// <param name="result"></param>
         /// <returns></returns>
-        private static object[] TryResolveParameters(IKernel kernel, IBinding binding, ConstructorMetadata cm, out bool result)
+        private static object[] TryResolveParameters(IResolver resolver, IBinding binding, ConstructorMetadata cm, out bool result)
         {
             var parameters = cm.Parameters;
-            if (parameters.Count == 0)
+            if (parameters.Length == 0)
             {
                 result = true;
                 return null;
             }
 
-            var arguments = new object[parameters.Count];
-            for (var i = 0; i < parameters.Count; i++)
+            var arguments = new object[parameters.Length];
+            for (var i = 0; i < arguments.Length; i++)
             {
                 var parameter = parameters[i];
                 var pi = parameter.Parameter;
 
                 // Constructor argument
-                var argument = binding.GetConstructorArgument(pi.Name);
+                var argument = binding.ConstructorArguments.GetParameter(pi.Name);
                 if (argument != null)
                 {
-                    arguments[i] = argument.Resolve(kernel);
+                    arguments[i] = argument.Resolve(resolver);
                     continue;
                 }
 
                 // Multiple
                 if (parameter.ElementType != null)
                 {
-                    arguments[i] = ResolverHelper.ConvertArray(parameter.ElementType, kernel.ResolveAll(parameter.ElementType, cm.Constraints[i]));
+                    arguments[i] = ResolverHelper.ConvertArray(parameter.ElementType, resolver.ResolveAll(parameter.ElementType, cm.Constraints[i]));
                     continue;
                 }
 
                 // Resolve
                 bool resolve;
-                var obj = kernel.TryResolve(pi.ParameterType, cm.Constraints[i], out resolve);
+                var obj = resolver.TryResolve(pi.ParameterType, cm.Constraints[i], out resolve);
                 if (resolve)
                 {
                     arguments[i] = obj;

@@ -10,68 +10,65 @@
     using Smart.Resolver.Mocks;
 
     /// <summary>
-    /// ActivatorsTest の概要の説明
+    ///
     /// </summary>
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1001:TypesThatOwnDisposableFieldsShouldBeDisposable", Justification = "Ignore")]
     [TestClass]
     public class ConstraintTest
     {
-        private StandardResolver resolver;
-
-        [TestInitialize]
-        public void TestInitialize()
-        {
-            resolver = new StandardResolver();
-        }
-
-        [TestCleanup]
-        public void TestCleanup()
-        {
-            resolver.Dispose();
-        }
-
         [TestMethod]
         public void ObjectIsSelectedByNameConstraint()
         {
-            resolver.Bind<SimpleObject>().ToSelf().InSingletonScope().Named("foo");
-            resolver.Bind<SimpleObject>().ToSelf().InSingletonScope().Named("bar");
-            resolver.Bind<NameConstraintInjectedObject>().ToSelf();
+            var config = new ResolverConfig();
+            config.Bind<SimpleObject>().ToSelf().InSingletonScope().Named("foo");
+            config.Bind<SimpleObject>().ToSelf().InSingletonScope().Named("bar");
+            config.Bind<NameConstraintInjectedObject>().ToSelf();
 
-            var obj = resolver.Get<NameConstraintInjectedObject>();
-            var foo = resolver.Get<SimpleObject>("foo");
-            var bar = resolver.Get<SimpleObject>("bar");
+            using (var resolver = config.ToResolver())
+            {
+                var obj = resolver.Get<NameConstraintInjectedObject>();
+                var foo = resolver.Get<SimpleObject>("foo");
+                var bar = resolver.Get<SimpleObject>("bar");
 
-            Assert.AreSame(obj.SimpleObject, foo);
-            Assert.AreNotSame(obj.SimpleObject, bar);
+                Assert.AreSame(obj.SimpleObject, foo);
+                Assert.AreNotSame(obj.SimpleObject, bar);
+            }
         }
 
         [TestMethod]
         public void ObjectIsSelectedByHasMetadataConstraint()
         {
-            resolver.Bind<SimpleObject>().ToSelf().InSingletonScope();
-            resolver.Bind<SimpleObject>().ToSelf().InSingletonScope().WithMetadata("hoge", null);
-            resolver.Bind<HasMetadataConstraintInjectedObject>().ToSelf();
+            var config = new ResolverConfig();
+            config.Bind<SimpleObject>().ToSelf().InSingletonScope();
+            config.Bind<SimpleObject>().ToSelf().InSingletonScope().WithMetadata("hoge", null);
+            config.Bind<HasMetadataConstraintInjectedObject>().ToSelf();
 
-            var obj = resolver.Get<HasMetadataConstraintInjectedObject>();
-            var hoge = resolver.Resolve(typeof(SimpleObject), new HasMetadataConstraint("hoge"));
+            using (var resolver = config.ToResolver())
+            {
+                var obj = resolver.Get<HasMetadataConstraintInjectedObject>();
+                var hoge = resolver.Resolve(typeof(SimpleObject), new HasMetadataConstraint("hoge"));
 
-            Assert.AreSame(obj.SimpleObject, hoge);
+                Assert.AreSame(obj.SimpleObject, hoge);
+            }
         }
 
         [TestMethod]
         public void ObjectIsSelectedByChainConstraint()
         {
-            resolver.Bind<SimpleObject>().ToSelf().InSingletonScope();
-            resolver.Bind<SimpleObject>().ToSelf().InSingletonScope().WithMetadata("hoge", null);
-            resolver.Bind<SimpleObject>().ToSelf().InSingletonScope().Named("foo");
-            resolver.Bind<SimpleObject>().ToSelf().InSingletonScope().Named("bar");
-            resolver.Bind<SimpleObject>().ToSelf().InSingletonScope().Named("bar").WithMetadata("hoge", null);
-            resolver.Bind<ChainConstraintInjectedObject>().ToSelf();
+            var config = new ResolverConfig();
+            config.Bind<SimpleObject>().ToSelf().InSingletonScope();
+            config.Bind<SimpleObject>().ToSelf().InSingletonScope().WithMetadata("hoge", null);
+            config.Bind<SimpleObject>().ToSelf().InSingletonScope().Named("foo");
+            config.Bind<SimpleObject>().ToSelf().InSingletonScope().Named("bar");
+            config.Bind<SimpleObject>().ToSelf().InSingletonScope().Named("bar").WithMetadata("hoge", null);
+            config.Bind<ChainConstraintInjectedObject>().ToSelf();
 
-            var obj = resolver.Get<ChainConstraintInjectedObject>();
-            var barHoge = resolver.Resolve(typeof(SimpleObject), new ChainConstraint(new NameConstraint("bar"), new HasMetadataConstraint("hoge")));
+            using (var resolver = config.ToResolver())
+            {
+                var obj = resolver.Get<ChainConstraintInjectedObject>();
+                var barHoge = resolver.Resolve(typeof(SimpleObject), new ChainConstraint(new NameConstraint("bar"), new HasMetadataConstraint("hoge")));
 
-            Assert.AreSame(obj.SimpleObject, barHoge);
+                Assert.AreSame(obj.SimpleObject, barHoge);
+            }
         }
 
         protected class HasMetadataConstraint : IConstraint

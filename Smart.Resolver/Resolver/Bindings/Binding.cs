@@ -12,9 +12,7 @@
     /// </summary>
     public class Binding : IBinding
     {
-        private Dictionary<string, IParameter> constructorArgument;
-
-        private Dictionary<string, IParameter> propertyValue;
+        private static readonly IBindingMetadata EmptyBindingMetadata = new BindingMetadata();
 
         /// <summary>
         ///
@@ -24,83 +22,64 @@
         /// <summary>
         ///
         /// </summary>
-        public IBindingMetadata Metadata { get; set; }
+        public IProvider Provider { get; }
 
         /// <summary>
         ///
         /// </summary>
-        public IProvider Provider { get; set; }
+        public IScope Scope { get; }
 
         /// <summary>
         ///
         /// </summary>
-        public IScope Scope { get; set; }
+        public IBindingMetadata Metadata { get; }
+
+        /// <summary>
+        ///
+        /// </summary>
+        public ParameterMap ConstructorArguments { get; }
+
+        /// <summary>
+        ///
+        /// </summary>
+        public ParameterMap PropertyValues { get; }
+
+        /// <summary>
+        ///
+        /// </summary>
+        /// <param name="type"></param>
+        public Binding(Type type)
+            : this(type, null, null, null, null, null)
+        {
+        }
+
+        /// <summary>
+        ///
+        /// </summary>
+        /// <param name="type"></param>
+        /// <param name="provider"></param>
+        public Binding(Type type, IProvider provider)
+            : this(type, provider, null, null, null, null)
+        {
+        }
 
         /// <summary>
         ///
         /// </summary>
         /// <param name="type"></param>
         /// <param name="metadata"></param>
-        public Binding(Type type, IBindingMetadata metadata)
+        /// <param name="provider"></param>
+        /// <param name="scope"></param>
+        /// <param name="constructorArguments"></param>
+        /// <param name="propertyValues"></param>
+        public Binding(Type type, IProvider provider, IScope scope, IBindingMetadata metadata, ParameterMap constructorArguments, ParameterMap propertyValues)
         {
             Type = type;
-            Metadata = metadata;
-        }
-
-        /// <summary>
-        ///
-        /// </summary>
-        /// <param name="name"></param>
-        /// <param name="parameter"></param>
-        public void AddConstructorArgument(string name, IParameter parameter)
-        {
-            if (constructorArgument == null)
-            {
-                constructorArgument = new Dictionary<string, IParameter>();
-            }
-
-            constructorArgument[name] = parameter;
-        }
-
-        /// <summary>
-        ///
-        /// </summary>
-        /// <param name="name"></param>
-        /// <returns></returns>
-        public IParameter GetConstructorArgument(string name)
-        {
-            IParameter parameter;
-            return (constructorArgument != null) && constructorArgument.TryGetValue(name, out parameter)
-                ? parameter
-                : null;
-        }
-
-        /// <summary>
-        ///
-        /// </summary>
-        /// <param name="name"></param>
-        /// <param name="parameter"></param>
-        public void AddPropertyValue(string name, IParameter parameter)
-        {
-            if (propertyValue == null)
-            {
-                propertyValue = new Dictionary<string, IParameter>();
-            }
-
-            propertyValue[name] = parameter;
-        }
-
-        /// <summary>
-        ///
-        /// </summary>
-        /// <param name="name"></param>
-        /// <returns></returns>
-        public IParameter GetPropertyValue(string name)
-        {
-            IParameter parameter;
-            return (propertyValue != null) && propertyValue.TryGetValue(name, out parameter)
-                ? parameter
-                : null;
+            Provider = provider;
+            Scope = scope;
+            Metadata = metadata ?? EmptyBindingMetadata;
+            ConstructorArguments = constructorArguments ?? new ParameterMap(null);
+            PropertyValues = propertyValues ?? new ParameterMap(null);
         }
     }
 }

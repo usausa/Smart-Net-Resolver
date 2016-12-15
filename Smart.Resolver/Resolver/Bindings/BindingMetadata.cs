@@ -9,12 +9,31 @@
     /// </summary>
     public class BindingMetadata : IBindingMetadata
     {
-        private Dictionary<string, object> values;
+        private readonly IDictionary<string, object> values;
 
         /// <summary>
         ///
         /// </summary>
-        public string Name { get; set; }
+        public string Name { get; }
+
+        /// <summary>
+        ///
+        /// </summary>
+        public BindingMetadata()
+            : this(null, null)
+        {
+        }
+
+        /// <summary>
+        ///
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="values"></param>
+        public BindingMetadata(string name, IDictionary<string, object> values)
+        {
+            Name = name;
+            this.values = values;
+        }
 
         /// <summary>
         ///
@@ -47,21 +66,6 @@
         public T Get<T>(string key, T defaultValue)
         {
             return values != null ? (T)values.GetOr(key, defaultValue) : defaultValue;
-        }
-
-        /// <summary>
-        ///
-        /// </summary>
-        /// <param name="key"></param>
-        /// <param name="value"></param>
-        public void Set(string key, object value)
-        {
-            if (values == null)
-            {
-                values = new Dictionary<string, object>();
-            }
-
-            values[key] = value;
         }
     }
 }

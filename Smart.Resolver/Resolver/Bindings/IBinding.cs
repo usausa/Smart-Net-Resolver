@@ -1,6 +1,7 @@
 ﻿namespace Smart.Resolver.Bindings
 {
     using System;
+    using System.Collections.Generic;
 
     using Smart.Resolver.Parameters;
     using Smart.Resolver.Providers;
@@ -34,15 +35,11 @@
         /// <summary>
         ///
         /// </summary>
-        /// <param name="name"></param>
-        /// <returns></returns>
-        IParameter GetConstructorArgument(string name);
+        ParameterMap ConstructorArguments { get; }
 
         /// <summary>
         ///
         /// </summary>
-        /// <param name="name"></param>
-        /// <returns></returns>
-        IParameter GetPropertyValue(string name);
+        ParameterMap PropertyValues { get; }
     }
 }

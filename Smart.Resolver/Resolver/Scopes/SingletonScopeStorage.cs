@@ -1,7 +1,7 @@
 ﻿namespace Smart.Resolver.Scopes
 {
     using System;
-    using System.Collections.Concurrent;
+    using System.Collections.Generic;
 
     using Smart.ComponentModel;
 
@@ -10,9 +10,9 @@
     /// <summary>
     ///
     /// </summary>
-    public class SingletonScopeStorage : DisposableObject, ISingletonScopeStorage
+    public class SingletonScopeStorage : DisposableObject, IScopeStorage
     {
-        private readonly ConcurrentDictionary<IBinding, object> cache = new ConcurrentDictionary<IBinding, object>();
+        private readonly Dictionary<IBinding, object> cache = new Dictionary<IBinding, object>();
 
         /// <summary>
         ///
@@ -32,21 +32,22 @@
         ///
         /// </summary>
         /// <param name="binding"></param>
-        /// <param name="instance"></param>
-        public void Remember(IBinding binding, object instance)
-        {
-            cache[binding] = instance;
-        }
-
-        /// <summary>
-        ///
-        /// </summary>
-        /// <param name="binding"></param>
+        /// <param name="factory"></param>
         /// <returns></returns>
-        public object TryGet(IBinding binding)
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods", Justification = "Framework only")]
+        public object GetOrAdd(IBinding binding, Func<IBinding, object> factory)
         {
-            object instance;
-            return cache.TryGetValue(binding, out instance) ? instance : null;
+            lock (cache)
+            {
+                object instance;
+                if (!cache.TryGetValue(binding, out instance))
+                {
+                    instance = factory(binding);
+                    cache[binding] = instance;
+                }
+
+                return instance;
+            }
         }
 
         /// <summary>
@@ -54,12 +55,15 @@
         /// </summary>
         public void Clear()
         {
-            foreach (var instance in cache.Values)
+            lock (cache)
             {
-                (instance as IDisposable)?.Dispose();
-            }
+                foreach (var instance in cache.Values)
+                {
+                    (instance as IDisposable)?.Dispose();
+                }
 
-            cache.Clear();
+                cache.Clear();
+            }
         }
     }
 }

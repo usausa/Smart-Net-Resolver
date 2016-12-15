@@ -11,10 +11,10 @@
         /// <summary>
         ///
         /// </summary>
-        /// <param name="kernel"></param>
+        /// <param name="resolver"></param>
         /// <param name="binding"></param>
         /// <param name="metadata"></param>
         /// <param name="instance"></param>
-        void Inject(IKernel kernel, IBinding binding, TypeMetadata metadata, object instance);
+        void Inject(IResolver resolver, IBinding binding, TypeMetadata metadata, object instance);
     }
 }

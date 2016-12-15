@@ -1,5 +1,7 @@
 ﻿namespace Smart.Resolver.Scopes
 {
+    using System;
+
     using Smart.Resolver.Bindings;
 
     /// <summary>
@@ -7,19 +9,7 @@
     /// </summary>
     public interface IScopeStorage
     {
-        /// <summary>
-        ///
-        /// </summary>
-        /// <param name="binding"></param>
-        /// <param name="instance"></param>
-        void Remember(IBinding binding, object instance);
-
-        /// <summary>
-        ///
-        /// </summary>
-        /// <param name="binding"></param>
-        /// <returns></returns>
-        object TryGet(IBinding binding);
+        object GetOrAdd(IBinding binding, Func<IBinding, object> factory);
 
         /// <summary>
         ///

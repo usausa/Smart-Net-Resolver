@@ -6,77 +6,83 @@
     using Smart.Resolver.Mocks;
 
     /// <summary>
-    /// ActivatorsTest の概要の説明
+    ///
     /// </summary>
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1001:TypesThatOwnDisposableFieldsShouldBeDisposable", Justification = "Ignore")]
     [TestClass]
     public class ActivatorTest
     {
-        private StandardResolver resolver;
-
-        [TestInitialize]
-        public void TestInitialize()
-        {
-            resolver = new StandardResolver();
-        }
-
-        [TestCleanup]
-        public void TestCleanup()
-        {
-            resolver.Dispose();
-        }
-
         [TestMethod]
         public void ObjectIsInitializedOnCreation()
         {
-            resolver.Bind<InitializableObject>().ToSelf();
+            var config = new ResolverConfig();
+            config.UseActivator<InitializeActivator>();
+            config.Bind<InitializableObject>().ToSelf();
 
-            var obj = resolver.Get<InitializableObject>();
+            using (var resolver = config.ToResolver())
+            {
+                var obj = resolver.Get<InitializableObject>();
 
-            Assert.AreEqual(1, obj.InitializedCount);
+                Assert.AreEqual(1, obj.InitializedCount);
+            }
         }
 
         [TestMethod]
         public void ObjectIsNotInitializedOnInjection()
         {
-            var obj = new InitializableObject();
-            resolver.Inject(obj);
+            var config = new ResolverConfig();
+            using (var resolver = config.ToResolver())
+            {
+                var obj = new InitializableObject();
+                resolver.Inject(obj);
 
-            Assert.AreEqual(0, obj.InitializedCount);
+                Assert.AreEqual(0, obj.InitializedCount);
+            }
         }
 
         [TestMethod]
         public void ObjectIsInitializedAtOnceInSingletonScope()
         {
-            resolver.Bind<InitializableObject>().ToSelf().InSingletonScope();
+            var config = new ResolverConfig();
+            config.UseActivator<InitializeActivator>();
+            config.Bind<InitializableObject>().ToSelf().InSingletonScope();
 
-            var obj1 = resolver.Get<InitializableObject>();
-            var obj2 = resolver.Get<InitializableObject>();
+            using (var resolver = config.ToResolver())
+            {
+                var obj1 = resolver.Get<InitializableObject>();
+                var obj2 = resolver.Get<InitializableObject>();
 
-            Assert.AreSame(obj1, obj2);
-            Assert.AreEqual(1, obj2.InitializedCount);
+                Assert.AreSame(obj1, obj2);
+                Assert.AreEqual(1, obj2.InitializedCount);
+            }
         }
 
         [TestMethod]
         public void ObjectIsNotInitializedWhenActivatorDisabled()
         {
-            resolver.Configure(c => c.Remove<IActivatePipeline>());
-            resolver.Bind<InitializableObject>().ToSelf();
+            var config = new ResolverConfig();
+            config.Bind<InitializableObject>().ToSelf();
 
-            var obj = resolver.Get<InitializableObject>();
+            using (var resolver = config.ToResolver())
+            {
+                var obj = resolver.Get<InitializableObject>();
 
-            Assert.AreEqual(0, obj.InitializedCount);
+                Assert.AreEqual(0, obj.InitializedCount);
+            }
         }
 
         [TestMethod]
         public void ObjectIsCustomInitializedWhenActivatorCustomized()
         {
-            resolver.Configure(c => c.Get<IActivatePipeline>().Activators.Add(new CustomInitializeActivator()));
-            resolver.Bind<CustomInitializableObject>().ToSelf();
+            var config = new ResolverConfig();
+            config.UseActivator<CustomInitializeActivator>();
+            config.Bind<CustomInitializableObject>().ToSelf();
 
-            var obj = resolver.Get<CustomInitializableObject>();
+            using (var resolver = config.ToResolver())
+            {
+                var obj = resolver.Get<CustomInitializableObject>();
 
-            Assert.AreEqual(true, obj.Initialized);
+                Assert.AreEqual(true, obj.Initialized);
+            }
         }
 
         protected interface ICustomInitializable

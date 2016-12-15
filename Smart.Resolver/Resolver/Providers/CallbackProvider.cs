@@ -2,6 +2,7 @@
 {
     using System;
 
+    using Smart.ComponentModel;
     using Smart.Resolver.Bindings;
 
     /// <summary>
@@ -10,7 +11,7 @@
     /// <typeparam name="T"></typeparam>
     public class CallbackProvider<T> : IProvider
     {
-        private readonly Func<IKernel, T> factory;
+        private readonly Func<IResolver, T> factory;
 
         /// <summary>
         ///
@@ -21,20 +22,14 @@
         ///
         /// </summary>
         /// <param name="factory"></param>
-        public CallbackProvider(Func<IKernel, T> factory)
+        public CallbackProvider(Func<IResolver, T> factory)
         {
             this.factory = factory;
         }
 
-        /// <summary>
-        ///
-        /// </summary>
-        /// <param name="kernel"></param>
-        /// <param name="binding"></param>
-        /// <returns></returns>
-        public object Create(IKernel kernel, IBinding binding)
+        public object Create(IResolver resolver, IComponentContainer components, IBinding binding)
         {
-            return factory(kernel);
+            return factory(resolver);
         }
     }
 }

@@ -7,49 +7,43 @@
     using Microsoft.VisualStudio.TestTools.UnitTesting;
 
     using Smart.Resolver.Bindings;
+    using Smart.Resolver.Handlers;
     using Smart.Resolver.Mocks;
     using Smart.Resolver.Providers;
 
     /// <summary>
-    /// ActivatorsTest の概要の説明
+    ///
     /// </summary>
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1001:TypesThatOwnDisposableFieldsShouldBeDisposable", Justification = "Ignore")]
     [TestClass]
     public class BindingTest
     {
-        private StandardResolver resolver;
-
-        [TestInitialize]
-        public void TestInitialize()
-        {
-            resolver = new StandardResolver();
-        }
-
-        [TestCleanup]
-        public void TestCleanup()
-        {
-            resolver.Dispose();
-        }
-
         [TestMethod]
         public void ObjectBindingCreatedBySelfBindingResolver()
         {
-            var obj = resolver.Get<SimpleObject>();
+            var config = new ResolverConfig();
+            using (var resolver = config.ToResolver())
+            {
+                var obj = resolver.Get<SimpleObject>();
 
-            Assert.IsNotNull(obj);
+                Assert.IsNotNull(obj);
+            }
         }
 
         [TestMethod]
         public void ObjectBindingCreatedByOpenGenericBindingResolver()
         {
-            resolver
+            var config = new ResolverConfig();
+            config
                 .Bind(typeof(IGenericService<>))
                 .To(typeof(GenericService<>));
 
-            var obj = resolver.Get(typeof(IGenericService<int>));
+            using (var resolver = config.ToResolver())
+            {
+                var obj = resolver.Get(typeof(IGenericService<int>));
 
-            Assert.IsNotNull(obj);
-            Assert.AreEqual(obj.GetType(), typeof(GenericService<int>));
+                Assert.IsNotNull(obj);
+                Assert.AreEqual(obj.GetType(), typeof(GenericService<int>));
+            }
         }
 
         protected interface IGenericService<out T>
@@ -68,27 +62,31 @@
         [TestMethod]
         public void ObjectBindingCreatedByCustomBindingResolver()
         {
+            var config = new ResolverConfig();
             var typeMap = new Dictionary<Type, Type>
             {
                 [typeof(IService)] = typeof(Service)
             };
-            resolver.Configure(c => c.Get<IMissingPipeline>().Resolvers.Add(new CustomBindingResolver(typeMap)));
+            config.UseMissingHandler(new CustomMissingHandler(typeMap));
 
-            var obj = resolver.Get<IService>();
+            using (var resolver = config.ToResolver())
+            {
+                var obj = resolver.Get<IService>();
 
-            Assert.IsNotNull(obj);
+                Assert.IsNotNull(obj);
+            }
         }
 
-        protected class CustomBindingResolver : IBindingResolver
+        protected class CustomMissingHandler : IMissingHandler
         {
             private readonly Dictionary<Type, Type> typeMap;
 
-            public CustomBindingResolver(Dictionary<Type, Type> typeMap)
+            public CustomMissingHandler(Dictionary<Type, Type> typeMap)
             {
                 this.typeMap = typeMap;
             }
 
-            public IEnumerable<IBinding> Resolve(IResolverContext context, Type type)
+            public IEnumerable<IBinding> Handle(IBindingTable table, Type type)
             {
                 Type targetType;
                 if (!typeMap.TryGetValue(type, out targetType))
@@ -98,10 +96,7 @@
 
                 return new[]
                 {
-                    new Binding(type, new BindingMetadata())
-                    {
-                        Provider = new StandardProvider(targetType)
-                    }
+                    new Binding(type, new StandardProvider(typeof(Service)))
                 };
             }
         }

@@ -5,70 +5,73 @@
     using Smart.Resolver.Mocks;
 
     /// <summary>
-    /// ActivatorsTest の概要の説明
+    ///
     /// </summary>
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1001:TypesThatOwnDisposableFieldsShouldBeDisposable", Justification = "Ignore")]
     [TestClass]
     public class ParameterTest
     {
-        private StandardResolver resolver;
-
-        [TestInitialize]
-        public void TestInitialize()
-        {
-            resolver = new StandardResolver();
-        }
-
-        [TestCleanup]
-        public void TestCleanup()
-        {
-            resolver.Dispose();
-        }
-
         [TestMethod]
         public void ObjectIsInjectedOnCreationWithConstantParameter()
         {
+            var config = new ResolverConfig();
             var service = new Service();
-            resolver.Bind<Controller>().ToSelf().WithConstructorArgument("service", service);
+            config.Bind<Controller>().ToSelf().WithConstructorArgument("service", service);
 
-            var controller = resolver.Get<Controller>();
+            using (var resolver = config.ToResolver())
+            {
+                var controller = resolver.Get<Controller>();
 
-            Assert.AreSame(service, controller.Service);
+                Assert.AreSame(service, controller.Service);
+            }
         }
 
         [TestMethod]
         public void ObjectIsInjectedOnCreationWithCallbackParameter()
         {
-            resolver.Bind<IService>().To<Service>().InSingletonScope();
-            resolver.Bind<Controller>().ToSelf().WithConstructorArgument("service", k => k.Get<IService>());
+            var config = new ResolverConfig();
+            config.Bind<IService>().To<Service>().InSingletonScope();
+            config.Bind<Controller>().ToSelf().WithConstructorArgument("service", k => k.Get<IService>());
 
-            var controller = resolver.Get<Controller>();
-            var service = resolver.Get<IService>();
+            using (var resolver = config.ToResolver())
+            {
+                var controller = resolver.Get<Controller>();
+                var service = resolver.Get<IService>();
 
-            Assert.AreSame(service, controller.Service);
+                Assert.AreSame(service, controller.Service);
+            }
         }
 
         [TestMethod]
         public void ObjectIsInjectedWhenInjectWithConstantParameterOnCreation()
         {
+            var config = new ResolverConfig();
+            config.UsePropertyInjector();
             var injected = new SimpleObject();
-            resolver.Bind<HasPropertyObject>().ToSelf().WithPropertyValue("Injected", injected);
+            config.Bind<HasPropertyObject>().ToSelf().WithPropertyValue("Injected", injected);
 
-            var obj = resolver.Get<HasPropertyObject>();
+            using (var resolver = config.ToResolver())
+            {
+                var obj = resolver.Get<HasPropertyObject>();
 
-            Assert.AreSame(injected, obj.Injected);
+                Assert.AreSame(injected, obj.Injected);
+            }
         }
 
         [TestMethod]
         public void ObjectIsInjectedWhenInjectWithCallbavkParameterOnCreation()
         {
-            resolver.Bind<SimpleObject>().ToSelf().InSingletonScope();
-            resolver.Bind<HasPropertyObject>().ToSelf().WithPropertyValue("Injected", k => k.Get<SimpleObject>());
+            var config = new ResolverConfig();
+            config.UsePropertyInjector();
+            config.Bind<SimpleObject>().ToSelf().InSingletonScope();
+            config.Bind<HasPropertyObject>().ToSelf().WithPropertyValue("Injected", k => k.Get<SimpleObject>());
 
-            var obj = resolver.Get<HasPropertyObject>();
-            var injected = resolver.Get<SimpleObject>();
+            using (var resolver = config.ToResolver())
+            {
+                var obj = resolver.Get<HasPropertyObject>();
+                var injected = resolver.Get<SimpleObject>();
 
-            Assert.AreSame(injected, obj.Injected);
+                Assert.AreSame(injected, obj.Injected);
+            }
         }
     }
 }

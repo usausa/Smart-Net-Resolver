@@ -47,9 +47,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Resolver\Bindings\DependencyServiceBindingResolver.cs" />
+    <Compile Include="Resolver\Handlers\DependencyServiceMissingHandler.cs" />
     <Compile Include="Resolver\Providers\DependencyServiceProvider.cs" />
-    <Compile Include="Resolver\StandardResolverExtensions.cs" />
+    <Compile Include="Resolver\ResolverConfigExtensions.cs" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
@@ -61,8 +61,8 @@
     <Analyzer Include="$(SolutionDir)\packages\StyleCop.Analyzers.1.0.0\analyzers\dotnet\cs\StyleCop.Analyzers.dll" />
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="Smart, Version=0.5.2.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>$(SolutionDir)\packages\Usa.Smart.Core.0.5.2\lib\portable-net45+win8+wpa81\Smart.dll</HintPath>
+    <Reference Include="Smart, Version=0.6.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Usa.Smart.Core.0.6.0-beta6\lib\portable-net45+win8+wpa81\Smart.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Xamarin.Forms.Core, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
