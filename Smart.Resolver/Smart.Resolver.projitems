@@ -9,8 +9,6 @@
     <Import_RootNamespace>Smart</Import_RootNamespace>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="$(MSBuildThisFileDirectory)Resolver\Activators\IActivator.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Resolver\Activators\InitializeActivator.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Resolver\Attributes\ConstraintAttribute.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Resolver\Attributes\InjectAttribute.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Resolver\Attributes\NamedAttribute.cs" />
@@ -40,6 +38,8 @@
     <Compile Include="$(MSBuildThisFileDirectory)Resolver\Parameters\CallbackParameter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Resolver\Parameters\ConstantParameter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Resolver\Parameters\ParameterMap.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Resolver\Processors\InitializeProcessor.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Resolver\Processors\IProcessor.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Resolver\ResolverConfig.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Resolver\ResolverConfigExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Resolver\ResolverHelper.cs" />

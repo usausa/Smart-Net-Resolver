@@ -6,14 +6,13 @@
     using System.Linq;
 
     using Smart.ComponentModel;
-    using Smart.Resolver.Activators;
     using Smart.Resolver.Bindings;
     using Smart.Resolver.Constraints;
     using Smart.Resolver.Handlers;
     using Smart.Resolver.Injectors;
     using Smart.Resolver.Metadatas;
+    using Smart.Resolver.Processors;
     using Smart.Resolver.Providers;
-    using Smart.Resolver.Scopes;
 
     /// <summary>
     ///
@@ -30,7 +29,7 @@
 
         private readonly IMetadataFactory metadataFactory;
 
-        private readonly IActivator[] activators;
+        private readonly IProcessor[] processors;
 
         private readonly IInjector[] injectors;
 
@@ -53,7 +52,7 @@
             components = config.CreateComponentContainer();
 
             metadataFactory = components.Get<IMetadataFactory>();
-            activators = components.GetAll<IActivator>().ToArray();
+            processors = components.GetAll<IProcessor>().ToArray();
             injectors = components.GetAll<IInjector>().ToArray();
             handlers = components.GetAll<IMissingHandler>().ToArray();
 
@@ -239,9 +238,9 @@
         {
             var instance = binding.Provider.Create(this, components, binding);
 
-            for (var i = 0; i < activators.Length; i++)
+            for (var i = 0; i < processors.Length; i++)
             {
-                activators[i].Activate(instance);
+                processors[i].Initialize(instance);
             }
 
             return instance;

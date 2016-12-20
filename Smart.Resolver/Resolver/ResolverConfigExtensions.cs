@@ -2,10 +2,10 @@
 {
     using System;
 
-    using Smart.Resolver.Activators;
     using Smart.Resolver.Handlers;
     using Smart.Resolver.Injectors;
     using Smart.Resolver.Metadatas;
+    using Smart.Resolver.Processors;
 
     /// <summary>
     ///
@@ -40,26 +40,26 @@
             return config;
         }
 
-        public static ResolverConfig UseActivator<T>(this ResolverConfig config)
-            where T : IActivator
+        public static ResolverConfig UseProcessor<T>(this ResolverConfig config)
+            where T : IProcessor
         {
             if (config == null)
             {
                 throw new ArgumentNullException(nameof(config));
             }
 
-            config.Components.Add(typeof(IActivator), typeof(T));
+            config.Components.Add(typeof(IProcessor), typeof(T));
             return config;
         }
 
-        public static ResolverConfig UseActivator(this ResolverConfig config, IActivator activator)
+        public static ResolverConfig UseProcessor(this ResolverConfig config, IProcessor activator)
         {
             if (config == null)
             {
                 throw new ArgumentNullException(nameof(config));
             }
 
-            config.Components.Add(typeof(IActivator), activator);
+            config.Components.Add(typeof(IProcessor), activator);
             return config;
         }
 
@@ -120,7 +120,7 @@
             return config;
         }
 
-        public static ResolverConfig UseInitializeActivator(this ResolverConfig config)
+        public static ResolverConfig UseInitializeProcessor(this ResolverConfig config)
         {
             if (config == null)
             {

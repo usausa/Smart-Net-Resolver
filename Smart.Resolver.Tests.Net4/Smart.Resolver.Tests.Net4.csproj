@@ -68,7 +68,7 @@
     <Compile Include="Resolver\Mocks\Controller.cs" />
     <Compile Include="Resolver\Mocks\IService.cs" />
     <Compile Include="Resolver\Mocks\Service.cs" />
-    <Compile Include="Resolver\ActivatorTest.cs" />
+    <Compile Include="Resolver\ProcessorTest.cs" />
     <Compile Include="Resolver\Mocks\InitializableObject.cs" />
     <Compile Include="Resolver\ParameterTest.cs" />
     <Compile Include="Resolver\PropertyInjectionTest.cs" />

@@ -1,14 +1,14 @@
-﻿namespace Smart.Resolver.Activators
+﻿namespace Smart.Resolver.Processors
 {
     /// <summary>
     ///
     /// </summary>
-    public interface IActivator
+    public interface IProcessor
     {
         /// <summary>
         ///
         /// </summary>
         /// <param name="instance"></param>
-        void Activate(object instance);
+        void Initialize(object instance);
     }
 }

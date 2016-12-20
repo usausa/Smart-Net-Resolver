@@ -2,20 +2,20 @@
 {
     using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-    using Smart.Resolver.Activators;
     using Smart.Resolver.Mocks;
+    using Smart.Resolver.Processors;
 
     /// <summary>
     ///
     /// </summary>
     [TestClass]
-    public class ActivatorTest
+    public class ProcessorTest
     {
         [TestMethod]
         public void ObjectIsInitializedOnCreation()
         {
             var config = new ResolverConfig();
-            config.UseActivator<InitializeActivator>();
+            config.UseProcessor<InitializeProcessor>();
             config.Bind<InitializableObject>().ToSelf();
 
             using (var resolver = config.ToResolver())
@@ -43,7 +43,7 @@
         public void ObjectIsInitializedAtOnceInSingletonScope()
         {
             var config = new ResolverConfig();
-            config.UseActivator<InitializeActivator>();
+            config.UseProcessor<InitializeProcessor>();
             config.Bind<InitializableObject>().ToSelf().InSingletonScope();
 
             using (var resolver = config.ToResolver())
@@ -57,7 +57,7 @@
         }
 
         [TestMethod]
-        public void ObjectIsNotInitializedWhenActivatorDisabled()
+        public void ObjectIsNotInitializedWhenProcessorDisabled()
         {
             var config = new ResolverConfig();
             config.Bind<InitializableObject>().ToSelf();
@@ -71,10 +71,10 @@
         }
 
         [TestMethod]
-        public void ObjectIsCustomInitializedWhenActivatorCustomized()
+        public void ObjectIsCustomInitializedWhenProcessorCustomized()
         {
             var config = new ResolverConfig();
-            config.UseActivator<CustomInitializeActivator>();
+            config.UseProcessor<CustomInitializeProcessor>();
             config.Bind<CustomInitializableObject>().ToSelf();
 
             using (var resolver = config.ToResolver())
@@ -90,9 +90,9 @@
             void Initialize();
         }
 
-        protected class CustomInitializeActivator : IActivator
+        protected class CustomInitializeProcessor : IProcessor
         {
-            public void Activate(object instance)
+            public void Initialize(object instance)
             {
                 (instance as ICustomInitializable)?.Initialize();
             }
