@@ -3,7 +3,6 @@
     using System;
     using System.Reflection;
 
-    using Smart.ComponentModel;
     using Smart.Resolver.Bindings;
 
     using Xamarin.Forms;
@@ -34,11 +33,10 @@
         /// <summary>
         ///
         /// </summary>
-        /// <param name="resolver"></param>
-        /// <param name="components"></param>
+        /// <param name="kernel"></param>
         /// <param name="binding"></param>
         /// <returns></returns>
-        public object Create(IResolver resolver, IComponentContainer components, IBinding binding)
+        public object Create(IKernel kernel, IBinding binding)
         {
             return genericMethod.Invoke(null, new object[] { DependencyFetchTarget.GlobalInstance });
         }

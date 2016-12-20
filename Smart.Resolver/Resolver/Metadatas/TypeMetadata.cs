@@ -1,7 +1,5 @@
 ﻿namespace Smart.Resolver.Metadatas
 {
-    using System.Collections.Generic;
-
     /// <summary>
     ///
     /// </summary>

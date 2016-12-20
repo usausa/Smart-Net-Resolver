@@ -28,6 +28,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Resolver\Handlers\IMissingHandlers.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Resolver\Handlers\OpenGenericMissingHandler.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Resolver\Handlers\SelfMissingHandler.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Resolver\IKernel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Resolver\Injectors\IInjector.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Resolver\Injectors\PropertyInjector.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Resolver\IResolver.cs" />

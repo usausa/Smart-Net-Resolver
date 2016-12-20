@@ -2,8 +2,6 @@
 {
     using System.Threading;
 
-    using Smart.ComponentModel;
-
     /// <summary>
     ///
     /// </summary>
@@ -12,12 +10,12 @@
         private volatile SingletonScopeStorage storage;
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods", Justification = "Framework only")]
-        public IScopeStorage GetStorage(IResolver resolver, IComponentContainer components)
+        public IScopeStorage GetStorage(IKernel kernel)
         {
             if (storage == null)
             {
 #pragma warning disable 420
-                Interlocked.CompareExchange(ref storage, components.Get<SingletonScopeStorage>(), null);
+                Interlocked.CompareExchange(ref storage, kernel.Components.Get<SingletonScopeStorage>(), null);
 #pragma warning restore 420
             }
 

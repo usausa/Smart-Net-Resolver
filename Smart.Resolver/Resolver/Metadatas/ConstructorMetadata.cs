@@ -1,6 +1,5 @@
 ﻿namespace Smart.Resolver.Metadatas
 {
-    using System.Collections.Generic;
     using System.Reflection;
 
     using Smart.Resolver.Constraints;

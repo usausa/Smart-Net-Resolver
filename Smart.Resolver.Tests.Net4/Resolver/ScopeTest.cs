@@ -6,7 +6,6 @@
 
     using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-    using Smart.ComponentModel;
     using Smart.Resolver.Bindings;
     using Smart.Resolver.Mocks;
     using Smart.Resolver.Scopes;
@@ -117,9 +116,9 @@
         protected class CustomScope : IScope
         {
             [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods", Justification = "Framework only")]
-            public IScopeStorage GetStorage(IResolver resolver, IComponentContainer components)
+            public IScopeStorage GetStorage(IKernel kernel)
             {
-                return components.Get<CustomScopeStorage>();
+                return kernel.Components.Get<CustomScopeStorage>();
             }
         }
     }

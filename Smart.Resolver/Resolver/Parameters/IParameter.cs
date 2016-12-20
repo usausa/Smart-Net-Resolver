@@ -8,8 +8,8 @@
         /// <summary>
         ///
         /// </summary>
-        /// <param name="resolver"></param>
+        /// <param name="kernel"></param>
         /// <returns></returns>
-        object Resolve(IResolver resolver);
+        object Resolve(IKernel kernel);
     }
 }

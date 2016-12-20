@@ -19,9 +19,9 @@
         /// <summary>
         ///
         /// </summary>
-        /// <param name="resolver"></param>
+        /// <param name="kernel"></param>
         /// <returns></returns>
-        public object Resolve(IResolver resolver)
+        public object Resolve(IKernel kernel)
         {
             return value;
         }

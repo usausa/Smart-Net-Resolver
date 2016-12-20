@@ -2,7 +2,6 @@
 {
     using System;
 
-    using Smart.ComponentModel;
     using Smart.Resolver.Bindings;
 
     /// <summary>
@@ -27,7 +26,7 @@
             this.value = value;
         }
 
-        public object Create(IResolver resolver, IComponentContainer components, IBinding binding)
+        public object Create(IKernel kernel, IBinding binding)
         {
             return value;
         }

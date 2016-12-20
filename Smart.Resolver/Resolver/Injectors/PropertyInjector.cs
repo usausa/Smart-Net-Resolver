@@ -11,12 +11,12 @@
         /// <summary>
         ///
         /// </summary>
-        /// <param name="resolver"></param>
+        /// <param name="kernel"></param>
         /// <param name="binding"></param>
         /// <param name="metadata"></param>
         /// <param name="instance"></param>
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods", Justification = "Framework only")]
-        public void Inject(IResolver resolver, IBinding binding, TypeMetadata metadata, object instance)
+        public void Inject(IKernel kernel, IBinding binding, TypeMetadata metadata, object instance)
         {
             if (metadata.TargetProperties.Length == 0)
             {
@@ -27,7 +27,7 @@
             {
                 var property = metadata.TargetProperties[i];
                 var parameter = binding.PropertyValues.GetParameter(property.Accessor.Name);
-                var value = parameter != null ? parameter.Resolve(resolver) : resolver.Resolve(property.Accessor.Type, property.Constraint);
+                var value = parameter != null ? parameter.Resolve(kernel) : kernel.Resolve(property.Accessor.Type, property.Constraint);
                 property.Accessor.SetValue(instance, value);
             }
         }

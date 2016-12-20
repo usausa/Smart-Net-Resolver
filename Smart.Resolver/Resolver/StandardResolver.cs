@@ -17,10 +17,8 @@
     /// <summary>
     ///
     /// </summary>
-    public class StandardResolver : DisposableObject, IResolver
+    public class StandardResolver : DisposableObject, IKernel
     {
-        private readonly IComponentContainer components;
-
         private readonly BindingTable table = new BindingTable();
 
         private readonly Func<Type, IBinding[]> bindingsFactory;
@@ -38,6 +36,11 @@
         /// <summary>
         ///
         /// </summary>
+        public IComponentContainer Components { get; }
+
+        /// <summary>
+        ///
+        /// </summary>
         /// <param name="config"></param>
         public StandardResolver(IResolverConfig config)
         {
@@ -49,12 +52,12 @@
             bindingsFactory = CreateBindings;
             instanceFactory = CreateInstance;
 
-            components = config.CreateComponentContainer();
+            Components = config.CreateComponentContainer();
 
-            metadataFactory = components.Get<IMetadataFactory>();
-            processors = components.GetAll<IProcessor>().ToArray();
-            injectors = components.GetAll<IInjector>().ToArray();
-            handlers = components.GetAll<IMissingHandler>().ToArray();
+            metadataFactory = Components.Get<IMetadataFactory>();
+            processors = Components.GetAll<IProcessor>().ToArray();
+            injectors = Components.GetAll<IInjector>().ToArray();
+            handlers = Components.GetAll<IMissingHandler>().ToArray();
 
             foreach (var group in config.CreateBindings().GroupBy(b => b.Type))
             {
@@ -73,7 +76,7 @@
         {
             if (disposing)
             {
-                components.Dispose();
+                Components.Dispose();
             }
 
             base.Dispose(disposing);
@@ -222,7 +225,7 @@
         {
             if (binding.Scope != null)
             {
-                var storage = binding.Scope.GetStorage(this, components);
+                var storage = binding.Scope.GetStorage(this);
                 return storage.GetOrAdd(binding, instanceFactory);
             }
 
@@ -236,7 +239,7 @@
         /// <returns></returns>
         private object CreateInstance(IBinding binding)
         {
-            var instance = binding.Provider.Create(this, components, binding);
+            var instance = binding.Provider.Create(this, binding);
 
             for (var i = 0; i < processors.Length; i++)
             {

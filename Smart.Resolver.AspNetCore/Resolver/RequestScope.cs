@@ -9,17 +9,12 @@
     {
         private volatile RequestScopeStorage storage;
 
-        public IScopeStorage GetStorage(IResolver resolver)
-        {
-            return resolver.Get<RequestScopeStorage>();
-        }
-
-        public IScopeStorage GetStorage(IResolver resolver, IComponentContainer components)
+        public IScopeStorage GetStorage(IKernel kernel)
         {
             if (storage == null)
             {
 #pragma warning disable 420
-                Interlocked.CompareExchange(ref storage, resolver.Get<RequestScopeStorage>(), null);
+                Interlocked.CompareExchange(ref storage, kernel.Get<RequestScopeStorage>(), null);
 #pragma warning restore 420
             }
 

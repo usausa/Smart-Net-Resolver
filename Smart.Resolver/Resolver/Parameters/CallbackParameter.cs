@@ -7,13 +7,13 @@
     /// </summary>
     public class CallbackParameter : IParameter
     {
-        private readonly Func<IResolver, object> factory;
+        private readonly Func<IKernel, object> factory;
 
         /// <summary>
         ///
         /// </summary>
         /// <param name="factory"></param>
-        public CallbackParameter(Func<IResolver, object> factory)
+        public CallbackParameter(Func<IKernel, object> factory)
         {
             this.factory = factory;
         }
@@ -21,11 +21,11 @@
         /// <summary>
         ///
         /// </summary>
-        /// <param name="resolver"></param>
+        /// <param name="kernel"></param>
         /// <returns></returns>
-        public object Resolve(IResolver resolver)
+        public object Resolve(IKernel kernel)
         {
-            return factory(resolver);
+            return factory(kernel);
         }
     }
 }
