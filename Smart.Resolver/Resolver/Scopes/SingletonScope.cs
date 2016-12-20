@@ -17,7 +17,7 @@
             if (storage == null)
             {
 #pragma warning disable 420
-                Interlocked.CompareExchange(ref storage, (SingletonScopeStorage)resolver.Resolve(typeof(SingletonScopeStorage), null), null);
+                Interlocked.CompareExchange(ref storage, components.Get<SingletonScopeStorage>(), null);
 #pragma warning restore 420
             }
 
