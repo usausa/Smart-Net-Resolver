@@ -5,6 +5,7 @@
     using System.Linq;
     using System.Threading;
 
+    using Smart.Reflection;
     using Smart.Resolver.Bindings;
     using Smart.Resolver.Injectors;
     using Smart.Resolver.Metadatas;
@@ -17,6 +18,10 @@
         private volatile TypeMetadata metadata;
 
         private volatile IInjector[] injectors;
+
+        private volatile ConstructorMetadata constructor;
+
+        private volatile IActivator activator;
 
         /// <summary>
         ///
@@ -40,20 +45,46 @@
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods", Justification = "Framework only")]
         public object Create(IKernel kernel, IBinding binding)
         {
+#pragma warning disable 420
             if (metadata == null)
             {
-#pragma warning disable 420
                 Interlocked.CompareExchange(ref metadata, kernel.Components.Get<IMetadataFactory>().GetMetadata(TargetType), null);
-#pragma warning restore 420
             }
 
             if (injectors == null)
             {
-#pragma warning disable 420
                 Interlocked.CompareExchange(ref injectors, kernel.Components.GetAll<IInjector>().ToArray(), null);
-#pragma warning restore 420
             }
 
+            if (constructor == null)
+            {
+                Interlocked.CompareExchange(ref constructor, FindBestConstructor(kernel, binding), null);
+                if (activator == null)
+                {
+                    Interlocked.CompareExchange(ref activator, binding.Scope != null ? constructor.SharedActivator : constructor.DefaultActivator, null);
+                }
+            }
+#pragma warning restore 420
+
+            var arguments = ResolveParameters(kernel, binding, constructor);
+            var instance = activator.Create(arguments);
+
+            for (var j = 0; j < injectors.Length; j++)
+            {
+                injectors[j].Inject(kernel, binding, metadata, instance);
+            }
+
+            return instance;
+        }
+
+        /// <summary>
+        ///
+        /// </summary>
+        /// <param name="kernel"></param>
+        /// <param name="binding"></param>
+        /// <returns></returns>
+        private ConstructorMetadata FindBestConstructor(IKernel kernel, IBinding binding)
+        {
             if (metadata.TargetConstructors.Length == 0)
             {
                 throw new InvalidOperationException(
@@ -62,20 +93,46 @@
 
             for (var i = 0; i < metadata.TargetConstructors.Length; i++)
             {
-                var constructor = metadata.TargetConstructors[i];
+                var match = true;
+                var cm = metadata.TargetConstructors[i];
 
-                bool result;
-                var arguments = TryResolveParameters(kernel, binding, constructor, out result);
-                if (result)
+                var parameters = cm.Parameters;
+                for (var j = 0; j < parameters.Length; j++)
                 {
-                    var instance = constructor.Constructor.Invoke(arguments);
+                    var parameter = parameters[j];
+                    var pi = parameter.Parameter;
 
-                    for (var j = 0; j < injectors.Length; j++)
+                    // Constructor argument
+                    if (binding.ConstructorArguments.GetParameter(pi.Name) != null)
                     {
-                        injectors[j].Inject(kernel, binding, metadata, instance);
+                        continue;
                     }
 
-                    return instance;
+                    // Multiple
+                    if (parameter.ElementType != null)
+                    {
+                        continue;
+                    }
+
+                    // Resolve
+                    if (kernel.CanResolve(pi.ParameterType, cm.Constraints[j]))
+                    {
+                        continue;
+                    }
+
+                    // DefaultValue
+                    if (pi.HasDefaultValue)
+                    {
+                        continue;
+                    }
+
+                    match = false;
+                    break;
+                }
+
+                if (match)
+                {
+                    return cm;
                 }
             }
 
@@ -88,15 +145,13 @@
         /// </summary>
         /// <param name="kernel"></param>
         /// <param name="binding"></param>
-        /// <param name="cm"></param>
-        /// <param name="result"></param>
+        /// <param name="constructor"></param>
         /// <returns></returns>
-        private static object[] TryResolveParameters(IKernel kernel, IBinding binding, ConstructorMetadata cm, out bool result)
+        private static object[] ResolveParameters(IKernel kernel, IBinding binding, ConstructorMetadata constructor)
         {
-            var parameters = cm.Parameters;
+            var parameters = constructor.Parameters;
             if (parameters.Length == 0)
             {
-                result = true;
                 return null;
             }
 
@@ -117,13 +172,13 @@
                 // Multiple
                 if (parameter.ElementType != null)
                 {
-                    arguments[i] = ResolverHelper.ConvertArray(parameter.ElementType, kernel.ResolveAll(parameter.ElementType, cm.Constraints[i]));
+                    arguments[i] = ResolverHelper.ConvertArray(parameter.ElementType, kernel.ResolveAll(parameter.ElementType, constructor.Constraints[i]));
                     continue;
                 }
 
                 // Resolve
                 bool resolve;
-                var obj = kernel.TryResolve(pi.ParameterType, cm.Constraints[i], out resolve);
+                var obj = kernel.TryResolve(pi.ParameterType, constructor.Constraints[i], out resolve);
                 if (resolve)
                 {
                     arguments[i] = obj;
@@ -135,12 +190,8 @@
                 {
                     arguments[i] = pi.DefaultValue;
                 }
-
-                result = false;
-                return null;
             }
 
-            result = true;
             return arguments;
         }
     }
