@@ -59,10 +59,7 @@
             if (constructor == null)
             {
                 Interlocked.CompareExchange(ref constructor, FindBestConstructor(kernel, binding), null);
-                if (activator == null)
-                {
-                    Interlocked.CompareExchange(ref activator, binding.Scope != null ? constructor.SharedActivator : constructor.DefaultActivator, null);
-                }
+                Interlocked.CompareExchange(ref activator, binding.Scope != null ? constructor.SharedActivator : constructor.DefaultActivator, null);
             }
 #pragma warning restore 420
 
