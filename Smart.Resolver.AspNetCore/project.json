@@ -17,7 +17,7 @@
       "type": "build"
     },
     "Usa.Smart.Core": "0.6.0-beta9",
-    "Usa.Smart.Resolver": "1.2.0-beta3"
+    "Usa.Smart.Resolver": "1.2.0-beta4"
   },
 
   "frameworks": {
