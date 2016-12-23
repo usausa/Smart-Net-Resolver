@@ -24,10 +24,11 @@ public class Controller
 }
 
 // Usage 
-var resolver = new StandardResolver();
+var config = new ResolverConfig();
+config.Bind<IService>().To<Service>().InSingletonScope();
+config.Bind<Controller>().ToSelf();
 
-resolver.Bind<IService>().To<Service>().InSingletonScope();
-resolver.Bind<Controller>().ToSelf();
+var resolver = config.ToResolver();
 
 var controller = resolver.Get<Controller>();
 ```
@@ -41,28 +42,28 @@ Supported binding syntax.
 
 ```csharp
 // Type IService to Service Type instance
-resolver.Bind<IService>().To<Service>();
+config.Bind<IService>().To<Service>();
 ```
 
 * ToSelf
 
 ```csharp
 // Type Controller to Controller Type instance
-resolver.Bind<Controller>().ToSelf();
+config.Bind<Controller>().ToSelf();
 ```
 
 * ToMethod
 
 ```csharp
 // Type IScheduler to factory method
-resolver.Bind<IScheduler>().ToMethod(x => x.Get<ISchedulerFactory>().GetScheduler());
+config.Bind<IScheduler>().ToMethod(x => x.Get<ISchedulerFactory>().GetScheduler());
 ```
 
 * ToConstant
 
 ```csharp
 // Type Messenger to instance
-resolver.Bind<Messenger>().ToConstant(Messenger.Default);
+config.Bind<Messenger>().ToConstant(Messenger.Default);
 ```
 
 * InTransientScope
@@ -83,11 +84,11 @@ Supported scope.
 * Lifecycle is not managed by resolver
 
 ```csharp
-resolver.Bind<TransientObject>().ToSelf().InTransientScope();
+config.Bind<TransientObject>().ToSelf().InTransientScope();
 ```
 or
 ```csharp
-resolver.Bind<TransientObject>().ToSelf();
+config.Bind<TransientObject>().ToSelf();
 ```
 
 ### Singleton
@@ -96,7 +97,7 @@ resolver.Bind<TransientObject>().ToSelf();
 * Lifecycle managed by resolver (IScopeStorage) and Dispose called when resolver disposed
 
 ```csharp
-resolver.Bind<SingletonObject>().ToSelf().InSingletonScope();
+config.Bind<SingletonObject>().ToSelf().InSingletonScope();
 ```
 
 ### Custom
@@ -104,7 +105,7 @@ resolver.Bind<SingletonObject>().ToSelf().InSingletonScope();
 * You can create a custom scope
 
 ```csharp
-resolver.Bind<CustomeScopeObject>().ToSelf().InScope(new CustomeScope());
+config.Bind<CustomeScopeObject>().ToSelf().InScope(new CustomeScope());
 ```
 
 ## Attribute
@@ -131,9 +132,12 @@ public class Parent
 }
 
 // Usage
-resolver.Bind<Child>().ToSelf().InSingletonScope().Named("foo");
-resolver.Bind<Child>().ToSelf().InSingletonScope().Named("bar");
-resolver.Bind<Parent>().ToSelf();
+var config = new ResolverConfig();
+config.Bind<Child>().ToSelf().InSingletonScope().Named("foo");
+config.Bind<Child>().ToSelf().InSingletonScope().Named("bar");
+config.Bind<Parent>().ToSelf();
+
+var resolver = config.ToResolver();
 
 var parent = resolver.Get<Parent>();
 var foo = resolver.Get<Child>("foo");
@@ -168,31 +172,25 @@ public class Sceduler
 }
 
 // Usage
-resolver.Bind<ITimer>().To<Timer>().InSingletonScope();
-resolver.Bind<Sceduler>().ToSelf().InSingletonScope().WithConstructorArgument("timeout", 30);
+config.Bind<ITimer>().To<Timer>().InSingletonScope();
+config.Bind<Sceduler>().ToSelf().InSingletonScope().WithConstructorArgument("timeout", 30);
 ```
 
 ## Configuration
 
-StandardResolver is constructed from sub-components.
-Change the sub-components in the Configure method, can be customized StandardResolver.
+StandardResolver is constructed from sub-components. Change the sub-components in ResolverConfig, can be customized StandardResolver.
 
 ```csharp
-// Add custom acitivator to pipeline
-public class CustomInitializeActivator : IActivator
+// Add custom processor to pipeline
+public class CustomInitializeProcessor : IProcessor
 {
-    public void Activate(object instance)
+    public void Initialize(object instance)
     {
 ...
     }
 }
 
-resolver.Configure(c => c.Get<IActivatePipeline>().Activators.Add(new CustomInitializeActivator()));
-```
-
-```csharp
-// Disable inject pipeline (property injection disabled)
-resolver.Configure(c => c.Remove<IInjectPipeline>());
+config.UseProcessor<CustomInitializeProcessor>();
 ```
 
 ```csharp
@@ -210,8 +208,8 @@ public class CustomScope : IScope
     }
 }
 
-resolver.Configure(x => x.Register(new CustomScopeStorage()));
-resolver.Bind<SimpleObject>().ToSelf().InScope(new CustomScope());
+config.Components.Add<CustomScopeStorage>();
+config.Bind<SimpleObject>().ToSelf().InScope(new CustomScope());
 ```
 
 
@@ -235,7 +233,7 @@ protected class InitializableObject : IInitializable
 }
 
 // Usage
-resolver.Bind<InitializableObject>().ToSelf().InSingletonScope();
+config.Bind<InitializableObject>().ToSelf().InSingletonScope();
 
 var obj = resolver.Get<InitializableObject>();
 
@@ -290,9 +288,9 @@ public class Parent
     }
 }
 
-resolver.Bind<Child>().ToSelf().InSingletonScope();
-resolver.Bind<Child>().ToSelf().InSingletonScope().WithMetadata("hoge", null);
-resolver.Bind<Parent>().ToSelf();
+config.Bind<Child>().ToSelf().InSingletonScope();
+config.Bind<Child>().ToSelf().InSingletonScope().WithMetadata("hoge", null);
+config.Bind<Parent>().ToSelf();
 ```
 
 
@@ -300,5 +298,5 @@ resolver.Bind<Parent>().ToSelf();
 
 * AOP( ﾟдﾟ)､ﾍﾟｯ
 * Method Injection (I don't need)
-* Request scope (Not supported by the standard)
+* Request scope (supported by Smart.Resolver.AspNetCore)
 * Circular reference detection (Your design bug)
