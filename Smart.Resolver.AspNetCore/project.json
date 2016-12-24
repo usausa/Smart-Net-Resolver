@@ -1,5 +1,5 @@
 {
-  "version": "1.0.0-*",
+  "version": "1.2.1",
 
   "dependencies": {
     "NETStandard.Library": "1.6.1",
@@ -17,7 +17,7 @@
       "type": "build"
     },
     "Usa.Smart.Core": "0.6.0",
-    "Usa.Smart.Resolver": "1.2.0"
+    "Usa.Smart.Resolver": "1.2.1"
   },
 
   "frameworks": {
