@@ -26,6 +26,12 @@
             this.value = value;
         }
 
+        /// <summary>
+        ///
+        /// </summary>
+        /// <param name="kernel"></param>
+        /// <param name="binding"></param>
+        /// <returns></returns>
         public object Create(IKernel kernel, IBinding binding)
         {
             return value;

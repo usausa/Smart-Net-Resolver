@@ -63,7 +63,7 @@
             return ToProvider(new StandardProvider(implementationType));
         }
 
-        public IBindingInNamedWithSyntax ToMethod(Func<IResolver, T> factory)
+        public IBindingInNamedWithSyntax ToMethod(Func<IKernel, T> factory)
         {
             return ToProvider(new CallbackProvider<T>(factory));
         }
@@ -137,7 +137,7 @@
             return this;
         }
 
-        public IBindingWithSyntax WithConstructorArgument(string name, Func<IResolver, object> factory)
+        public IBindingWithSyntax WithConstructorArgument(string name, Func<IKernel, object> factory)
         {
             WithConstructorArgument(name, new CallbackParameter(factory));
             return this;
@@ -160,7 +160,7 @@
             return this;
         }
 
-        public IBindingWithSyntax WithPropertyValue(string name, Func<IResolver, object> factory)
+        public IBindingWithSyntax WithPropertyValue(string name, Func<IKernel, object> factory)
         {
             WithPropertyValue(name, new CallbackParameter(factory));
             return this;
