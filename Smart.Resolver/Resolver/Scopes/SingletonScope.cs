@@ -1,24 +1,37 @@
 ﻿namespace Smart.Resolver.Scopes
 {
-    using System.Threading;
+    using System;
+
+    using Smart.ComponentModel;
 
     /// <summary>
     ///
     /// </summary>
     public class SingletonScope : IScope
     {
-        private volatile SingletonScopeStorage storage;
+        private readonly SingletonScopeStorage storage;
 
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods", Justification = "Framework only")]
+        /// <summary>
+        ///
+        /// </summary>
+        /// <param name="components"></param>
+        public SingletonScope(IComponentContainer components)
+        {
+            if (components == null)
+            {
+                throw new ArgumentNullException(nameof(components));
+            }
+
+            storage = components.Get<SingletonScopeStorage>();
+        }
+
+        /// <summary>
+        ///
+        /// </summary>
+        /// <param name="kernel"></param>
+        /// <returns></returns>
         public IScopeStorage GetStorage(IKernel kernel)
         {
-#pragma warning disable 420
-            if (storage == null)
-            {
-                Interlocked.CompareExchange(ref storage, kernel.Components.Get<SingletonScopeStorage>(), null);
-            }
-#pragma warning restore 420
-
             return storage;
         }
     }

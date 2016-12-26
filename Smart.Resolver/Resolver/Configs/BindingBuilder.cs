@@ -3,6 +3,7 @@
     using System;
     using System.Collections.Generic;
 
+    using Smart.ComponentModel;
     using Smart.Resolver.Bindings;
     using Smart.Resolver.Parameters;
     using Smart.Resolver.Providers;
@@ -16,9 +17,9 @@
     {
         private readonly Type targetType;
 
-        private Func<IProvider> providerFactory;
+        private Func<IComponentContainer, IProvider> providerFactory;
 
-        private Func<IScope> scopeFactory;
+        private Func<IComponentContainer, IScope> scopeFactory;
 
         private string metadataName;
 
@@ -41,45 +42,45 @@
         // To
         // ------------------------------------------------------------
 
-        public IBindingInNamedWithSyntax ToProvider(IProvider provider)
+        public IBindingInNamedWithSyntax ToProvider(Func<IComponentContainer, IProvider> factory)
         {
-            providerFactory = () => provider;
+            providerFactory = factory;
             return this;
         }
 
         public IBindingInNamedWithSyntax ToSelf()
         {
-            return ToProvider(new StandardProvider(typeof(T)));
+            return ToProvider(c => new StandardProvider(typeof(T), c));
         }
 
         public IBindingInNamedWithSyntax To<TImplementation>()
             where TImplementation : T
         {
-            return ToProvider(new StandardProvider(typeof(TImplementation)));
+            return ToProvider(c => new StandardProvider(typeof(TImplementation), c));
         }
 
         public IBindingInNamedWithSyntax To(Type implementationType)
         {
-            return ToProvider(new StandardProvider(implementationType));
+            return ToProvider(c => new StandardProvider(implementationType, c));
         }
 
         public IBindingInNamedWithSyntax ToMethod(Func<IKernel, T> factory)
         {
-            return ToProvider(new CallbackProvider<T>(factory));
+            return ToProvider(c => new CallbackProvider<T>(factory));
         }
 
         public IBindingInNamedWithSyntax ToConstant(T value)
         {
-            return ToProvider(new ConstantProvider<T>(value));
+            return ToProvider(c => new ConstantProvider<T>(value));
         }
 
         // ------------------------------------------------------------
         // In
         // ------------------------------------------------------------
 
-        public IBindingNamedWithSyntax InScope(IScope scope)
+        public IBindingNamedWithSyntax InScope(Func<IComponentContainer, IScope> factory)
         {
-            scopeFactory = () => scope;
+            scopeFactory = factory;
             return this;
         }
 
@@ -91,7 +92,7 @@
 
         public IBindingNamedWithSyntax InSingletonScope()
         {
-            InScope(new SingletonScope());
+            InScope(c => new SingletonScope(c));
             return this;
         }
 
@@ -170,17 +171,17 @@
         // Factory
         // ------------------------------------------------------------
 
-        IBinding IBindingFactory.CreateBinding()
+        IBinding IBindingFactory.CreateBinding(IComponentContainer components)
         {
-            return CreateBinding();
+            return CreateBinding(components);
         }
 
-        protected virtual IBinding CreateBinding()
+        protected virtual IBinding CreateBinding(IComponentContainer components)
         {
             return new Binding(
                 targetType,
-                providerFactory?.Invoke(),
-                scopeFactory?.Invoke(),
+                providerFactory?.Invoke(components),
+                scopeFactory?.Invoke(components),
                 new BindingMetadata(metadataName, metadataValues),
                 new ParameterMap(constructorArguments),
                 new ParameterMap(propertyValues));

@@ -4,6 +4,7 @@
     using System.Collections.Generic;
     using System.Linq;
 
+    using Smart.ComponentModel;
     using Smart.Resolver.Bindings;
     using Smart.Resolver.Providers;
 
@@ -17,10 +18,11 @@
         /// <summary>
         ///
         /// </summary>
+        /// <param name="components"></param>
         /// <param name="table"></param>
         /// <param name="type"></param>
         /// <returns></returns>
-        public IEnumerable<IBinding> Handle(IBindingTable table, Type type)
+        public IEnumerable<IBinding> Handle(IComponentContainer components, IBindingTable table, Type type)
         {
             if (type.GetIsInterface() || type.GetIsAbstract() || type.GetIsValueType() || (type == StringType) ||
                 type.GetContainsGenericParameters())
@@ -30,7 +32,7 @@
 
             return new[]
             {
-                new Binding(type, new StandardProvider(type))
+                new Binding(type, new StandardProvider(type, components))
             };
         }
     }

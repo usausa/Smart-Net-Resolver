@@ -56,19 +56,21 @@
         /// <summary>
         ///
         /// </summary>
+        /// <param name="components"></param>
         /// <returns></returns>
-        IEnumerable<IBinding> IResolverConfig.CreateBindings()
+        IEnumerable<IBinding> IResolverConfig.CreateBindings(IComponentContainer components)
         {
-            return CreateBindings();
+            return CreateBindings(components);
         }
 
         /// <summary>
         ///
         /// </summary>
+        /// <param name="components"></param>
         /// <returns></returns>
-        protected virtual IEnumerable<IBinding> CreateBindings()
+        protected virtual IEnumerable<IBinding> CreateBindings(IComponentContainer components)
         {
-            return bindingFactories.Select(f => f.CreateBinding());
+            return bindingFactories.Select(f => f.CreateBinding(components));
         }
 
         // ------------------------------------------------------------

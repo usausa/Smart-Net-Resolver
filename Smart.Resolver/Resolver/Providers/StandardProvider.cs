@@ -5,6 +5,7 @@
     using System.Linq;
     using System.Threading;
 
+    using Smart.ComponentModel;
     using Smart.Reflection;
     using Smart.Resolver.Bindings;
     using Smart.Resolver.Injectors;
@@ -15,9 +16,9 @@
     /// </summary>
     public class StandardProvider : IProvider
     {
-        private volatile TypeMetadata metadata;
+        private readonly IInjector[] injectors;
 
-        private volatile IInjector[] injectors;
+        private readonly TypeMetadata metadata;
 
         private volatile ConstructorMetadata constructor;
 
@@ -32,34 +33,32 @@
         ///
         /// </summary>
         /// <param name="type"></param>
-        public StandardProvider(Type type)
+        /// <param name="components"></param>
+        public StandardProvider(Type type, IComponentContainer components)
         {
             if (type == null)
             {
                 throw new ArgumentNullException(nameof(type));
             }
 
+            if (components == null)
+            {
+                throw new ArgumentNullException(nameof(components));
+            }
+
             TargetType = type;
+            injectors = components.GetAll<IInjector>().ToArray();
+            metadata = components.Get<IMetadataFactory>().GetMetadata(TargetType);
         }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods", Justification = "Framework only")]
         public object Create(IKernel kernel, IBinding binding)
         {
 #pragma warning disable 420
-            if (metadata == null)
-            {
-                Interlocked.CompareExchange(ref metadata, kernel.Components.Get<IMetadataFactory>().GetMetadata(TargetType), null);
-            }
-
-            if (injectors == null)
-            {
-                Interlocked.CompareExchange(ref injectors, kernel.Components.GetAll<IInjector>().ToArray(), null);
-            }
-
             if (constructor == null)
             {
                 Interlocked.CompareExchange(ref constructor, FindBestConstructor(kernel, binding), null);
-                Interlocked.CompareExchange(ref activator, binding.Scope != null ? constructor.SharedActivator : constructor.DefaultActivator, null);
+                Interlocked.CompareExchange(ref activator, ActivatorCache.GetActivator(constructor.Constructor, binding.Scope != null), null);
             }
 #pragma warning restore 420
 

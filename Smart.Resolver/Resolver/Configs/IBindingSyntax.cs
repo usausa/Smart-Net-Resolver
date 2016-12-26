@@ -1,6 +1,7 @@
 ﻿namespace Smart.Resolver.Configs
 {
     using System;
+    using Smart.ComponentModel;
 
     using Smart.Resolver.Parameters;
     using Smart.Resolver.Providers;
@@ -8,7 +9,7 @@
 
     public interface IBindingToSyntax<in T>
     {
-        IBindingInNamedWithSyntax ToProvider(IProvider provider);
+        IBindingInNamedWithSyntax ToProvider(Func<IComponentContainer, IProvider> factory);
 
         IBindingInNamedWithSyntax ToSelf();
 
@@ -26,7 +27,7 @@
 
     public interface IBindingInSyntax
     {
-        IBindingNamedWithSyntax InScope(IScope scope);
+        IBindingNamedWithSyntax InScope(Func<IComponentContainer, IScope> factory);
 
         IBindingNamedWithSyntax InTransientScope();
 

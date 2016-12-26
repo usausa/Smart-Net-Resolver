@@ -59,7 +59,7 @@
             injectors = Components.GetAll<IInjector>().ToArray();
             handlers = Components.GetAll<IMissingHandler>().ToArray();
 
-            foreach (var group in config.CreateBindings().GroupBy(b => b.Type))
+            foreach (var group in config.CreateBindings(Components).GroupBy(b => b.Type))
             {
                 table.Add(group.Key, group.ToArray());
             }
@@ -207,7 +207,7 @@
             var list = new List<IBinding>();
             for (var i = 0; i < handlers.Length; i++)
             {
-                foreach (var binding in handlers[i].Handle(table, type))
+                foreach (var binding in handlers[i].Handle(Components, table, type))
                 {
                     list.Add(binding);
                 }

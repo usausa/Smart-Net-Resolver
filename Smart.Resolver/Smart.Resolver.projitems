@@ -33,6 +33,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Resolver\Injectors\PropertyInjector.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Resolver\IResolver.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Resolver\IResolverConfig.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Resolver\Metadatas\ActivatorCache.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Resolver\Metadatas\ConstructorMetadata.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Resolver\Metadatas\ParameterMetadata.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Resolver\Metadatas\PropertyMetadata.cs" />

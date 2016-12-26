@@ -6,6 +6,7 @@
 
     using Microsoft.VisualStudio.TestTools.UnitTesting;
 
+    using Smart.ComponentModel;
     using Smart.Resolver.Bindings;
     using Smart.Resolver.Handlers;
     using Smart.Resolver.Mocks;
@@ -86,7 +87,7 @@
                 this.typeMap = typeMap;
             }
 
-            public IEnumerable<IBinding> Handle(IBindingTable table, Type type)
+            public IEnumerable<IBinding> Handle(IComponentContainer components, IBindingTable table, Type type)
             {
                 Type targetType;
                 if (!typeMap.TryGetValue(type, out targetType))
@@ -96,7 +97,7 @@
 
                 return new[]
                 {
-                    new Binding(type, new StandardProvider(typeof(Service)))
+                    new Binding(type, new StandardProvider(typeof(Service), components))
                 };
             }
         }

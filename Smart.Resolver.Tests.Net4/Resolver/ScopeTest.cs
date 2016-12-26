@@ -6,6 +6,7 @@
 
     using Microsoft.VisualStudio.TestTools.UnitTesting;
 
+    using Smart.ComponentModel;
     using Smart.Resolver.Bindings;
     using Smart.Resolver.Mocks;
     using Smart.Resolver.Scopes;
@@ -51,7 +52,7 @@
         {
             var config = new ResolverConfig();
             config.Components.Add<CustomScopeStorage>();
-            config.Bind<SimpleObject>().ToSelf().InScope(new CustomScope());
+            config.Bind<SimpleObject>().ToSelf().InScope(c => new CustomScope(c));
 
             using (var resolver = config.ToResolver())
             {
@@ -115,10 +116,17 @@
 
         protected class CustomScope : IScope
         {
+            private readonly CustomScopeStorage storage;
+
             [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods", Justification = "Framework only")]
+            public CustomScope(IComponentContainer components)
+            {
+                storage = components.Get<CustomScopeStorage>();
+            }
+
             public IScopeStorage GetStorage(IKernel kernel)
             {
-                return kernel.Components.Get<CustomScopeStorage>();
+                return storage;
             }
         }
     }

@@ -19,7 +19,8 @@
         /// <summary>
         ///
         /// </summary>
+        /// <param name="components"></param>
         /// <returns></returns>
-        IEnumerable<IBinding> CreateBindings();
+        IEnumerable<IBinding> CreateBindings(IComponentContainer components);
     }
 }
