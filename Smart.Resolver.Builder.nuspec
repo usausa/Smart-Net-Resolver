@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+  <metadata>
+    <id>Usa.Smart.Resolver.Builder</id>
+    <version>1.0.0-beta1</version>
+    <title>Smart.Resolver.Builder .NET</title>
+    <authors>machi_pon</authors>
+    <owners>machi_pon</owners>
+    <description>Smart container library Builder extensions for .NET</description>
+    <releaseNotes></releaseNotes>
+    <summary>Smart container library Builder extensions for .NET</summary>
+    <projectUrl>https://github.com/usausa/Smart-Net-Resolver</projectUrl>
+    <copyright></copyright>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <dependencies>
+      <dependency id="Usa.Smart.Core" version="0.6.0" />
+      <dependency id="Usa.Smart.Resolver" version="1.2.2" />
+    </dependencies>
+    <tags>smart ioc di dependencyinjection</tags>
+  </metadata>
+  <files>
+    <!-- .NET 4.6.2 -->
+    <file src="Smart.Resolver.Builder.NET4\bin\Release\Smart.Resolver.Builder.dll" target="lib\net462\Smart.Resolver.Builder.dll" />
+    <file src="Smart.Resolver.Builder.NET4\bin\Release\Smart.Resolver.Builder.pdb" target="lib\net462\Smart.Resolver.Builder.pdb" />
+    <!--<file src="Smart.Resolver.Builder.NET4\bin\Release\Smart.Resolver.Builder.xml" target="lib\net462\Smart.Resolver.Builder.xml" />-->
+
+    <!-- PCL -->
+    <file src="Smart.Resolver.Builder.PCL\bin\Release\Smart.Resolver.Builder.dll" target="lib\portable-net45+win8+wpa81\Smart.Resolver.Builder.dll" />
+    <file src="Smart.Resolver.Builder.PCL\bin\Release\Smart.Resolver.Builder.pdb" target="lib\portable-net45+win8+wpa81\Smart.Resolver.Builder.pdb" />
+    <!--<file src="Smart.Resolver.Builder.PCL\bin\Release\Smart.Resolver.Builder.xml" target="lib\portable-net45+win8+wpa81\Smart.Resolver.Builder.xml" />-->
+  </files>
+</package>
