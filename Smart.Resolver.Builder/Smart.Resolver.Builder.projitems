@@ -9,6 +9,30 @@
     <Import_RootNamespace>Smart</Import_RootNamespace>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)Resolver\Builder\BuilderContext.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Resolver\Builder\ElementInfo.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Resolver\Builder\IBuilderContext.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Resolver\Builder\IObjectFactory.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Resolver\Builder\ResolverExtensions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Resolver\Builder\Rules\ArrayRule.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Resolver\Builder\Rules\BindingRule.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Resolver\Builder\Rules\ComponentRule.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Resolver\Builder\Rules\ConstantRule.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Resolver\Builder\Rules\ConstructorArgRule.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Resolver\Builder\Rules\DictionaryRule.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Resolver\Builder\Rules\EntryRule.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Resolver\Builder\Rules\FactoryRule.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Resolver\Builder\Rules\IRule.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Resolver\Builder\Rules\ListRule.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Resolver\Builder\Rules\MetadataRule.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Resolver\Builder\Rules\ObjectRule.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Resolver\Builder\Rules\PropertyRule.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Resolver\Builder\Rules\RuleBase.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Resolver\Builder\Rules\ValueRule.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Resolver\Builder\Scopes\IScopeHandler.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Resolver\Builder\Scopes\SingletonScopeHandler.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Resolver\Builder\Scopes\TransientScopeHandler.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Resolver\Builder\Stacks\ParameterStack.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Resolver\Builder\XmlConfigBuilder.cs" />
   </ItemGroup>
 </Project>

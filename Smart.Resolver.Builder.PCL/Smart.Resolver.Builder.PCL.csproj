@@ -24,6 +24,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <CodeAnalysisRuleSet>..\Smart.Resolver.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -55,7 +56,7 @@
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Smart, Version=0.6.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>$(SolutionDir)\packages\Usa.Smart.Core.0.6.0\lib\portable-net45+win8+wpa81\Smart.dll</HintPath>
+      <HintPath>..\packages\Usa.Smart.Core.0.6.1\lib\portable-net45+win8+wpa81\Smart.dll</HintPath>
       <Private>True</Private>
     </Reference>
   </ItemGroup>
