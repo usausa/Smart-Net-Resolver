@@ -32,7 +32,12 @@
     <Compile Include="$(MSBuildThisFileDirectory)Resolver\Builder\Scopes\IScopeHandler.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Resolver\Builder\Scopes\SingletonScopeHandler.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Resolver\Builder\Scopes\TransientScopeHandler.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Resolver\Builder\Stacks\ActivatorStack.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Resolver\Builder\Stacks\BindingStack.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Resolver\Builder\Stacks\DictionaryStack.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Resolver\Builder\Stacks\ListStack.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Resolver\Builder\Stacks\ParameterStack.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Resolver\Builder\XmlConfigBuilder.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Resolver\Builder\XmlConfigException.cs" />
   </ItemGroup>
 </Project>

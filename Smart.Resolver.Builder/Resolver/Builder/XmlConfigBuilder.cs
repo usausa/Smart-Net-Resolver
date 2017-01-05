@@ -1,6 +1,8 @@
 ﻿namespace Smart.Resolver.Builder
 {
+    using System;
     using System.Collections.Generic;
+    using System.Linq;
     using System.Xml;
 
     using Smart.ComponentModel;
@@ -16,7 +18,7 @@
         /// <summary>
         ///
         /// </summary>
-        public ResolverConfig Config { get; }
+        public ResolverConfig ResolverConfig { get; }
 
         /// <summary>
         ///
@@ -39,33 +41,37 @@
         /// <summary>
         ///
         /// </summary>
-        /// <param name="config"></param>
-        public XmlConfigBuilder(ResolverConfig config)
+        /// <param name="resolverConfig"></param>
+        public XmlConfigBuilder(ResolverConfig resolverConfig)
         {
-            Config = config;
+            ResolverConfig = resolverConfig;
 
+            // Components
             ComponentConfig.Add<IObjectConverter>(ObjectConverter.Default);
 
             ComponentConfig.Add<IScopeHandler, TransientScopeHandler>();
             ComponentConfig.Add<IScopeHandler, SingletonScopeHandler>();
 
-            // TODO Rule!
+            // Rules
+            Rules.Add(new ComponentRule());
+
+            Rules.Add(new BindingRule());
+            Rules.Add(new MetadataRule());
+            Rules.Add(new ConstantRule());
+            Rules.Add(new FactoryRule());
+
+            Rules.Add(new ConstructorArgRule());
+            Rules.Add(new PropertyRule());
+
+            Rules.Add(new ArrayRule());
+            Rules.Add(new ListRule());
+            Rules.Add(new ValueRule());
+
+            Rules.Add(new DictionaryRule());
+            Rules.Add(new EntryRule());
+
+            Rules.Add(new ObjectRule());
         }
-
-        //public void Load(string path)
-        //{
-        //    Load(new XmlTextReader(new StreamReader(path)));
-        //}
-
-        //public void Load(TextReader reader)
-        //{
-        //    Load(new XmlTextReader(reader));
-        //}
-
-        //public void Load(XmlNode node)
-        //{
-        //    Load(new XmlNodeReader(node));
-        //}
 
         /// <summary>
         ///
@@ -73,21 +79,48 @@
         /// <param name="reader"></param>
         public void Load(XmlReader reader)
         {
-            var context = new BuilderContext();
+            if (reader == null)
+            {
+                throw new ArgumentNullException(nameof(reader));
+            }
+
+            var context = new BuilderContext(ResolverConfig, ComponentConfig.ToContainer());
 
             while (reader.Read())
             {
                 if (reader.NodeType == XmlNodeType.Element)
                 {
-                    ProcessElement(reader, context);
+                    var isEmpty = reader.IsEmptyElement;
+
+                    var name = reader.LocalName;
+                    var attributes = new Dictionary<string, string>();
+                    while (reader.MoveToNextAttribute())
+                    {
+                        attributes[reader.Name] = reader.Value;
+                    }
+
+                    context.AddElement(new ElementInfo(name, attributes));
+
+                    var rule = FindRule(context.Path);
+                    rule?.OnBegin(context);
+
+                    if (isEmpty)
+                    {
+                        rule?.OnEnd(context);
+
+                        context.RemoveElement();
+                    }
                 }
                 else if ((reader.NodeType == XmlNodeType.Text) || (reader.NodeType == XmlNodeType.CDATA))
                 {
-                    ProcessBody(reader, context);
+                    context.ElementInfo.AddBody(reader.Value);
                 }
                 else if (reader.NodeType == XmlNodeType.EndElement)
                 {
-                    ProcessEndElement(reader, context);
+                    var rule = FindRule(context.Path);
+                    rule?.OnEnd(context);
+
+                    context.RemoveElement();
                 }
             }
         }
@@ -95,31 +128,11 @@
         /// <summary>
         ///
         /// </summary>
-        /// <param name="reader"></param>
-        /// <param name="context"></param>
-        private void ProcessElement(XmlReader reader, BuilderContext context)
+        /// <param name="path"></param>
+        /// <returns></returns>
+        private IRule FindRule(string path)
         {
-            // TODO
-        }
-
-        /// <summary>
-        ///
-        /// </summary>
-        /// <param name="reader"></param>
-        /// <param name="context"></param>
-        private void ProcessBody(XmlReader reader, BuilderContext context)
-        {
-            // TODO
-        }
-
-        /// <summary>
-        ///
-        /// </summary>
-        /// <param name="reader"></param>
-        /// <param name="context"></param>
-        private void ProcessEndElement(XmlReader reader, BuilderContext context)
-        {
-            // TODO
+            return Rules.FirstOrDefault(rule => rule.Match(path));
         }
     }
 }

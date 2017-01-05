@@ -16,6 +16,7 @@
         ///
         /// </summary>
         /// <param name="syntax"></param>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods", Justification = "Framework only")]
         public void SetScope(IBindingInSyntax syntax)
         {
             syntax.InSingletonScope();
