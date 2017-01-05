@@ -1,7 +1,7 @@
 ﻿namespace Smart.Resolver.Builder.Stacks
 {
     using System;
-    using System.Collections.Generic;
+    using System.Collections;
 
     using Smart.Converter;
 
@@ -14,19 +14,19 @@
 
         private readonly IObjectConverter converter;
 
-        public IList<object> List { get; }
+        public IList List { get; }
 
         /// <summary>
         ///
         /// </summary>
+        /// <param name="list"></param>
         /// <param name="elementType"></param>
         /// <param name="converter"></param>
-        /// <param name="list"></param>
-        public ListStack(Type elementType, IObjectConverter converter, IList<object> list)
+        public ListStack(IList list, Type elementType, IObjectConverter converter)
         {
+            List = list;
             this.elementType = elementType;
             this.converter = converter;
-            List = list;
         }
 
         /// <summary>

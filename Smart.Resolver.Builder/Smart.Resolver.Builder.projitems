@@ -28,6 +28,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Resolver\Builder\Rules\ObjectRule.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Resolver\Builder\Rules\PropertyRule.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Resolver\Builder\Rules\RuleBase.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Resolver\Builder\Rules\TypeHelper.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Resolver\Builder\Rules\ValueRule.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Resolver\Builder\Scopes\IScopeHandler.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Resolver\Builder\Scopes\SingletonScopeHandler.cs" />

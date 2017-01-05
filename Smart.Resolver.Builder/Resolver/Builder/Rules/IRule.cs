@@ -15,13 +15,13 @@
         /// <summary>
         ///
         /// </summary>
-        /// <param name="ctx"></param>
-        void OnBegin(BuilderContext ctx);
+        /// <param name="context"></param>
+        void OnBegin(BuilderContext context);
 
         /// <summary>
         ///
         /// </summary>
-        /// <param name="ctx"></param>
-        void OnEnd(BuilderContext ctx);
+        /// <param name="context"></param>
+        void OnEnd(BuilderContext context);
     }
 }

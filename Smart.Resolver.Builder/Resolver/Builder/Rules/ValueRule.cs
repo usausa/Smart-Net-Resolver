@@ -24,17 +24,17 @@
         /// <summary>
         ///
         /// </summary>
-        /// <param name="ctx"></param>
+        /// <param name="context"></param>
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods", Justification = "Framework only")]
-        public override void OnEnd(BuilderContext ctx)
+        public override void OnEnd(BuilderContext context)
         {
-            var stack = ctx.PeekObject() as ListStack;
-            if (stack == null)
+            var list = context.PeekStack<ListStack>();
+            if (list == null)
             {
-                throw new XmlConfigException(String.Format(CultureInfo.InvariantCulture, "Invalid path. [{0}]", ctx.Path));
+                throw new XmlConfigException(String.Format(CultureInfo.InvariantCulture, "Invalid stack. path = [{0}]", context.Path));
             }
 
-            stack.Add(ctx.ElementInfo.Body);
+            list.Add(context.ElementInfo.Body);
         }
     }
 }

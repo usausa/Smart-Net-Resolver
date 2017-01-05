@@ -2,7 +2,6 @@
 {
     using System;
     using System.Collections.Generic;
-    using System.Linq;
     using System.Text;
 
     using Smart.ComponentModel;
@@ -14,7 +13,7 @@
     {
         private readonly Stack<ElementInfo> elements = new Stack<ElementInfo>();
 
-        private readonly Stack<object> objects = new Stack<object>();
+        private readonly Stack<object> stacked = new Stack<object>();
 
         /// <summary>
         ///
@@ -77,38 +76,30 @@
         /// <summary>
         ///
         /// </summary>
+        /// <typeparam name="T"></typeparam>
         /// <returns></returns>
-        public object PeekObject()
+        public T PeekStack<T>()
         {
-            return objects.Count > 0 ? objects.Peek() : null;
+            return stacked.Count > 0 ? (T)stacked.Peek() : default(T);
         }
 
         /// <summary>
         ///
         /// </summary>
+        /// <typeparam name="T"></typeparam>
         /// <returns></returns>
-        public object PopObject()
+        public T PopStack<T>()
         {
-            return objects.Count > 0 ? objects.Pop() : null;
-        }
-
-        /// <summary>
-        ///
-        /// </summary>
-        /// <param name="predicate"></param>
-        /// <returns></returns>
-        public object FindObject(Func<object, bool> predicate)
-        {
-            return objects.FirstOrDefault(predicate);
+            return stacked.Count > 0 ? (T)stacked.Pop() : default(T);
         }
 
         /// <summary>
         ///
         /// </summary>
         /// <param name="value"></param>
-        public void PushObject(object value)
+        public void PushStack(object value)
         {
-            objects.Push(value);
+            stacked.Push(value);
         }
     }
 }

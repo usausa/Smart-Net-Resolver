@@ -15,16 +15,16 @@
         /// <summary>
         ///
         /// </summary>
-        /// <param name="ctx"></param>
-        public virtual void OnBegin(BuilderContext ctx)
+        /// <param name="context"></param>
+        public virtual void OnBegin(BuilderContext context)
         {
         }
 
         /// <summary>
         ///
         /// </summary>
-        /// <param name="ctx"></param>
-        public virtual void OnEnd(BuilderContext ctx)
+        /// <param name="context"></param>
+        public virtual void OnEnd(BuilderContext context)
         {
         }
     }
