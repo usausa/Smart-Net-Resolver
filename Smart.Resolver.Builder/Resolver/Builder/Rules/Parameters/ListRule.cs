@@ -9,7 +9,7 @@
     /// <summary>
     ///
     /// </summary>
-    public class DictionaryRule : RuleBase
+    public class ListRule : RuleBase
     {
         /// <summary>
         ///
@@ -19,7 +19,7 @@
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods", Justification = "Framework only")]
         public override bool Match(string path)
         {
-            return path.EndsWith("/dictionary", StringComparison.OrdinalIgnoreCase);
+            return path.EndsWith("/list", StringComparison.OrdinalIgnoreCase);
         }
 
         /// <summary>
@@ -35,35 +35,21 @@
                 throw new XmlConfigException(String.Format(CultureInfo.InvariantCulture, "Invalid stack. path = [{0}]", context.Path));
             }
 
-            var genericKeyType = parameter.ParameterType.GetIsGenericType()
+            var genericType = parameter.ParameterType.GetIsGenericType()
                 ? parameter.ParameterType.GenericTypeArguments[0]
                 : null;
 
-            string keyTypeName;
-            var keyType = context.ElementInfo.Attributes.TryGetValue("keyType", out keyTypeName)
-                ? Type.GetType(keyTypeName, true)
-                : genericKeyType;
-            if (keyType == null)
-            {
-                throw new XmlConfigException(String.Format(CultureInfo.InvariantCulture, "List element need keyType attribute. path = [{0}]", context.Path));
-            }
-
-            var genericValueType = parameter.ParameterType.GetIsGenericType()
-                ? parameter.ParameterType.GenericTypeArguments[1]
-                : null;
-
-            string valueTypeName;
-            var valueType = context.ElementInfo.Attributes.TryGetValue("valueType", out valueTypeName)
-                ? Type.GetType(valueTypeName, true)
-                : genericValueType;
+            string value;
+            var valueType = context.ElementInfo.Attributes.TryGetValue("valueType", out value)
+                ? Type.GetType(value, true)
+                : genericType;
             if (valueType == null)
             {
                 throw new XmlConfigException(String.Format(CultureInfo.InvariantCulture, "List element need valueType attribute. path = [{0}]", context.Path));
             }
 
-            context.PushStack(new DictionaryStack(
-                TypeHelper.CreateDictionary(genericKeyType ?? keyType, genericValueType ?? valueType),
-                keyType,
+            context.PushStack(new CollectionStack(
+                TypeHelper.CreateList(genericType ?? valueType),
                 valueType,
                 context.Components.Get<IObjectConverter>()));
         }
@@ -75,9 +61,9 @@
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods", Justification = "Framework only")]
         public override void OnEnd(BuilderContext context)
         {
-            var dictionary = context.PopStack<DictionaryStack>();
+            var list = context.PopStack<CollectionStack>();
             var parameter = context.PeekStack<ParameterStack>();
-            parameter.Value = dictionary.Dictionary;
+            parameter.Value = list.List;
         }
     }
 }

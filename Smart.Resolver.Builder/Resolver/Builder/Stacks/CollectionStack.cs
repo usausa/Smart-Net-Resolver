@@ -8,9 +8,9 @@
     /// <summary>
     ///
     /// </summary>
-    public class ListStack
+    public class CollectionStack
     {
-        private readonly Type elementType;
+        private readonly Type valueType;
 
         private readonly IObjectConverter converter;
 
@@ -20,12 +20,12 @@
         ///
         /// </summary>
         /// <param name="list"></param>
-        /// <param name="elementType"></param>
+        /// <param name="valueType"></param>
         /// <param name="converter"></param>
-        public ListStack(IList list, Type elementType, IObjectConverter converter)
+        public CollectionStack(IList list, Type valueType, IObjectConverter converter)
         {
             List = list;
-            this.elementType = elementType;
+            this.valueType = valueType;
             this.converter = converter;
         }
 
@@ -35,7 +35,7 @@
         /// <param name="value"></param>
         public void Add(string value)
         {
-            List.Add(converter.Convert(value, elementType));
+            List.Add(converter.Convert(value, valueType));
         }
     }
 }

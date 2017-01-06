@@ -10,6 +10,11 @@
         /// <summary>
         ///
         /// </summary>
+        public string Name { get; }
+
+        /// <summary>
+        ///
+        /// </summary>
         public Type ParameterType { get; }
 
         /// <summary>
@@ -20,9 +25,11 @@
         /// <summary>
         ///
         /// </summary>
+        /// <param name="name"></param>
         /// <param name="parameterType"></param>
-        public ParameterStack(Type parameterType)
+        public ParameterStack(string name, Type parameterType)
         {
+            Name = name;
             ParameterType = parameterType;
         }
     }

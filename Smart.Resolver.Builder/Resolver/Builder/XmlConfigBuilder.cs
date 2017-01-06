@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Globalization;
     using System.Linq;
     using System.Xml;
 
@@ -57,18 +58,18 @@
 
             Rules.Add(new BindingRule());
             Rules.Add(new MetadataRule());
-            Rules.Add(new ConstantRule());
-            Rules.Add(new FactoryRule());
+            Rules.Add(new ToConstantRule());
+            Rules.Add(new ToFactoryRule());
 
-            Rules.Add(new ConstructorArgRule());
-            Rules.Add(new PropertyRule());
+            Rules.Add(new ObjectConstructorArgRule());
+            Rules.Add(new ObjectPropertyRule());
 
             Rules.Add(new ArrayRule());
             Rules.Add(new ListRule());
-            Rules.Add(new ValueRule());
+            Rules.Add(new CollectionValueRule());
 
             Rules.Add(new DictionaryRule());
-            Rules.Add(new EntryRule());
+            Rules.Add(new DictionaryEntryRule());
 
             Rules.Add(new ObjectRule());
         }
@@ -102,11 +103,16 @@
                     context.AddElement(new ElementInfo(name, attributes));
 
                     var rule = FindRule(context.Path);
-                    rule?.OnBegin(context);
+                    if (rule == null)
+                    {
+                        throw new XmlConfigException(String.Format(CultureInfo.InvariantCulture, "Invalid path. path = [{0}]", context.Path));
+                    }
+
+                    rule.OnBegin(context);
 
                     if (isEmpty)
                     {
-                        rule?.OnEnd(context);
+                        rule.OnEnd(context);
 
                         context.RemoveElement();
                     }
@@ -118,7 +124,12 @@
                 else if (reader.NodeType == XmlNodeType.EndElement)
                 {
                     var rule = FindRule(context.Path);
-                    rule?.OnEnd(context);
+                    if (rule == null)
+                    {
+                        throw new XmlConfigException(String.Format(CultureInfo.InvariantCulture, "Invalid path. path = [{0}]", context.Path));
+                    }
+
+                    rule.OnEnd(context);
 
                     context.RemoveElement();
                 }

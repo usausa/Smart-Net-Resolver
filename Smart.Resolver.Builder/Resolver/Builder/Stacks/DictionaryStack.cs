@@ -16,6 +16,9 @@
 
         private readonly IObjectConverter converter;
 
+        /// <summary>
+        ///
+        /// </summary>
         public IDictionary Dictionary { get; }
 
         /// <summary>

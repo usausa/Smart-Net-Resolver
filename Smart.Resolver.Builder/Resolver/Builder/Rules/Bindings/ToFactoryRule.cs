@@ -1,6 +1,6 @@
 ﻿namespace Smart.Resolver.Builder.Rules
 {
-    public class ConstantRule : RuleBase
+    public class ToFactoryRule : RuleBase
     {
         public override bool Match(string path)
         {

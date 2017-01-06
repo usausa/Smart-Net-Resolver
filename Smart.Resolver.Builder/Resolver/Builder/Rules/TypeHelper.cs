@@ -48,5 +48,30 @@
             var dictionaryType = DictionaryType.MakeGenericType(keyType, valueType);
             return (IDictionary)Activator.CreateInstance(dictionaryType);
         }
+
+        /// <summary>
+        ///
+        /// </summary>
+        /// <param name="type"></param>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        public static Type[] ResolveConstructorArtumentType(Type type, string name)
+        {
+            // TODO
+            return null;
+        }
+
+        /// <summary>
+        ///
+        /// </summary>
+        /// <param name="type"></param>
+        /// <param name="constructorArguments"></param>
+        /// <param name="propertyValues"></param>
+        /// <returns></returns>
+        public static object ActivateInstance(Type type, IList<KeyValuePair<string, object>> constructorArguments, IDictionary<string, object> propertyValues)
+        {
+            // TODO
+            return Activator.CreateInstance(type);
+        }
     }
 }

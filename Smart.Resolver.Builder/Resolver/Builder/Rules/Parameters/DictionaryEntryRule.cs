@@ -8,7 +8,7 @@
     /// <summary>
     ///
     /// </summary>
-    public class ValueRule : RuleBase
+    public class DictionaryEntryRule : RuleBase
     {
         /// <summary>
         ///
@@ -18,7 +18,7 @@
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods", Justification = "Framework only")]
         public override bool Match(string path)
         {
-            return path.EndsWith("/value", StringComparison.OrdinalIgnoreCase);
+            return path.EndsWith("/entry", StringComparison.OrdinalIgnoreCase);
         }
 
         /// <summary>
@@ -28,13 +28,25 @@
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods", Justification = "Framework only")]
         public override void OnEnd(BuilderContext context)
         {
-            var list = context.PeekStack<ListStack>();
-            if (list == null)
+            string key;
+            if (!context.ElementInfo.Attributes.TryGetValue("key", out key))
+            {
+                throw new XmlConfigException(String.Format(CultureInfo.InvariantCulture, "Entry element need key attribute. path = [{0}]", context.Path));
+            }
+
+            string value;
+            if (!context.ElementInfo.Attributes.TryGetValue("value", out value))
+            {
+                value = context.ElementInfo.Body;
+            }
+
+            var dictionary = context.PeekStack<DictionaryStack>();
+            if (dictionary == null)
             {
                 throw new XmlConfigException(String.Format(CultureInfo.InvariantCulture, "Invalid stack. path = [{0}]", context.Path));
             }
 
-            list.Add(context.ElementInfo.Body);
+            dictionary.Add(key, value);
         }
     }
 }
