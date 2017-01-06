@@ -1,17 +1,10 @@
-﻿namespace Smart.Resolver.Builder.Rules
+﻿namespace Smart.Resolver.Builder.Handlers
 {
     /// <summary>
     ///
     /// </summary>
-    public abstract class RuleBase : IRule
+    public abstract class ElementHandlerBase : IElementHandler
     {
-        /// <summary>
-        ///
-        /// </summary>
-        /// <param name="path"></param>
-        /// <returns></returns>
-        public abstract bool Match(string path);
-
         /// <summary>
         ///
         /// </summary>

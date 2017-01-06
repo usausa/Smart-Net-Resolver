@@ -1,4 +1,4 @@
-﻿namespace Smart.Resolver.Builder.Rules
+﻿namespace Smart.Resolver.Builder.Handlers
 {
     using System;
     using System.Collections;
@@ -68,7 +68,7 @@
         /// <param name="constructorArguments"></param>
         /// <param name="propertyValues"></param>
         /// <returns></returns>
-        public static object ActivateInstance(Type type, IList<KeyValuePair<string, object>> constructorArguments, IDictionary<string, object> propertyValues)
+        public static object ActivateInstance(Type type, ICollection<KeyValuePair<string, object>> constructorArguments, IDictionary<string, object> propertyValues)
         {
             // TODO
             return Activator.CreateInstance(type);

@@ -1,4 +1,4 @@
-﻿namespace Smart.Resolver.Builder.Rules
+﻿namespace Smart.Resolver.Builder.Handlers.Bindings
 {
     using System;
     using System.Globalization;
@@ -8,17 +8,22 @@
     /// <summary>
     ///
     /// </summary>
-    public class CollectionValueRule : RuleBase
+    public class WithConstructorArgHandler : ElementHandlerBase
     {
         /// <summary>
         ///
         /// </summary>
-        /// <param name="path"></param>
-        /// <returns></returns>
+        /// <param name="context"></param>
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods", Justification = "Framework only")]
-        public override bool Match(string path)
+        public override void OnBegin(BuilderContext context)
         {
-            return path.EndsWith("/value", StringComparison.OrdinalIgnoreCase);
+            var binding = context.PeekStack<IBindingStack>();
+            if (binding == null)
+            {
+                throw new XmlConfigException(String.Format(CultureInfo.InvariantCulture, "Invalid stack. path = [{0}]", context.Path));
+            }
+
+            // TODO
         }
 
         /// <summary>
@@ -28,13 +33,7 @@
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods", Justification = "Framework only")]
         public override void OnEnd(BuilderContext context)
         {
-            var list = context.PeekStack<CollectionStack>();
-            if (list == null)
-            {
-                throw new XmlConfigException(String.Format(CultureInfo.InvariantCulture, "Invalid stack. path = [{0}]", context.Path));
-            }
-
-            list.Add(context.ElementInfo.Body);
+            // TODO
         }
     }
 }

@@ -1,21 +1,25 @@
 ﻿namespace Smart.Resolver.Builder
 {
+    using System;
     using System.Collections.Generic;
     using System.Text;
 
+    using Smart.Collections.Generic;
+    using Smart.Functional;
+
+    /// <summary>
+    ///
+    /// </summary>
     public class ElementInfo
     {
+        private readonly Dictionary<string, string> attributes;
+
         private StringBuilder body;
 
         /// <summary>
         ///
         /// </summary>
         public string Name { get; }
-
-        /// <summary>
-        ///
-        /// </summary>
-        public Dictionary<string, string> Attributes { get; }
 
         /// <summary>
         ///
@@ -30,7 +34,7 @@
         public ElementInfo(string name, Dictionary<string, string> attributes)
         {
             Name = name;
-            Attributes = attributes;
+            this.attributes = attributes;
         }
 
         /// <summary>
@@ -45,6 +49,26 @@
             }
 
             body.Append(text);
+        }
+
+        /// <summary>
+        ///
+        /// </summary>
+        /// <param name="key"></param>
+        /// <returns></returns>
+        public string GetAttribute(string key)
+        {
+            return attributes.GetOrDefault(key);
+        }
+
+        /// <summary>
+        ///
+        /// </summary>
+        /// <param name="key"></param>
+        /// <returns></returns>
+        public Type GetAttributeAsType(string key)
+        {
+            return attributes.GetOrDefault(key).Or(x => Type.GetType(x, true));
         }
     }
 }

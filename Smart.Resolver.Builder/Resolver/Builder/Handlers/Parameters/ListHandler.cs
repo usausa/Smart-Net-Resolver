@@ -1,4 +1,4 @@
-﻿namespace Smart.Resolver.Builder.Rules
+﻿namespace Smart.Resolver.Builder.Handlers.Parameters
 {
     using System;
     using System.Globalization;
@@ -9,19 +9,8 @@
     /// <summary>
     ///
     /// </summary>
-    public class ArrayRule : RuleBase
+    public class ListHandler : ElementHandlerBase
     {
-        /// <summary>
-        ///
-        /// </summary>
-        /// <param name="path"></param>
-        /// <returns></returns>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods", Justification = "Framework only")]
-        public override bool Match(string path)
-        {
-            return path.EndsWith("/array", StringComparison.OrdinalIgnoreCase);
-        }
-
         /// <summary>
         ///
         /// </summary>
@@ -29,21 +18,24 @@
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods", Justification = "Framework only")]
         public override void OnBegin(BuilderContext context)
         {
-            var parameter = context.PeekStack<ParameterStack>();
+            var parameter = context.PeekStack<IParameterStack>();
             if (parameter == null)
             {
                 throw new XmlConfigException(String.Format(CultureInfo.InvariantCulture, "Invalid stack. path = [{0}]", context.Path));
             }
 
-            var elementType = parameter.ParameterType.GetElementType();
+            var genericType = parameter.ParameterType?.GetIsGenericType() ?? false
+                ? parameter.ParameterType.GenericTypeArguments[0]
+                : null;
 
-            string value;
-            var valueType = context.ElementInfo.Attributes.TryGetValue("valueType", out value)
-                ? Type.GetType(value, true)
-                : elementType;
+            var valueType = context.ElementInfo.GetAttributeAsType("valueType") ?? genericType;
+            if (valueType == null)
+            {
+                throw new XmlConfigException(String.Format(CultureInfo.InvariantCulture, "List element need valueType attribute. path = [{0}]", context.Path));
+            }
 
             context.PushStack(new CollectionStack(
-                TypeHelper.CreateList(elementType),
+                TypeHelper.CreateList(genericType ?? valueType),
                 valueType,
                 context.Components.Get<IObjectConverter>()));
         }
@@ -56,8 +48,8 @@
         public override void OnEnd(BuilderContext context)
         {
             var list = context.PopStack<CollectionStack>();
-            var parameter = context.PeekStack<ParameterStack>();
-            parameter.Value = TypeHelper.ConvertListToArray(list.List);
+            var parameter = context.PeekStack<IParameterStack>();
+            parameter.SetValue(list.List);
         }
     }
 }

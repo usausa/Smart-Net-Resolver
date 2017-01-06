@@ -1,4 +1,4 @@
-﻿namespace Smart.Resolver.Builder.Rules
+﻿namespace Smart.Resolver.Builder.Handlers.Configs
 {
     using System;
     using System.Globalization;
@@ -8,14 +8,8 @@
     /// <summary>
     ///
     /// </summary>
-    public class ComponentRule : RuleBase
+    public class ComponentHandler : ElementHandlerBase
     {
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods", Justification = "Framework only")]
-        public override bool Match(string path)
-        {
-            return path == "/config/component";
-        }
-
         /// <summary>
         ///
         /// </summary>
@@ -23,17 +17,13 @@
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods", Justification = "Framework only")]
         public override void OnBegin(BuilderContext context)
         {
-            string value;
-            if (!context.ElementInfo.Attributes.TryGetValue("component", out value))
+            var componentType = context.ElementInfo.GetAttributeAsType("component");
+            if (componentType == null)
             {
                 throw new XmlConfigException(String.Format(CultureInfo.InvariantCulture, "Component element need component attribute. path = [{0}]", context.Path));
             }
 
-            var componentType = Type.GetType(value, true);
-
-            var implementType = context.ElementInfo.Attributes.TryGetValue("implement", out value)
-                ? Type.GetType(value, true)
-                : null;
+            var implementType = context.ElementInfo.GetAttributeAsType("implement");
 
             context.PushStack(new ComponentStack(componentType, implementType));
         }

@@ -1,4 +1,4 @@
-﻿namespace Smart.Resolver.Builder.Rules
+﻿namespace Smart.Resolver.Builder.Handlers.Parameters
 {
     using System;
     using System.Globalization;
@@ -8,19 +8,8 @@
     /// <summary>
     ///
     /// </summary>
-    public class WithConstructorArgRule : RuleBase
+    public class ObjectHandler : ElementHandlerBase
     {
-        /// <summary>
-        ///
-        /// </summary>
-        /// <param name="path"></param>
-        /// <returns></returns>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods", Justification = "Framework only")]
-        public override bool Match(string path)
-        {
-            return path.EndsWith("/with-constructor-arg", StringComparison.OrdinalIgnoreCase);
-        }
-
         /// <summary>
         ///
         /// </summary>
@@ -28,15 +17,19 @@
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods", Justification = "Framework only")]
         public override void OnBegin(BuilderContext context)
         {
-            var binding = context.PeekStack<BindingStack>();
-            if (binding == null)
+            var parameter = context.PeekStack<IParameterStack>();
+            if (parameter == null)
             {
                 throw new XmlConfigException(String.Format(CultureInfo.InvariantCulture, "Invalid stack. path = [{0}]", context.Path));
             }
 
+            var type = context.ElementInfo.GetAttributeAsType("type") ?? parameter.ParameterType;
+            if (type == null)
+            {
+                throw new XmlConfigException(String.Format(CultureInfo.InvariantCulture, "Object element need type attribute. path = [{0}]", context.Path));
+            }
 
-
-            // TODO
+            context.PushStack(new ActivatorStack(type));
         }
 
         /// <summary>
@@ -46,7 +39,9 @@
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods", Justification = "Framework only")]
         public override void OnEnd(BuilderContext context)
         {
-            // TODO
+            var activator = context.PopStack<ActivatorStack>();
+            var parameter = context.PeekStack<IParameterStack>();
+            parameter.SetValue(TypeHelper.ActivateInstance(activator.TargetType, activator.ConstructorArguments, activator.PropertyValues));
         }
     }
 }

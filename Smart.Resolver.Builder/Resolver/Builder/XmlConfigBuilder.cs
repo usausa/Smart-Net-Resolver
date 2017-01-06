@@ -2,13 +2,16 @@
 {
     using System;
     using System.Collections.Generic;
-    using System.Globalization;
     using System.Linq;
     using System.Xml;
 
     using Smart.ComponentModel;
     using Smart.Converter;
-    using Smart.Resolver.Builder.Rules;
+    using Smart.Resolver.Builder.Handlers;
+    using Smart.Resolver.Builder.Handlers.Activators;
+    using Smart.Resolver.Builder.Handlers.Bindings;
+    using Smart.Resolver.Builder.Handlers.Configs;
+    using Smart.Resolver.Builder.Handlers.Parameters;
     using Smart.Resolver.Builder.Scopes;
 
     /// <summary>
@@ -29,7 +32,7 @@
         /// <summary>
         ///
         /// </summary>
-        public IList<IRule> Rules { get; } = new List<IRule>();
+        public IList<HandlerEntry> Entries { get; } = new List<HandlerEntry>();
 
         /// <summary>
         ///
@@ -53,25 +56,28 @@
             ComponentConfig.Add<IScopeHandler, TransientScopeHandler>();
             ComponentConfig.Add<IScopeHandler, SingletonScopeHandler>();
 
-            // Rules
-            Rules.Add(new ComponentRule());
+            // Entries
+            AddHandler(Mathcers.EndWith("/array"), new ArrayHandler());
+            AddHandler(Mathcers.EndWith("/array/value"), new CollectionValueHandler());
+            AddHandler(Mathcers.EndWith("/list"), new ListHandler());
+            AddHandler(Mathcers.EndWith("/list/value"), new CollectionValueHandler());
+            AddHandler(Mathcers.EndWith("/array"), new DictionaryHandler());
+            AddHandler(Mathcers.EndWith("/array/entry"), new DictionaryEntryHandler());
 
-            Rules.Add(new BindingRule());
-            Rules.Add(new MetadataRule());
-            Rules.Add(new ToConstantRule());
-            Rules.Add(new ToFactoryRule());
+            AddHandler(Mathcers.EndWith("/object"), new ObjectHandler());
+            AddHandler(Mathcers.EndWith("/object/constructor-arg"), new ConstructorArgHandler());
+            AddHandler(Mathcers.EndWith("/object/property"), new PropertyHandler());
 
-            Rules.Add(new ObjectConstructorArgRule());
-            Rules.Add(new ObjectPropertyRule());
+            AddHandler(Mathcers.Equals("/config/component"), new ComponentHandler());
+            AddHandler(Mathcers.Equals("/config/component/constructor-arg"), new ConstructorArgHandler());
+            AddHandler(Mathcers.Equals("/config/component/property"), new PropertyHandler());
 
-            Rules.Add(new ArrayRule());
-            Rules.Add(new ListRule());
-            Rules.Add(new CollectionValueRule());
-
-            Rules.Add(new DictionaryRule());
-            Rules.Add(new DictionaryEntryRule());
-
-            Rules.Add(new ObjectRule());
+            AddHandler(Mathcers.Equals("/config/binding"), new BindingHandler());
+            AddHandler(Mathcers.Equals("/config/binding/to-constant"), new ToConstantHandler());
+            AddHandler(Mathcers.Equals("/config/binding/to-factory"), new ToFactoryHandler());
+            AddHandler(Mathcers.Equals("/config/binding/with-metadata"), new WithMetadataHandler());
+            AddHandler(Mathcers.Equals("/config/binding/with-constructor-arg"), new WithConstructorArgHandler());
+            AddHandler(Mathcers.Equals("/config/binding/with-proverty-value"), new WithPropertyValueHandler());
         }
 
         /// <summary>
@@ -102,17 +108,12 @@
 
                     context.AddElement(new ElementInfo(name, attributes));
 
-                    var rule = FindRule(context.Path);
-                    if (rule == null)
-                    {
-                        throw new XmlConfigException(String.Format(CultureInfo.InvariantCulture, "Invalid path. path = [{0}]", context.Path));
-                    }
-
-                    rule.OnBegin(context);
+                    var handler = FindHandler(context.Path);
+                    handler?.OnBegin(context);
 
                     if (isEmpty)
                     {
-                        rule.OnEnd(context);
+                        handler?.OnEnd(context);
 
                         context.RemoveElement();
                     }
@@ -123,13 +124,8 @@
                 }
                 else if (reader.NodeType == XmlNodeType.EndElement)
                 {
-                    var rule = FindRule(context.Path);
-                    if (rule == null)
-                    {
-                        throw new XmlConfigException(String.Format(CultureInfo.InvariantCulture, "Invalid path. path = [{0}]", context.Path));
-                    }
-
-                    rule.OnEnd(context);
+                    var handler = FindHandler(context.Path);
+                    handler?.OnEnd(context);
 
                     context.RemoveElement();
                 }
@@ -139,11 +135,21 @@
         /// <summary>
         ///
         /// </summary>
+        /// <param name="matcher"></param>
+        /// <param name="handler"></param>
+        private void AddHandler(Func<string, bool> matcher, IElementHandler handler)
+        {
+            Entries.Add(new HandlerEntry(matcher, handler));
+        }
+
+        /// <summary>
+        ///
+        /// </summary>
         /// <param name="path"></param>
         /// <returns></returns>
-        private IRule FindRule(string path)
+        private IElementHandler FindHandler(string path)
         {
-            return Rules.FirstOrDefault(rule => rule.Match(path));
+            return Entries.FirstOrDefault(handler => handler.Matcher(path))?.Handler;
         }
     }
 }

@@ -1,0 +1,79 @@
+﻿namespace Smart.Resolver.Builder.Handlers.Activators
+{
+    using System;
+    using System.Globalization;
+
+    using Smart.Converter;
+    using Smart.Resolver.Builder.Stacks;
+
+    /// <summary>
+    ///
+    /// </summary>
+    public class ConstructorArgHandler : ElementHandlerBase
+    {
+        /// <summary>
+        ///
+        /// </summary>
+        /// <param name="context"></param>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods", Justification = "Framework only")]
+        public override void OnBegin(BuilderContext context)
+        {
+            var activator = context.PeekStack<IActivatorStack>();
+            if (activator == null)
+            {
+                throw new XmlConfigException(String.Format(CultureInfo.InvariantCulture, "Invalid stack. path = [{0}]", context.Path));
+            }
+
+            var name = context.ElementInfo.GetAttribute("name");
+            var type = context.ElementInfo.GetAttribute("type");
+            if (String.IsNullOrEmpty(name) && String.IsNullOrEmpty(type))
+            {
+                throw new XmlConfigException(String.Format(CultureInfo.InvariantCulture, "Constructor element need name or type attribute. type = [{0}]", activator.TargetType));
+            }
+
+            Type parameterType;
+            if (!String.IsNullOrEmpty(type))
+            {
+                parameterType = Type.GetType(type, true);
+            }
+            else
+            {
+                var types = TypeHelper.ResolveConstructorArtumentType(activator.TargetType, name);
+                if (types.Length == 0)
+                {
+                    throw new XmlConfigException(String.Format(CultureInfo.InvariantCulture, "Constructor parameter is not found. type = [{0}], name = [{1}]", activator.TargetType, name));
+                }
+
+                if (types.Length > 1)
+                {
+                    throw new XmlConfigException(String.Format(CultureInfo.InvariantCulture, "Constructor parameter is matched multiple types. type = [{0}], name = [{1}]", activator.TargetType, name));
+                }
+
+                parameterType = types[0];
+            }
+
+            var parameter = new ParameterStack(name, parameterType);
+
+            var value = context.ElementInfo.GetAttribute("value");
+            if (!String.IsNullOrEmpty(value))
+            {
+                var converter = context.Components.Get<IObjectConverter>();
+                parameter.SetValue(converter.Convert(value, parameterType));
+            }
+
+            context.PushStack(parameter);
+        }
+
+        /// <summary>
+        ///
+        /// </summary>
+        /// <param name="context"></param>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods", Justification = "Framework only")]
+        public override void OnEnd(BuilderContext context)
+        {
+            var parameter = context.PopStack<ParameterStack>();
+            var activator = context.PeekStack<IActivatorStack>();
+            activator.AddConstructorArgument(parameter.Name, parameter.Value);
+        }
+    }
+}

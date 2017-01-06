@@ -5,7 +5,7 @@
     /// <summary>
     ///
     /// </summary>
-    public class ComponentStack : ObjectStack
+    public class ComponentStack : ActivatorStack
     {
         public Type ComponentType { get; }
 

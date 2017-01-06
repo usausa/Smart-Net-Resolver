@@ -8,7 +8,7 @@
     /// <summary>
     ///
     /// </summary>
-    public class CollectionStack
+    public class CollectionStack : ICollectionStack
     {
         private readonly Type valueType;
 
