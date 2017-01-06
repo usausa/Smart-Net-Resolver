@@ -7,10 +7,9 @@
     /// <summary>
     ///
     /// </summary>
-    /// <typeparam name="T"></typeparam>
-    public class ConstantProvider<T> : IProvider
+    public class ConstantProvider : IProvider
     {
-        private readonly T value;
+        private readonly object value;
 
         /// <summary>
         ///
@@ -21,7 +20,7 @@
         ///
         /// </summary>
         /// <param name="value"></param>
-        public ConstantProvider(T value)
+        public ConstantProvider(object value)
         {
             this.value = value;
         }

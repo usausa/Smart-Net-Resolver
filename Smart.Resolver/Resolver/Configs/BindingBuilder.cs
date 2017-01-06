@@ -66,12 +66,12 @@
 
         public IBindingInNamedWithSyntax ToMethod(Func<IKernel, T> factory)
         {
-            return ToProvider(c => new CallbackProvider<T>(factory));
+            return ToProvider(c => new CallbackProvider(typeof(T), kernel => factory(kernel)));
         }
 
         public IBindingInNamedWithSyntax ToConstant(T value)
         {
-            return ToProvider(c => new ConstantProvider<T>(value));
+            return ToProvider(c => new ConstantProvider(value));
         }
 
         // ------------------------------------------------------------

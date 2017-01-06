@@ -7,22 +7,23 @@
     /// <summary>
     ///
     /// </summary>
-    /// <typeparam name="T"></typeparam>
-    public class CallbackProvider<T> : IProvider
+    public class CallbackProvider : IProvider
     {
-        private readonly Func<IKernel, T> factory;
+        private readonly Func<IKernel, object> factory;
 
         /// <summary>
         ///
         /// </summary>
-        public Type TargetType => typeof(T);
+        public Type TargetType { get; }
 
         /// <summary>
         ///
         /// </summary>
+        /// <param name="type"></param>
         /// <param name="factory"></param>
-        public CallbackProvider(Func<IKernel, T> factory)
+        public CallbackProvider(Type type, Func<IKernel, object> factory)
         {
+            TargetType = type;
             this.factory = factory;
         }
 

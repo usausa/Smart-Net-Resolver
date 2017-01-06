@@ -65,7 +65,7 @@
             }
 
             var selfType = typeof(IResolver);
-            table.Add(selfType, new IBinding[] { new Binding(selfType, new ConstantProvider<IResolver>(this), null, null, null, null) });
+            table.Add(selfType, new IBinding[] { new Binding(selfType, new ConstantProvider(this), null, null, null, null) });
         }
 
         /// <summary>
