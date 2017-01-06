@@ -1,5 +1,7 @@
 ﻿namespace Smart.Resolver.Builder
 {
+    using System;
+
     /// <summary>
     ///
     /// </summary>

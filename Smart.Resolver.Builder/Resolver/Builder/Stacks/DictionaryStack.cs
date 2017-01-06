@@ -8,7 +8,7 @@
     /// <summary>
     ///
     /// </summary>
-    public class DictionaryStack : IDictionaryStack
+    public class DictionaryStack
     {
         private readonly Type keyType;
 

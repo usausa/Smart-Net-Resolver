@@ -6,7 +6,7 @@
     /// <summary>
     ///
     /// </summary>
-    public class ActivatorStack : IActivatorStack
+    public class ActivatorStack
     {
         private IList<KeyValuePair<string, object>> constructorArguments;
 

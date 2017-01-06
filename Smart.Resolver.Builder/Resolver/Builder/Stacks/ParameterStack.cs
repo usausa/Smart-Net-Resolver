@@ -5,7 +5,7 @@
     /// <summary>
     ///
     /// </summary>
-    public class ParameterStack : IParameterStack
+    public class ParameterStack
     {
         /// <summary>
         ///
@@ -20,7 +20,7 @@
         /// <summary>
         ///
         /// </summary>
-        public object Value { get; private set; }
+        public object Value { get; set; }
 
         /// <summary>
         ///
@@ -31,15 +31,6 @@
         {
             Name = name;
             ParameterType = parameterType;
-        }
-
-        /// <summary>
-        ///
-        /// </summary>
-        /// <param name="value"></param>
-        public void SetValue(object value)
-        {
-            Value = value;
         }
     }
 }

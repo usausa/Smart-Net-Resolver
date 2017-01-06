@@ -5,7 +5,7 @@
     /// <summary>
     ///
     /// </summary>
-    public interface IScopeHandler
+    public interface IScopeProcessor
     {
         /// <summary>
         ///
@@ -16,6 +16,7 @@
         ///
         /// </summary>
         /// <param name="syntax"></param>
-        void SetScope(IBindingInSyntax syntax);
+        /// <returns></returns>
+        IBindingNamedWithSyntax Process(IBindingInSyntax syntax);
     }
 }

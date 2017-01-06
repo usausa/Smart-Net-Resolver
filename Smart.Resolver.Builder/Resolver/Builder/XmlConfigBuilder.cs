@@ -53,8 +53,8 @@
             // Components
             ComponentConfig.Add<IObjectConverter>(ObjectConverter.Default);
 
-            ComponentConfig.Add<IScopeHandler, TransientScopeHandler>();
-            ComponentConfig.Add<IScopeHandler, SingletonScopeHandler>();
+            ComponentConfig.Add<IScopeProcessor, TransientScopeProcessor>();
+            ComponentConfig.Add<IScopeProcessor, SingletonScopeProcessor>();
 
             // Entries
             AddHandler(Mathcers.EndWith("/array"), new ArrayHandler());

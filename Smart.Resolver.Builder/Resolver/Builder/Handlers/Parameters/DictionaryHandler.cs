@@ -20,7 +20,7 @@
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods", Justification = "Framework only")]
         public override void OnBegin(BuilderContext context)
         {
-            var parameter = context.PeekStack<IParameterStack>();
+            var parameter = context.PeekStack<ParameterStack>();
             if (parameter == null)
             {
                 throw new XmlConfigException(String.Format(CultureInfo.InvariantCulture, "Invalid stack. path = [{0}]", context.Path));
@@ -60,8 +60,8 @@
         public override void OnEnd(BuilderContext context)
         {
             var dictionary = context.PopStack<DictionaryStack>();
-            var parameter = context.PeekStack<IParameterStack>();
-            parameter.SetValue(dictionary.Dictionary);
+            var parameter = context.PeekStack<ParameterStack>();
+            parameter.Value = dictionary.Dictionary;
         }
     }
 }

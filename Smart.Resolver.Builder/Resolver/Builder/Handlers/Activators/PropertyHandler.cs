@@ -18,7 +18,7 @@
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods", Justification = "Framework only")]
         public override void OnBegin(BuilderContext context)
         {
-            var activator = context.PeekStack<IActivatorStack>();
+            var activator = context.PeekStack<ActivatorStack>();
             if (activator == null)
             {
                 throw new XmlConfigException(String.Format(CultureInfo.InvariantCulture, "Invalid stack. path = [{0}]", context.Path));
@@ -44,7 +44,7 @@
             if (!String.IsNullOrEmpty(value))
             {
                 var converter = context.Components.Get<IObjectConverter>();
-                parameter.SetValue(converter.Convert(value, propertyType));
+                parameter.Value = converter.Convert(value, propertyType);
             }
 
             context.PushStack(parameter);
@@ -58,7 +58,7 @@
         public override void OnEnd(BuilderContext context)
         {
             var parameter = context.PopStack<ParameterStack>();
-            var activator = context.PeekStack<IActivatorStack>();
+            var activator = context.PeekStack<ActivatorStack>();
             activator.SetPropertyValue(parameter.Name, parameter.Value);
         }
     }

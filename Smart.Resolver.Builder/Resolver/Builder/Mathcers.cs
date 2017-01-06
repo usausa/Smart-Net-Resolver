@@ -14,7 +14,7 @@
         /// <returns></returns>
         public static Func<string, bool> Equals(string path)
         {
-            return x => x == path;
+            return x => String.Equals(x, path, StringComparison.OrdinalIgnoreCase);
         }
 
         /// <summary>

@@ -4,6 +4,7 @@
     using System.Collections.Generic;
 
     using Smart.ComponentModel;
+    using Smart.Resolver.Builder.Scopes;
     using Smart.Resolver.Parameters;
     using Smart.Resolver.Providers;
     using Smart.Resolver.Scopes;
@@ -11,7 +12,7 @@
     /// <summary>
     ///
     /// </summary>
-    public class BindingStack : IBindingStack
+    public class BindingStack
     {
         private IDictionary<string, object> metadatas;
 
@@ -22,7 +23,7 @@
         /// <summary>
         ///
         /// </summary>
-        public Type ComponentType { get; set; }
+        public Type ComponentType { get; }
 
         /// <summary>
         ///
@@ -37,7 +38,7 @@
         /// <summary>
         ///
         /// </summary>
-        public Func<IComponentContainer, IScope> ScopeFactory { get; set; }
+        public IScopeProcessor ScopeProcessor { get; set; }
 
         /// <summary>
         ///
@@ -58,6 +59,15 @@
         ///
         /// </summary>
         public IDictionary<string, IParameter> PropertyValues => propertyValues;
+
+        /// <summary>
+        ///
+        /// </summary>
+        /// <param name="componentType"></param>
+        public BindingStack(Type componentType)
+        {
+            ComponentType = componentType;
+        }
 
         /// <summary>
         ///

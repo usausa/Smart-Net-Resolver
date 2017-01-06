@@ -5,7 +5,7 @@
     /// <summary>
     ///
     /// </summary>
-    public class TransientScopeHandler : IScopeHandler
+    public class TransientScopeProcessor : IScopeProcessor
     {
         /// <summary>
         ///
@@ -16,10 +16,11 @@
         ///
         /// </summary>
         /// <param name="syntax"></param>
+        /// <returns></returns>
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods", Justification = "Framework only")]
-        public void SetScope(IBindingInSyntax syntax)
+        public IBindingNamedWithSyntax Process(IBindingInSyntax syntax)
         {
-            syntax.InTransientScope();
+            return syntax.InTransientScope();
         }
     }
 }
