@@ -13,12 +13,6 @@
     /// </summary>
     public class BindingStack
     {
-        private IDictionary<string, object> metadatas;
-
-        private IDictionary<string, Func<IComponentContainer, IParameter>> constructorArtumentFactories;
-
-        private IDictionary<string, Func<IComponentContainer, IParameter>> propertyValueFactories;
-
         /// <summary>
         ///
         /// </summary>
@@ -42,17 +36,17 @@
         /// <summary>
         ///
         /// </summary>
-        public IDictionary<string, object> Metadatas => metadatas;
+        public IDictionary<string, object> Metadatas { get; } = new Dictionary<string, object>();
 
         /// <summary>
         ///
         /// </summary>
-        public IDictionary<string, Func<IComponentContainer, IParameter>> ConstructorArgumentFactories => constructorArtumentFactories;
+        public IDictionary<string, Func<IComponentContainer, IParameter>> ConstructorArgumentFactories { get; } = new Dictionary<string, Func<IComponentContainer, IParameter>>();
 
         /// <summary>
         ///
         /// </summary>
-        public IDictionary<string, Func<IComponentContainer, IParameter>> PropertyValueFactories => propertyValueFactories;
+        public IDictionary<string, Func<IComponentContainer, IParameter>> PropertyValueFactories { get; } = new Dictionary<string, Func<IComponentContainer, IParameter>>();
 
         /// <summary>
         ///
@@ -61,51 +55,6 @@
         public BindingStack(Type componentType)
         {
             ComponentType = componentType;
-        }
-
-        /// <summary>
-        ///
-        /// </summary>
-        /// <param name="name"></param>
-        /// <param name="value"></param>
-        public void AddMetadata(string name, object value)
-        {
-            if (metadatas == null)
-            {
-                metadatas = new Dictionary<string, object>();
-            }
-
-            metadatas[name] = value;
-        }
-
-        /// <summary>
-        ///
-        /// </summary>
-        /// <param name="name"></param>
-        /// <param name="factory"></param>
-        public void AddConstructorArgument(string name, Func<IComponentContainer, IParameter> factory)
-        {
-            if (constructorArtumentFactories == null)
-            {
-                constructorArtumentFactories = new Dictionary<string, Func<IComponentContainer, IParameter>>();
-            }
-
-            constructorArtumentFactories[name] = factory;
-        }
-
-        /// <summary>
-        ///
-        /// </summary>
-        /// <param name="name"></param>
-        /// <param name="factory"></param>
-        public void AddPropertyValue(string name, Func<IComponentContainer, IParameter> factory)
-        {
-            if (propertyValueFactories == null)
-            {
-                propertyValueFactories = new Dictionary<string, Func<IComponentContainer, IParameter>>();
-            }
-
-            propertyValueFactories[name] = factory;
         }
     }
 }

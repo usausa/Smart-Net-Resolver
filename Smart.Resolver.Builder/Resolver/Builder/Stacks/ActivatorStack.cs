@@ -3,15 +3,13 @@
     using System;
     using System.Collections.Generic;
 
+    using Smart.Resolver.Builder.Handlers;
+
     /// <summary>
     ///
     /// </summary>
     public class ActivatorStack
     {
-        private IList<KeyValuePair<string, object>> constructorArguments;
-
-        private IDictionary<string, object> propertyValues;
-
         /// <summary>
         ///
         /// </summary>
@@ -20,12 +18,12 @@
         /// <summary>
         ///
         /// </summary>
-        public ICollection<KeyValuePair<string, object>> ConstructorArguments => constructorArguments;
+        public ConstructorArguments ConstructorArguments { get; } = new ConstructorArguments();
 
         /// <summary>
         ///
         /// </summary>
-        public IDictionary<string, object> PropertyValues => propertyValues;
+        public IDictionary<string, object> PropertyValues { get; } = new Dictionary<string, object>();
 
         /// <summary>
         ///
@@ -34,36 +32,6 @@
         public ActivatorStack(Type targetType)
         {
             TargetType = targetType;
-        }
-
-        /// <summary>
-        ///
-        /// </summary>
-        /// <param name="name"></param>
-        /// <param name="value"></param>
-        public void AddConstructorArgument(string name, object value)
-        {
-            if (constructorArguments == null)
-            {
-                constructorArguments = new List<KeyValuePair<string, object>>();
-            }
-
-            constructorArguments.Add(new KeyValuePair<string, object>(name, value));
-        }
-
-        /// <summary>
-        ///
-        /// </summary>
-        /// <param name="name"></param>
-        /// <param name="value"></param>
-        public void SetPropertyValue(string name, object value)
-        {
-            if (propertyValues == null)
-            {
-                propertyValues = new Dictionary<string, object>();
-            }
-
-            propertyValues[name] = value;
         }
     }
 }

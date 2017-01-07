@@ -63,18 +63,18 @@
             var parameterValue = parameter.Value as IParameter;
             if (parameterValue != null)
             {
-                binding.AddConstructorArgument(parameter.Name, c => parameterValue);
+                binding.ConstructorArgumentFactories[parameter.Name] = c => parameterValue;
                 return;
             }
 
             var factory = parameter.Value as IParameterFactory;
             if (factory != null)
             {
-                binding.AddConstructorArgument(parameter.Name, factory.Create);
+                binding.ConstructorArgumentFactories[parameter.Name] = factory.Create;
                 return;
             }
 
-            binding.AddConstructorArgument(parameter.Name, c => new ConstantParameter(parameter.Value));
+            binding.ConstructorArgumentFactories[parameter.Name] = c => new ConstantParameter(parameter.Value);
         }
     }
 }

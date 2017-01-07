@@ -58,7 +58,7 @@
         {
             var parameter = context.PopStack<ParameterStack>();
             var binding = context.PopStack<BindingStack>();
-            binding.AddMetadata(parameter.Name, parameter.Value);
+            binding.Metadatas[parameter.Name] = parameter.Value;
         }
     }
 }

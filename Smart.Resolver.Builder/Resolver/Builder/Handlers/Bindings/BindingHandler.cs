@@ -80,28 +80,19 @@
                 withSyntax.Named(binding.Name);
             }
 
-            if (binding.Metadatas != null)
+            foreach (var key in binding.Metadatas.Keys)
             {
-                foreach (var key in binding.Metadatas.Keys)
-                {
-                    withSyntax.WithMetadata(key, binding.Metadatas[key]);
-                }
+                withSyntax.WithMetadata(key, binding.Metadatas[key]);
             }
 
-            if (binding.ConstructorArgumentFactories != null)
+            foreach (var name in binding.ConstructorArgumentFactories.Keys)
             {
-                foreach (var name in binding.ConstructorArgumentFactories.Keys)
-                {
-                    withSyntax.WithConstructorArgument(name, binding.ConstructorArgumentFactories[name]);
-                }
+                withSyntax.WithConstructorArgument(name, binding.ConstructorArgumentFactories[name]);
             }
 
-            if (binding.PropertyValueFactories != null)
+            foreach (var name in binding.PropertyValueFactories.Keys)
             {
-                foreach (var name in binding.PropertyValueFactories.Keys)
-                {
-                    withSyntax.WithPropertyValue(name, binding.PropertyValueFactories[name]);
-                }
+                withSyntax.WithPropertyValue(name, binding.PropertyValueFactories[name]);
             }
         }
     }

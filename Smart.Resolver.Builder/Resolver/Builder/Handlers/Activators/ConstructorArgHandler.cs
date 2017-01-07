@@ -69,7 +69,18 @@
         {
             var parameter = context.PopStack<ParameterStack>();
             var activator = context.PeekStack<ActivatorStack>();
-            activator.AddConstructorArgument(parameter.Name, parameter.Value);
+
+            if (!String.IsNullOrEmpty(parameter.Name))
+            {
+                activator.ConstructorArguments.AddNamedParameter(parameter.Name, parameter.Value);
+            }
+            else
+            {
+                var index = context.ElementInfo.GetAttribute("index");
+                activator.ConstructorArguments.AddIndexedParameter(
+                    String.IsNullOrEmpty(index) ? activator.ConstructorArguments.Count : Convert.ToInt32(parameter.Name, CultureInfo.InvariantCulture),
+                    parameter.Value);
+            }
         }
     }
 }

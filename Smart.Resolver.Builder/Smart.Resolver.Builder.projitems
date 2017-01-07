@@ -18,6 +18,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Resolver\Builder\Handlers\Bindings\WithMetadataHandler.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Resolver\Builder\Handlers\Bindings\WithPropertyValueHandler.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Resolver\Builder\Handlers\Configs\ComponentHandler.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Resolver\Builder\Handlers\ConstructorArguments.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Resolver\Builder\Handlers\ElementHandlerBase.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Resolver\Builder\Handlers\IElementHandler.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Resolver\Builder\Handlers\Activators\ConstructorArgHandler.cs" />

@@ -2,6 +2,7 @@
 {
     using System;
     using System.Globalization;
+    using System.Reflection;
 
     using Smart.Converter;
     using Smart.Resolver.Builder.Stacks;
@@ -59,7 +60,7 @@
         {
             var parameter = context.PopStack<ParameterStack>();
             var activator = context.PeekStack<ActivatorStack>();
-            activator.SetPropertyValue(parameter.Name, parameter.Value);
+            activator.PropertyValues[parameter.Name] = parameter.Value;
         }
     }
 }

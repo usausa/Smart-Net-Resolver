@@ -63,18 +63,18 @@
             var parameterValue = parameter.Value as IParameter;
             if (parameterValue != null)
             {
-                binding.AddPropertyValue(parameter.Name, c => parameterValue);
+                binding.PropertyValueFactories[parameter.Name] = c => parameterValue;
                 return;
             }
 
             var factory = parameter.Value as IParameterFactory;
             if (factory != null)
             {
-                binding.AddPropertyValue(parameter.Name, factory.Create);
+                binding.PropertyValueFactories[parameter.Name] = factory.Create;
                 return;
             }
 
-            binding.AddPropertyValue(parameter.Name, c => new ConstantParameter(parameter.Value));
+            binding.PropertyValueFactories[parameter.Name] = c => new ConstantParameter(parameter.Value);
         }
     }
 }
