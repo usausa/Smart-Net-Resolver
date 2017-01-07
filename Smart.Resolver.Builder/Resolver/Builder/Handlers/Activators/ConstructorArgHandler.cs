@@ -25,18 +25,13 @@
             }
 
             var name = context.ElementInfo.GetAttribute("name");
-            var type = context.ElementInfo.GetAttribute("type");
-            if (String.IsNullOrEmpty(name) && String.IsNullOrEmpty(type))
+            var type = context.ElementInfo.GetAttributeAsType("type");
+            if (String.IsNullOrEmpty(name) && (type == null))
             {
                 throw new XmlConfigException(String.Format(CultureInfo.InvariantCulture, "Constructor element need name or type attribute. type = [{0}]", activator.TargetType));
             }
 
-            Type parameterType;
-            if (!String.IsNullOrEmpty(type))
-            {
-                parameterType = Type.GetType(type, true);
-            }
-            else
+            if (type == null)
             {
                 var types = TypeHelper.ResolveConstructorArtumentType(activator.TargetType, name);
                 if (types.Length == 0)
@@ -49,17 +44,17 @@
                     throw new XmlConfigException(String.Format(CultureInfo.InvariantCulture, "Constructor parameter is matched multiple types. type = [{0}], name = [{1}]", activator.TargetType, name));
                 }
 
-                parameterType = types[0];
+                type = types[0];
             }
 
             var value = context.ElementInfo.GetAttribute("value");
 
-            var parameter = new ParameterStack(name, parameterType);
+            var parameter = new ParameterStack(name, type);
 
             if (!String.IsNullOrEmpty(value))
             {
                 var converter = context.Components.Get<IObjectConverter>();
-                parameter.Value = converter.Convert(value, parameterType);
+                parameter.Value = converter.Convert(value, type);
             }
 
             context.PushStack(parameter);

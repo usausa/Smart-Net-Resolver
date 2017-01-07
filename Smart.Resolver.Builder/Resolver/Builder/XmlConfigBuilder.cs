@@ -73,11 +73,14 @@
             AddHandler(Mathcers.Equals("/config/component/property"), new PropertyHandler());
 
             AddHandler(Mathcers.Equals("/config/binding"), new BindingHandler());
-            AddHandler(Mathcers.Equals("/config/binding/to-constant"), new ToConstantHandler());
-            AddHandler(Mathcers.Equals("/config/binding/to-factory"), new ToFactoryHandler());
+            AddHandler(Mathcers.Equals("/config/binding/to-provider"), new ToProviderHandler());
+            AddHandler(Mathcers.Equals("/config/binding/to-provider/constructor-arg"), new ConstructorArgHandler());
+            AddHandler(Mathcers.Equals("/config/binding/to-provider/property"), new PropertyHandler());
             AddHandler(Mathcers.Equals("/config/binding/with-metadata"), new WithMetadataHandler());
             AddHandler(Mathcers.Equals("/config/binding/with-constructor-arg"), new WithConstructorArgHandler());
+            AddHandler(Mathcers.Equals("/config/binding/with-constructor-arg/named"), new NamedHandler());
             AddHandler(Mathcers.Equals("/config/binding/with-proverty-value"), new WithPropertyValueHandler());
+            AddHandler(Mathcers.Equals("/config/binding/with-proverty-value/named"), new NamedHandler());
         }
 
         /// <summary>

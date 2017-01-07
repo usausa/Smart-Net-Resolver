@@ -27,11 +27,6 @@
         /// <summary>
         ///
         /// </summary>
-        public Type ImplementationType { get; set; }
-
-        /// <summary>
-        ///
-        /// </summary>
         public Func<IComponentContainer, IProvider> ProviderFactory { get; set; }
 
         /// <summary>

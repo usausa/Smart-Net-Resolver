@@ -32,7 +32,6 @@
             }
 
             var type = context.ElementInfo.GetAttributeAsType("type");
-
             var value = context.ElementInfo.GetAttribute("value");
 
             var parameter = new ParameterStack(name, type);

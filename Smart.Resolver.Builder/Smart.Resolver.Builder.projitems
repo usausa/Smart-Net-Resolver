@@ -12,8 +12,8 @@
     <Compile Include="$(MSBuildThisFileDirectory)Resolver\Builder\BuilderContext.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Resolver\Builder\ElementInfo.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Resolver\Builder\Handlers\Bindings\BindingHandler.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Resolver\Builder\Handlers\Bindings\ToConstantHandler.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Resolver\Builder\Handlers\Bindings\ToFactoryHandler.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Resolver\Builder\Handlers\Bindings\NamedHandler.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Resolver\Builder\Handlers\Bindings\ToProviderHandler.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Resolver\Builder\Handlers\Bindings\WithConstructorArgHandler.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Resolver\Builder\Handlers\Bindings\WithMetadataHandler.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Resolver\Builder\Handlers\Bindings\WithPropertyValueHandler.cs" />
@@ -33,6 +33,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Resolver\Builder\IParameterFactory.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Resolver\Builder\IProviderFactory.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Resolver\Builder\Mathcers.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Resolver\Builder\NamedParameter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Resolver\Builder\ResolverExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Resolver\Builder\HandlerEntry.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Resolver\Builder\Scopes\IScopeProcessor.cs" />

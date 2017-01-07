@@ -32,7 +32,6 @@
             }
 
             var type = context.ElementInfo.GetAttributeAsType("type");
-
             var value = context.ElementInfo.GetAttribute("value");
 
             var parameter = new ParameterStack(name, type);
@@ -45,7 +44,7 @@
                 }
 
                 var converter = context.Components.Get<IObjectConverter>();
-                parameter.Value = converter.Convert(value, type);
+                parameter.Value = new ConstantParameter(converter.Convert(value, type));
             }
 
             context.PushStack(parameter);
