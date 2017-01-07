@@ -43,13 +43,13 @@
     {
         IBindingWithSyntax WithMetadata(string key, object value);
 
-        IBindingWithSyntax WithConstructorArgument(string name, IParameter parameter);
+        IBindingWithSyntax WithConstructorArgument(string name, Func<IComponentContainer, IParameter> factory);
 
         IBindingWithSyntax WithConstructorArgument(string name, object value);
 
         IBindingWithSyntax WithConstructorArgument(string name, Func<IKernel, object> factory);
 
-        IBindingWithSyntax WithPropertyValue(string name, IParameter parameter);
+        IBindingWithSyntax WithPropertyValue(string name, Func<IComponentContainer, IParameter> factory);
 
         IBindingWithSyntax WithPropertyValue(string name, object value);
 

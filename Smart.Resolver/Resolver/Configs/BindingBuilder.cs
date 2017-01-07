@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Linq;
 
     using Smart.ComponentModel;
     using Smart.Resolver.Bindings;
@@ -25,9 +26,9 @@
 
         private Dictionary<string, object> metadataValues;
 
-        private Dictionary<string, IParameter> constructorArguments;
+        private Dictionary<string, Func<IComponentContainer, IParameter>> constructorArgumentFactories;
 
-        private Dictionary<string, IParameter> propertyValues;
+        private Dictionary<string, Func<IComponentContainer, IParameter>> propertyValueFactories;
 
         /// <summary>
         ///
@@ -121,49 +122,49 @@
             return this;
         }
 
-        public IBindingWithSyntax WithConstructorArgument(string name, IParameter parameter)
+        public IBindingWithSyntax WithConstructorArgument(string name, Func<IComponentContainer, IParameter> factory)
         {
-            if (constructorArguments == null)
+            if (constructorArgumentFactories == null)
             {
-                constructorArguments = new Dictionary<string, IParameter>();
+                constructorArgumentFactories = new Dictionary<string, Func<IComponentContainer, IParameter>>();
             }
 
-            constructorArguments[name] = parameter;
+            constructorArgumentFactories[name] = factory;
             return this;
         }
 
         public IBindingWithSyntax WithConstructorArgument(string name, object value)
         {
-            WithConstructorArgument(name, new ConstantParameter(value));
+            WithConstructorArgument(name, (IComponentContainer c) => new ConstantParameter(value));
             return this;
         }
 
         public IBindingWithSyntax WithConstructorArgument(string name, Func<IKernel, object> factory)
         {
-            WithConstructorArgument(name, new CallbackParameter(factory));
+            WithConstructorArgument(name, (IComponentContainer c) => new CallbackParameter(factory));
             return this;
         }
 
-        public IBindingWithSyntax WithPropertyValue(string name, IParameter parameter)
+        public IBindingWithSyntax WithPropertyValue(string name, Func<IComponentContainer, IParameter> factory)
         {
-            if (propertyValues == null)
+            if (propertyValueFactories == null)
             {
-                propertyValues = new Dictionary<string, IParameter>();
+                propertyValueFactories = new Dictionary<string, Func<IComponentContainer, IParameter>>();
             }
 
-            propertyValues[name] = parameter;
+            propertyValueFactories[name] = factory;
             return this;
         }
 
         public IBindingWithSyntax WithPropertyValue(string name, object value)
         {
-            WithPropertyValue(name, new ConstantParameter(value));
+            WithPropertyValue(name, (IComponentContainer c) => new ConstantParameter(value));
             return this;
         }
 
         public IBindingWithSyntax WithPropertyValue(string name, Func<IKernel, object> factory)
         {
-            WithPropertyValue(name, new CallbackParameter(factory));
+            WithPropertyValue(name, (IComponentContainer c) => new CallbackParameter(factory));
             return this;
         }
 
@@ -183,8 +184,8 @@
                 providerFactory?.Invoke(components),
                 scopeFactory?.Invoke(components),
                 new BindingMetadata(metadataName, metadataValues),
-                new ParameterMap(constructorArguments),
-                new ParameterMap(propertyValues));
+                new ParameterMap(constructorArgumentFactories?.ToDictionary(kv => kv.Key, kv => kv.Value(components))),
+                new ParameterMap(propertyValueFactories?.ToDictionary(kv => kv.Key, kv => kv.Value(components))));
         }
     }
 }
