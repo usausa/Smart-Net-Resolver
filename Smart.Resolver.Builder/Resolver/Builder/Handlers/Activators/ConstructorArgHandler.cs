@@ -52,9 +52,10 @@
                 parameterType = types[0];
             }
 
+            var value = context.ElementInfo.GetAttribute("value");
+
             var parameter = new ParameterStack(name, parameterType);
 
-            var value = context.ElementInfo.GetAttribute("value");
             if (!String.IsNullOrEmpty(value))
             {
                 var converter = context.Components.Get<IObjectConverter>();

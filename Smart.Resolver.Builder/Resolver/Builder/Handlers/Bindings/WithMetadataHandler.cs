@@ -32,14 +32,15 @@
 
             var type = context.ElementInfo.GetAttributeAsType("type");
 
+            var value = context.ElementInfo.GetAttribute("value");
+
             var parameter = new ParameterStack(key, type);
 
-            var value = context.ElementInfo.GetAttribute("value");
             if (!String.IsNullOrEmpty(value))
             {
                 if (type == null)
                 {
-                    throw new XmlConfigException(String.Format(CultureInfo.InvariantCulture, "Invalid stack. path = [{0}]", context.Path));
+                    throw new XmlConfigException(String.Format(CultureInfo.InvariantCulture, "With-Metadata element need type attribute. path = [{0}]", context.Path));
                 }
 
                 var converter = context.Components.Get<IObjectConverter>();

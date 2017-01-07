@@ -88,19 +88,19 @@
                 }
             }
 
-            if (binding.ConstructorArguments != null)
+            if (binding.ConstructorArgumentFactories != null)
             {
-                foreach (var name in binding.ConstructorArguments.Keys)
+                foreach (var name in binding.ConstructorArgumentFactories.Keys)
                 {
-                    withSyntax.WithConstructorArgument(name, binding.ConstructorArguments[name]);
+                    withSyntax.WithConstructorArgument(name, binding.ConstructorArgumentFactories[name]);
                 }
             }
 
-            if (binding.PropertyValues != null)
+            if (binding.PropertyValueFactories != null)
             {
-                foreach (var name in binding.PropertyValues.Keys)
+                foreach (var name in binding.PropertyValueFactories.Keys)
                 {
-                    withSyntax.WithPropertyValue(name, binding.PropertyValues[name]);
+                    withSyntax.WithPropertyValue(name, binding.PropertyValueFactories[name]);
                 }
             }
         }

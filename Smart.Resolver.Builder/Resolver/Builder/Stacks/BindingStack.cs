@@ -7,7 +7,6 @@
     using Smart.Resolver.Builder.Scopes;
     using Smart.Resolver.Parameters;
     using Smart.Resolver.Providers;
-    using Smart.Resolver.Scopes;
 
     /// <summary>
     ///
@@ -16,9 +15,9 @@
     {
         private IDictionary<string, object> metadatas;
 
-        private IDictionary<string, IParameter> constructorArtuments;
+        private IDictionary<string, Func<IComponentContainer, IParameter>> constructorArtumentFactories;
 
-        private IDictionary<string, IParameter> propertyValues;
+        private IDictionary<string, Func<IComponentContainer, IParameter>> propertyValueFactories;
 
         /// <summary>
         ///
@@ -53,12 +52,12 @@
         /// <summary>
         ///
         /// </summary>
-        public IDictionary<string, IParameter> ConstructorArguments => constructorArtuments;
+        public IDictionary<string, Func<IComponentContainer, IParameter>> ConstructorArgumentFactories => constructorArtumentFactories;
 
         /// <summary>
         ///
         /// </summary>
-        public IDictionary<string, IParameter> PropertyValues => propertyValues;
+        public IDictionary<string, Func<IComponentContainer, IParameter>> PropertyValueFactories => propertyValueFactories;
 
         /// <summary>
         ///
@@ -88,30 +87,30 @@
         ///
         /// </summary>
         /// <param name="name"></param>
-        /// <param name="parameter"></param>
-        public void AddConstructorArgument(string name, IParameter parameter)
+        /// <param name="factory"></param>
+        public void AddConstructorArgument(string name, Func<IComponentContainer, IParameter> factory)
         {
-            if (constructorArtuments == null)
+            if (constructorArtumentFactories == null)
             {
-                constructorArtuments = new Dictionary<string, IParameter>();
+                constructorArtumentFactories = new Dictionary<string, Func<IComponentContainer, IParameter>>();
             }
 
-            constructorArtuments[name] = parameter;
+            constructorArtumentFactories[name] = factory;
         }
 
         /// <summary>
         ///
         /// </summary>
         /// <param name="name"></param>
-        /// <param name="parameter"></param>
-        public void AddPropertyValue(string name, IParameter parameter)
+        /// <param name="factory"></param>
+        public void AddPropertyValue(string name, Func<IComponentContainer, IParameter> factory)
         {
-            if (propertyValues == null)
+            if (propertyValueFactories == null)
             {
-                propertyValues = new Dictionary<string, IParameter>();
+                propertyValueFactories = new Dictionary<string, Func<IComponentContainer, IParameter>>();
             }
 
-            propertyValues[name] = parameter;
+            propertyValueFactories[name] = factory;
         }
     }
 }

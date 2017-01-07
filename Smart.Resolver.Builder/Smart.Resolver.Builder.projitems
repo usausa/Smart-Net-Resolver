@@ -30,7 +30,8 @@
     <Compile Include="$(MSBuildThisFileDirectory)Resolver\Builder\Handlers\Parameters\ListHandler.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Resolver\Builder\Handlers\Parameters\ObjectHandler.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Resolver\Builder\IBuilderContext.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Resolver\Builder\IObjectFactory.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Resolver\Builder\IParameterFactory.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Resolver\Builder\IProviderFactory.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Resolver\Builder\Mathcers.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Resolver\Builder\ResolverExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Resolver\Builder\HandlerEntry.cs" />

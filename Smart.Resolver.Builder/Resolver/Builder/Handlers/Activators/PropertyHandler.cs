@@ -38,9 +38,10 @@
 
             var propertyType = context.ElementInfo.GetAttributeAsType("type") ?? pi.PropertyType;
 
+            var value = context.ElementInfo.GetAttribute("value");
+
             var parameter = new ParameterStack(pi.Name, propertyType);
 
-            var value = context.ElementInfo.GetAttribute("value");
             if (!String.IsNullOrEmpty(value))
             {
                 var converter = context.Components.Get<IObjectConverter>();
