@@ -13,7 +13,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		.gitignore = .gitignore
 		README.md = README.md
 		Smart.Resolver.AspNetCore.nuspec = Smart.Resolver.AspNetCore.nuspec
-		Smart.Resolver.Builder.nuspec = Smart.Resolver.Builder.nuspec
 		Smart.Resolver.nuspec = Smart.Resolver.nuspec
 		Smart.Resolver.ruleset = Smart.Resolver.ruleset
 		Smart.Resolver.sln.DotSettings = Smart.Resolver.sln.DotSettings
@@ -32,22 +31,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Core", "Core", "{D682D743-6
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Extensions", "Extensions", "{1043501C-377D-47C9-844E-349C3D8EB247}"
 EndProject
-Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Smart.Resolver.Builder", "Smart.Resolver.Builder\Smart.Resolver.Builder.shproj", "{5E4D5DD1-DE48-4CA8-B1B5-122222355225}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Smart.Resolver.Builder.Net4", "Smart.Resolver.Builder.Net4\Smart.Resolver.Builder.Net4.csproj", "{059385F8-D073-4338-86A1-E78217341BDB}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Builders", "Builders", "{14F045AE-CA5D-47D4-AA8A-F51C5E49C20A}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Smart.Resolver.Builder.PCL", "Smart.Resolver.Builder.PCL\Smart.Resolver.Builder.PCL.csproj", "{26BBBDB3-9923-409F-AD45-CF0769D786B4}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Smart.Resolver.Builder.Tests", "Smart.Resolver.Builder.Tests\Smart.Resolver.Builder.Tests.csproj", "{C89366AF-C135-4126-B609-D031D89CF09A}"
-EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
-		Smart.Resolver.Builder\Smart.Resolver.Builder.projitems*{059385f8-d073-4338-86a1-e78217341bdb}*SharedItemsImports = 4
-		Smart.Resolver.Builder\Smart.Resolver.Builder.projitems*{26bbbdb3-9923-409f-ad45-cf0769d786b4}*SharedItemsImports = 4
 		Smart.Resolver\Smart.Resolver.projitems*{51b56841-26cf-46ab-b6f1-092c85ed9521}*SharedItemsImports = 4
-		Smart.Resolver.Builder\Smart.Resolver.Builder.projitems*{5e4d5dd1-de48-4ca8-b1b5-122222355225}*SharedItemsImports = 13
 		Smart.Resolver\Smart.Resolver.projitems*{6631fca8-7972-44da-a377-c687ac7e0d9c}*SharedItemsImports = 4
 		Smart.Resolver\Smart.Resolver.projitems*{dab17e8d-d166-4714-9fe7-194e3fc1dfab}*SharedItemsImports = 13
 	EndGlobalSection
@@ -76,18 +62,6 @@ Global
 		{2D5E5003-862E-41EF-B85B-D8DED9C53A92}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2D5E5003-862E-41EF-B85B-D8DED9C53A92}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2D5E5003-862E-41EF-B85B-D8DED9C53A92}.Release|Any CPU.Build.0 = Release|Any CPU
-		{059385F8-D073-4338-86A1-E78217341BDB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{059385F8-D073-4338-86A1-E78217341BDB}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{059385F8-D073-4338-86A1-E78217341BDB}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{059385F8-D073-4338-86A1-E78217341BDB}.Release|Any CPU.Build.0 = Release|Any CPU
-		{26BBBDB3-9923-409F-AD45-CF0769D786B4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{26BBBDB3-9923-409F-AD45-CF0769D786B4}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{26BBBDB3-9923-409F-AD45-CF0769D786B4}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{26BBBDB3-9923-409F-AD45-CF0769D786B4}.Release|Any CPU.Build.0 = Release|Any CPU
-		{C89366AF-C135-4126-B609-D031D89CF09A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{C89366AF-C135-4126-B609-D031D89CF09A}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{C89366AF-C135-4126-B609-D031D89CF09A}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{C89366AF-C135-4126-B609-D031D89CF09A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -99,9 +73,5 @@ Global
 		{51B56841-26CF-46AB-B6F1-092C85ED9521} = {D682D743-666B-423B-93D7-CCA171D81B51}
 		{E5CC9AD6-7081-401B-8212-65C7FBF072B8} = {1043501C-377D-47C9-844E-349C3D8EB247}
 		{2D5E5003-862E-41EF-B85B-D8DED9C53A92} = {1043501C-377D-47C9-844E-349C3D8EB247}
-		{5E4D5DD1-DE48-4CA8-B1B5-122222355225} = {14F045AE-CA5D-47D4-AA8A-F51C5E49C20A}
-		{059385F8-D073-4338-86A1-E78217341BDB} = {14F045AE-CA5D-47D4-AA8A-F51C5E49C20A}
-		{26BBBDB3-9923-409F-AD45-CF0769D786B4} = {14F045AE-CA5D-47D4-AA8A-F51C5E49C20A}
-		{C89366AF-C135-4126-B609-D031D89CF09A} = {14F045AE-CA5D-47D4-AA8A-F51C5E49C20A}
 	EndGlobalSection
 EndGlobal
