@@ -3,6 +3,7 @@
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using System.Reflection;
 
     using Smart.ComponentModel;
     using Smart.Resolver.Bindings;
@@ -22,7 +23,7 @@
         /// <returns></returns>
         public IEnumerable<IBinding> Handle(IComponentContainer components, IBindingTable table, Type type)
         {
-            if (!type.GetIsInterface())
+            if (!type.GetTypeInfo().IsInterface)
             {
                 return Enumerable.Empty<IBinding>();
             }

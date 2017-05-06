@@ -1,16 +1,16 @@
 ﻿namespace Smart.Resolver
 {
-    using Microsoft.VisualStudio.TestTools.UnitTesting;
-
+    using System;
     using Smart.Resolver.Mocks;
+
+    using Xunit;
 
     /// <summary>
     ///
     /// </summary>
-    [TestClass]
     public class StandardResolverTest
     {
-        [TestMethod]
+        [Fact]
         public void SelfResolved()
         {
             var config = new ResolverConfig();
@@ -19,11 +19,11 @@
             {
                 var obj = resolver.Get<IResolver>();
 
-                Assert.AreSame(resolver, obj);
+                Assert.Same(resolver, obj);
             }
         }
 
-        [TestMethod]
+        [Fact]
         public void SelfTryResolved()
         {
             var config = new ResolverConfig();
@@ -33,12 +33,12 @@
                 bool result;
                 var obj = resolver.TryGet<IResolver>(out result);
 
-                Assert.IsTrue(result);
-                Assert.AreSame(resolver, obj);
+                Assert.True(result);
+                Assert.Same(resolver, obj);
             }
         }
 
-        [TestMethod]
+        [Fact]
         public void SelfCanResolved()
         {
             var config = new ResolverConfig();
@@ -47,11 +47,11 @@
             {
                 var result = resolver.CanGet<IResolver>();
 
-                Assert.IsTrue(result);
+                Assert.True(result);
             }
         }
 
-        [TestMethod]
+        [Fact]
         public void ObjectIsResolvedWhenBindIsExist()
         {
             var config = new ResolverConfig();
@@ -61,11 +61,11 @@
             {
                 var obj = resolver.Get<SimpleObject>();
 
-                Assert.IsNotNull(obj);
+                Assert.NotNull(obj);
             }
         }
 
-        [TestMethod]
+        [Fact]
         public void ObjectIsResolvedWhenBindIsNotExist()
         {
             var config = new ResolverConfig();
@@ -74,11 +74,11 @@
             {
                 var obj = resolver.Get<SimpleObject>();
 
-                Assert.IsNotNull(obj);
+                Assert.NotNull(obj);
             }
         }
 
-        [TestMethod]
+        [Fact]
         public void ObjectIsTryResolvedWhenBindIsExist()
         {
             var config = new ResolverConfig();
@@ -89,12 +89,12 @@
                 bool result;
                 var obj = resolver.TryGet<SimpleObject>(out result);
 
-                Assert.IsTrue(result);
-                Assert.IsNotNull(obj);
+                Assert.True(result);
+                Assert.NotNull(obj);
             }
         }
 
-        [TestMethod]
+        [Fact]
         public void ObjectIsTryResolvedWhenBindIsNotExist()
         {
             var config = new ResolverConfig();
@@ -104,12 +104,12 @@
                 bool result;
                 var obj = resolver.TryGet<SimpleObject>(out result);
 
-                Assert.IsTrue(result);
-                Assert.IsNotNull(obj);
+                Assert.True(result);
+                Assert.NotNull(obj);
             }
         }
 
-        [TestMethod]
+        [Fact]
         public void ObjectCanResolvedWhenBindIsExist()
         {
             var config = new ResolverConfig();
@@ -119,11 +119,11 @@
             {
                 var result = resolver.CanGet<SimpleObject>();
 
-                Assert.IsTrue(result);
+                Assert.True(result);
             }
         }
 
-        [TestMethod]
+        [Fact]
         public void ObjectCanResolvedWhenBindIsNotExist()
         {
             var config = new ResolverConfig();
@@ -132,11 +132,11 @@
             {
                 var result = resolver.CanGet<SimpleObject>();
 
-                Assert.IsTrue(result);
+                Assert.True(result);
             }
         }
 
-        [TestMethod]
+        [Fact]
         public void ObjectIsResolvedWhenMultiBindIsExist()
         {
             var config = new ResolverConfig();
@@ -149,7 +149,7 @@
             }
         }
 
-        [TestMethod]
+        [Fact]
         public void ObjectIsTryResolvedWhenMultiBindIsExist()
         {
             var config = new ResolverConfig();
@@ -161,11 +161,11 @@
                 bool result;
                 resolver.TryGet<SimpleObject>(out result);
 
-                Assert.IsTrue(result);
+                Assert.True(result);
             }
         }
 
-        [TestMethod]
+        [Fact]
         public void ObjectCanResolvedWhenMultiBindIsExist()
         {
             var config = new ResolverConfig();
@@ -176,23 +176,22 @@
             {
                 var result = resolver.CanGet<SimpleObject>();
 
-                Assert.IsTrue(result);
+                Assert.True(result);
             }
         }
 
-        [TestMethod]
-        [ExpectedException(typeof(System.InvalidOperationException))]
+        [Fact]
         public void InterfaceIsNotResolvedWhenBindIsNotExist()
         {
             var config = new ResolverConfig();
 
             using (var resolver = config.ToResolver())
             {
-                resolver.Get<IService>();
+                Assert.Throws<InvalidOperationException>(() => resolver.Get<IService>());
             }
         }
 
-        [TestMethod]
+        [Fact]
         public void InterfaceIsNotTryResolvedWhenBindIsNotExist()
         {
             var config = new ResolverConfig();
@@ -202,11 +201,11 @@
                 bool result;
                 resolver.TryGet<IService>(out result);
 
-                Assert.IsFalse(result);
+                Assert.False(result);
             }
         }
 
-        [TestMethod]
+        [Fact]
         public void InterfaceIsNotCanResolvedWhenBindIsNotExist()
         {
             var config = new ResolverConfig();
@@ -215,11 +214,11 @@
             {
                 var result = resolver.CanGet<IService>();
 
-                Assert.IsFalse(result);
+                Assert.False(result);
             }
         }
 
-        [TestMethod]
+        [Fact]
         public void ObjectIsAllResolvedWhenMultiBinding()
         {
             var config = new ResolverConfig();
@@ -232,12 +231,12 @@
 
                 foreach (var obj in objs)
                 {
-                    Assert.AreEqual(obj.GetType(), typeof(SimpleObject));
+                    Assert.Equal(obj.GetType(), typeof(SimpleObject));
                 }
             }
         }
 
-        [TestMethod]
+        [Fact]
         public void UseCaseForWebControllerAndService()
         {
             var config = new ResolverConfig();
@@ -249,8 +248,8 @@
                 var controller1 = (Controller)resolver.Get(typeof(Controller));
                 var controller2 = (Controller)resolver.Get(typeof(Controller));
 
-                Assert.AreNotSame(controller1, controller2);
-                Assert.AreSame(controller1.Service, controller2.Service);
+                Assert.NotSame(controller1, controller2);
+                Assert.Same(controller1.Service, controller2.Service);
             }
         }
     }

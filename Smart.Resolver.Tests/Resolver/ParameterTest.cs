@@ -1,16 +1,15 @@
 ﻿namespace Smart.Resolver
 {
-    using Microsoft.VisualStudio.TestTools.UnitTesting;
-
     using Smart.Resolver.Mocks;
+
+    using Xunit;
 
     /// <summary>
     ///
     /// </summary>
-    [TestClass]
     public class ParameterTest
     {
-        [TestMethod]
+        [Fact]
         public void ObjectIsInjectedOnCreationWithConstantParameter()
         {
             var config = new ResolverConfig();
@@ -21,11 +20,11 @@
             {
                 var controller = resolver.Get<Controller>();
 
-                Assert.AreSame(service, controller.Service);
+                Assert.Same(service, controller.Service);
             }
         }
 
-        [TestMethod]
+        [Fact]
         public void ObjectIsInjectedOnCreationWithCallbackParameter()
         {
             var config = new ResolverConfig();
@@ -37,11 +36,11 @@
                 var controller = resolver.Get<Controller>();
                 var service = resolver.Get<IService>();
 
-                Assert.AreSame(service, controller.Service);
+                Assert.Same(service, controller.Service);
             }
         }
 
-        [TestMethod]
+        [Fact]
         public void ObjectIsInjectedWhenInjectWithConstantParameterOnCreation()
         {
             var config = new ResolverConfig();
@@ -53,11 +52,11 @@
             {
                 var obj = resolver.Get<HasPropertyObject>();
 
-                Assert.AreSame(injected, obj.Injected);
+                Assert.Same(injected, obj.Injected);
             }
         }
 
-        [TestMethod]
+        [Fact]
         public void ObjectIsInjectedWhenInjectWithCallbavkParameterOnCreation()
         {
             var config = new ResolverConfig();
@@ -70,7 +69,7 @@
                 var obj = resolver.Get<HasPropertyObject>();
                 var injected = resolver.Get<SimpleObject>();
 
-                Assert.AreSame(injected, obj.Injected);
+                Assert.Same(injected, obj.Injected);
             }
         }
     }

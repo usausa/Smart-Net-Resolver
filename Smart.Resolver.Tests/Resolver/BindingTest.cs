@@ -4,21 +4,20 @@
     using System.Collections.Generic;
     using System.Linq;
 
-    using Microsoft.VisualStudio.TestTools.UnitTesting;
-
     using Smart.ComponentModel;
     using Smart.Resolver.Bindings;
     using Smart.Resolver.Handlers;
     using Smart.Resolver.Mocks;
     using Smart.Resolver.Providers;
 
+    using Xunit;
+
     /// <summary>
     ///
     /// </summary>
-    [TestClass]
     public class BindingTest
     {
-        [TestMethod]
+        [Fact]
         public void ObjectBindingCreatedBySelfBindingResolver()
         {
             var config = new ResolverConfig();
@@ -26,11 +25,11 @@
             {
                 var obj = resolver.Get<SimpleObject>();
 
-                Assert.IsNotNull(obj);
+                Assert.NotNull(obj);
             }
         }
 
-        [TestMethod]
+        [Fact]
         public void ObjectBindingCreatedByOpenGenericBindingResolver()
         {
             var config = new ResolverConfig();
@@ -42,8 +41,8 @@
             {
                 var obj = resolver.Get(typeof(IGenericService<int>));
 
-                Assert.IsNotNull(obj);
-                Assert.AreEqual(obj.GetType(), typeof(GenericService<int>));
+                Assert.NotNull(obj);
+                Assert.Equal(obj.GetType(), typeof(GenericService<int>));
             }
         }
 
@@ -60,7 +59,7 @@
             }
         }
 
-        [TestMethod]
+        [Fact]
         public void ObjectBindingCreatedByCustomBindingResolver()
         {
             var config = new ResolverConfig();
@@ -74,7 +73,7 @@
             {
                 var obj = resolver.Get<IService>();
 
-                Assert.IsNotNull(obj);
+                Assert.NotNull(obj);
             }
         }
 

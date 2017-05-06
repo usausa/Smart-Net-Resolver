@@ -1,13 +1,17 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+# Visual Studio 15
+VisualStudioVersion = 15.0.26403.7
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Smart.Resolver", "Smart.Resolver\Smart.Resolver.shproj", "{DAB17E8D-D166-4714-9FE7-194E3FC1DFAB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Smart.Resolver", "Smart.Resolver\Smart.Resolver.csproj", "{198FCDD9-BC14-4C99-BDDE-9912B25C42E4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Smart.Resolver.Net4", "Smart.Resolver.Net4\Smart.Resolver.Net4.csproj", "{6631FCA8-7972-44DA-A377-C687AC7E0D9C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Smart.Resolver.AspNetCore", "Smart.Resolver.AspNetCore\Smart.Resolver.AspNetCore.csproj", "{BA96E24B-5444-4E4D-BF34-11EF91F7CD6C}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{DD7A5021-E280-48BA-94F0-2032F13ED197}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Smart.Resolver.Xamarin", "Smart.Resolver.Xamarin\Smart.Resolver.Xamarin.csproj", "{1DB2D26B-D269-4445-965C-099C89FDC149}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Smart.Resolver.Tests", "Smart.Resolver.Tests\Smart.Resolver.Tests.csproj", "{38EF8F58-AE3B-454A-A9DA-31048F1FF0C3}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{05D4A4FB-F695-4A0B-AE5A-B57A92092C2A}"
 	ProjectSection(SolutionItems) = preProject
 		.gitattributes = .gitattributes
 		.gitignore = .gitignore
@@ -19,59 +23,30 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		Smart.Resolver.Xamarin.nuspec = Smart.Resolver.Xamarin.nuspec
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Smart.Resolver.Tests.Net4", "Smart.Resolver.Tests.Net4\Smart.Resolver.Tests.Net4.csproj", "{3A675130-8288-47FA-A09A-570D0B955130}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Smart.Resolver.PCL", "Smart.Resolver.PCL\Smart.Resolver.PCL.csproj", "{51B56841-26CF-46AB-B6F1-092C85ED9521}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Smart.Resolver.Xamarin", "Smart.Resolver.Xamarin\Smart.Resolver.Xamarin.csproj", "{E5CC9AD6-7081-401B-8212-65C7FBF072B8}"
-EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Smart.Resolver.AspNetCore", "Smart.Resolver.AspNetCore\Smart.Resolver.AspNetCore.xproj", "{2D5E5003-862E-41EF-B85B-D8DED9C53A92}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Core", "Core", "{D682D743-666B-423B-93D7-CCA171D81B51}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Extensions", "Extensions", "{1043501C-377D-47C9-844E-349C3D8EB247}"
-EndProject
 Global
-	GlobalSection(SharedMSBuildProjectFiles) = preSolution
-		Smart.Resolver\Smart.Resolver.projitems*{51b56841-26cf-46ab-b6f1-092c85ed9521}*SharedItemsImports = 4
-		Smart.Resolver\Smart.Resolver.projitems*{6631fca8-7972-44da-a377-c687ac7e0d9c}*SharedItemsImports = 4
-		Smart.Resolver\Smart.Resolver.projitems*{dab17e8d-d166-4714-9fe7-194e3fc1dfab}*SharedItemsImports = 13
-	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{6631FCA8-7972-44DA-A377-C687AC7E0D9C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{6631FCA8-7972-44DA-A377-C687AC7E0D9C}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{6631FCA8-7972-44DA-A377-C687AC7E0D9C}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{6631FCA8-7972-44DA-A377-C687AC7E0D9C}.Release|Any CPU.Build.0 = Release|Any CPU
-		{3A675130-8288-47FA-A09A-570D0B955130}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{3A675130-8288-47FA-A09A-570D0B955130}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{3A675130-8288-47FA-A09A-570D0B955130}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{3A675130-8288-47FA-A09A-570D0B955130}.Release|Any CPU.Build.0 = Release|Any CPU
-		{51B56841-26CF-46AB-B6F1-092C85ED9521}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{51B56841-26CF-46AB-B6F1-092C85ED9521}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{51B56841-26CF-46AB-B6F1-092C85ED9521}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{51B56841-26CF-46AB-B6F1-092C85ED9521}.Release|Any CPU.Build.0 = Release|Any CPU
-		{E5CC9AD6-7081-401B-8212-65C7FBF072B8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{E5CC9AD6-7081-401B-8212-65C7FBF072B8}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{E5CC9AD6-7081-401B-8212-65C7FBF072B8}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{E5CC9AD6-7081-401B-8212-65C7FBF072B8}.Release|Any CPU.Build.0 = Release|Any CPU
-		{2D5E5003-862E-41EF-B85B-D8DED9C53A92}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{2D5E5003-862E-41EF-B85B-D8DED9C53A92}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{2D5E5003-862E-41EF-B85B-D8DED9C53A92}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{2D5E5003-862E-41EF-B85B-D8DED9C53A92}.Release|Any CPU.Build.0 = Release|Any CPU
+		{198FCDD9-BC14-4C99-BDDE-9912B25C42E4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{198FCDD9-BC14-4C99-BDDE-9912B25C42E4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{198FCDD9-BC14-4C99-BDDE-9912B25C42E4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{198FCDD9-BC14-4C99-BDDE-9912B25C42E4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BA96E24B-5444-4E4D-BF34-11EF91F7CD6C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BA96E24B-5444-4E4D-BF34-11EF91F7CD6C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BA96E24B-5444-4E4D-BF34-11EF91F7CD6C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BA96E24B-5444-4E4D-BF34-11EF91F7CD6C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1DB2D26B-D269-4445-965C-099C89FDC149}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1DB2D26B-D269-4445-965C-099C89FDC149}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1DB2D26B-D269-4445-965C-099C89FDC149}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1DB2D26B-D269-4445-965C-099C89FDC149}.Release|Any CPU.Build.0 = Release|Any CPU
+		{38EF8F58-AE3B-454A-A9DA-31048F1FF0C3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{38EF8F58-AE3B-454A-A9DA-31048F1FF0C3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{38EF8F58-AE3B-454A-A9DA-31048F1FF0C3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{38EF8F58-AE3B-454A-A9DA-31048F1FF0C3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
-	EndGlobalSection
-	GlobalSection(NestedProjects) = preSolution
-		{DAB17E8D-D166-4714-9FE7-194E3FC1DFAB} = {D682D743-666B-423B-93D7-CCA171D81B51}
-		{6631FCA8-7972-44DA-A377-C687AC7E0D9C} = {D682D743-666B-423B-93D7-CCA171D81B51}
-		{3A675130-8288-47FA-A09A-570D0B955130} = {D682D743-666B-423B-93D7-CCA171D81B51}
-		{51B56841-26CF-46AB-B6F1-092C85ED9521} = {D682D743-666B-423B-93D7-CCA171D81B51}
-		{E5CC9AD6-7081-401B-8212-65C7FBF072B8} = {1043501C-377D-47C9-844E-349C3D8EB247}
-		{2D5E5003-862E-41EF-B85B-D8DED9C53A92} = {1043501C-377D-47C9-844E-349C3D8EB247}
 	EndGlobalSection
 EndGlobal

@@ -3,19 +3,17 @@
     using System;
     using System.Diagnostics;
 
-    using Microsoft.VisualStudio.TestTools.UnitTesting;
-
     using Smart.Resolver.Mocks;
+
+    using Xunit;
 
     /// <summary>
     ///
     /// </summary>
-    [TestClass]
     public class BenchmarkTest
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Reliability", "CA2001:AvoidCallingProblematicMethods", Justification = "Ignore")]
-        [Ignore]
-        [TestMethod]
+        [Fact(Skip = "Benchmark")]
         public void BenchmarkScinarioForWebControllerAndService()
         {
             const int count = 100 * 10000;

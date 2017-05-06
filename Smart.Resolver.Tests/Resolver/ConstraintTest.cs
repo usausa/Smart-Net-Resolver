@@ -2,20 +2,19 @@
 {
     using System;
 
-    using Microsoft.VisualStudio.TestTools.UnitTesting;
-
     using Smart.Resolver.Attributes;
     using Smart.Resolver.Bindings;
     using Smart.Resolver.Constraints;
     using Smart.Resolver.Mocks;
 
+    using Xunit;
+
     /// <summary>
     ///
     /// </summary>
-    [TestClass]
     public class ConstraintTest
     {
-        [TestMethod]
+        [Fact]
         public void ObjectIsSelectedByNameConstraint()
         {
             var config = new ResolverConfig();
@@ -29,12 +28,12 @@
                 var foo = resolver.Get<SimpleObject>("foo");
                 var bar = resolver.Get<SimpleObject>("bar");
 
-                Assert.AreSame(obj.SimpleObject, foo);
-                Assert.AreNotSame(obj.SimpleObject, bar);
+                Assert.Same(obj.SimpleObject, foo);
+                Assert.NotSame(obj.SimpleObject, bar);
             }
         }
 
-        [TestMethod]
+        [Fact]
         public void ObjectIsSelectedByHasMetadataConstraint()
         {
             var config = new ResolverConfig();
@@ -47,11 +46,11 @@
                 var obj = resolver.Get<HasMetadataConstraintInjectedObject>();
                 var hoge = resolver.Resolve(typeof(SimpleObject), new HasMetadataConstraint("hoge"));
 
-                Assert.AreSame(obj.SimpleObject, hoge);
+                Assert.Same(obj.SimpleObject, hoge);
             }
         }
 
-        [TestMethod]
+        [Fact]
         public void ObjectIsSelectedByChainConstraint()
         {
             var config = new ResolverConfig();
@@ -67,7 +66,7 @@
                 var obj = resolver.Get<ChainConstraintInjectedObject>();
                 var barHoge = resolver.Resolve(typeof(SimpleObject), new ChainConstraint(new NameConstraint("bar"), new HasMetadataConstraint("hoge")));
 
-                Assert.AreSame(obj.SimpleObject, barHoge);
+                Assert.Same(obj.SimpleObject, barHoge);
             }
         }
 

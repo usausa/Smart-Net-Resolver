@@ -39,14 +39,14 @@
                 return metadata;
             }
 
-            var constructors = type.GetConstructors()
+            var constructors = type.GetTypeInfo().DeclaredConstructors
                 .OrderByDescending(c => c.IsDefined(InjectType) ? 1 : 0)
                 .ThenByDescending(c => c.GetParameters().Length)
                 .ThenByDescending(c => c.GetParameters().Count(p => p.HasDefaultValue))
                 .Select(CreateConstructorMetadata)
                 .ToArray();
 
-            var properties = type.GetProperties()
+            var properties = type.GetTypeInfo().DeclaredProperties
                 .Where(p => p.IsDefined(InjectType))
                 .Select(CreatePropertyMetadata)
                 .ToArray();
@@ -90,7 +90,7 @@
             }
 
             // IEnumerable type
-            if (pi.ParameterType.GetIsGenericType())
+            if (pi.ParameterType.GetTypeInfo().IsGenericType)
             {
                 var genericType = pi.ParameterType.GetGenericTypeDefinition();
                 if ((genericType == EnumerableType) || (genericType == CollectionType) || (genericType == ListType))

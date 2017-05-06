@@ -4,20 +4,19 @@
     using System.Collections.Generic;
     using System.Threading;
 
-    using Microsoft.VisualStudio.TestTools.UnitTesting;
-
     using Smart.ComponentModel;
     using Smart.Resolver.Bindings;
     using Smart.Resolver.Mocks;
     using Smart.Resolver.Scopes;
 
+    using Xunit;
+
     /// <summary>
     ///
     /// </summary>
-    [TestClass]
     public class ScopeTest
     {
-        [TestMethod]
+        [Fact]
         public void ObjectInTransientScopeAreNotSame()
         {
             var config = new ResolverConfig();
@@ -28,11 +27,11 @@
                 var obj1 = resolver.Get<SimpleObject>();
                 var obj2 = resolver.Get<SimpleObject>();
 
-                Assert.AreNotSame(obj1, obj2);
+                Assert.NotSame(obj1, obj2);
             }
         }
 
-        [TestMethod]
+        [Fact]
         public void ObjectInSingletonScopeAreSame()
         {
             var config = new ResolverConfig();
@@ -43,11 +42,11 @@
                 var obj1 = resolver.Get<SimpleObject>();
                 var obj2 = resolver.Get<SimpleObject>();
 
-                Assert.AreSame(obj1, obj2);
+                Assert.Same(obj1, obj2);
             }
         }
 
-        [TestMethod]
+        [Fact]
         public void ObjectInCustomScope()
         {
             var config = new ResolverConfig();
@@ -59,11 +58,11 @@
                 var obj1 = resolver.Get<SimpleObject>();
                 var obj2 = resolver.Get<SimpleObject>();
 
-                Assert.AreSame(obj1, obj2);
+                Assert.Same(obj1, obj2);
             }
         }
 
-        [TestMethod]
+        [Fact]
         public void ObjectInSingletonScopeAreDisposedWhenResolverDisposed()
         {
             var config = new ResolverConfig();
@@ -75,7 +74,7 @@
                 obj = resolver.Get<DisposeTrackingObject>();
             }
 
-            Assert.IsTrue(obj.Disposed);
+            Assert.True(obj.Disposed);
         }
 
         protected sealed class DisposeTrackingObject : IDisposable

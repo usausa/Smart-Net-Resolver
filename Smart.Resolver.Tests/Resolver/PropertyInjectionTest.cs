@@ -1,16 +1,15 @@
 ﻿namespace Smart.Resolver
 {
-    using Microsoft.VisualStudio.TestTools.UnitTesting;
-
     using Smart.Resolver.Mocks;
+
+    using Xunit;
 
     /// <summary>
     ///
     /// </summary>
-    [TestClass]
     public class PropertyInjectionTest
     {
-        [TestMethod]
+        [Fact]
         public void ObjectIsInjectedOnCreationWhenPropertyInjectorEnabled()
         {
             var config = new ResolverConfig();
@@ -22,11 +21,11 @@
             {
                 var obj = resolver.Get<HasPropertyObject>();
 
-                Assert.IsNotNull(obj.Injected);
+                Assert.NotNull(obj.Injected);
             }
         }
 
-        [TestMethod]
+        [Fact]
         public void ObjectIsInjectedByInjectWhenPropertyInjectorEnabled()
         {
             var config = new ResolverConfig();
@@ -38,11 +37,11 @@
                 var obj = new HasPropertyObject();
                 resolver.Inject(obj);
 
-                Assert.IsNotNull(obj.Injected);
+                Assert.NotNull(obj.Injected);
             }
         }
 
-        [TestMethod]
+        [Fact]
         public void ObjectIsNotInjectedOnCreationWhenDefault()
         {
             var config = new ResolverConfig();
@@ -53,11 +52,11 @@
             {
                 var obj = resolver.Get<HasPropertyObject>();
 
-                Assert.IsNull(obj.Injected);
+                Assert.Null(obj.Injected);
             }
         }
 
-        [TestMethod]
+        [Fact]
         public void ObjectIsNotInjectedByInjectWhenDefault()
         {
             var config = new ResolverConfig();
@@ -68,7 +67,7 @@
                 var obj = new HasPropertyObject();
                 resolver.Inject(obj);
 
-                Assert.IsNull(obj.Injected);
+                Assert.Null(obj.Injected);
             }
         }
     }

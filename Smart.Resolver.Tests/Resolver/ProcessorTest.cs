@@ -1,17 +1,16 @@
 ﻿namespace Smart.Resolver
 {
-    using Microsoft.VisualStudio.TestTools.UnitTesting;
-
     using Smart.Resolver.Mocks;
     using Smart.Resolver.Processors;
+
+    using Xunit;
 
     /// <summary>
     ///
     /// </summary>
-    [TestClass]
     public class ProcessorTest
     {
-        [TestMethod]
+        [Fact]
         public void ObjectIsInitializedOnCreation()
         {
             var config = new ResolverConfig();
@@ -22,11 +21,11 @@
             {
                 var obj = resolver.Get<InitializableObject>();
 
-                Assert.AreEqual(1, obj.InitializedCount);
+                Assert.Equal(1, obj.InitializedCount);
             }
         }
 
-        [TestMethod]
+        [Fact]
         public void ObjectIsNotInitializedOnInjection()
         {
             var config = new ResolverConfig();
@@ -35,11 +34,11 @@
                 var obj = new InitializableObject();
                 resolver.Inject(obj);
 
-                Assert.AreEqual(0, obj.InitializedCount);
+                Assert.Equal(0, obj.InitializedCount);
             }
         }
 
-        [TestMethod]
+        [Fact]
         public void ObjectIsInitializedAtOnceInSingletonScope()
         {
             var config = new ResolverConfig();
@@ -51,12 +50,12 @@
                 var obj1 = resolver.Get<InitializableObject>();
                 var obj2 = resolver.Get<InitializableObject>();
 
-                Assert.AreSame(obj1, obj2);
-                Assert.AreEqual(1, obj2.InitializedCount);
+                Assert.Same(obj1, obj2);
+                Assert.Equal(1, obj2.InitializedCount);
             }
         }
 
-        [TestMethod]
+        [Fact]
         public void ObjectIsNotInitializedWhenProcessorDisabled()
         {
             var config = new ResolverConfig();
@@ -66,11 +65,11 @@
             {
                 var obj = resolver.Get<InitializableObject>();
 
-                Assert.AreEqual(0, obj.InitializedCount);
+                Assert.Equal(0, obj.InitializedCount);
             }
         }
 
-        [TestMethod]
+        [Fact]
         public void ObjectIsCustomInitializedWhenProcessorCustomized()
         {
             var config = new ResolverConfig();
@@ -81,7 +80,7 @@
             {
                 var obj = resolver.Get<CustomInitializableObject>();
 
-                Assert.AreEqual(true, obj.Initialized);
+                Assert.Equal(true, obj.Initialized);
             }
         }
 

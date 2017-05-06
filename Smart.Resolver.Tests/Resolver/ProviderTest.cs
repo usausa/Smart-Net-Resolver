@@ -3,18 +3,17 @@
     using System.Collections.Generic;
     using System.Linq;
 
-    using Microsoft.VisualStudio.TestTools.UnitTesting;
-
     using Smart.Collections.Generic;
     using Smart.Resolver.Mocks;
+
+    using Xunit;
 
     /// <summary>
     ///
     /// </summary>
-    [TestClass]
     public class ProviderTest
     {
-        [TestMethod]
+        [Fact]
         public void ObjectCreatedByConstantProvider()
         {
             var config = new ResolverConfig();
@@ -26,11 +25,11 @@
             {
                 var controller = resolver.Get<Controller>();
 
-                Assert.AreSame(service, controller.Service);
+                Assert.Same(service, controller.Service);
             }
         }
 
-        [TestMethod]
+        [Fact]
         public void ObjectCreatedByCallbackProvider()
         {
             var config = new ResolverConfig();
@@ -42,11 +41,11 @@
             {
                 var controller = resolver.Get<Controller>();
 
-                Assert.AreSame(service, controller.Service);
+                Assert.Same(service, controller.Service);
             }
         }
 
-        [TestMethod]
+        [Fact]
         public void ObjectArrayCreatedByStandardProvider()
         {
             var config = new ResolverConfig();
@@ -60,14 +59,14 @@
                 var foo = resolver.Get<SimpleObject>("foo");
                 var bar = resolver.Get<SimpleObject>("bar");
 
-                Assert.AreEqual(2, obj.Objects.Length);
-                Assert.AreNotSame(foo, bar);
-                Assert.IsTrue(obj.Objects.Contains(foo, x => x));
-                Assert.IsTrue(obj.Objects.Contains(bar, x => x));
+                Assert.Equal(2, obj.Objects.Length);
+                Assert.NotSame(foo, bar);
+                Assert.True(obj.Objects.Contains(foo, x => x));
+                Assert.True(obj.Objects.Contains(bar, x => x));
             }
         }
 
-        [TestMethod]
+        [Fact]
         public void ObjectEnumerableCreatedByStandardProvider()
         {
             var config = new ResolverConfig();
@@ -81,14 +80,14 @@
                 var foo = resolver.Get<SimpleObject>("foo");
                 var bar = resolver.Get<SimpleObject>("bar");
 
-                Assert.AreEqual(2, obj.Objects.Count());
-                Assert.AreNotSame(foo, bar);
-                Assert.IsTrue(obj.Objects.Contains(foo, x => x));
-                Assert.IsTrue(obj.Objects.Contains(bar, x => x));
+                Assert.Equal(2, obj.Objects.Count());
+                Assert.NotSame(foo, bar);
+                Assert.True(obj.Objects.Contains(foo, x => x));
+                Assert.True(obj.Objects.Contains(bar, x => x));
             }
         }
 
-        [TestMethod]
+        [Fact]
         public void ObjectCollectionCreatedByStandardProvider()
         {
             var config = new ResolverConfig();
@@ -102,14 +101,14 @@
                 var foo = resolver.Get<SimpleObject>("foo");
                 var bar = resolver.Get<SimpleObject>("bar");
 
-                Assert.AreEqual(2, obj.Objects.Count);
-                Assert.AreNotSame(foo, bar);
-                Assert.IsTrue(obj.Objects.Contains(foo, x => x));
-                Assert.IsTrue(obj.Objects.Contains(bar, x => x));
+                Assert.Equal(2, obj.Objects.Count);
+                Assert.NotSame(foo, bar);
+                Assert.True(obj.Objects.Contains(foo, x => x));
+                Assert.True(obj.Objects.Contains(bar, x => x));
             }
         }
 
-        [TestMethod]
+        [Fact]
         public void ObjectListCreatedByStandardProvider()
         {
             var config = new ResolverConfig();
@@ -123,14 +122,14 @@
                 var foo = resolver.Get<SimpleObject>("foo");
                 var bar = resolver.Get<SimpleObject>("bar");
 
-                Assert.AreEqual(2, obj.Objects.Count);
-                Assert.AreNotSame(foo, bar);
-                Assert.IsTrue(obj.Objects.Contains(foo, x => x));
-                Assert.IsTrue(obj.Objects.Contains(bar, x => x));
+                Assert.Equal(2, obj.Objects.Count);
+                Assert.NotSame(foo, bar);
+                Assert.True(obj.Objects.Contains(foo, x => x));
+                Assert.True(obj.Objects.Contains(bar, x => x));
             }
         }
 
-        [TestMethod]
+        [Fact]
         public void ObjectIsCreatedByMaxParameterConstructor()
         {
             var config = new ResolverConfig();
@@ -140,11 +139,11 @@
             {
                 var obj = resolver.Get<MultiConstructorObject>();
 
-                Assert.AreEqual(2, obj.Arguments);
+                Assert.Equal(2, obj.Arguments);
             }
         }
 
-        [TestMethod]
+        [Fact]
         public void ObjectIsCreatedByBestConstructor()
         {
             var config = new ResolverConfig();
@@ -153,7 +152,7 @@
             {
                 var obj = resolver.Get<MultiConstructorObject>();
 
-                Assert.AreEqual(1, obj.Arguments);
+                Assert.Equal(1, obj.Arguments);
             }
         }
 
