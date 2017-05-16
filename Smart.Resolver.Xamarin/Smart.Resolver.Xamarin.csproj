@@ -14,7 +14,7 @@
     <PackageReference Include="StyleCop.Analyzers" Version="1.0.1" />
     <PackageReference Include="System.Runtime.Analyzers" Version="1.1.0" />
     <PackageReference Include="System.Runtime.InteropServices.Analyzers" Version="1.1.0" />
-    <PackageReference Include="Usa.Smart.Core" Version="1.0.0-beta5" />
+    <PackageReference Include="Usa.Smart.Core" Version="0.9.0" />
     <PackageReference Include="Xamarin.Forms" Version="2.3.4.231" />
   </ItemGroup>
 
