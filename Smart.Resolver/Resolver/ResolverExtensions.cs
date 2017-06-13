@@ -89,43 +89,37 @@
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods", Justification = "Extensions")]
         public static T TryGet<T>(this IResolver resolver)
         {
-            bool result;
-            return (T)resolver.TryResolve(typeof(T), null, out result);
+            return (T)resolver.TryResolve(typeof(T), null, out bool _);
         }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods", Justification = "Extensions")]
         public static T TryGet<T>(this IResolver resolver, string name)
         {
-            bool result;
-            return (T)resolver.TryResolve(typeof(T), new NameConstraint(name), out result);
+            return (T)resolver.TryResolve(typeof(T), new NameConstraint(name), out bool _);
         }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods", Justification = "Extensions")]
         public static T TryGet<T>(this IResolver resolver, IConstraint constraint)
         {
-            bool result;
-            return (T)resolver.TryResolve(typeof(T), constraint, out result);
+            return (T)resolver.TryResolve(typeof(T), constraint, out bool _);
         }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods", Justification = "Extensions")]
         public static object TryGet(this IResolver resolver, Type type)
         {
-            bool result;
-            return resolver.TryResolve(type, null, out result);
+            return resolver.TryResolve(type, null, out bool _);
         }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods", Justification = "Extensions")]
         public static object TryGet(this IResolver resolver, Type type, string name)
         {
-            bool result;
-            return resolver.TryResolve(type, new NameConstraint(name), out result);
+            return resolver.TryResolve(type, new NameConstraint(name), out bool _);
         }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods", Justification = "Extensions")]
         public static object TryGet(this IResolver resolver, Type type, IConstraint constraint)
         {
-            bool result;
-            return resolver.TryResolve(type, constraint, out result);
+            return resolver.TryResolve(type, constraint, out bool _);
         }
 
         // Get

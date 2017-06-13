@@ -30,8 +30,7 @@
 
             using (var resolver = config.ToResolver())
             {
-                bool result;
-                var obj = resolver.TryGet<IResolver>(out result);
+                var obj = resolver.TryGet<IResolver>(out bool result);
 
                 Assert.True(result);
                 Assert.Same(resolver, obj);
@@ -86,8 +85,7 @@
 
             using (var resolver = config.ToResolver())
             {
-                bool result;
-                var obj = resolver.TryGet<SimpleObject>(out result);
+                var obj = resolver.TryGet<SimpleObject>(out bool result);
 
                 Assert.True(result);
                 Assert.NotNull(obj);
@@ -101,8 +99,7 @@
 
             using (var resolver = config.ToResolver())
             {
-                bool result;
-                var obj = resolver.TryGet<SimpleObject>(out result);
+                var obj = resolver.TryGet<SimpleObject>(out bool result);
 
                 Assert.True(result);
                 Assert.NotNull(obj);
@@ -158,8 +155,7 @@
 
             using (var resolver = config.ToResolver())
             {
-                bool result;
-                resolver.TryGet<SimpleObject>(out result);
+                resolver.TryGet<SimpleObject>(out bool result);
 
                 Assert.True(result);
             }
@@ -198,8 +194,7 @@
 
             using (var resolver = config.ToResolver())
             {
-                bool result;
-                resolver.TryGet<IService>(out result);
+                resolver.TryGet<IService>(out bool result);
 
                 Assert.False(result);
             }

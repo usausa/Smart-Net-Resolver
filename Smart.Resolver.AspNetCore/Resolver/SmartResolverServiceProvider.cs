@@ -45,8 +45,7 @@
                 return resolver.Get(serviceType);
             }
 
-            bool result;
-            return resolver.TryGet(serviceType, out result);
+            return resolver.TryGet(serviceType, out bool _);
         }
     }
 }

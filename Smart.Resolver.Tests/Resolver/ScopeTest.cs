@@ -95,8 +95,7 @@
             [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods", Justification = "Framework only")]
             public object GetOrAdd(IBinding binding, Func<IBinding, object> factory)
             {
-                object value;
-                if (Cache.Value.TryGetValue(binding, out value))
+                if (Cache.Value.TryGetValue(binding, out object value))
                 {
                     return value;
                 }

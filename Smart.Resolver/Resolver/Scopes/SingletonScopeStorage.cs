@@ -39,8 +39,7 @@
         {
             lock (cache)
             {
-                object instance;
-                if (!cache.TryGetValue(binding, out instance))
+                if (!cache.TryGetValue(binding, out object instance))
                 {
                     instance = factory(binding);
                     cache[binding] = instance;

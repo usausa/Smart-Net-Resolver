@@ -21,8 +21,7 @@
 
         public IBinding[] FindBindings(Type type)
         {
-            IBinding[] bindings;
-            return table.TryGetValue(type, out bindings) ? bindings : EmptyBindings;
+            return table.TryGetValue(type, out IBinding[] bindings) ? bindings : EmptyBindings;
         }
     }
 }

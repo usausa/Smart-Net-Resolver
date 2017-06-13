@@ -88,8 +88,7 @@
 
             public IEnumerable<IBinding> Handle(IComponentContainer components, IBindingTable table, Type type)
             {
-                Type targetType;
-                if (!typeMap.TryGetValue(type, out targetType))
+                if (!typeMap.TryGetValue(type, out Type _))
                 {
                     return Enumerable.Empty<IBinding>();
                 }

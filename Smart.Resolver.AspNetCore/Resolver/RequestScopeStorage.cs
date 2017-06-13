@@ -23,12 +23,10 @@
         {
             var context = accessor.HttpContext;
 
-            object value;
-            context.Items.TryGetValue(StorageKey, out value);
+            context.Items.TryGetValue(StorageKey, out object value);
             var dictionary = (Dictionary<IBinding, object>)value;
 
-            object instance;
-            if ((dictionary != null) && dictionary.TryGetValue(binding, out instance))
+            if ((dictionary != null) && dictionary.TryGetValue(binding, out object instance))
             {
                 return instance;
             }
@@ -50,8 +48,7 @@
         {
             var context = accessor.HttpContext;
 
-            object value;
-            context.Items.TryGetValue(StorageKey, out value);
+            context.Items.TryGetValue(StorageKey, out object value);
             var dictionary = (Dictionary<IBinding, object>)value;
             if (dictionary == null)
             {

@@ -135,13 +135,13 @@
 
         public IBindingWithSyntax WithConstructorArgument(string name, object value)
         {
-            WithConstructorArgument(name, (IComponentContainer c) => new ConstantParameter(value));
+            WithConstructorArgument(name, c => new ConstantParameter(value));
             return this;
         }
 
         public IBindingWithSyntax WithConstructorArgument(string name, Func<IKernel, object> factory)
         {
-            WithConstructorArgument(name, (IComponentContainer c) => new CallbackParameter(factory));
+            WithConstructorArgument(name, c => new CallbackParameter(factory));
             return this;
         }
 
@@ -158,13 +158,13 @@
 
         public IBindingWithSyntax WithPropertyValue(string name, object value)
         {
-            WithPropertyValue(name, (IComponentContainer c) => new ConstantParameter(value));
+            WithPropertyValue(name, c => new ConstantParameter(value));
             return this;
         }
 
         public IBindingWithSyntax WithPropertyValue(string name, Func<IKernel, object> factory)
         {
-            WithPropertyValue(name, (IComponentContainer c) => new CallbackParameter(factory));
+            WithPropertyValue(name, c => new CallbackParameter(factory));
             return this;
         }
 

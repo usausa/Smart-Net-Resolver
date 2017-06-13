@@ -173,8 +173,7 @@
                 }
 
                 // Resolve
-                bool resolve;
-                var obj = kernel.TryResolve(pi.ParameterType, constructor.Constraints[i], out resolve);
+                var obj = kernel.TryResolve(pi.ParameterType, constructor.Constraints[i], out bool resolve);
                 if (resolve)
                 {
                     arguments[i] = obj;
