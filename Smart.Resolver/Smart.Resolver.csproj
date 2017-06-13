@@ -13,7 +13,7 @@
     <PackageReference Include="StyleCop.Analyzers" Version="1.0.2" />
     <PackageReference Include="System.Runtime.Analyzers" Version="1.1.0" />
     <PackageReference Include="System.Runtime.InteropServices.Analyzers" Version="1.1.0" />
-    <PackageReference Include="Usa.Smart.Core" Version="0.9.0" />
+    <PackageReference Include="Usa.Smart.Core" Version="1.0.0-beta6" />
   </ItemGroup>
 
 </Project>
