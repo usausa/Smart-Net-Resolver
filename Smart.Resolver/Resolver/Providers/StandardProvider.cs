@@ -20,9 +20,9 @@
 
         private readonly TypeMetadata metadata;
 
-        private volatile ConstructorMetadata constructor;
+        private ConstructorMetadata constructor;
 
-        private volatile IActivator activator;
+        private IActivator activator;
 
         /// <summary>
         ///
@@ -54,13 +54,15 @@
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods", Justification = "Framework only")]
         public object Create(IKernel kernel, IBinding binding)
         {
-#pragma warning disable 420
             if (constructor == null)
             {
                 Interlocked.CompareExchange(ref constructor, FindBestConstructor(kernel, binding), null);
+            }
+
+            if (activator == null)
+            {
                 Interlocked.CompareExchange(ref activator, ActivatorCache.GetActivator(constructor.Constructor, binding.Scope != null), null);
             }
-#pragma warning restore 420
 
             var arguments = ResolveParameters(kernel, binding, constructor);
             var instance = activator.Create(arguments);
