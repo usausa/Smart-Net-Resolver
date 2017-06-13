@@ -1,8 +1,8 @@
 ﻿namespace Smart.Resolver.Scopes
 {
     using System;
-    using System.Collections.Generic;
 
+    using Smart.Collections.Generic.Concurrent;
     using Smart.ComponentModel;
 
     using Smart.Resolver.Bindings;
@@ -12,7 +12,7 @@
     /// </summary>
     public class SingletonScopeStorage : DisposableObject, IScopeStorage
     {
-        private readonly Dictionary<IBinding, object> cache = new Dictionary<IBinding, object>();
+        private readonly ConcurrentHashArrayMap<IBinding, object> cache = new ConcurrentHashArrayMap<IBinding, object>();
 
         /// <summary>
         ///
@@ -37,16 +37,12 @@
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods", Justification = "Framework only")]
         public object GetOrAdd(IBinding binding, Func<IBinding, object> factory)
         {
-            lock (cache)
+            if (cache.TryGetValue(binding, out object instance))
             {
-                if (!cache.TryGetValue(binding, out object instance))
-                {
-                    instance = factory(binding);
-                    cache[binding] = instance;
-                }
-
                 return instance;
             }
+
+            return cache.AddIfNotExist(binding, factory);
         }
 
         /// <summary>
@@ -54,15 +50,12 @@
         /// </summary>
         public void Clear()
         {
-            lock (cache)
+            foreach (var pair in cache)
             {
-                foreach (var instance in cache.Values)
-                {
-                    (instance as IDisposable)?.Dispose();
-                }
-
-                cache.Clear();
+                (pair.Value as IDisposable)?.Dispose();
             }
+
+            cache.Clear();
         }
     }
 }

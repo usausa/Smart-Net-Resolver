@@ -1,22 +1,28 @@
 ﻿namespace Smart.Resolver.Bindings
 {
     using System;
-    using System.Collections.Concurrent;
+
+    using Smart.Collections.Generic.Concurrent;
 
     public class BindingTable : IBindingTable
     {
         private static readonly IBinding[] EmptyBindings = new IBinding[0];
 
-        private readonly ConcurrentDictionary<Type, IBinding[]> table = new ConcurrentDictionary<Type, IBinding[]>();
+        private readonly ConcurrentHashArrayMap<Type, IBinding[]> table = new ConcurrentHashArrayMap<Type, IBinding[]>();
 
         public void Add(Type type, IBinding[] bindings)
         {
-            table[type] = bindings;
+            table.AddIfNotExist(type, bindings);
         }
 
         public IBinding[] GetOrAdd(Type type, Func<Type, IBinding[]> factory)
         {
-            return table.GetOrAdd(type, factory);
+            if (table.TryGetValue(type, out IBinding[] bindings))
+            {
+                return bindings;
+            }
+
+            return table.AddIfNotExist(type, factory);
         }
 
         public IBinding[] FindBindings(Type type)
