@@ -2,13 +2,13 @@
 {
     using System;
 
-    using Smart.Collections.Generic.Concurrent;
+    using Smart.Collections.Concurrent;
 
     public class BindingTable : IBindingTable
     {
         private static readonly IBinding[] EmptyBindings = new IBinding[0];
 
-        private readonly ConcurrentHashArrayMap<Type, IBinding[]> table = new ConcurrentHashArrayMap<Type, IBinding[]>();
+        private readonly ThreadsafeTypeHashArrayMap<IBinding[]> table = new ThreadsafeTypeHashArrayMap<IBinding[]>();
 
         public void Add(Type type, IBinding[] bindings)
         {

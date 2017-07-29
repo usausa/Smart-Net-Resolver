@@ -2,7 +2,7 @@
 {
     using System;
 
-    using Smart.Collections.Generic.Concurrent;
+    using Smart.Collections.Concurrent;
     using Smart.ComponentModel;
 
     using Smart.Resolver.Bindings;
@@ -12,7 +12,7 @@
     /// </summary>
     public class SingletonScopeStorage : DisposableObject, IScopeStorage
     {
-        private readonly ConcurrentHashArrayMap<IBinding, object> cache = new ConcurrentHashArrayMap<IBinding, object>();
+        private readonly ThreadsafeObjectHashArrayMap<IBinding, object> cache = new ThreadsafeObjectHashArrayMap<IBinding, object>();
 
         /// <summary>
         ///

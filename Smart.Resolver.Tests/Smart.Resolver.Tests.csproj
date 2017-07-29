@@ -14,7 +14,7 @@
     <PackageReference Include="StyleCop.Analyzers" Version="1.0.2" />
     <PackageReference Include="System.Runtime.Analyzers" Version="1.1.0" />
     <PackageReference Include="System.Runtime.InteropServices.Analyzers" Version="1.1.0" />
-    <PackageReference Include="Usa.Smart.Core" Version="1.0.0-beta6" />
+    <PackageReference Include="Usa.Smart.Core" Version="1.0.0-beta10" />
     <PackageReference Include="xunit" Version="2.2.0" />
     <PackageReference Include="xunit.runner.visualstudio" Version="2.2.0" />
   </ItemGroup>
