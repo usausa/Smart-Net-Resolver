@@ -23,7 +23,18 @@
 
         private static readonly Type ListType = typeof(IList<>);
 
+        private readonly IAccessorFactory accessorFactory;
+
         private readonly ConcurrentDictionary<Type, TypeMetadata> metadatas = new ConcurrentDictionary<Type, TypeMetadata>();
+
+        /// <summary>
+        ///
+        /// </summary>
+        /// <param name="accessorFactory"></param>
+        public MetadataFactory(IAccessorFactory accessorFactory)
+        {
+            this.accessorFactory = accessorFactory;
+        }
 
         /// <summary>
         ///
@@ -106,9 +117,9 @@
         /// </summary>
         /// <param name="pi"></param>
         /// <returns></returns>
-        private static PropertyMetadata CreatePropertyMetadata(PropertyInfo pi)
+        private PropertyMetadata CreatePropertyMetadata(PropertyInfo pi)
         {
-            return new PropertyMetadata(pi.ToAccessor(), CreateConstraint(pi.GetCustomAttributes<ConstraintAttribute>()));
+            return new PropertyMetadata(accessorFactory.CreateAccessor(pi), CreateConstraint(pi.GetCustomAttributes<ConstraintAttribute>()));
         }
 
         /// <summary>

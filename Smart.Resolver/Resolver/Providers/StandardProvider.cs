@@ -18,6 +18,8 @@
     {
         private readonly IInjector[] injectors;
 
+        private readonly IActivatorFactory activatorFactory;
+
         private readonly TypeMetadata metadata;
 
         private ConstructorMetadata constructor;
@@ -48,6 +50,7 @@
 
             TargetType = type;
             injectors = components.GetAll<IInjector>().ToArray();
+            activatorFactory = components.Get<IActivatorFactory>();
             metadata = components.Get<IMetadataFactory>().GetMetadata(TargetType);
         }
 
@@ -61,7 +64,7 @@
 
             if (activator == null)
             {
-                Interlocked.CompareExchange(ref activator, ActivatorCache.GetActivator(constructor.Constructor, binding.Scope != null), null);
+                Interlocked.CompareExchange(ref activator, activatorFactory.CreateActivator(constructor.Constructor), null);
             }
 
             var arguments = ResolveParameters(kernel, binding, constructor);

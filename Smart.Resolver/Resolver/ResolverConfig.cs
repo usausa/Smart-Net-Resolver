@@ -5,6 +5,7 @@
     using System.Linq;
 
     using Smart.ComponentModel;
+    using Smart.Reflection;
     using Smart.Resolver.Bindings;
     using Smart.Resolver.Configs;
     using Smart.Resolver.Handlers;
@@ -25,6 +26,8 @@
         /// </summary>
         public ResolverConfig()
         {
+            Components.Add<IActivatorFactory>(TypeMetadataFactory.Default);
+            Components.Add<IAccessorFactory>(TypeMetadataFactory.Default);
             Components.Add<IMetadataFactory, MetadataFactory>();
             Components.Add<IMissingHandler, SelfMissingHandler>();
             Components.Add<IMissingHandler, OpenGenericMissingHandler>();
