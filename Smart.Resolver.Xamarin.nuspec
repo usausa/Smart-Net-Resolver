@@ -15,7 +15,7 @@
     <dependencies>
       <dependency id="NETStandard.Library" version="2.0.0" />
       <dependency id="Xamarin.Forms" version="2.3.4.231" />
-      <dependency id="Usa.Smart.Core" version="1.0.2" />
+      <dependency id="Usa.Smart.Core" version="1.0.3" />
       <dependency id="Usa.Smart.Resolver" version="1.4.0-beta2" />
     </dependencies>
     <tags>smart ioc di dependencyinjection xamarin</tags>
