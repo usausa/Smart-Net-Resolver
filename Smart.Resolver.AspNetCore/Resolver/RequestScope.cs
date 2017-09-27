@@ -1,12 +1,35 @@
 ﻿namespace Smart.Resolver
 {
+    using System;
+    using System.Threading;
+
+    using Microsoft.AspNetCore.Http;
+
+    using Smart.Resolver.Bindings;
     using Smart.Resolver.Scopes;
 
     public class RequestScope : IScope
     {
-        public IScopeStorage GetStorage(IKernel kernel)
+        private readonly object sync = new object();
+
+        private IHttpContextAccessor accessor;
+
+        public object GetOrAdd(IKernel kernel, IBinding binding, Func<IBinding, object> factory)
         {
-            return kernel.Get<RequestScopeStorage>();
+            if (accessor == null)
+            {
+                lock (sync)
+                {
+                    if (accessor == null)
+                    {
+                        var httpContextAccessor = kernel.Get<IHttpContextAccessor>();
+                        Interlocked.MemoryBarrier();
+                        accessor = httpContextAccessor;
+                    }
+                }
+            }
+
+            return HttpContextStorage.GetOrAdd(accessor.HttpContext, binding, factory);
         }
     }
 }

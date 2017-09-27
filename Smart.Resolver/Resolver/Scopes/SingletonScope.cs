@@ -1,38 +1,71 @@
 ﻿namespace Smart.Resolver.Scopes
 {
     using System;
+    using System.Threading;
 
     using Smart.ComponentModel;
+    using Smart.Resolver.Bindings;
+    using Smart.Resolver.Disposables;
 
     /// <summary>
     ///
     /// </summary>
-    public class SingletonScope : IScope
+    public sealed class SingletonScope : IScope, IDisposable
     {
-        private readonly SingletonScopeStorage storage;
+        private readonly object sync = new object();
+
+        private object value;
 
         /// <summary>
         ///
         /// </summary>
-        /// <param name="components"></param>
-        public SingletonScope(IComponentContainer components)
+        /// <param name="container"></param>
+        public SingletonScope(IComponentContainer container)
         {
-            if (components == null)
-            {
-                throw new ArgumentNullException(nameof(components));
-            }
+            container.Get<DisposableStorage>().Add(this);
+        }
 
-            storage = components.Get<SingletonScopeStorage>();
+        /// <summary>
+        ///
+        /// </summary>
+        public void Dispose()
+        {
+            if (value != null)
+            {
+                lock (sync)
+                {
+                    if (value != null)
+                    {
+                        (value as IDisposable)?.Dispose();
+                        value = null;
+                    }
+                }
+            }
         }
 
         /// <summary>
         ///
         /// </summary>
         /// <param name="kernel"></param>
+        /// <param name="binding"></param>
+        /// <param name="factory"></param>
         /// <returns></returns>
-        public IScopeStorage GetStorage(IKernel kernel)
+        public object GetOrAdd(IKernel kernel, IBinding binding, Func<IBinding, object> factory)
         {
-            return storage;
+            if (value == null)
+            {
+                lock (sync)
+                {
+                    if (value == null)
+                    {
+                        var newObj = factory(binding);
+                        Interlocked.MemoryBarrier();
+                        value = newObj;
+                    }
+                }
+            }
+
+            return value;
         }
     }
 }

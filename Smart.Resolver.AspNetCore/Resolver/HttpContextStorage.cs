@@ -6,23 +6,13 @@
     using Microsoft.AspNetCore.Http;
 
     using Smart.Resolver.Bindings;
-    using Smart.Resolver.Scopes;
 
-    public class RequestScopeStorage : IScopeStorage
+    public static class HttpContextStorage
     {
         private static readonly string StorageKey = "__RequestScopeStorage";
 
-        private readonly IHttpContextAccessor accessor;
-
-        public RequestScopeStorage(IHttpContextAccessor accessor)
+        public static object GetOrAdd(HttpContext context, IBinding binding, Func<IBinding, object> factory)
         {
-            this.accessor = accessor;
-        }
-
-        public object GetOrAdd(IBinding binding, Func<IBinding, object> factory)
-        {
-            var context = accessor.HttpContext;
-
             context.Items.TryGetValue(StorageKey, out object value);
             var dictionary = (Dictionary<IBinding, object>)value;
 
@@ -44,10 +34,8 @@
             return instance;
         }
 
-        public void Clear()
+        public static void Clear(HttpContext context)
         {
-            var context = accessor.HttpContext;
-
             context.Items.TryGetValue(StorageKey, out object value);
             var dictionary = (Dictionary<IBinding, object>)value;
             if (dictionary == null)

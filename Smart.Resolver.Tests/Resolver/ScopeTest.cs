@@ -87,7 +87,7 @@
             }
         }
 
-        protected class CustomScopeStorage : IScopeStorage
+        protected class CustomScopeStorage
         {
             private static readonly ThreadLocal<Dictionary<IBinding, object>> Cache =
                 new ThreadLocal<Dictionary<IBinding, object>>(() => new Dictionary<IBinding, object>());
@@ -105,11 +105,6 @@
 
                 return value;
             }
-
-            public void Clear()
-            {
-                Cache.Value.Clear();
-            }
         }
 
         protected class CustomScope : IScope
@@ -122,9 +117,9 @@
                 storage = components.Get<CustomScopeStorage>();
             }
 
-            public IScopeStorage GetStorage(IKernel kernel)
+            public object GetOrAdd(IKernel kernel, IBinding binding, Func<IBinding, object> factory)
             {
-                return storage;
+                return storage.GetOrAdd(binding, factory);
             }
         }
     }

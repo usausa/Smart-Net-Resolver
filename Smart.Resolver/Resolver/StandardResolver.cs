@@ -223,13 +223,9 @@
         /// <returns></returns>
         private object Resolve(IBinding binding)
         {
-            if (binding.Scope != null)
-            {
-                var storage = binding.Scope.GetStorage(this);
-                return storage.GetOrAdd(binding, instanceFactory);
-            }
-
-            return CreateInstance(binding);
+            return binding.Scope != null
+                ? binding.Scope.GetOrAdd(this, binding, instanceFactory)
+                : CreateInstance(binding);
         }
 
         /// <summary>

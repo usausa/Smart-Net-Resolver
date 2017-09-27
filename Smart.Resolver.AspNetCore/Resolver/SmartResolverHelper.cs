@@ -40,7 +40,6 @@
             config.Bind<IServiceProvider>().To<SmartResolverServiceProvider>().InSingletonScope();
             config.Bind<IServiceScopeFactory>().To<SmartResolverServiceScopeFactory>().InSingletonScope();
             config.Bind<IHttpContextAccessor>().To<HttpContextAccessor>().InSingletonScope();
-            config.Bind<RequestScopeStorage>().ToSelf().InSingletonScope();
 
             var resolver = config.ToResolver();
             return resolver.Get<IServiceProvider>();

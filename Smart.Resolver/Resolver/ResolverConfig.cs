@@ -8,9 +8,9 @@
     using Smart.Reflection;
     using Smart.Resolver.Bindings;
     using Smart.Resolver.Configs;
+    using Smart.Resolver.Disposables;
     using Smart.Resolver.Handlers;
     using Smart.Resolver.Metadatas;
-    using Smart.Resolver.Scopes;
 
     /// <summary>
     ///
@@ -31,7 +31,7 @@
             Components.Add<IMetadataFactory, MetadataFactory>();
             Components.Add<IMissingHandler, SelfMissingHandler>();
             Components.Add<IMissingHandler, OpenGenericMissingHandler>();
-            Components.Add<SingletonScopeStorage>();
+            Components.Add<DisposableStorage>();
         }
 
         // ------------------------------------------------------------
