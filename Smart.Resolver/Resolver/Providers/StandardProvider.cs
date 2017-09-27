@@ -60,14 +60,14 @@
             if (constructor == null)
             {
                 Interlocked.CompareExchange(ref constructor, FindBestConstructor(kernel, binding), null);
+
+                if (activator == null)
+                {
+                    Interlocked.CompareExchange(ref activator, activatorFactory.CreateActivator(constructor.Constructor), null);
+                }
             }
 
-            if (activator == null)
-            {
-                Interlocked.CompareExchange(ref activator, activatorFactory.CreateActivator(constructor.Constructor), null);
-            }
-
-            var arguments = ResolveParameters(kernel, binding, constructor);
+            var arguments = constructor.Parameters.Length == 0 ? null : ResolveParameters(kernel, binding, constructor);
             var instance = activator.Create(arguments);
 
             for (var j = 0; j < injectors.Length; j++)
@@ -151,11 +151,6 @@
         private static object[] ResolveParameters(IKernel kernel, IBinding binding, ConstructorMetadata constructor)
         {
             var parameters = constructor.Parameters;
-            if (parameters.Length == 0)
-            {
-                return null;
-            }
-
             var arguments = new object[parameters.Length];
             for (var i = 0; i < arguments.Length; i++)
             {
