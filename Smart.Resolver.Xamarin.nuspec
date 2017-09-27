@@ -13,7 +13,7 @@
     <copyright></copyright>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <dependencies>
-      <dependency id="NETStandard.Library" version="1.6.1" />
+      <dependency id="NETStandard.Library" version="2.0.0" />
       <dependency id="Xamarin.Forms" version="2.3.4.231" />
       <dependency id="Usa.Smart.Core" version="1.0.2" />
       <dependency id="Usa.Smart.Resolver" version="1.4.0-beta2" />
@@ -22,8 +22,8 @@
   </metadata>
   <files>
     <!-- .NET Standard -->
-    <file src="Smart.Resolver.Xamarin\bin\Release\netstandard1.1\Smart.Resolver.Xamarin.dll" target="lib\netstandard1.1" />
-    <!--<file src="Smart.Resolver.Xamarin\bin\Release\netstandard1.1\Smart.Resolver.Xamarin.pdb" target="lib\netstandard1.1" />-->
-    <!--<file src="Smart.Resolver.Xamarin\bin\Release\netstandard1.1\Smart.Resolver.Xamarin.xml" target="lib\netstandard1.1" />-->
+    <file src="Smart.Resolver.Xamarin\bin\Release\netstandard2.0\Smart.Resolver.Xamarin.dll" target="lib\netstandard2.0" />
+    <!--<file src="Smart.Resolver.Xamarin\bin\Release\netstandard2.0\Smart.Resolver.Xamarin.pdb" target="lib\netstandard2.0" />-->
+    <!--<file src="Smart.Resolver.Xamarin\bin\Release\netstandard2.0\Smart.Resolver.Xamarin.xml" target="lib\netstandard2.0" />-->
   </files>
 </package>
