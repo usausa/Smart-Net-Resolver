@@ -2,7 +2,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
   <metadata>
     <id>Usa.Smart.Resolver.AspNetCore</id>
-    <version>1.4.0-beta3</version>
+    <version>1.4.0</version>
     <title>Smart.Resolver.AspNetCore .NET</title>
     <authors>machi_pon</authors>
     <owners>machi_pon</owners>
@@ -16,7 +16,7 @@
       <dependency id="NETStandard.Library" version="2.0.0" />
       <dependency id="Microsoft.AspNetCore.Mvc" version="2.0.0" />
       <dependency id="Usa.Smart.Core" version="1.0.3" />
-      <dependency id="Usa.Smart.Resolver" version="1.4.0-beta3" />
+      <dependency id="Usa.Smart.Resolver" version="1.4.0" />
     </dependencies>
     <tags>smart ioc di dependencyinjection aspnet aspnetcore</tags>
   </metadata>
