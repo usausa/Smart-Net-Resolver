@@ -51,7 +51,7 @@
 
         public IBindingInNamedWithSyntax ToSelf()
         {
-            return ToProvider(c => new StandardProvider(typeof(T), c));
+            return ToProvider(c => new StandardProvider(targetType, c));
         }
 
         public IBindingInNamedWithSyntax To<TImplementation>()
@@ -67,7 +67,7 @@
 
         public IBindingInNamedWithSyntax ToMethod(Func<IKernel, T> factory)
         {
-            return ToProvider(c => new CallbackProvider(typeof(T), kernel => factory(kernel)));
+            return ToProvider(c => new CallbackProvider(targetType, kernel => factory(kernel)));
         }
 
         public IBindingInNamedWithSyntax ToConstant(T value)

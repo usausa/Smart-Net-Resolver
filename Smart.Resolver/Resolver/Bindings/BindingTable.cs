@@ -1,6 +1,8 @@
 ﻿namespace Smart.Resolver.Bindings
 {
     using System;
+    using System.Collections.Generic;
+    using System.Linq;
 
     using Smart.Collections.Concurrent;
 
@@ -28,6 +30,11 @@
         public IBinding[] FindBindings(Type type)
         {
             return table.TryGetValue(type, out IBinding[] bindings) ? bindings : EmptyBindings;
+        }
+
+        public IEnumerable<IBinding> EnumBindings()
+        {
+            return table.SelectMany(x => x.Value);
         }
     }
 }

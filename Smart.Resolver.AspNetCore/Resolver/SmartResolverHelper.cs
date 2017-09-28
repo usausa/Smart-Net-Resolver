@@ -42,7 +42,7 @@
             config.Bind<IServiceScopeFactory>().To<SmartResolverServiceScopeFactory>().InSingletonScope();
             config.Bind<IHttpContextAccessor>().To<HttpContextAccessor>().InSingletonScope();
 
-            config.UseOpenGeneric();
+            config.UseOpenGenericBinding();
             config.UseMissingHandler<ControllerMissingHandler>();
             config.UseMissingHandler<ViewComponentMissingHandler>();
             config.Components.Remove<IMissingHandler, SelfMissingHandler>();

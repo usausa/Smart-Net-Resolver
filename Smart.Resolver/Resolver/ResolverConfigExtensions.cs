@@ -97,7 +97,7 @@
             return config;
         }
 
-        public static ResolverConfig UseOpenGeneric(this ResolverConfig config)
+        public static ResolverConfig UseOpenGenericBinding(this ResolverConfig config)
         {
             if (config == null)
             {
@@ -105,6 +105,17 @@
             }
 
             config.Components.Add<IMissingHandler, OpenGenericMissingHandler>();
+            return config;
+        }
+
+        public static ResolverConfig UseAssignableBinding(this ResolverConfig config)
+        {
+            if (config == null)
+            {
+                throw new ArgumentNullException(nameof(config));
+            }
+
+            config.Components.Add<IMissingHandler, AssignableMissingHandler>();
             return config;
         }
 

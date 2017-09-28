@@ -15,10 +15,10 @@
     /// <summary>
     ///
     /// </summary>
-    public class BindingTest
+    public class ResolverTest
     {
         [Fact]
-        public void ObjectBindingCreatedBySelfBindingResolver()
+        public void ObjectBindingCreatedBySelfMissingResolver()
         {
             var config = new ResolverConfig().UseAutoBinding();
             using (var resolver = config.ToResolver())
@@ -30,9 +30,9 @@
         }
 
         [Fact]
-        public void ObjectBindingCreatedByOpenGenericBindingResolver()
+        public void ObjectBindingCreatedByOpenGenericMissingResolver()
         {
-            var config = new ResolverConfig().UseOpenGeneric();
+            var config = new ResolverConfig().UseOpenGenericBinding();
             config
                 .Bind(typeof(IGenericService<>))
                 .To(typeof(GenericService<>));
@@ -56,6 +56,48 @@
             public T Create()
             {
                 return default(T);
+            }
+        }
+
+        [Fact]
+        public void ObjectBindingCreatedByAssignableMissingResolver()
+        {
+            var config = new ResolverConfig().UseAssignableBinding();
+            config.Bind(typeof(ExecuteService)).ToSelf().InSingletonScope();
+
+            using (var resolver = config.ToResolver())
+            {
+                var obj = resolver.Get<ExecuteService>();
+                var obj1 = resolver.Get<IExecuteService>();
+                var obj2 = resolver.Get<ExecuteServiceBase>();
+
+                Assert.NotNull(obj);
+                Assert.NotNull(obj1);
+                Assert.NotNull(obj2);
+                Assert.Same(obj1, obj);
+                Assert.Same(obj2, obj);
+            }
+        }
+
+        protected interface IExecuteService
+        {
+            void Execute();
+        }
+
+        protected abstract class ExecuteServiceBase : IExecuteService
+        {
+            public void Execute()
+            {
+                OnExecute();
+            }
+
+            protected abstract void OnExecute();
+        }
+
+        protected class ExecuteService : ExecuteServiceBase
+        {
+            protected override void OnExecute()
+            {
             }
         }
 
