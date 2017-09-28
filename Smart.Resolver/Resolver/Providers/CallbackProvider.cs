@@ -1,6 +1,7 @@
 ﻿namespace Smart.Resolver.Providers
 {
     using System;
+    using Smart.ComponentModel;
 
     using Smart.Resolver.Bindings;
 
@@ -25,6 +26,16 @@
         {
             TargetType = type;
             this.factory = factory;
+        }
+
+        /// <summary>
+        ///
+        /// </summary>
+        /// <param name="components"></param>
+        /// <returns></returns>
+        public IProvider Copy(IComponentContainer components)
+        {
+            return this;
         }
 
         /// <summary>

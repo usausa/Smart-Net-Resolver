@@ -20,7 +20,7 @@
         [Fact]
         public void ObjectBindingCreatedBySelfBindingResolver()
         {
-            var config = new ResolverConfig();
+            var config = new ResolverConfig().UseAutoBinding();
             using (var resolver = config.ToResolver())
             {
                 var obj = resolver.Get<SimpleObject>();
@@ -32,7 +32,7 @@
         [Fact]
         public void ObjectBindingCreatedByOpenGenericBindingResolver()
         {
-            var config = new ResolverConfig();
+            var config = new ResolverConfig().UseOpenGeneric();
             config
                 .Bind(typeof(IGenericService<>))
                 .To(typeof(GenericService<>));

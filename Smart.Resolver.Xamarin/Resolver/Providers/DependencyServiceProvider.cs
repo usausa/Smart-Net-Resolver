@@ -3,6 +3,7 @@
     using System;
     using System.Reflection;
 
+    using Smart.ComponentModel;
     using Smart.Resolver.Bindings;
 
     using Xamarin.Forms;
@@ -28,6 +29,16 @@
             TargetType = type;
             var method = typeof(DependencyService).GetTypeInfo().GetDeclaredMethod("Get");
             genericMethod = method.MakeGenericMethod(type);
+        }
+
+        /// <summary>
+        ///
+        /// </summary>
+        /// <param name="components"></param>
+        /// <returns></returns>
+        public IProvider Copy(IComponentContainer components)
+        {
+            return this;
         }
 
         /// <summary>

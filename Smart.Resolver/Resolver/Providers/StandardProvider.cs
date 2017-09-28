@@ -54,6 +54,22 @@
             metadata = components.Get<IMetadataFactory>().GetMetadata(TargetType);
         }
 
+        /// <summary>
+        ///
+        /// </summary>
+        /// <param name="components"></param>
+        /// <returns></returns>
+        public IProvider Copy(IComponentContainer components)
+        {
+            return new StandardProvider(TargetType, components);
+        }
+
+        /// <summary>
+        ///
+        /// </summary>
+        /// <param name="kernel"></param>
+        /// <param name="binding"></param>
+        /// <returns></returns>
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods", Justification = "Framework only")]
         public object Create(IKernel kernel, IBinding binding)
         {

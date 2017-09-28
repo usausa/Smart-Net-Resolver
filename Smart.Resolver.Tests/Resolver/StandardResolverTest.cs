@@ -67,7 +67,7 @@
         [Fact]
         public void ObjectIsResolvedWhenBindIsNotExist()
         {
-            var config = new ResolverConfig();
+            var config = new ResolverConfig().UseAutoBinding();
 
             using (var resolver = config.ToResolver())
             {
@@ -95,7 +95,7 @@
         [Fact]
         public void ObjectIsTryResolvedWhenBindIsNotExist()
         {
-            var config = new ResolverConfig();
+            var config = new ResolverConfig().UseAutoBinding();
 
             using (var resolver = config.ToResolver())
             {
@@ -123,7 +123,7 @@
         [Fact]
         public void ObjectCanResolvedWhenBindIsNotExist()
         {
-            var config = new ResolverConfig();
+            var config = new ResolverConfig().UseAutoBinding();
 
             using (var resolver = config.ToResolver())
             {

@@ -2,6 +2,7 @@
 {
     using System;
 
+    using Smart.ComponentModel;
     using Smart.Resolver.Bindings;
 
     /// <summary>
@@ -17,5 +18,12 @@
         /// <param name="factory"></param>
         /// <returns></returns>
         object GetOrAdd(IKernel kernel, IBinding binding, Func<IBinding, object> factory);
+
+        /// <summary>
+        ///
+        /// </summary>
+        /// <param name="components"></param>
+        /// <returns></returns>
+        IScope Copy(IComponentContainer components);
     }
 }

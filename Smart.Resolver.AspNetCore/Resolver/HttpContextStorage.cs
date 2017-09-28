@@ -36,6 +36,11 @@
 
         public static void Clear(HttpContext context)
         {
+            if (context == null)
+            {
+                return;
+            }
+
             context.Items.TryGetValue(StorageKey, out object value);
             var dictionary = (Dictionary<IBinding, object>)value;
             if (dictionary == null)

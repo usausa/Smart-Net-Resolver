@@ -132,7 +132,7 @@
         [Fact]
         public void ObjectIsCreatedByMaxParameterConstructor()
         {
-            var config = new ResolverConfig();
+            var config = new ResolverConfig().UseAutoBinding();
             config.Bind<IService>().To<Service>().InSingletonScope();
 
             using (var resolver = config.ToResolver())
@@ -146,7 +146,7 @@
         [Fact]
         public void ObjectIsCreatedByBestConstructor()
         {
-            var config = new ResolverConfig();
+            var config = new ResolverConfig().UseAutoBinding();
 
             using (var resolver = config.ToResolver())
             {

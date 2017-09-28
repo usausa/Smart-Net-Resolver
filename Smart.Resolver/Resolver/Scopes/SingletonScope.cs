@@ -28,6 +28,16 @@
         /// <summary>
         ///
         /// </summary>
+        /// <param name="components"></param>
+        /// <returns></returns>
+        public IScope Copy(IComponentContainer components)
+        {
+            return new SingletonScope(components);
+        }
+
+        /// <summary>
+        ///
+        /// </summary>
         public void Dispose()
         {
             if (value != null)

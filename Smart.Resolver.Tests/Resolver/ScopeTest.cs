@@ -117,6 +117,11 @@
                 storage = components.Get<CustomScopeStorage>();
             }
 
+            public IScope Copy(IComponentContainer components)
+            {
+                return this;
+            }
+
             public object GetOrAdd(IKernel kernel, IBinding binding, Func<IBinding, object> factory)
             {
                 return storage.GetOrAdd(binding, factory);

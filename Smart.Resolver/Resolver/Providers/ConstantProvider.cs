@@ -1,6 +1,7 @@
 ﻿namespace Smart.Resolver.Providers
 {
     using System;
+    using Smart.ComponentModel;
 
     using Smart.Resolver.Bindings;
 
@@ -23,6 +24,16 @@
         public ConstantProvider(object value)
         {
             this.value = value;
+        }
+
+        /// <summary>
+        ///
+        /// </summary>
+        /// <param name="components"></param>
+        /// <returns></returns>
+        public IProvider Copy(IComponentContainer components)
+        {
+            return this;
         }
 
         /// <summary>

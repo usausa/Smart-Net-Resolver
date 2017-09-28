@@ -86,6 +86,28 @@
             return config;
         }
 
+        public static ResolverConfig UseAutoBinding(this ResolverConfig config)
+        {
+            if (config == null)
+            {
+                throw new ArgumentNullException(nameof(config));
+            }
+
+            config.Components.Add<IMissingHandler, SelfMissingHandler>();
+            return config;
+        }
+
+        public static ResolverConfig UseOpenGeneric(this ResolverConfig config)
+        {
+            if (config == null)
+            {
+                throw new ArgumentNullException(nameof(config));
+            }
+
+            config.Components.Add<IMissingHandler, OpenGenericMissingHandler>();
+            return config;
+        }
+
         public static ResolverConfig UseMissingHandler<T>(this ResolverConfig config)
             where T : IMissingHandler
         {

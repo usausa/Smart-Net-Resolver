@@ -29,8 +29,6 @@
             Components.Add<IActivatorFactory>(TypeMetadataFactory.Default);
             Components.Add<IAccessorFactory>(TypeMetadataFactory.Default);
             Components.Add<IMetadataFactory, MetadataFactory>();
-            Components.Add<IMissingHandler, SelfMissingHandler>();
-            Components.Add<IMissingHandler, OpenGenericMissingHandler>();
             Components.Add<DisposableStorage>();
         }
 

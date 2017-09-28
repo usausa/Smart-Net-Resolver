@@ -33,7 +33,7 @@
                 .Select(b => new Binding(
                     type,
                     new StandardProvider(b.Provider.TargetType.MakeGenericType(type.GenericTypeArguments), components),
-                    b.Scope,
+                    b.Scope?.Copy(components),
                     b.Metadata,
                     b.ConstructorArguments,
                     b.PropertyValues));

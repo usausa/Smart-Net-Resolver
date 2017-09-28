@@ -50,6 +50,7 @@
             }
 
             var constructors = type.GetTypeInfo().DeclaredConstructors
+                .Where(c => !c.IsStatic)
                 .OrderByDescending(c => c.IsDefined(InjectType) ? 1 : 0)
                 .ThenByDescending(c => c.GetParameters().Length)
                 .ThenByDescending(c => c.GetParameters().Count(p => p.HasDefaultValue))

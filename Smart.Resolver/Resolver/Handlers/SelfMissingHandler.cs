@@ -16,6 +16,8 @@
     {
         private static readonly Type StringType = typeof(string);
 
+        private static readonly Type DelegateType = typeof(Delegate);
+
         /// <summary>
         ///
         /// </summary>
@@ -27,7 +29,7 @@
         {
             var typeInfo = type.GetTypeInfo();
             if (typeInfo.IsInterface || typeInfo.IsAbstract || typeInfo.IsValueType || (type == StringType) ||
-                typeInfo.ContainsGenericParameters)
+                DelegateType.IsAssignableFrom(type) || typeInfo.ContainsGenericParameters)
             {
                 return Enumerable.Empty<IBinding>();
             }

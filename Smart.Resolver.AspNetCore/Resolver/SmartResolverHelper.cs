@@ -7,6 +7,7 @@
     using Microsoft.Extensions.DependencyInjection;
 
     using Smart.Resolver.Configs;
+    using Smart.Resolver.Handlers;
 
     public static class SmartResolverHelper
     {
@@ -40,6 +41,11 @@
             config.Bind<IServiceProvider>().To<SmartResolverServiceProvider>().InSingletonScope();
             config.Bind<IServiceScopeFactory>().To<SmartResolverServiceScopeFactory>().InSingletonScope();
             config.Bind<IHttpContextAccessor>().To<HttpContextAccessor>().InSingletonScope();
+
+            config.UseOpenGeneric();
+            config.UseMissingHandler<ControllerMissingHandler>();
+            config.UseMissingHandler<ViewComponentMissingHandler>();
+            config.Components.Remove<IMissingHandler, SelfMissingHandler>();
 
             var resolver = config.ToResolver();
             return resolver.Get<IServiceProvider>();
