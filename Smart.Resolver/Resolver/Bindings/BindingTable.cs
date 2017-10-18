@@ -19,7 +19,7 @@
 
         public IBinding[] GetOrAdd(Type type, Func<Type, IBinding[]> factory)
         {
-            if (table.TryGetValue(type, out IBinding[] bindings))
+            if (table.TryGetValue(type, out var bindings))
             {
                 return bindings;
             }
@@ -29,7 +29,7 @@
 
         public IBinding[] FindBindings(Type type)
         {
-            return table.TryGetValue(type, out IBinding[] bindings) ? bindings : EmptyBindings;
+            return table.TryGetValue(type, out var bindings) ? bindings : EmptyBindings;
         }
 
         public IEnumerable<IBinding> EnumBindings()
