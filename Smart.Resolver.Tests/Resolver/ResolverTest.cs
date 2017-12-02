@@ -42,7 +42,7 @@
                 var obj = resolver.Get(typeof(IGenericService<int>));
 
                 Assert.NotNull(obj);
-                Assert.Equal(obj.GetType(), typeof(GenericService<int>));
+                Assert.Equal(typeof(GenericService<int>), obj.GetType());
             }
         }
 

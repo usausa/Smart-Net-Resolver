@@ -80,7 +80,7 @@
             {
                 var obj = resolver.Get<CustomInitializableObject>();
 
-                Assert.Equal(true, obj.Initialized);
+                Assert.True(obj.Initialized);
             }
         }
 

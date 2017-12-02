@@ -226,7 +226,7 @@
 
                 foreach (var obj in objs)
                 {
-                    Assert.Equal(obj.GetType(), typeof(SimpleObject));
+                    Assert.Equal(typeof(SimpleObject), obj.GetType());
                 }
             }
         }
