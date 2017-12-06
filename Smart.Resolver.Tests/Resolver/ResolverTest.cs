@@ -46,12 +46,12 @@
             }
         }
 
-        protected interface IGenericService<out T>
+        public interface IGenericService<out T>
         {
             T Create();
         }
 
-        protected class GenericService<T> : IGenericService<T>
+        public class GenericService<T> : IGenericService<T>
         {
             public T Create()
             {
@@ -79,12 +79,12 @@
             }
         }
 
-        protected interface IExecuteService
+        public interface IExecuteService
         {
             void Execute();
         }
 
-        protected abstract class ExecuteServiceBase : IExecuteService
+        public abstract class ExecuteServiceBase : IExecuteService
         {
             public void Execute()
             {
@@ -94,7 +94,7 @@
             protected abstract void OnExecute();
         }
 
-        protected class ExecuteService : ExecuteServiceBase
+        public class ExecuteService : ExecuteServiceBase
         {
             protected override void OnExecute()
             {
@@ -119,7 +119,7 @@
             }
         }
 
-        protected class CustomMissingHandler : IMissingHandler
+        public class CustomMissingHandler : IMissingHandler
         {
             private readonly Dictionary<Type, Type> typeMap;
 

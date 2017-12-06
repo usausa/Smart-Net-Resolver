@@ -70,7 +70,7 @@
             }
         }
 
-        protected class HasMetadataConstraint : IConstraint
+        public class HasMetadataConstraint : IConstraint
         {
             public string Key { get; }
 
@@ -87,7 +87,7 @@
         }
 
         [AttributeUsage(AttributeTargets.Property | AttributeTargets.Parameter, AllowMultiple = true)]
-        protected sealed class HasMetadataAttribute : ConstraintAttribute
+        public sealed class HasMetadataAttribute : ConstraintAttribute
         {
             public string Key { get; }
 
@@ -102,7 +102,7 @@
             }
         }
 
-        protected class NameConstraintInjectedObject
+        public class NameConstraintInjectedObject
         {
             public SimpleObject SimpleObject { get; }
 
@@ -112,7 +112,7 @@
             }
         }
 
-        protected class HasMetadataConstraintInjectedObject
+        public class HasMetadataConstraintInjectedObject
         {
             public SimpleObject SimpleObject { get; }
 
@@ -122,7 +122,7 @@
             }
         }
 
-        protected class ChainConstraintInjectedObject
+        public class ChainConstraintInjectedObject
         {
             public SimpleObject SimpleObject { get; }
 

@@ -84,12 +84,12 @@
             }
         }
 
-        protected interface ICustomInitializable
+        public interface ICustomInitializable
         {
             void Initialize();
         }
 
-        protected class CustomInitializeProcessor : IProcessor
+        public class CustomInitializeProcessor : IProcessor
         {
             public void Initialize(object instance)
             {
@@ -97,7 +97,7 @@
             }
         }
 
-        protected class CustomInitializableObject : ICustomInitializable
+        public class CustomInitializableObject : ICustomInitializable
         {
             public bool Initialized { get; private set; }
 

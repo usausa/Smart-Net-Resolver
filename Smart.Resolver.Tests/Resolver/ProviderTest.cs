@@ -156,7 +156,7 @@
             }
         }
 
-        protected class MultiConstructorObject
+        public class MultiConstructorObject
         {
             public int Arguments { get; }
 
@@ -178,7 +178,7 @@
             }
         }
 
-        protected class ArrayInjectedObject
+        public class ArrayInjectedObject
         {
             [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1819:PropertiesShouldNotReturnArrays", Justification = "Ignore")]
             public SimpleObject[] Objects { get; }
@@ -189,7 +189,7 @@
             }
         }
 
-        protected class EnumerableInjectedObject
+        public class EnumerableInjectedObject
         {
             public IEnumerable<SimpleObject> Objects { get; }
 
@@ -199,7 +199,7 @@
             }
         }
 
-        protected class CollectionInjectedObject
+        public class CollectionInjectedObject
         {
             public ICollection<SimpleObject> Objects { get; }
 
@@ -209,7 +209,7 @@
             }
         }
 
-        protected class ListInjectedObject
+        public class ListInjectedObject
         {
             public IList<SimpleObject> Objects { get; }
 

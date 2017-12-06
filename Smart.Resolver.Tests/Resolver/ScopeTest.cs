@@ -77,7 +77,7 @@
             Assert.True(obj.Disposed);
         }
 
-        protected sealed class DisposeTrackingObject : IDisposable
+        public sealed class DisposeTrackingObject : IDisposable
         {
             public bool Disposed { get; private set; }
 
@@ -87,7 +87,7 @@
             }
         }
 
-        protected class CustomScopeStorage
+        public class CustomScopeStorage
         {
             private static readonly ThreadLocal<Dictionary<IBinding, object>> Cache =
                 new ThreadLocal<Dictionary<IBinding, object>>(() => new Dictionary<IBinding, object>());
@@ -107,7 +107,7 @@
             }
         }
 
-        protected class CustomScope : IScope
+        public class CustomScope : IScope
         {
             private readonly CustomScopeStorage storage;
 
