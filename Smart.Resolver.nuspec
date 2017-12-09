@@ -14,7 +14,7 @@
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <dependencies>
       <dependency id="NETStandard.Library" version="2.0.0" />
-      <dependency id="Usa.Smart.Core" version="1.0.8" />
+      <dependency id="Usa.Smart.Core" version="1.0.9" />
     </dependencies>
     <tags>smart ioc di dependencyinjection</tags>
   </metadata>
