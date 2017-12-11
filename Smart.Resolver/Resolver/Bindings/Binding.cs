@@ -9,7 +9,7 @@
     /// <summary>
     ///
     /// </summary>
-    public class Binding : IBinding
+    public sealed class Binding : IBinding
     {
         private static readonly IBindingMetadata EmptyBindingMetadata = new BindingMetadata();
 

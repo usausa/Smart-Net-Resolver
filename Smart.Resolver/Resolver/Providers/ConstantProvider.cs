@@ -8,7 +8,7 @@
     /// <summary>
     ///
     /// </summary>
-    public class ConstantProvider : IProvider
+    public sealed class ConstantProvider : IProvider
     {
         private readonly object value;
 

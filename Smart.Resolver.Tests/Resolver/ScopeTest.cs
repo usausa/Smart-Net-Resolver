@@ -107,7 +107,7 @@
             }
         }
 
-        public class CustomScope : IScope
+        public sealed class CustomScope : IScope
         {
             private readonly CustomScopeStorage storage;
 

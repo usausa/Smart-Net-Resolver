@@ -13,7 +13,7 @@
     /// <summary>
     ///
     /// </summary>
-    public class MetadataFactory : IMetadataFactory
+    public sealed class MetadataFactory : IMetadataFactory
     {
         private static readonly Type InjectType = typeof(InjectAttribute);
 

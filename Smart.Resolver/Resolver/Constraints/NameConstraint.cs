@@ -5,7 +5,7 @@
     /// <summary>
     ///
     /// </summary>
-    public class NameConstraint : IConstraint
+    public sealed class NameConstraint : IConstraint
     {
         private readonly string name;
 

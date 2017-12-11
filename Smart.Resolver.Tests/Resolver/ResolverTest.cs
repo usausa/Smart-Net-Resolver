@@ -119,7 +119,7 @@
             }
         }
 
-        public class CustomMissingHandler : IMissingHandler
+        public sealed class CustomMissingHandler : IMissingHandler
         {
             private readonly Dictionary<Type, Type> typeMap;
 

@@ -9,7 +9,7 @@
     using Smart.Resolver.Bindings;
     using Smart.Resolver.Scopes;
 
-    public class RequestScope : IScope
+    public sealed class RequestScope : IScope
     {
         private readonly object sync = new object();
 

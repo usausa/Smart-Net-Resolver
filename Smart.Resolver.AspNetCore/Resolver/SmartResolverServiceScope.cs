@@ -5,7 +5,7 @@
     using Microsoft.AspNetCore.Http;
     using Microsoft.Extensions.DependencyInjection;
 
-    public class SmartResolverServiceScope : IServiceScope
+    public sealed class SmartResolverServiceScope : IServiceScope
     {
         private readonly IHttpContextAccessor accessor;
 

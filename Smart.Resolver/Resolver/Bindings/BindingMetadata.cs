@@ -7,7 +7,7 @@
     /// <summary>
     ///
     /// </summary>
-    public class BindingMetadata : IBindingMetadata
+    public sealed class BindingMetadata : IBindingMetadata
     {
         private readonly IDictionary<string, object> values;
 

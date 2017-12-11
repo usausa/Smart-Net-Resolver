@@ -9,7 +9,6 @@
     using Smart.Resolver.Bindings;
     using Smart.Resolver.Configs;
     using Smart.Resolver.Disposables;
-    using Smart.Resolver.Handlers;
     using Smart.Resolver.Metadatas;
 
     /// <summary>

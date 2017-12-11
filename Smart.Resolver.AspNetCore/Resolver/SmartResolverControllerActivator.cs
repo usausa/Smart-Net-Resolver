@@ -5,7 +5,7 @@
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.AspNetCore.Mvc.Controllers;
 
-    public class SmartResolverControllerActivator : IControllerActivator
+    public sealed class SmartResolverControllerActivator : IControllerActivator
     {
         private readonly IResolver resolver;
 

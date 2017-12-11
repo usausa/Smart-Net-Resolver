@@ -10,7 +10,7 @@
     /// <summary>
     ///
     /// </summary>
-    public class AssignableMissingHandler : IMissingHandler
+    public sealed class AssignableMissingHandler : IMissingHandler
     {
         /// <summary>
         ///

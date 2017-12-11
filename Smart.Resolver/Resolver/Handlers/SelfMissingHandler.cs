@@ -12,7 +12,7 @@
     /// <summary>
     ///
     /// </summary>
-    public class SelfMissingHandler : IMissingHandler
+    public sealed class SelfMissingHandler : IMissingHandler
     {
         private static readonly Type StringType = typeof(string);
 

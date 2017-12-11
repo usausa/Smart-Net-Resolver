@@ -5,7 +5,7 @@
     using Microsoft.AspNetCore.Http;
     using Microsoft.Extensions.DependencyInjection;
 
-    public class SmartResolverServiceScopeFactory : IServiceScopeFactory
+    public sealed class SmartResolverServiceScopeFactory : IServiceScopeFactory
     {
         private readonly IServiceProvider serviceProvider;
 

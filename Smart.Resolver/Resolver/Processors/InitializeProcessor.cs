@@ -3,7 +3,7 @@
     /// <summary>
     ///
     /// </summary>
-    public class InitializeProcessor : IProcessor
+    public sealed class InitializeProcessor : IProcessor
     {
         /// <summary>
         ///

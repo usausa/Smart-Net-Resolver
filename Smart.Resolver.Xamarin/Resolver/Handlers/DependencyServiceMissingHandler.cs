@@ -12,7 +12,7 @@
     /// <summary>
     ///
     /// </summary>
-    public class DependencyServiceMissingHandler : IMissingHandler
+    public sealed class DependencyServiceMissingHandler : IMissingHandler
     {
         /// <summary>
         ///

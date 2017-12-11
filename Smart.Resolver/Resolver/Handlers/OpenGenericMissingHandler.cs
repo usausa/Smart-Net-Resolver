@@ -12,7 +12,7 @@
     /// <summary>
     ///
     /// </summary>
-    public class OpenGenericMissingHandler : IMissingHandler
+    public sealed class OpenGenericMissingHandler : IMissingHandler
     {
         /// <summary>
         ///

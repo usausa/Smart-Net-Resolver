@@ -5,7 +5,7 @@
     /// <summary>
     ///
     /// </summary>
-    public class CallbackParameter : IParameter
+    public sealed class CallbackParameter : IParameter
     {
         private readonly Func<IKernel, object> factory;
 

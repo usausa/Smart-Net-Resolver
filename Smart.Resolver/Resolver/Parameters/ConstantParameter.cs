@@ -3,7 +3,7 @@
     /// <summary>
     ///
     /// </summary>
-    public class ConstantParameter : IParameter
+    public sealed class ConstantParameter : IParameter
     {
         private readonly object value;
 

@@ -14,7 +14,7 @@
     /// <summary>
     ///
     /// </summary>
-    public class StandardProvider : IProvider
+    public sealed class StandardProvider : IProvider
     {
         private readonly IInjector[] injectors;
 

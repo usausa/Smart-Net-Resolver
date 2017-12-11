@@ -89,7 +89,7 @@
             void Initialize();
         }
 
-        public class CustomInitializeProcessor : IProcessor
+        public sealed class CustomInitializeProcessor : IProcessor
         {
             public void Initialize(object instance)
             {

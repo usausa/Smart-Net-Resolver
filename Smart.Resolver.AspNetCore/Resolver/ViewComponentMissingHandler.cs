@@ -12,7 +12,7 @@
     using Smart.Resolver.Handlers;
     using Smart.Resolver.Providers;
 
-    public class ViewComponentMissingHandler : IMissingHandler
+    public sealed class ViewComponentMissingHandler : IMissingHandler
     {
         public IEnumerable<IBinding> Handle(IComponentContainer components, IBindingTable table, Type type)
         {

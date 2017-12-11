@@ -6,7 +6,7 @@
     /// <summary>
     ///
     /// </summary>
-    public class PropertyInjector : IInjector
+    public sealed class PropertyInjector : IInjector
     {
         /// <summary>
         ///

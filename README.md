@@ -182,7 +182,7 @@ StandardResolver is constructed from sub-components. Change the sub-components i
 
 ```csharp
 // Add custom processor to pipeline
-public class CustomInitializeProcessor : IProcessor
+public sealed class CustomInitializeProcessor : IProcessor
 {
     public void Initialize(object instance)
     {
@@ -195,12 +195,12 @@ config.UseProcessor<CustomInitializeProcessor>();
 
 ```csharp
 // Add custome scope and storage
-public class CustomScopeStorage : IScopeStorage
+public sealed class CustomScopeStorage : IScopeStorage
 {
 ...
 }
 
-public class CustomScope : IScope
+public sealed class CustomScope : IScope
 {
     public IScopeStorage GetStorage(IKernel kernel)
     {
@@ -246,7 +246,7 @@ If custom constraints want is as follows:
 
 ```csharp
 // Create IConstraint implement
-public class HasMetadataConstraint : IConstraint
+public sealed class HasMetadataConstraint : IConstraint
 {
     public string Key { get; }
 

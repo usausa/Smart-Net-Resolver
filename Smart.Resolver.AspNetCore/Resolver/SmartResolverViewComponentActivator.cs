@@ -4,7 +4,7 @@
 
     using Microsoft.AspNetCore.Mvc.ViewComponents;
 
-    public class SmartResolverViewComponentActivator : IViewComponentActivator
+    public sealed class SmartResolverViewComponentActivator : IViewComponentActivator
     {
         private readonly IResolver resolver;
 

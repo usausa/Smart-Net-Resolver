@@ -11,7 +11,7 @@
     /// <summary>
     ///
     /// </summary>
-    public class DependencyServiceProvider : IProvider
+    public sealed class DependencyServiceProvider : IProvider
     {
         private readonly MethodInfo genericMethod;
 

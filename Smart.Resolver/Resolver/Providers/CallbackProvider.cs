@@ -8,7 +8,7 @@
     /// <summary>
     ///
     /// </summary>
-    public class CallbackProvider : IProvider
+    public sealed class CallbackProvider : IProvider
     {
         private readonly Func<IKernel, object> factory;
 

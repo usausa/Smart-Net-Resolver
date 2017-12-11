@@ -6,7 +6,7 @@
 
     using Microsoft.Extensions.DependencyInjection;
 
-    public class SmartResolverServiceProvider : IServiceProvider, ISupportRequiredService
+    public sealed class SmartResolverServiceProvider : IServiceProvider, ISupportRequiredService
     {
         private static readonly Type EnumerableType = typeof(IEnumerable<>);
 

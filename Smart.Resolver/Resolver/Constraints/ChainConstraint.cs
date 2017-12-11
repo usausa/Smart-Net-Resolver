@@ -7,7 +7,7 @@
     /// <summary>
     ///
     /// </summary>
-    public class ChainConstraint : IConstraint
+    public sealed class ChainConstraint : IConstraint
     {
         private readonly IConstraint[] constraints;
 

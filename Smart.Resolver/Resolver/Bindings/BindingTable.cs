@@ -6,7 +6,7 @@
 
     using Smart.Collections.Concurrent;
 
-    public class BindingTable : IBindingTable
+    public sealed class BindingTable : IBindingTable
     {
         private static readonly IBinding[] EmptyBindings = new IBinding[0];
 
