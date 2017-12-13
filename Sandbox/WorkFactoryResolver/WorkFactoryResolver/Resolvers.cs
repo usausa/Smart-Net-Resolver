@@ -1,7 +1,7 @@
 ﻿namespace WorkFactoryResolver
 {
     using System;
-    using System.Collections.Generic;
+    using Smart.Collections.Concurrent;
     using System.Linq;
 
     using Smart.Reflection;
@@ -79,16 +79,16 @@
 
     public sealed class ObjectResolver : IResolver
     {
-        private readonly Dictionary<Type, IObjectProvider> providers = new Dictionary<Type, IObjectProvider>();
+        private readonly ThreadsafeTypeHashArrayMap<IObjectProvider> providers = new ThreadsafeTypeHashArrayMap<IObjectProvider>();
 
         public void RegisterSingleton(Type type)
         {
-            providers[type] = new SingletonObjectProvider(type);
+            providers.AddIfNotExist(type, new SingletonObjectProvider(type));
         }
 
         public void RegisterTransient(Type type)
         {
-            providers[type] = new TransientObjectProvider(type);
+            providers.AddIfNotExist(type, new TransientObjectProvider(type));
         }
 
         public object Get(Type type)
@@ -258,18 +258,18 @@
 
     public sealed class FactoryResolver : IResolver
     {
-        private readonly Dictionary<Type, IFactoryProvider> providers = new Dictionary<Type, IFactoryProvider>();
+        private readonly ThreadsafeTypeHashArrayMap<IFactoryProvider> providers = new ThreadsafeTypeHashArrayMap<IFactoryProvider>();
 
-        private readonly Dictionary<Type, IObjectFactory> factories = new Dictionary<Type, IObjectFactory>();
+        private readonly ThreadsafeTypeHashArrayMap<IObjectFactory> factories = new ThreadsafeTypeHashArrayMap<IObjectFactory>();
 
         public void RegisterSingleton(Type type)
         {
-            providers[type] = new SingletonFactoryProvider(type);
+            providers.AddIfNotExist(type, new SingletonFactoryProvider(type));
         }
 
         public void RegisterTransient(Type type)
         {
-            providers[type] = new TransientFactoryProvider(type);
+            providers.AddIfNotExist(type, new TransientFactoryProvider(type));
         }
 
         public object Get(Type type)
@@ -287,7 +287,7 @@
                 }
 
                 factory = provider.Resolve(this);
-                factories[type] = factory;
+                factories.AddIfNotExist(type, factory);
             }
 
             return factory;
