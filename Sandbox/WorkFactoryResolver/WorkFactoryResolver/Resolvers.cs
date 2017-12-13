@@ -106,11 +106,11 @@
         object Create();
     }
 
-    public sealed class SingletonObjectFactory : IObjectFactory
+    public sealed class ValueObjectFactory : IObjectFactory
     {
         private readonly object vaule;
 
-        public SingletonObjectFactory(object vaule)
+        public ValueObjectFactory(object vaule)
         {
             this.vaule = vaule;
         }
@@ -231,7 +231,10 @@
             if (factory == null)
             {
                 var provider = FactoryProviderHelper.Create(resolver, activator);
-                factory = new SingletonObjectFactory(provider.Create());
+                if (provider != null)
+                {
+                    factory = new ValueObjectFactory(provider.Create());
+                }
             }
 
             return factory;
