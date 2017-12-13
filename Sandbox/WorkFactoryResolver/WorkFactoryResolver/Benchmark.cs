@@ -11,7 +11,11 @@ namespace WorkFactoryResolver
 
         private readonly FactoryResolver factoryResolver = new FactoryResolver();
 
-        private readonly Type resolveType = typeof(Complex);
+        private readonly Type singletonType = typeof(Service1);
+
+        private readonly Type transientType = typeof(SubObject1);
+
+        private readonly Type complexType = typeof(Complex);
 
         [GlobalSetup]
         public void Setup()
@@ -30,19 +34,43 @@ namespace WorkFactoryResolver
             resolver.RegisterTransient(typeof(SubObject3));
             resolver.RegisterTransient(typeof(Complex));
 
-            resolver.Get(resolveType);
+            resolver.Get(complexType);
         }
 
         [Benchmark]
-        public object ObjectResolver()
+        public object ObjectResolverSingleton()
         {
-            return objectResolver.Get(resolveType);
+            return objectResolver.Get(singletonType);
         }
 
         [Benchmark]
-        public object FactoryResolver()
+        public object FactoryResolverSingleton()
         {
-            return factoryResolver.Get(resolveType);
+            return factoryResolver.Get(singletonType);
+        }
+
+        [Benchmark]
+        public object ObjectResolverTransient()
+        {
+            return objectResolver.Get(transientType);
+        }
+
+        [Benchmark]
+        public object FactoryResolverTransient()
+        {
+            return factoryResolver.Get(transientType);
+        }
+
+        [Benchmark]
+        public object ObjectResolverComplex()
+        {
+            return objectResolver.Get(complexType);
+        }
+
+        [Benchmark]
+        public object FactoryResolverComplex()
+        {
+            return factoryResolver.Get(complexType);
         }
     }
 }
