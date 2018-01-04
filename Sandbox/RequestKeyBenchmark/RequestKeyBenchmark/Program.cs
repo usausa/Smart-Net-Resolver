@@ -1,12 +1,13 @@
-﻿using System;
-
-namespace RequestKeyBenchmark
+﻿namespace RequestKeyBenchmark
 {
-    class Program
+    using System.Reflection;
+    using BenchmarkDotNet.Running;
+
+    public static class Program
     {
-        static void Main(string[] args)
+        public static void Main(string[] args)
         {
-            Console.WriteLine("Hello World!");
+            BenchmarkSwitcher.FromAssembly(typeof(Program).GetTypeInfo().Assembly).Run(args);
         }
     }
 }
