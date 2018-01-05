@@ -3,7 +3,6 @@
     using System;
     using System.Globalization;
     using System.Linq;
-    using System.Threading;
 
     using Smart.ComponentModel;
     using Smart.Reflection;
@@ -11,6 +10,7 @@
     using Smart.Resolver.Factories;
     using Smart.Resolver.Injectors;
     using Smart.Resolver.Metadatas;
+    using Smart.Resolver.Processors;
 
     /// <summary>
     ///
@@ -19,13 +19,11 @@
     {
         private readonly IInjector[] injectors;
 
+        private readonly IProcessor[] processors;
+
         private readonly IActivatorFactory activatorFactory;
 
         private readonly TypeMetadata metadata;
-
-        private ConstructorMetadata constructor;
-
-        private IActivator activator;
 
         /// <summary>
         ///
@@ -51,6 +49,7 @@
 
             TargetType = type;
             injectors = components.GetAll<IInjector>().ToArray();
+            processors = components.GetAll<IProcessor>().ToArray();
             activatorFactory = components.Get<IActivatorFactory>();
             metadata = components.Get<IMetadataFactory>().GetMetadata(TargetType);
         }
@@ -74,130 +73,204 @@
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods", Justification = "Framework only")]
         public IObjectFactory CreateFactory(IKernel kernel, IBinding binding)
         {
-            // TODO
-            return null;
+            var constructor = FindBestConstructor(kernel, binding);
+            var argumentFactories = ResolveArgumentsFactories(kernel, binding, constructor);
+            var activator = activatorFactory.CreateActivator(constructor.Constructor);
+
+            // TODO switch
+            switch (argumentFactories.Length)
+            {
+                case 0:
+                    return new ActivatorObjectFactory0(
+                        activator);
+                case 1:
+                    return new ActivatorObjectFactory1(
+                        activator,
+                        argumentFactories[0]);
+                case 2:
+                    return new ActivatorObjectFactory2(
+                        activator,
+                        argumentFactories[0],
+                        argumentFactories[1]);
+                case 3:
+                    return new ActivatorObjectFactory3(
+                        activator,
+                        argumentFactories[0],
+                        argumentFactories[1],
+                        argumentFactories[2]);
+                case 4:
+                    return new ActivatorObjectFactory4(
+                        activator,
+                        argumentFactories[0],
+                        argumentFactories[1],
+                        argumentFactories[2],
+                        argumentFactories[3]);
+                case 5:
+                    return new ActivatorObjectFactory5(
+                        activator,
+                        argumentFactories[0],
+                        argumentFactories[1],
+                        argumentFactories[2],
+                        argumentFactories[3],
+                        argumentFactories[4]);
+                case 6:
+                    return new ActivatorObjectFactory6(
+                        activator,
+                        argumentFactories[0],
+                        argumentFactories[1],
+                        argumentFactories[2],
+                        argumentFactories[3],
+                        argumentFactories[4],
+                        argumentFactories[5]);
+                case 7:
+                    return new ActivatorObjectFactory7(
+                        activator,
+                        argumentFactories[0],
+                        argumentFactories[1],
+                        argumentFactories[2],
+                        argumentFactories[3],
+                        argumentFactories[4],
+                        argumentFactories[5],
+                        argumentFactories[6]);
+                case 8:
+                    return new ActivatorObjectFactory8(
+                        activator,
+                        argumentFactories[0],
+                        argumentFactories[1],
+                        argumentFactories[2],
+                        argumentFactories[3],
+                        argumentFactories[4],
+                        argumentFactories[5],
+                        argumentFactories[6],
+                        argumentFactories[7]);
+                default:
+                    return new ActivatorObjectFactory(
+                        activator,
+                        argumentFactories);
+            }
+
+            // TODO これはProviderの仕事か 1st?
+            //for (var i = 0; i < processors.Length; i++)
+            //{
+            //    processors[i].Initialize(instance);
+            //}
+            //for (var j = 0; j < injectors.Length; j++)
+            //{
+            //    injectors[j].Inject(kernel, binding, metadata, instance);
+            //}
         }
 
-        //public IObjectFactory CreateFactory(IKernel kernel, IBinding binding)
-        //{
-        //    if (constructor == null)
-        //    {
-        //        Interlocked.CompareExchange(ref constructor, FindBestConstructor(kernel, binding), null);
+        /// <summary>
+        ///
+        /// </summary>
+        /// <param name="kernel"></param>
+        /// <param name="binding"></param>
+        /// <returns></returns>
+        private ConstructorMetadata FindBestConstructor(IKernel kernel, IBinding binding)
+        {
+            if (metadata.TargetConstructors.Length == 0)
+            {
+                throw new InvalidOperationException(
+                    String.Format(CultureInfo.InvariantCulture, "No constructor avaiable. type = {0}", TargetType.Name));
+            }
 
-        //        if (activator == null)
-        //        {
-        //            Interlocked.CompareExchange(ref activator, activatorFactory.CreateActivator(constructor.Constructor), null);
-        //        }
-        //    }
+            for (var i = 0; i < metadata.TargetConstructors.Length; i++)
+            {
+                var match = true;
+                var cm = metadata.TargetConstructors[i];
 
-        //    var arguments = constructor.Parameters.Length == 0 ? null : ResolveParameters(kernel, binding, constructor);
-        //    var instance = activator.Create(arguments);
+                var parameters = cm.Parameters;
+                for (var j = 0; j < parameters.Length; j++)
+                {
+                    var parameter = parameters[j];
+                    var pi = parameter.Parameter;
 
-        //    for (var j = 0; j < injectors.Length; j++)
-        //    {
-        //        injectors[j].Inject(kernel, binding, metadata, instance);
-        //    }
+                    // Constructor argument
+                    if (binding.ConstructorArguments.GetParameter(pi.Name) != null)
+                    {
+                        continue;
+                    }
 
-        //    return instance;
-        //}
+                    // Multiple
+                    if (parameter.ElementType != null)
+                    {
+                        continue;
+                    }
 
-        //private ConstructorMetadata FindBestConstructor(IKernel kernel, IBinding binding)
-        //{
-        //    if (metadata.TargetConstructors.Length == 0)
-        //    {
-        //        throw new InvalidOperationException(
-        //            String.Format(CultureInfo.InvariantCulture, "No constructor avaiable. type = {0}", TargetType.Name));
-        //    }
+                    // Resolve
+                    if (kernel.CanResolve(pi.ParameterType, cm.Constraints[j]))
+                    {
+                        continue;
+                    }
 
-        //    for (var i = 0; i < metadata.TargetConstructors.Length; i++)
-        //    {
-        //        var match = true;
-        //        var cm = metadata.TargetConstructors[i];
+                    // DefaultValue
+                    if (pi.HasDefaultValue)
+                    {
+                        continue;
+                    }
 
-        //        var parameters = cm.Parameters;
-        //        for (var j = 0; j < parameters.Length; j++)
-        //        {
-        //            var parameter = parameters[j];
-        //            var pi = parameter.Parameter;
+                    match = false;
+                    break;
+                }
 
-        //            // Constructor argument
-        //            if (binding.ConstructorArguments.GetParameter(pi.Name) != null)
-        //            {
-        //                continue;
-        //            }
+                if (match)
+                {
+                    return cm;
+                }
+            }
 
-        //            // Multiple
-        //            if (parameter.ElementType != null)
-        //            {
-        //                continue;
-        //            }
+            throw new InvalidOperationException(
+                String.Format(CultureInfo.InvariantCulture, "Constructor parameter unresolved. type = {0}", TargetType.Name));
+        }
 
-        //            // Resolve
-        //            if (kernel.CanResolve(pi.ParameterType, cm.Constraints[j]))
-        //            {
-        //                continue;
-        //            }
+        /// <summary>
+        ///
+        /// </summary>
+        /// <param name="kernel"></param>
+        /// <param name="binding"></param>
+        /// <param name="constructor"></param>
+        /// <returns></returns>
+        private static IObjectFactory[] ResolveArgumentsFactories(IKernel kernel, IBinding binding, ConstructorMetadata constructor)
+        {
+            var parameters = constructor.Parameters;
+            var argumentFactories = new IObjectFactory[parameters.Length];
 
-        //            // DefaultValue
-        //            if (pi.HasDefaultValue)
-        //            {
-        //                continue;
-        //            }
+            for (var i = 0; i < parameters.Length; i++)
+            {
+                var parameter = parameters[i];
+                var pi = parameter.Parameter;
 
-        //            match = false;
-        //            break;
-        //        }
+                // Constructor argument
+                var argument = binding.ConstructorArguments.GetParameter(pi.Name);
+                if (argument != null)
+                {
+                    argumentFactories[i] = new ParameterObjectFactory(kernel, argument);
+                    continue;
+                }
 
-        //        if (match)
-        //        {
-        //            return cm;
-        //        }
-        //    }
+                // Multiple
+                if (parameter.ElementType != null)
+                {
+                    argumentFactories[i] = new ArrayObjectFactory(parameter.ElementType, kernel.ResolveAll(parameter.ElementType, constructor.Constraints[i]));
+                    continue;
+                }
 
-        //    throw new InvalidOperationException(
-        //        String.Format(CultureInfo.InvariantCulture, "Constructor parameter unresolved. type = {0}", TargetType.Name));
-        //}
+                // Resolve
+                var objectFactory = kernel.TryResolve(pi.ParameterType, constructor.Constraints[i], out bool resolve);
+                if (resolve)
+                {
+                    argumentFactories[i] = objectFactory;
+                    continue;
+                }
 
-        //private static object[] ResolveParameters(IKernel kernel, IBinding binding, ConstructorMetadata constructor)
-        //{
-        //    var parameters = constructor.Parameters;
-        //    var arguments = new object[parameters.Length];
-        //    for (var i = 0; i < arguments.Length; i++)
-        //    {
-        //        var parameter = parameters[i];
-        //        var pi = parameter.Parameter;
+                // DefaultValue
+                if (pi.HasDefaultValue)
+                {
+                    argumentFactories[i] = new ConstantObjectFactory(pi.DefaultValue);
+                }
+            }
 
-        //        // Constructor argument
-        //        var argument = binding.ConstructorArguments.GetParameter(pi.Name);
-        //        if (argument != null)
-        //        {
-        //            arguments[i] = argument.Resolve(kernel);
-        //            continue;
-        //        }
-
-        //        // Multiple
-        //        if (parameter.ElementType != null)
-        //        {
-        //            arguments[i] = ResolverHelper.ConvertArray(parameter.ElementType, kernel.ResolveAll(parameter.ElementType, constructor.Constraints[i]));
-        //            continue;
-        //        }
-
-        //        // Resolve
-        //        var obj = kernel.TryResolve(pi.ParameterType, constructor.Constraints[i], out bool resolve);
-        //        if (resolve)
-        //        {
-        //            arguments[i] = obj;
-        //            continue;
-        //        }
-
-        //        // DefaultValue
-        //        if (pi.HasDefaultValue)
-        //        {
-        //            arguments[i] = pi.DefaultValue;
-        //        }
-        //    }
-
-        //    return arguments;
-        //}
+            return argumentFactories;
+        }
     }
 }

@@ -177,14 +177,6 @@
                 //    ? binding.Scope.GetOrAdd(this, binding, instanceFactory)
                 //    : CreateInstance(binding);
 
-                // TODO これはProviderの仕事か
-                //private readonly IProcessor[] processors;
-                //processors = Components.GetAll<IProcessor>().ToArray();
-                //for (var i = 0; i < processors.Length; i++)
-                //{
-                //    processors[i].Initialize(instance);
-                //}
-
                 return bindings
                     .Select(b => b.Provider.CreateFactory(this, b))
                     .ToArray();

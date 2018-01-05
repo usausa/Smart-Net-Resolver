@@ -26,7 +26,7 @@
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods", Justification = "Extensions")]
         public IParameter GetParameter(string name)
         {
-            return (parameters != null) && parameters.TryGetValue(name, out IParameter parameter) ? parameter : null;
+            return (parameters != null) && parameters.TryGetValue(name, out var parameter) ? parameter : null;
         }
     }
 }
