@@ -10,21 +10,21 @@
     {
         private static readonly IBinding[] EmptyBindings = new IBinding[0];
 
-        private readonly ThreadsafeTypeHashArrayMap<IBinding[]> table = new ThreadsafeTypeHashArrayMap<IBinding[]>();
+        private readonly Dictionary<Type, IBinding[]> table = new Dictionary<Type, IBinding[]>();
 
         public void Add(Type type, IBinding[] bindings)
         {
-            table.AddIfNotExist(type, bindings);
+            table.Add(type, bindings);
         }
 
-        public IBinding[] GetOrAdd(Type type, Func<Type, IBinding[]> factory)
+        public IBinding[] Get(Type type)
         {
             if (table.TryGetValue(type, out var bindings))
             {
                 return bindings;
             }
 
-            return table.AddIfNotExist(type, factory);
+            return null;
         }
 
         public IBinding[] FindBindings(Type type)

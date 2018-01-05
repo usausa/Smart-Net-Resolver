@@ -1,9 +1,10 @@
 ﻿namespace Smart.Resolver.Providers
 {
     using System;
-    using Smart.ComponentModel;
 
+    using Smart.ComponentModel;
     using Smart.Resolver.Bindings;
+    using Smart.Resolver.Factories;
 
     /// <summary>
     ///
@@ -44,9 +45,9 @@
         /// <param name="kernel"></param>
         /// <param name="binding"></param>
         /// <returns></returns>
-        public object Create(IKernel kernel, IBinding binding)
+        public IObjectFactory CreateFactory(IKernel kernel, IBinding binding)
         {
-            return factory(kernel);
+            return new CallbackObjectFactory(kernel, factory);
         }
     }
 }

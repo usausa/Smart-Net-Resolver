@@ -35,9 +35,14 @@
         {
             if (serviceType.GetTypeInfo().IsGenericType && serviceType.GetGenericTypeDefinition() == EnumerableType)
             {
-                return ResolverHelper.ConvertArray(
-                    serviceType.GenericTypeArguments[0],
-                    resolver.ResolveAll(serviceType.GenericTypeArguments[0], null));
+                var factories = resolver.ResolveAll(serviceType.GenericTypeArguments[0], null);
+                var array = Array.CreateInstance(serviceType.GenericTypeArguments[0], factories.Length);
+                for (var i = 0; i < factories.Length; i++)
+                {
+                    array.SetValue(factories[i].Create(), i);
+                }
+
+                return array;
             }
 
             if (required)

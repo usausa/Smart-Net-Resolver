@@ -1,9 +1,9 @@
 ﻿namespace Smart.Resolver
 {
     using System;
-    using System.Collections.Generic;
 
     using Smart.Resolver.Constraints;
+    using Smart.Resolver.Factories;
 
     /// <summary>
     ///
@@ -25,7 +25,7 @@
         /// <param name="constraint"></param>
         /// <param name="result"></param>
         /// <returns></returns>
-        object TryResolve(Type type, IConstraint constraint, out bool result);
+        IObjectFactory TryResolve(Type type, IConstraint constraint, out bool result);
 
         /// <summary>
         ///
@@ -33,7 +33,7 @@
         /// <param name="type"></param>
         /// <param name="constraint"></param>
         /// <returns></returns>
-        object Resolve(Type type, IConstraint constraint);
+        IObjectFactory Resolve(Type type, IConstraint constraint);
 
         /// <summary>
         ///
@@ -41,6 +41,6 @@
         /// <param name="type"></param>
         /// <param name="constraint"></param>
         /// <returns></returns>
-        IEnumerable<object> ResolveAll(Type type, IConstraint constraint);
+        IObjectFactory[] ResolveAll(Type type, IConstraint constraint);
     }
 }

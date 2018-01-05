@@ -5,13 +5,14 @@
     using System.Globalization;
     using System.Linq;
 
+    using Smart.Collections.Concurrent;
     using Smart.ComponentModel;
     using Smart.Resolver.Bindings;
     using Smart.Resolver.Constraints;
+    using Smart.Resolver.Factories;
     using Smart.Resolver.Handlers;
     using Smart.Resolver.Injectors;
     using Smart.Resolver.Metadatas;
-    using Smart.Resolver.Processors;
     using Smart.Resolver.Providers;
 
     /// <summary>
@@ -19,15 +20,15 @@
     /// </summary>
     public class StandardResolver : DisposableObject, IKernel
     {
+        private readonly ThreadsafeHashArrayMap<Type, IObjectFactory[]> factoriesCache = new ThreadsafeHashArrayMap<Type, IObjectFactory[]>();
+
+        private readonly ThreadsafeHashArrayMap<RequestKey, IObjectFactory[]> factoriesCacheWithConstraint = new ThreadsafeHashArrayMap<RequestKey, IObjectFactory[]>();
+
+        private readonly object sync = new object();
+
         private readonly BindingTable table = new BindingTable();
 
-        private readonly Func<Type, IBinding[]> bindingsFactory;
-
-        private readonly Func<IBinding, object> instanceFactory;
-
         private readonly IMetadataFactory metadataFactory;
-
-        private readonly IProcessor[] processors;
 
         private readonly IInjector[] injectors;
 
@@ -49,13 +50,12 @@
                 throw new ArgumentNullException(nameof(config));
             }
 
-            bindingsFactory = CreateBindings;
-            instanceFactory = CreateInstance;
+            //bindingsFactory = CreateBindings;
+            //instanceFactory = CreateInstance;
 
             Components = config.CreateComponentContainer();
 
             metadataFactory = Components.Get<IMetadataFactory>();
-            processors = Components.GetAll<IProcessor>().ToArray();
             injectors = Components.GetAll<IInjector>().ToArray();
             handlers = Components.GetAll<IMissingHandler>().ToArray();
 
@@ -86,163 +86,109 @@
         // IResolver
         // ------------------------------------------------------------
 
-        /// <summary>
-        ///
-        /// </summary>
-        /// <param name="type"></param>
-        /// <param name="constraint"></param>
-        /// <returns></returns>
-        public bool CanResolve(Type type, IConstraint constraint)
+        bool IResolver.CanResolve(Type type, IConstraint constraint)
         {
-            if (type == null)
-            {
-                throw new ArgumentNullException(nameof(type));
-            }
-
-            return FindBinding(type, constraint) != null;
+            var factories = FindFactories(type, constraint);
+            return factories.Length > 0;
         }
 
-        /// <summary>
-        ///
-        /// </summary>
-        /// <param name="type"></param>
-        /// <param name="constraint"></param>
-        /// <param name="result"></param>
-        /// <returns></returns>
-        public object TryResolve(Type type, IConstraint constraint, out bool result)
+        IObjectFactory IResolver.TryResolve(Type type, IConstraint constraint, out bool result)
         {
-            if (type == null)
-            {
-                throw new ArgumentNullException(nameof(type));
-            }
-
-            var binding = FindBinding(type, constraint);
-            result = binding != null;
-            return result ? Resolve(binding) : null;
+            var factories = FindFactories(type, constraint);
+            result = factories.Length > 0;
+            return factories[factories.Length - 1];
         }
 
-        /// <summary>
-        ///
-        /// </summary>
-        /// <param name="type"></param>
-        /// <param name="constraint"></param>
-        /// <returns></returns>
-        public object Resolve(Type type, IConstraint constraint)
+        IObjectFactory IResolver.Resolve(Type type, IConstraint constraint)
         {
-            if (type == null)
-            {
-                throw new ArgumentNullException(nameof(type));
-            }
-
-            var binding = FindBinding(type, constraint);
-            if (binding == null)
+            var factories = FindFactories(type, constraint);
+            if (factories.Length == 0)
             {
                 throw new InvalidOperationException(
                     String.Format(CultureInfo.InvariantCulture, "No such component registerd. type = {0}", type.Name));
             }
 
-            return Resolve(binding);
+            return factories[factories.Length - 1];
         }
 
-        /// <summary>
-        ///
-        /// </summary>
-        /// <param name="type"></param>
-        /// <param name="constraint"></param>
-        /// <returns></returns>
-        public IEnumerable<object> ResolveAll(Type type, IConstraint constraint)
+        IObjectFactory[] IResolver.ResolveAll(Type type, IConstraint constraint)
         {
-            if (constraint == null)
-            {
-                return table.GetOrAdd(type, bindingsFactory)
-                    .Select(Resolve);
-            }
-
-            return table.GetOrAdd(type, bindingsFactory)
-                .Where(b => constraint.Match(b.Metadata))
-                .Select(Resolve);
+            return FindFactories(type, constraint);
         }
 
         // ------------------------------------------------------------
         // Binding
         // ------------------------------------------------------------
 
-        /// <summary>
-        ///
-        /// </summary>
-        /// <param name="type"></param>
-        /// <param name="constraint"></param>
-        /// <returns></returns>
-        private IBinding FindBinding(Type type, IConstraint constraint)
+        private IObjectFactory[] FindFactories(Type type, IConstraint constraint)
         {
-            var list = table.GetOrAdd(type, bindingsFactory);
-            if (list.Length == 0)
+            if (type == null)
             {
-                return null;
+                throw new ArgumentNullException(nameof(type));
             }
 
             if (constraint == null)
             {
-                return list[list.Length - 1];
-            }
-
-            for (var i = list.Length - 1; i >= 0; i--)
-            {
-                if (constraint.Match(list[i].Metadata))
+                if (!factoriesCache.TryGetValue(type, out var factories))
                 {
-                    return list[i];
+                    factories = factoriesCache.AddIfNotExist(type, t => CreateFactories(t, null));
                 }
+
+                return factories;
             }
-
-            return null;
-        }
-
-        /// <summary>
-        ///
-        /// </summary>
-        /// <param name="type"></param>
-        /// <returns></returns>
-        private IBinding[] CreateBindings(Type type)
-        {
-            var list = new List<IBinding>();
-            for (var i = 0; i < handlers.Length; i++)
+            else
             {
-                foreach (var binding in handlers[i].Handle(Components, table, type))
+                var key = new RequestKey(type, constraint);
+                if (!factoriesCacheWithConstraint.TryGetValue(key, out var factories))
                 {
-                    list.Add(binding);
+                    factories = factoriesCacheWithConstraint.AddIfNotExist(key, x => CreateFactories(x.Type, x.Constraint));
                 }
+
+                return factories;
             }
-
-            return list.ToArray();
         }
 
-        /// <summary>
-        ///
-        /// </summary>
-        /// <param name="binding"></param>
-        /// <returns></returns>
-        private object Resolve(IBinding binding)
+        private IObjectFactory[] CreateFactories(Type type, IConstraint constraint)
         {
-            return binding.Scope != null
-                ? binding.Scope.GetOrAdd(this, binding, instanceFactory)
-                : CreateInstance(binding);
-        }
-
-        /// <summary>
-        ///
-        /// </summary>
-        /// <param name="binding"></param>
-        /// <returns></returns>
-        private object CreateInstance(IBinding binding)
-        {
-            var instance = binding.Provider.Create(this, binding);
-
-            for (var i = 0; i < processors.Length; i++)
+            lock (sync)
             {
-                processors[i].Initialize(instance);
-            }
+                IEnumerable<IBinding> bindings = table.Get(type);
+                if (bindings == null)
+                {
+                    var list = new List<IBinding>();
+                    for (var i = 0; i < handlers.Length; i++)
+                    {
+                        foreach (var binding in handlers[i].Handle(Components, table, type))
+                        {
+                            list.Add(binding);
+                        }
+                    }
 
-            return instance;
+                    bindings = list;
+                }
+
+                if (constraint != null)
+                {
+                    bindings = bindings.Where(b => constraint.Match(b.Metadata));
+                }
+
+                // TODO スコープの意味変更
+                //return binding.Scope != null
+                //    ? binding.Scope.GetOrAdd(this, binding, instanceFactory)
+                //    : CreateInstance(binding);
+
+                // TODO これはProviderの仕事か
+                //private readonly IProcessor[] processors;
+                //processors = Components.GetAll<IProcessor>().ToArray();
+                //for (var i = 0; i < processors.Length; i++)
+                //{
+                //    processors[i].Initialize(instance);
+                //}
+
+                return bindings
+                    .Select(b => b.Provider.CreateFactory(this, b))
+                    .ToArray();
+            }
         }
 
         // ------------------------------------------------------------

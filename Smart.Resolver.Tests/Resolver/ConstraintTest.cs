@@ -44,7 +44,7 @@
             using (var resolver = config.ToResolver())
             {
                 var obj = resolver.Get<HasMetadataConstraintInjectedObject>();
-                var hoge = resolver.Resolve(typeof(SimpleObject), new HasMetadataConstraint("hoge"));
+                var hoge = resolver.Get(typeof(SimpleObject), new HasMetadataConstraint("hoge"));
 
                 Assert.Same(obj.SimpleObject, hoge);
             }
@@ -64,7 +64,7 @@
             using (var resolver = config.ToResolver())
             {
                 var obj = resolver.Get<ChainConstraintInjectedObject>();
-                var barHoge = resolver.Resolve(typeof(SimpleObject), new ChainConstraint(new NameConstraint("bar"), new HasMetadataConstraint("hoge")));
+                var barHoge = resolver.Get(typeof(SimpleObject), new ChainConstraint(new NameConstraint("bar"), new HasMetadataConstraint("hoge")));
 
                 Assert.Same(obj.SimpleObject, barHoge);
             }
