@@ -2,6 +2,6 @@
 {
     public interface IObjectFactory
     {
-        object Create();
+        object Create(IKernel kernel);
     }
 }

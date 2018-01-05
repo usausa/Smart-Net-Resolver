@@ -12,9 +12,9 @@
             this.activator = activator;
         }
 
-        public object Create()
+        public object Create(IKernel kernel)
         {
-            return activator.Create();
+            return activator.Create(kernel);
         }
     }
 
@@ -32,10 +32,10 @@
             this.argument1Factory = argument1Factory;
         }
 
-        public object Create()
+        public object Create(IKernel kernel)
         {
             return activator.Create(
-                argument1Factory.Create());
+                argument1Factory.Create(kernel));
         }
     }
 
@@ -57,11 +57,11 @@
             this.argument2Factory = argument2Factory;
         }
 
-        public object Create()
+        public object Create(IKernel kernel)
         {
             return activator.Create(
-                argument1Factory.Create(),
-                argument2Factory.Create());
+                argument1Factory.Create(kernel),
+                argument2Factory.Create(kernel));
         }
     }
 
@@ -87,12 +87,12 @@
             this.argument3Factory = argument3Factory;
         }
 
-        public object Create()
+        public object Create(IKernel kernel)
         {
             return activator.Create(
-                argument1Factory.Create(),
-                argument2Factory.Create(),
-                argument3Factory.Create());
+                argument1Factory.Create(kernel),
+                argument2Factory.Create(kernel),
+                argument3Factory.Create(kernel));
         }
     }
 
@@ -122,13 +122,13 @@
             this.argument4Factory = argument4Factory;
         }
 
-        public object Create()
+        public object Create(IKernel kernel)
         {
             return activator.Create(
-                argument1Factory.Create(),
-                argument2Factory.Create(),
-                argument3Factory.Create(),
-                argument4Factory.Create());
+                argument1Factory.Create(kernel),
+                argument2Factory.Create(kernel),
+                argument3Factory.Create(kernel),
+                argument4Factory.Create(kernel));
         }
     }
 
@@ -162,14 +162,14 @@
             this.argument5Factory = argument5Factory;
         }
 
-        public object Create()
+        public object Create(IKernel kernel)
         {
             return activator.Create(
-                argument1Factory.Create(),
-                argument2Factory.Create(),
-                argument3Factory.Create(),
-                argument4Factory.Create(),
-                argument5Factory.Create());
+                argument1Factory.Create(kernel),
+                argument2Factory.Create(kernel),
+                argument3Factory.Create(kernel),
+                argument4Factory.Create(kernel),
+                argument5Factory.Create(kernel));
         }
     }
 
@@ -207,15 +207,15 @@
             this.argument6Factory = argument6Factory;
         }
 
-        public object Create()
+        public object Create(IKernel kernel)
         {
             return activator.Create(
-                argument1Factory.Create(),
-                argument2Factory.Create(),
-                argument3Factory.Create(),
-                argument4Factory.Create(),
-                argument5Factory.Create(),
-                argument6Factory.Create());
+                argument1Factory.Create(kernel),
+                argument2Factory.Create(kernel),
+                argument3Factory.Create(kernel),
+                argument4Factory.Create(kernel),
+                argument5Factory.Create(kernel),
+                argument6Factory.Create(kernel));
         }
     }
 
@@ -257,16 +257,16 @@
             this.argument7Factory = argument7Factory;
         }
 
-        public object Create()
+        public object Create(IKernel kernel)
         {
             return activator.Create(
-                argument1Factory.Create(),
-                argument2Factory.Create(),
-                argument3Factory.Create(),
-                argument4Factory.Create(),
-                argument5Factory.Create(),
-                argument6Factory.Create(),
-                argument7Factory.Create());
+                argument1Factory.Create(kernel),
+                argument2Factory.Create(kernel),
+                argument3Factory.Create(kernel),
+                argument4Factory.Create(kernel),
+                argument5Factory.Create(kernel),
+                argument6Factory.Create(kernel),
+                argument7Factory.Create(kernel));
         }
     }
 
@@ -312,17 +312,17 @@
             this.argument8Factory = argument8Factory;
         }
 
-        public object Create()
+        public object Create(IKernel kernel)
         {
             return activator.Create(
-                argument1Factory.Create(),
-                argument2Factory.Create(),
-                argument3Factory.Create(),
-                argument4Factory.Create(),
-                argument5Factory.Create(),
-                argument6Factory.Create(),
-                argument7Factory.Create(),
-                argument8Factory.Create());
+                argument1Factory.Create(kernel),
+                argument2Factory.Create(kernel),
+                argument3Factory.Create(kernel),
+                argument4Factory.Create(kernel),
+                argument5Factory.Create(kernel),
+                argument6Factory.Create(kernel),
+                argument7Factory.Create(kernel),
+                argument8Factory.Create(kernel));
         }
     }
 
@@ -340,12 +340,12 @@
             this.argumentFactories = argumentFactories;
         }
 
-        public object Create()
+        public object Create(IKernel kernel)
         {
             var arguments = new object[argumentFactories.Length];
             for (var i = 0; i < argumentFactories.Length; i++)
             {
-                arguments[i] = argumentFactories[i].Create();
+                arguments[i] = argumentFactories[i].Create(kernel);
             }
 
             return activator.Create(arguments);

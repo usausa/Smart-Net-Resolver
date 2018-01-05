@@ -9,7 +9,7 @@
             this.value = value;
         }
 
-        public object Create()
+        public object Create(IKernel kernel)
         {
             return value;
         }
