@@ -84,6 +84,31 @@
             {
                 return metadata.Has(Key);
             }
+
+            public bool Equals(IConstraint other)
+            {
+                return other is HasMetadataConstraint constraint && String.Equals(Key, constraint.Key);
+            }
+
+            public override bool Equals(object obj)
+            {
+                if (ReferenceEquals(null, obj))
+                {
+                    return false;
+                }
+
+                if (ReferenceEquals(this, obj))
+                {
+                    return true;
+                }
+
+                return obj is NameConstraint constraint && Equals(constraint);
+            }
+
+            public override int GetHashCode()
+            {
+                return Key != null ? Key.GetHashCode() : 0;
+            }
         }
 
         [AttributeUsage(AttributeTargets.Property | AttributeTargets.Parameter, AllowMultiple = true)]

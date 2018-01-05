@@ -20,9 +20,73 @@
             this.constraints = constraints;
         }
 
+        /// <summary>
+        ///
+        /// </summary>
+        /// <param name="metadata"></param>
+        /// <returns></returns>
         public bool Match(IBindingMetadata metadata)
         {
             return constraints.All(c => c.Match(metadata));
+        }
+
+        /// <summary>
+        ///
+        /// </summary>
+        /// <param name="other"></param>
+        /// <returns></returns>
+        public bool Equals(IConstraint other)
+        {
+            if (other is ChainConstraint constraint &&
+                (constraints.Length == constraint.constraints.Length))
+            {
+                for (var i = 0; i < constraints.Length; i++)
+                {
+                    if (!constraints[i].Equals(constraint.constraints[i]))
+                    {
+                        return false;
+                    }
+                }
+
+                return true;
+            }
+
+            return false;
+        }
+
+        /// <summary>
+        ///
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <returns></returns>
+        public override bool Equals(object obj)
+        {
+            if (ReferenceEquals(null, obj))
+            {
+                return false;
+            }
+
+            if (ReferenceEquals(this, obj))
+            {
+                return true;
+            }
+
+            return obj is ChainConstraint constraint && Equals(constraint);
+        }
+
+        /// <summary>
+        ///
+        /// </summary>
+        /// <returns></returns>
+        public override int GetHashCode()
+        {
+            var hash = 0;
+            for (var i = 0; i < constraints.Length; i++)
+            {
+                hash = hash ^ constraints[i].GetHashCode();
+            }
+
+            return hash;
         }
     }
 }

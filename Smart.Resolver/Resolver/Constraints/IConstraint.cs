@@ -1,11 +1,13 @@
 ﻿namespace Smart.Resolver.Constraints
 {
+    using System;
+
     using Smart.Resolver.Bindings;
 
     /// <summary>
     ///
     /// </summary>
-    public interface IConstraint
+    public interface IConstraint : IEquatable<IConstraint>
     {
         /// <summary>
         ///
