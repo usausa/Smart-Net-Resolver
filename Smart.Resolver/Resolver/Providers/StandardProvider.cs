@@ -256,7 +256,7 @@
                 }
 
                 // Resolve
-                var objectFactory = kernel.TryResolve(pi.ParameterType, constructor.Constraints[i], out bool resolve);
+                var objectFactory = kernel.TryResolve(pi.ParameterType, constructor.Constraints[i], out var resolve);
                 if (resolve)
                 {
                     argumentFactories[i] = objectFactory;

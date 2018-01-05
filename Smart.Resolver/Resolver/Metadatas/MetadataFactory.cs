@@ -44,7 +44,7 @@
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods", Justification = "Framework only")]
         public TypeMetadata GetMetadata(Type type)
         {
-            if (metadatas.TryGetValue(type, out TypeMetadata metadata))
+            if (metadatas.TryGetValue(type, out var metadata))
             {
                 return metadata;
             }

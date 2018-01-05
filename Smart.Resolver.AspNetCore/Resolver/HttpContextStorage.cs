@@ -13,10 +13,10 @@
 
         public static object GetOrAdd(HttpContext context, IBinding binding, Func<IBinding, object> factory)
         {
-            context.Items.TryGetValue(StorageKey, out object value);
+            context.Items.TryGetValue(StorageKey, out var value);
             var dictionary = (Dictionary<IBinding, object>)value;
 
-            if ((dictionary != null) && dictionary.TryGetValue(binding, out object instance))
+            if ((dictionary != null) && dictionary.TryGetValue(binding, out var instance))
             {
                 return instance;
             }
@@ -41,7 +41,7 @@
                 return;
             }
 
-            context.Items.TryGetValue(StorageKey, out object value);
+            context.Items.TryGetValue(StorageKey, out var value);
             var dictionary = (Dictionary<IBinding, object>)value;
             if (dictionary == null)
             {
