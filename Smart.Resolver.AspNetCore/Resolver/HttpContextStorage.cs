@@ -6,12 +6,13 @@
     using Microsoft.AspNetCore.Http;
 
     using Smart.Resolver.Bindings;
+    using Smart.Resolver.Factories;
 
     public static class HttpContextStorage
     {
         private static readonly string StorageKey = "__RequestScopeStorage";
 
-        public static object GetOrAdd(HttpContext context, IBinding binding, Func<IBinding, object> factory)
+        public static object GetOrAdd(HttpContext context, IBinding binding, IObjectFactory objectFactory)
         {
             context.Items.TryGetValue(StorageKey, out var value);
             var dictionary = (Dictionary<IBinding, object>)value;
@@ -21,7 +22,7 @@
                 return instance;
             }
 
-            instance = factory(binding);
+            instance = objectFactory.Create();
 
             if (dictionary == null)
             {

@@ -1,20 +1,20 @@
 ﻿namespace Smart.Resolver.Scopes
 {
     using System;
-    using System.Threading;
 
     using Smart.ComponentModel;
     using Smart.Resolver.Bindings;
     using Smart.Resolver.Disposables;
+    using Smart.Resolver.Factories;
 
     /// <summary>
     ///
     /// </summary>
     public sealed class SingletonScope : IScope, IDisposable
     {
-        private readonly object sync = new object();
-
         private object value;
+
+        private ConstantObjectFactory objectFactory;
 
         /// <summary>
         ///
@@ -28,29 +28,19 @@
         /// <summary>
         ///
         /// </summary>
-        /// <param name="components"></param>
-        /// <returns></returns>
-        public IScope Copy(IComponentContainer components)
+        public void Dispose()
         {
-            return new SingletonScope(components);
+            (value as IDisposable)?.Dispose();
         }
 
         /// <summary>
         ///
         /// </summary>
-        public void Dispose()
+        /// <param name="components"></param>
+        /// <returns></returns>
+        public IScope Copy(IComponentContainer components)
         {
-            if (value != null)
-            {
-                lock (sync)
-                {
-                    if (value != null)
-                    {
-                        (value as IDisposable)?.Dispose();
-                        value = null;
-                    }
-                }
-            }
+            return this;
         }
 
         /// <summary>
@@ -60,22 +50,15 @@
         /// <param name="binding"></param>
         /// <param name="factory"></param>
         /// <returns></returns>
-        public object GetOrAdd(IKernel kernel, IBinding binding, Func<IBinding, object> factory)
+        public IObjectFactory Convert(IKernel kernel, IBinding binding, IObjectFactory factory)
         {
-            if (value == null)
+            if (objectFactory == null)
             {
-                lock (sync)
-                {
-                    if (value == null)
-                    {
-                        var newObj = factory(binding);
-                        Interlocked.MemoryBarrier();
-                        value = newObj;
-                    }
-                }
+                value = factory.Create();
+                objectFactory = new ConstantObjectFactory(value);
             }
 
-            return value;
+            return objectFactory;
         }
     }
 }

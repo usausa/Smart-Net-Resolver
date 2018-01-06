@@ -1,9 +1,8 @@
 ﻿namespace Smart.Resolver.Scopes
 {
-    using System;
-
     using Smart.ComponentModel;
     using Smart.Resolver.Bindings;
+    using Smart.Resolver.Factories;
 
     /// <summary>
     ///
@@ -13,17 +12,17 @@
         /// <summary>
         ///
         /// </summary>
-        /// <param name="kernel"></param>
-        /// <param name="binding"></param>
-        /// <param name="factory"></param>
+        /// <param name="components"></param>
         /// <returns></returns>
-        object GetOrAdd(IKernel kernel, IBinding binding, Func<IBinding, object> factory);
+        IScope Copy(IComponentContainer components);
 
         /// <summary>
         ///
         /// </summary>
-        /// <param name="components"></param>
+        /// <param name="kernel"></param>
+        /// <param name="binding"></param>
+        /// <param name="factory"></param>
         /// <returns></returns>
-        IScope Copy(IComponentContainer components);
+        IObjectFactory Convert(IKernel kernel, IBinding binding, IObjectFactory factory);
     }
 }

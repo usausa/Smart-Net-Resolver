@@ -6,6 +6,7 @@
 
     using Smart.ComponentModel;
     using Smart.Resolver.Bindings;
+    using Smart.Resolver.Factories;
     using Smart.Resolver.Mocks;
     using Smart.Resolver.Scopes;
 
@@ -50,8 +51,7 @@
         public void ObjectInCustomScope()
         {
             var config = new ResolverConfig();
-            config.Components.Add<CustomScopeStorage>();
-            config.Bind<SimpleObject>().ToSelf().InScope(c => new CustomScope(c));
+            config.Bind<SimpleObject>().ToSelf().InScope(c => new CustomScope());
 
             using (var resolver = config.ToResolver())
             {
@@ -87,20 +87,29 @@
             }
         }
 
-        public class CustomScopeStorage
+        public sealed class CustomeScopeObjectFactory : IObjectFactory
         {
             private static readonly ThreadLocal<Dictionary<IBinding, object>> Cache =
                 new ThreadLocal<Dictionary<IBinding, object>>(() => new Dictionary<IBinding, object>());
 
-            [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods", Justification = "Framework only")]
-            public object GetOrAdd(IBinding binding, Func<IBinding, object> factory)
+            private readonly IBinding binding;
+
+            private readonly IObjectFactory objectFactory;
+
+            public CustomeScopeObjectFactory(IBinding binding, IObjectFactory objectFactory)
+            {
+                this.binding = binding;
+                this.objectFactory = objectFactory;
+            }
+
+            public object Create()
             {
                 if (Cache.Value.TryGetValue(binding, out var value))
                 {
                     return value;
                 }
 
-                value = factory(binding);
+                value = objectFactory.Create();
                 Cache.Value[binding] = value;
 
                 return value;
@@ -109,22 +118,14 @@
 
         public sealed class CustomScope : IScope
         {
-            private readonly CustomScopeStorage storage;
-
-            [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods", Justification = "Framework only")]
-            public CustomScope(IComponentContainer components)
-            {
-                storage = components.Get<CustomScopeStorage>();
-            }
-
             public IScope Copy(IComponentContainer components)
             {
                 return this;
             }
 
-            public object GetOrAdd(IKernel kernel, IBinding binding, Func<IBinding, object> factory)
+            public IObjectFactory Convert(IKernel kernel, IBinding binding, IObjectFactory factory)
             {
-                return storage.GetOrAdd(binding, factory);
+                return new CustomeScopeObjectFactory(binding, factory);
             }
         }
     }

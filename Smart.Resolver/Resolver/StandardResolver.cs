@@ -172,13 +172,12 @@
                     bindings = bindings.Where(b => constraint.Match(b.Metadata));
                 }
 
-                // TODO スコープの意味変更
-                //return binding.Scope != null
-                //    ? binding.Scope.GetOrAdd(this, binding, instanceFactory)
-                //    : CreateInstance(binding);
-
                 return bindings
-                    .Select(b => b.Provider.CreateFactory(this, b))
+                    .Select(b =>
+                    {
+                        var factory = b.Provider.CreateFactory(this, b);
+                        return b.Scope != null ? b.Scope.Convert(this, b, factory) : factory;
+                    })
                     .ToArray();
             }
         }
