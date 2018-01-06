@@ -76,31 +76,36 @@
             var constructor = FindBestConstructor(kernel, binding);
             var argumentFactories = ResolveArgumentsFactories(kernel, binding, constructor);
             var activator = activatorFactory.CreateActivator(constructor.Constructor);
+            var helper = new ActivateHelper(injectors, processors, kernel, binding, metadata);
 
-            // TODO switch
             switch (argumentFactories.Length)
             {
                 case 0:
                     return new ActivatorObjectFactory0(
-                        activator);
+                        activator,
+                        helper);
                 case 1:
                     return new ActivatorObjectFactory1(
                         activator,
+                        helper,
                         argumentFactories[0]);
                 case 2:
                     return new ActivatorObjectFactory2(
                         activator,
+                        helper,
                         argumentFactories[0],
                         argumentFactories[1]);
                 case 3:
                     return new ActivatorObjectFactory3(
                         activator,
+                        helper,
                         argumentFactories[0],
                         argumentFactories[1],
                         argumentFactories[2]);
                 case 4:
                     return new ActivatorObjectFactory4(
                         activator,
+                        helper,
                         argumentFactories[0],
                         argumentFactories[1],
                         argumentFactories[2],
@@ -108,6 +113,7 @@
                 case 5:
                     return new ActivatorObjectFactory5(
                         activator,
+                        helper,
                         argumentFactories[0],
                         argumentFactories[1],
                         argumentFactories[2],
@@ -116,6 +122,7 @@
                 case 6:
                     return new ActivatorObjectFactory6(
                         activator,
+                        helper,
                         argumentFactories[0],
                         argumentFactories[1],
                         argumentFactories[2],
@@ -125,6 +132,7 @@
                 case 7:
                     return new ActivatorObjectFactory7(
                         activator,
+                        helper,
                         argumentFactories[0],
                         argumentFactories[1],
                         argumentFactories[2],
@@ -135,6 +143,7 @@
                 case 8:
                     return new ActivatorObjectFactory8(
                         activator,
+                        helper,
                         argumentFactories[0],
                         argumentFactories[1],
                         argumentFactories[2],
@@ -146,18 +155,9 @@
                 default:
                     return new ActivatorObjectFactory(
                         activator,
+                        helper,
                         argumentFactories);
             }
-
-            // TODO これはProviderの仕事か 1st?
-            //for (var i = 0; i < processors.Length; i++)
-            //{
-            //    processors[i].Initialize(instance);
-            //}
-            //for (var j = 0; j < injectors.Length; j++)
-            //{
-            //    injectors[j].Inject(kernel, binding, metadata, instance);
-            //}
         }
 
         /// <summary>

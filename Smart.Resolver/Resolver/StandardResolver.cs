@@ -96,7 +96,7 @@
         {
             var factories = FindFactories(type, constraint);
             result = factories.Length > 0;
-            return factories[factories.Length - 1];
+            return result ? factories[factories.Length - 1] : null;
         }
 
         IObjectFactory IResolver.Resolve(Type type, IConstraint constraint)

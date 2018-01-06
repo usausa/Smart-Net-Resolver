@@ -36,7 +36,6 @@
             if (serviceType.GetTypeInfo().IsGenericType && serviceType.GetGenericTypeDefinition() == EnumerableType)
             {
                 var factories = resolver.ResolveAll(serviceType.GenericTypeArguments[0], null);
-                // TODO cast?
                 var array = Array.CreateInstance(serviceType.GenericTypeArguments[0], factories.Length);
                 for (var i = 0; i < factories.Length; i++)
                 {
