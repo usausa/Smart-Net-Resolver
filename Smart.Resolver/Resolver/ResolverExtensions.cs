@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Linq;
 
     using Smart.Resolver.Constraints;
 
@@ -163,29 +164,15 @@
         // GetAll
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods", Justification = "Extensions")]
-        public static T[] GetAll<T>(this IResolver resolver)
+        public static IEnumerable<T> GetAll<T>(this IResolver resolver)
         {
-            var factories = resolver.ResolveAll(typeof(T), null);
-            var array = new T[factories.Length];
-            for (var i = 0; i < factories.Length; i++)
-            {
-                array[i] = (T)factories[i].Create();
-            }
-
-            return array;
+            return resolver.ResolveAll(typeof(T), null).Select(x => (T)x.Create());
         }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods", Justification = "Extensions")]
         public static IEnumerable<object> GetAll(this IResolver resolver, Type type)
         {
-            var factories = resolver.ResolveAll(type, null);
-            var array = new object[factories.Length];
-            for (var i = 0; i < factories.Length; i++)
-            {
-                array[i] = factories[i].Create();
-            }
-
-            return array;
+            return resolver.ResolveAll(type, null).Select(x => x.Create());
         }
     }
 }

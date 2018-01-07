@@ -111,7 +111,7 @@
             return factories[factories.Length - 1];
         }
 
-        IObjectFactory[] IResolver.ResolveAll(Type type, IConstraint constraint)
+        IEnumerable<IObjectFactory> IResolver.ResolveAll(Type type, IConstraint constraint)
         {
             return FindFactories(type, constraint);
         }

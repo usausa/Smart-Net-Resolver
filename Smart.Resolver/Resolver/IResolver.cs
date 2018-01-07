@@ -1,6 +1,7 @@
 ﻿namespace Smart.Resolver
 {
     using System;
+    using System.Collections.Generic;
 
     using Smart.Resolver.Constraints;
     using Smart.Resolver.Factories;
@@ -41,6 +42,6 @@
         /// <param name="type"></param>
         /// <param name="constraint"></param>
         /// <returns></returns>
-        IObjectFactory[] ResolveAll(Type type, IConstraint constraint);
+        IEnumerable<IObjectFactory> ResolveAll(Type type, IConstraint constraint);
     }
 }

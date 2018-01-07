@@ -3,6 +3,7 @@
     using System;
     using System.Collections.Generic;
     using System.Reflection;
+    using System.Linq;
 
     using Microsoft.Extensions.DependencyInjection;
 
@@ -35,14 +36,7 @@
         {
             if (serviceType.GetTypeInfo().IsGenericType && serviceType.GetGenericTypeDefinition() == EnumerableType)
             {
-                var factories = resolver.ResolveAll(serviceType.GenericTypeArguments[0], null);
-                var array = Array.CreateInstance(serviceType.GenericTypeArguments[0], factories.Length);
-                for (var i = 0; i < factories.Length; i++)
-                {
-                    array.SetValue(factories[i].Create(), i);
-                }
-
-                return array;
+                return resolver.ResolveAll(serviceType.GenericTypeArguments[0], null).Select(x => x.Create());
             }
 
             if (required)

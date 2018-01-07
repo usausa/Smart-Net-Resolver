@@ -251,7 +251,7 @@
                 // Multiple
                 if (parameter.ElementType != null)
                 {
-                    argumentFactories[i] = new ArrayObjectFactory(parameter.ElementType, kernel.ResolveAll(parameter.ElementType, constructor.Constraints[i]));
+                    argumentFactories[i] = new ArrayObjectFactory(parameter.ElementType, kernel.ResolveAll(parameter.ElementType, constructor.Constraints[i]).ToArray());
                     continue;
                 }
 
