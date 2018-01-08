@@ -23,6 +23,8 @@
 
         private readonly IActivatorFactory activatorFactory;
 
+        private readonly IArrayOperatorFactory arrayOperatorFactory;
+
         private readonly TypeMetadata metadata;
 
         /// <summary>
@@ -51,6 +53,7 @@
             injectors = components.GetAll<IInjector>().ToArray();
             processors = components.GetAll<IProcessor>().ToArray();
             activatorFactory = components.Get<IActivatorFactory>();
+            arrayOperatorFactory = components.Get<IArrayOperatorFactory>();
             metadata = components.Get<IMetadataFactory>().GetMetadata(TargetType);
         }
 
@@ -230,7 +233,7 @@
         /// <param name="binding"></param>
         /// <param name="constructor"></param>
         /// <returns></returns>
-        private static IObjectFactory[] ResolveArgumentsFactories(IKernel kernel, IBinding binding, ConstructorMetadata constructor)
+        private IObjectFactory[] ResolveArgumentsFactories(IKernel kernel, IBinding binding, ConstructorMetadata constructor)
         {
             var parameters = constructor.Parameters;
             var argumentFactories = new IObjectFactory[parameters.Length];
@@ -251,7 +254,9 @@
                 // Multiple
                 if (parameter.ElementType != null)
                 {
-                    argumentFactories[i] = new ArrayObjectFactory(parameter.ElementType, kernel.ResolveAll(parameter.ElementType, constructor.Constraints[i]).ToArray());
+                    argumentFactories[i] = new ArrayObjectFactory(
+                        arrayOperatorFactory.CreateArrayOperator(parameter.ElementType),
+                        kernel.ResolveAll(parameter.ElementType, constructor.Constraints[i]).ToArray());
                     continue;
                 }
 

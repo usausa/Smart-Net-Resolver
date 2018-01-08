@@ -1,25 +1,25 @@
 ﻿namespace Smart.Resolver.Factories
 {
-    using System;
+    using Smart.Reflection;
 
     public sealed class ArrayObjectFactory : IObjectFactory
     {
-        private readonly Type elementType;
+        private readonly IArrayOperator arrayOperator;
 
         private readonly IObjectFactory[] objectFactories;
 
-        public ArrayObjectFactory(Type elementType, IObjectFactory[] objectFactories)
+        public ArrayObjectFactory(IArrayOperator arrayOperator, IObjectFactory[] objectFactories)
         {
-            this.elementType = elementType;
+            this.arrayOperator = arrayOperator;
             this.objectFactories = objectFactories;
         }
 
         public object Create()
         {
-            var array = Array.CreateInstance(elementType, objectFactories.Length);
+            var array = arrayOperator.Create(objectFactories.Length);
             for (var i = 0; i < objectFactories.Length; i++)
             {
-                array.SetValue(objectFactories[i].Create(), i);
+                arrayOperator.SetValue(array, i, objectFactories[i].Create());
             }
 
             return array;

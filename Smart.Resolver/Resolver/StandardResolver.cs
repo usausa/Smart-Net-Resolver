@@ -50,9 +50,6 @@
                 throw new ArgumentNullException(nameof(config));
             }
 
-            //bindingsFactory = CreateBindings;
-            //instanceFactory = CreateInstance;
-
             Components = config.CreateComponentContainer();
 
             metadataFactory = Components.Get<IMetadataFactory>();
@@ -152,21 +149,7 @@
         {
             lock (sync)
             {
-                IEnumerable<IBinding> bindings = table.Get(type);
-                if (bindings == null)
-                {
-                    var list = new List<IBinding>();
-                    for (var i = 0; i < handlers.Length; i++)
-                    {
-                        foreach (var binding in handlers[i].Handle(Components, table, type))
-                        {
-                            list.Add(binding);
-                        }
-                    }
-
-                    bindings = list;
-                }
-
+                var bindings = table.Get(type) ?? handlers.SelectMany(h => h.Handle(Components, table, type));
                 if (constraint != null)
                 {
                     bindings = bindings.Where(b => constraint.Match(b.Metadata));

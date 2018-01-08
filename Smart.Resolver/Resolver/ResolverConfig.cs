@@ -27,6 +27,7 @@
         {
             Components.Add<IActivatorFactory>(TypeMetadataFactory.Default);
             Components.Add<IAccessorFactory>(TypeMetadataFactory.Default);
+            Components.Add<IArrayOperatorFactory>(TypeMetadataFactory.Default);
             Components.Add<IMetadataFactory, MetadataFactory>();
             Components.Add<DisposableStorage>();
         }
