@@ -20,9 +20,16 @@
     /// </summary>
     public sealed class StandardResolver : DisposableObject, IKernel
     {
-        private readonly ThreadsafeHashArrayMap<Type, IObjectFactory[]> factoriesCache = new ThreadsafeHashArrayMap<Type, IObjectFactory[]>();
+        private sealed class FactoryEntry
+        {
+            public IObjectFactory Single { get; set; }
 
-        private readonly ThreadsafeHashArrayMap<RequestKey, IObjectFactory[]> factoriesCacheWithConstraint = new ThreadsafeHashArrayMap<RequestKey, IObjectFactory[]>();
+            public IObjectFactory[] Multi { get; set; }
+        }
+
+        private readonly ThreadsafeHashArrayMap<Type, FactoryEntry> factoriesCache = new ThreadsafeHashArrayMap<Type, FactoryEntry>();
+
+        private readonly ThreadsafeHashArrayMap<RequestKey, FactoryEntry> factoriesCacheWithConstraint = new ThreadsafeHashArrayMap<RequestKey, FactoryEntry>();
 
         private readonly object sync = new object();
 
@@ -85,39 +92,38 @@
 
         bool IResolver.CanResolve(Type type, IConstraint constraint)
         {
-            var factories = FindFactories(type, constraint);
-            return factories.Length > 0;
+            return FindFactoryEntry(type, constraint).Single != null;
         }
 
         IObjectFactory IResolver.TryResolve(Type type, IConstraint constraint, out bool result)
         {
-            var factories = FindFactories(type, constraint);
-            result = factories.Length > 0;
-            return result ? factories[factories.Length - 1] : null;
+            var factory = FindFactoryEntry(type, constraint).Single;
+            result = factory != null;
+            return factory;
         }
 
         IObjectFactory IResolver.Resolve(Type type, IConstraint constraint)
         {
-            var factories = FindFactories(type, constraint);
-            if (factories.Length == 0)
+            var factory = FindFactoryEntry(type, constraint).Single;
+            if (factory == null)
             {
                 throw new InvalidOperationException(
                     String.Format(CultureInfo.InvariantCulture, "No such component registerd. type = {0}", type.Name));
             }
 
-            return factories[factories.Length - 1];
+            return factory;
         }
 
         IEnumerable<IObjectFactory> IResolver.ResolveAll(Type type, IConstraint constraint)
         {
-            return FindFactories(type, constraint);
+            return FindFactoryEntry(type, constraint).Multi;
         }
 
         // ------------------------------------------------------------
         // Binding
         // ------------------------------------------------------------
 
-        private IObjectFactory[] FindFactories(Type type, IConstraint constraint)
+        private FactoryEntry FindFactoryEntry(Type type, IConstraint constraint)
         {
             if (type == null)
             {
@@ -126,26 +132,26 @@
 
             if (constraint == null)
             {
-                if (!factoriesCache.TryGetValue(type, out var factories))
+                if (!factoriesCache.TryGetValue(type, out var entry))
                 {
-                    factories = factoriesCache.AddIfNotExist(type, t => CreateFactories(t, null));
+                    entry = factoriesCache.AddIfNotExist(type, t => CreateFactoryEntry(t, null));
                 }
 
-                return factories;
+                return entry;
             }
             else
             {
                 var key = new RequestKey(type, constraint);
-                if (!factoriesCacheWithConstraint.TryGetValue(key, out var factories))
+                if (!factoriesCacheWithConstraint.TryGetValue(key, out var entry))
                 {
-                    factories = factoriesCacheWithConstraint.AddIfNotExist(key, x => CreateFactories(x.Type, x.Constraint));
+                    entry = factoriesCacheWithConstraint.AddIfNotExist(key, x => CreateFactoryEntry(x.Type, x.Constraint));
                 }
 
-                return factories;
+                return entry;
             }
         }
 
-        private IObjectFactory[] CreateFactories(Type type, IConstraint constraint)
+        private FactoryEntry CreateFactoryEntry(Type type, IConstraint constraint)
         {
             lock (sync)
             {
@@ -155,13 +161,19 @@
                     bindings = bindings.Where(b => constraint.Match(b.Metadata));
                 }
 
-                return bindings
+                var factories = bindings
                     .Select(b =>
                     {
                         var factory = b.Provider.CreateFactory(this, b);
                         return b.Scope != null ? b.Scope.Create(this, b, factory) : factory;
                     })
                     .ToArray();
+
+                return new FactoryEntry
+                {
+                    Single = factories.Length > 0 ? factories[factories.Length - 1] : null,
+                    Multi = factories
+                };
             }
         }
 
