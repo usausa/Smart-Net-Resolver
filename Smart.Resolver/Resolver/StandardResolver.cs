@@ -24,7 +24,7 @@
         {
             public IObjectFactory Single { get; set; }
 
-            public IObjectFactory[] Multi { get; set; }
+            public IObjectFactory[] Multiple { get; set; }
         }
 
         private readonly ThreadsafeTypeHashArrayMap<FactoryEntry> factoriesCache = new ThreadsafeTypeHashArrayMap<FactoryEntry>();
@@ -116,7 +116,7 @@
 
         IEnumerable<IObjectFactory> IResolver.ResolveAll(Type type, IConstraint constraint)
         {
-            return FindFactoryEntry(type, constraint).Multi;
+            return FindFactoryEntry(type, constraint).Multiple;
         }
 
         // ------------------------------------------------------------
@@ -172,7 +172,7 @@
                 return new FactoryEntry
                 {
                     Single = factories.Length > 0 ? factories[factories.Length - 1] : null,
-                    Multi = factories
+                    Multiple = factories
                 };
             }
         }
