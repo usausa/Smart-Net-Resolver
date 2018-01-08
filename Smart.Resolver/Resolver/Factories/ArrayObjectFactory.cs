@@ -17,9 +17,10 @@
         public object Create()
         {
             var array = arrayOperator.Create(objectFactories.Length);
+            var objs = (object[])array;
             for (var i = 0; i < objectFactories.Length; i++)
             {
-                arrayOperator.SetValue(array, i, objectFactories[i].Create());
+                objs[i] = objectFactories[i].Create();
             }
 
             return array;
