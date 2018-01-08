@@ -27,7 +27,7 @@
             public IObjectFactory[] Multi { get; set; }
         }
 
-        private readonly ThreadsafeHashArrayMap<Type, FactoryEntry> factoriesCache = new ThreadsafeHashArrayMap<Type, FactoryEntry>();
+        private readonly ThreadsafeTypeHashArrayMap<FactoryEntry> factoriesCache = new ThreadsafeTypeHashArrayMap<FactoryEntry>();
 
         private readonly ThreadsafeHashArrayMap<RequestKey, FactoryEntry> factoriesCacheWithConstraint = new ThreadsafeHashArrayMap<RequestKey, FactoryEntry>();
 
