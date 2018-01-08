@@ -19,7 +19,7 @@
         public object Create()
         {
             var instance = activator.Create();
-            helper.Process(instance);
+            helper?.Process(instance);
             return instance;
         }
     }
@@ -46,7 +46,7 @@
         {
             var instance = activator.Create(
                 argument1Factory.Create());
-            helper.Process(instance);
+            helper?.Process(instance);
             return instance;
         }
     }
@@ -78,7 +78,7 @@
             var instance = activator.Create(
                 argument1Factory.Create(),
                 argument2Factory.Create());
-            helper.Process(instance);
+            helper?.Process(instance);
             return instance;
         }
     }
@@ -115,7 +115,7 @@
                 argument1Factory.Create(),
                 argument2Factory.Create(),
                 argument3Factory.Create());
-            helper.Process(instance);
+            helper?.Process(instance);
             return instance;
         }
     }
@@ -157,7 +157,7 @@
                 argument2Factory.Create(),
                 argument3Factory.Create(),
                 argument4Factory.Create());
-            helper.Process(instance);
+            helper?.Process(instance);
             return instance;
         }
     }
@@ -204,7 +204,7 @@
                 argument3Factory.Create(),
                 argument4Factory.Create(),
                 argument5Factory.Create());
-            helper.Process(instance);
+            helper?.Process(instance);
             return instance;
         }
     }
@@ -256,7 +256,7 @@
                 argument4Factory.Create(),
                 argument5Factory.Create(),
                 argument6Factory.Create());
-            helper.Process(instance);
+            helper?.Process(instance);
             return instance;
         }
     }
@@ -313,7 +313,7 @@
                 argument5Factory.Create(),
                 argument6Factory.Create(),
                 argument7Factory.Create());
-            helper.Process(instance);
+            helper?.Process(instance);
             return instance;
         }
     }
@@ -375,7 +375,7 @@
                 argument6Factory.Create(),
                 argument7Factory.Create(),
                 argument8Factory.Create());
-            helper.Process(instance);
+            helper?.Process(instance);
             return instance;
         }
     }
@@ -407,7 +407,7 @@
             }
 
             var instance = activator.Create(arguments);
-            helper.Process(instance);
+            helper?.Process(instance);
             return instance;
         }
     }

@@ -79,7 +79,9 @@
             var constructor = FindBestConstructor(kernel, binding);
             var argumentFactories = ResolveArgumentsFactories(kernel, binding, constructor);
             var activator = activatorFactory.CreateActivator(constructor.Constructor);
-            var helper = new ActivateHelper(injectors, processors, kernel, binding, metadata);
+            var helper = injectors.Length > 0 || processors.Length > 0
+                ? new ActivateHelper(injectors, processors, kernel, binding, metadata)
+                : null;
 
             switch (argumentFactories.Length)
             {
