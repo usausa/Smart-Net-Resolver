@@ -5,7 +5,7 @@
     /// <summary>
     ///
     /// </summary>
-    public class ParameterMap
+    public sealed class ParameterMap
     {
         private readonly IDictionary<string, IParameter> parameters;
 

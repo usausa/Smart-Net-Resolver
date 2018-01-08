@@ -18,7 +18,7 @@
     /// <summary>
     ///
     /// </summary>
-    public class StandardResolver : DisposableObject, IKernel
+    public sealed class StandardResolver : DisposableObject, IKernel
     {
         private readonly ThreadsafeHashArrayMap<Type, IObjectFactory[]> factoriesCache = new ThreadsafeHashArrayMap<Type, IObjectFactory[]>();
 

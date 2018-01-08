@@ -7,7 +7,7 @@
     /// <summary>
     ///
     /// </summary>
-    public class RequestKey
+    public sealed class RequestKey
     {
         public Type Type { get; }
 
