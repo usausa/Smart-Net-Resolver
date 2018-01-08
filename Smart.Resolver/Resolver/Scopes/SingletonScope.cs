@@ -50,7 +50,7 @@
         /// <param name="binding"></param>
         /// <param name="factory"></param>
         /// <returns></returns>
-        public IObjectFactory Convert(IKernel kernel, IBinding binding, IObjectFactory factory)
+        public IObjectFactory Create(IKernel kernel, IBinding binding, IObjectFactory factory)
         {
             if (objectFactory == null)
             {

@@ -123,7 +123,7 @@
                 return this;
             }
 
-            public IObjectFactory Convert(IKernel kernel, IBinding binding, IObjectFactory factory)
+            public IObjectFactory Create(IKernel kernel, IBinding binding, IObjectFactory factory)
             {
                 return new CustomeScopeObjectFactory(binding, factory);
             }

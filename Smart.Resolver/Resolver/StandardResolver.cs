@@ -176,7 +176,7 @@
                     .Select(b =>
                     {
                         var factory = b.Provider.CreateFactory(this, b);
-                        return b.Scope != null ? b.Scope.Convert(this, b, factory) : factory;
+                        return b.Scope != null ? b.Scope.Create(this, b, factory) : factory;
                     })
                     .ToArray();
             }

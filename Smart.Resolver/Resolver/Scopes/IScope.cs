@@ -23,6 +23,6 @@
         /// <param name="binding"></param>
         /// <param name="factory"></param>
         /// <returns></returns>
-        IObjectFactory Convert(IKernel kernel, IBinding binding, IObjectFactory factory);
+        IObjectFactory Create(IKernel kernel, IBinding binding, IObjectFactory factory);
     }
 }
