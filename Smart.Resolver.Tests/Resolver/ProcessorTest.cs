@@ -1,5 +1,7 @@
 ﻿namespace Smart.Resolver
 {
+    using System;
+
     using Smart.Resolver.Mocks;
     using Smart.Resolver.Processors;
 
@@ -91,6 +93,18 @@
 
         public sealed class CustomInitializeProcessor : IProcessor
         {
+            private static readonly Type CustomInitializableType = typeof(ICustomInitializable);
+
+            /// <summary>
+            ///
+            /// </summary>
+            /// <param name="type"></param>
+            /// <returns></returns>
+            public bool IsTarget(Type type)
+            {
+                return CustomInitializableType.IsAssignableFrom(type);
+            }
+
             public void Initialize(object instance)
             {
                 (instance as ICustomInitializable)?.Initialize();

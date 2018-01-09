@@ -192,12 +192,16 @@
                 throw new ArgumentNullException(nameof(instance));
             }
 
-            var metadata = metadataFactory.GetMetadata(instance.GetType());
-            var binding = new Binding(instance.GetType());
+            var type = instance.GetType();
+            var metadata = metadataFactory.GetMetadata(type);
+            var binding = new Binding(type);
 
             for (var i = 0; i < injectors.Length; i++)
             {
-                injectors[i].Inject(this, binding, metadata, instance);
+                if (injectors[i].IsTarget(this, binding, metadata, type))
+                {
+                    injectors[i].Inject(this, binding, metadata, instance);
+                }
             }
         }
     }

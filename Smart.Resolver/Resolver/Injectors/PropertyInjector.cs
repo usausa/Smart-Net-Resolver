@@ -1,5 +1,7 @@
 ﻿namespace Smart.Resolver.Injectors
 {
+    using System;
+
     using Smart.Resolver.Bindings;
     using Smart.Resolver.Metadatas;
 
@@ -8,6 +10,11 @@
     /// </summary>
     public sealed class PropertyInjector : IInjector
     {
+        public bool IsTarget(IKernel kernel, IBinding binding, TypeMetadata metadata, Type type)
+        {
+            return metadata.TargetProperties.Length > 0;
+        }
+
         /// <summary>
         ///
         /// </summary>
@@ -18,11 +25,6 @@
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods", Justification = "Framework only")]
         public void Inject(IKernel kernel, IBinding binding, TypeMetadata metadata, object instance)
         {
-            if (metadata.TargetProperties.Length == 0)
-            {
-                return;
-            }
-
             for (var i = 0; i < metadata.TargetProperties.Length; i++)
             {
                 var property = metadata.TargetProperties[i];

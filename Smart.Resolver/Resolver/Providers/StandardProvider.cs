@@ -79,90 +79,24 @@
             var constructor = FindBestConstructor(kernel, binding);
             var argumentFactories = ResolveArgumentsFactories(kernel, binding, constructor);
             var activator = activatorFactory.CreateActivator(constructor.Constructor);
-            var helper = injectors.Length > 0 || processors.Length > 0
-                ? new ActivateHelper(injectors, processors, kernel, binding, metadata)
-                : null;
+            var processor = CreateProcessor(kernel, binding);
 
-            switch (argumentFactories.Length)
+            if (argumentFactories.Length == 0)
             {
-                case 0:
-                    return new ActivatorObjectFactory0(
-                        activator,
-                        helper);
-                case 1:
-                    return new ActivatorObjectFactory1(
-                        activator,
-                        helper,
-                        argumentFactories[0]);
-                case 2:
-                    return new ActivatorObjectFactory2(
-                        activator,
-                        helper,
-                        argumentFactories[0],
-                        argumentFactories[1]);
-                case 3:
-                    return new ActivatorObjectFactory3(
-                        activator,
-                        helper,
-                        argumentFactories[0],
-                        argumentFactories[1],
-                        argumentFactories[2]);
-                case 4:
-                    return new ActivatorObjectFactory4(
-                        activator,
-                        helper,
-                        argumentFactories[0],
-                        argumentFactories[1],
-                        argumentFactories[2],
-                        argumentFactories[3]);
-                case 5:
-                    return new ActivatorObjectFactory5(
-                        activator,
-                        helper,
-                        argumentFactories[0],
-                        argumentFactories[1],
-                        argumentFactories[2],
-                        argumentFactories[3],
-                        argumentFactories[4]);
-                case 6:
-                    return new ActivatorObjectFactory6(
-                        activator,
-                        helper,
-                        argumentFactories[0],
-                        argumentFactories[1],
-                        argumentFactories[2],
-                        argumentFactories[3],
-                        argumentFactories[4],
-                        argumentFactories[5]);
-                case 7:
-                    return new ActivatorObjectFactory7(
-                        activator,
-                        helper,
-                        argumentFactories[0],
-                        argumentFactories[1],
-                        argumentFactories[2],
-                        argumentFactories[3],
-                        argumentFactories[4],
-                        argumentFactories[5],
-                        argumentFactories[6]);
-                case 8:
-                    return new ActivatorObjectFactory8(
-                        activator,
-                        helper,
-                        argumentFactories[0],
-                        argumentFactories[1],
-                        argumentFactories[2],
-                        argumentFactories[3],
-                        argumentFactories[4],
-                        argumentFactories[5],
-                        argumentFactories[6],
-                        argumentFactories[7]);
-                default:
-                    return new ActivatorObjectFactory(
-                        activator,
-                        helper,
-                        argumentFactories);
+                if (processor != null)
+                {
+                    return new NoArtumentsActivatorObjectFactory(activator, processor);
+                }
+
+                return new NoArtumentsWithoutProcessActivatorObjectFactory(activator);
             }
+
+            if (processor != null)
+            {
+                return new ActivatorObjectFactory(activator, processor, argumentFactories);
+            }
+
+            return new WithoutProcessActivatorObjectFactory(activator, argumentFactories);
         }
 
         /// <summary>
@@ -278,6 +212,58 @@
             }
 
             return argumentFactories;
+        }
+
+        /// <summary>
+        ///
+        /// </summary>
+        /// <param name="kernel"></param>
+        /// <param name="binding"></param>
+        /// <returns></returns>
+        private Action<object> CreateProcessor(IKernel kernel, IBinding binding)
+        {
+            var targetInjectors = injectors.Where(x => x.IsTarget(kernel, binding, metadata, TargetType)).ToArray();
+            var targetProcessors = processors.Where(x => x.IsTarget(TargetType)).ToArray();
+
+            if ((targetInjectors.Length > 0) && (targetProcessors.Length > 0))
+            {
+                return instance =>
+                {
+                    for (var i = 0; i < targetInjectors.Length; i++)
+                    {
+                        targetInjectors[i].Inject(kernel, binding, metadata, instance);
+                    }
+
+                    for (var i = 0; i < targetProcessors.Length; i++)
+                    {
+                        targetProcessors[i].Initialize(instance);
+                    }
+                };
+            }
+
+            if (targetInjectors.Length > 0)
+            {
+                return instance =>
+                {
+                    for (var i = 0; i < targetInjectors.Length; i++)
+                    {
+                        targetInjectors[i].Inject(kernel, binding, metadata, instance);
+                    }
+                };
+            }
+
+            if (targetProcessors.Length > 0)
+            {
+                return instance =>
+                {
+                    for (var i = 0; i < targetProcessors.Length; i++)
+                    {
+                        targetProcessors[i].Initialize(instance);
+                    }
+                };
+            }
+
+            return null;
         }
     }
 }
