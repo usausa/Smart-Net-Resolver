@@ -34,7 +34,7 @@
 
         private object GetServiceInternal(Type serviceType, bool required)
         {
-            if (serviceType.GetTypeInfo().IsGenericType && serviceType.GetGenericTypeDefinition() == EnumerableType)
+            if (serviceType.IsGenericType && serviceType.GetGenericTypeDefinition() == EnumerableType)
             {
                 return resolver.ResolveAll(serviceType.GenericTypeArguments[0], null).Select(x => x.Create());
             }

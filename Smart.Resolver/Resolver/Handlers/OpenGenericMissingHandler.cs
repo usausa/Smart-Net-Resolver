@@ -24,7 +24,7 @@
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods", Justification = "Framework only")]
         public IEnumerable<IBinding> Handle(IComponentContainer components, IBindingTable table, Type type)
         {
-            if (!type.GetTypeInfo().IsGenericType)
+            if (!type.IsGenericType)
             {
                 return Enumerable.Empty<IBinding>();
             }

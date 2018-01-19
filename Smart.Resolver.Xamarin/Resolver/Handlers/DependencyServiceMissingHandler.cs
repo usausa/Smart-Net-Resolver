@@ -23,7 +23,7 @@
         /// <returns></returns>
         public IEnumerable<IBinding> Handle(IComponentContainer components, IBindingTable table, Type type)
         {
-            if (!type.GetTypeInfo().IsInterface)
+            if (!type.IsInterface)
             {
                 return Enumerable.Empty<IBinding>();
             }

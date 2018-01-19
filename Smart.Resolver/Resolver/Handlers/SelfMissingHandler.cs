@@ -3,7 +3,6 @@
     using System;
     using System.Collections.Generic;
     using System.Linq;
-    using System.Reflection;
 
     using Smart.ComponentModel;
     using Smart.Resolver.Bindings;
@@ -27,9 +26,8 @@
         /// <returns></returns>
         public IEnumerable<IBinding> Handle(IComponentContainer components, IBindingTable table, Type type)
         {
-            var typeInfo = type.GetTypeInfo();
-            if (typeInfo.IsInterface || typeInfo.IsAbstract || typeInfo.IsValueType || (type == StringType) ||
-                DelegateType.IsAssignableFrom(type) || typeInfo.ContainsGenericParameters)
+            if (type.IsInterface || type.IsAbstract || type.IsValueType || (type == StringType) ||
+                DelegateType.IsAssignableFrom(type) || type.ContainsGenericParameters)
             {
                 return Enumerable.Empty<IBinding>();
             }

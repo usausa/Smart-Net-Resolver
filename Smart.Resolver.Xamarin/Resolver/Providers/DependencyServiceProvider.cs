@@ -43,7 +43,7 @@
         public DependencyServiceProvider(Type type)
         {
             TargetType = type;
-            var method = typeof(DependencyService).GetTypeInfo().GetDeclaredMethod("Get");
+            var method = typeof(DependencyService).GetMethod("Get");
             objectFactory = new DependencyServiceObjectFactory(method.MakeGenericMethod(type));
         }
 
