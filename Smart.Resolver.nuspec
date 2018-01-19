@@ -2,7 +2,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
   <metadata>
     <id>Usa.Smart.Resolver</id>
-    <version>1.5.1</version>
+    <version>1.6.0</version>
     <title>Smart.Resolver .NET</title>
     <authors>machi_pon</authors>
     <owners>machi_pon</owners>
@@ -13,15 +13,20 @@
     <copyright></copyright>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <dependencies>
-      <dependency id="NETStandard.Library" version="2.0.0" />
-      <dependency id="Usa.Smart.Core" version="1.1.1" />
+      <group>
+        <dependency id="Usa.Smart.Core" version="1.2.0" />
+      </group>
+      <group targetFramework="netstandard2.0">
+      </group>
+      <group targetFramework="net462">
+      </group>
     </dependencies>
     <tags>smart ioc di dependencyinjection</tags>
   </metadata>
   <files>
-    <!-- .NET Standard -->
+    <!-- netstandard2.0 -->
     <file src="Smart.Resolver\bin\Release\netstandard2.0\Smart.Resolver.dll" target="lib\netstandard2.0" />
-    <!--<file src="Smart.Resolver\bin\Release\netstandard2.0\Smart.Resolver.pdb" target="lib\netstandard2.0" />-->
-    <!--<file src="Smart.Resolver\bin\Release\netstandard2.0\Smart.Resolver.xml" target="lib\netstandard2.0" />-->
+    <!-- net462 -->
+    <file src="Smart.Resolver\bin\Release\net462\Smart.Resolver.dll" target="lib\net462" />
   </files>
 </package>
