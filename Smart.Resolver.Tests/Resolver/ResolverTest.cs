@@ -55,7 +55,7 @@
         {
             public T Create()
             {
-                return default(T);
+                return default;
             }
         }
 

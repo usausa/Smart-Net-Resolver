@@ -4,8 +4,6 @@
     using System.Collections.Generic;
     using System.Linq;
 
-    using Smart.Collections.Concurrent;
-
     public sealed class BindingTable : IBindingTable
     {
         private static readonly IBinding[] EmptyBindings = new IBinding[0];
