@@ -2,7 +2,6 @@
 {
     using System;
     using System.Collections.Generic;
-    using System.Globalization;
     using System.Linq;
     using System.Runtime.CompilerServices;
 
@@ -131,84 +130,26 @@
             return FindFactoryEntry(type, constraint).Single != null;
         }
 
-        // TryGet
-
-        public T TryGet<T>(out bool result)
-        {
-            var factory = FindFactoryEntry(typeof(T)).Single;
-            result = factory != null;
-            return (T)factory?.Create();
-        }
-
-        public T TryGet<T>(IConstraint constraint, out bool result)
-        {
-            var factory = FindFactoryEntry(typeof(T), constraint).Single;
-            result = factory != null;
-            return (T)factory?.Create();
-        }
-
-        public object TryGet(Type type, out bool result)
-        {
-            var factory = FindFactoryEntry(type).Single;
-            result = factory != null;
-            return factory?.Create();
-        }
-
-        public object TryGet(Type type, IConstraint constraint, out bool result)
-        {
-            var factory = FindFactoryEntry(type, constraint).Single;
-            result = factory != null;
-            return factory?.Create();
-        }
-
         // Get
 
         public T Get<T>()
         {
-            var factory = FindFactoryEntry(typeof(T)).Single;
-            if (factory == null)
-            {
-                throw new InvalidOperationException(
-                    String.Format(CultureInfo.InvariantCulture, "No such component registerd. type = {0}", typeof(T).Name));
-            }
-
-            return (T)factory.Create();
+            return (T)FindFactoryEntry(typeof(T)).Single?.Create();
         }
 
         public T Get<T>(IConstraint constraint)
         {
-            var factory = FindFactoryEntry(typeof(T), constraint).Single;
-            if (factory == null)
-            {
-                throw new InvalidOperationException(
-                    String.Format(CultureInfo.InvariantCulture, "No such component registerd. type = {0}", typeof(T).Name));
-            }
-
-            return (T)factory.Create();
+            return (T)FindFactoryEntry(typeof(T), constraint).Single?.Create();
         }
 
         public object Get(Type type)
         {
-            var factory = FindFactoryEntry(type).Single;
-            if (factory == null)
-            {
-                throw new InvalidOperationException(
-                    String.Format(CultureInfo.InvariantCulture, "No such component registerd. type = {0}", type.Name));
-            }
-
-            return factory.Create();
+            return FindFactoryEntry(type).Single?.Create();
         }
 
         public object Get(Type type, IConstraint constraint)
         {
-            var factory = FindFactoryEntry(type, constraint).Single;
-            if (factory == null)
-            {
-                throw new InvalidOperationException(
-                    String.Format(CultureInfo.InvariantCulture, "No such component registerd. type = {0}", type.Name));
-            }
-
-            return factory.Create();
+            return FindFactoryEntry(type, constraint).Single?.Create();
         }
 
         // GetAll
@@ -236,8 +177,6 @@
         // ------------------------------------------------------------
         // Binding
         // ------------------------------------------------------------
-
-        // TODO to map ?
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private FactoryEntry FindFactoryEntry(Type type)

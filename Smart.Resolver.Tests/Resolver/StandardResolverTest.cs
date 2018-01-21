@@ -1,6 +1,5 @@
 ﻿namespace Smart.Resolver
 {
-    using System;
     using Smart.Resolver.Mocks;
 
     using Xunit;
@@ -19,20 +18,6 @@
             {
                 var obj = resolver.Get<SmartResolver>();
 
-                Assert.Same(resolver, obj);
-            }
-        }
-
-        [Fact]
-        public void SelfTryResolved()
-        {
-            var config = new ResolverConfig();
-
-            using (var resolver = config.ToResolver())
-            {
-                var obj = resolver.TryGet<SmartResolver>(out var result);
-
-                Assert.True(result);
                 Assert.Same(resolver, obj);
             }
         }
@@ -78,35 +63,6 @@
         }
 
         [Fact]
-        public void ObjectIsTryResolvedWhenBindIsExist()
-        {
-            var config = new ResolverConfig();
-            config.Bind<SimpleObject>().ToSelf().InTransientScope();
-
-            using (var resolver = config.ToResolver())
-            {
-                var obj = resolver.TryGet<SimpleObject>(out var result);
-
-                Assert.True(result);
-                Assert.NotNull(obj);
-            }
-        }
-
-        [Fact]
-        public void ObjectIsTryResolvedWhenBindIsNotExist()
-        {
-            var config = new ResolverConfig().UseAutoBinding();
-
-            using (var resolver = config.ToResolver())
-            {
-                var obj = resolver.TryGet<SimpleObject>(out var result);
-
-                Assert.True(result);
-                Assert.NotNull(obj);
-            }
-        }
-
-        [Fact]
         public void ObjectCanResolvedWhenBindIsExist()
         {
             var config = new ResolverConfig();
@@ -142,22 +98,7 @@
 
             using (var resolver = config.ToResolver())
             {
-                resolver.Get<SimpleObject>();
-            }
-        }
-
-        [Fact]
-        public void ObjectIsTryResolvedWhenMultiBindIsExist()
-        {
-            var config = new ResolverConfig();
-            config.Bind<SimpleObject>().ToSelf().InTransientScope();
-            config.Bind<SimpleObject>().ToSelf().InTransientScope();
-
-            using (var resolver = config.ToResolver())
-            {
-                resolver.TryGet<SimpleObject>(out var result);
-
-                Assert.True(result);
+                Assert.NotNull(resolver.Get<SimpleObject>());
             }
         }
 
@@ -183,20 +124,7 @@
 
             using (var resolver = config.ToResolver())
             {
-                Assert.Throws<InvalidOperationException>(() => resolver.Get<IService>());
-            }
-        }
-
-        [Fact]
-        public void InterfaceIsNotTryResolvedWhenBindIsNotExist()
-        {
-            var config = new ResolverConfig();
-
-            using (var resolver = config.ToResolver())
-            {
-                resolver.TryGet<IService>(out var result);
-
-                Assert.False(result);
+                Assert.Null(resolver.Get<IService>());
             }
         }
 
