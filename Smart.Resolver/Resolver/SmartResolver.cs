@@ -4,6 +4,7 @@
     using System.Collections.Generic;
     using System.Globalization;
     using System.Linq;
+    using System.Runtime.CompilerServices;
 
     using Smart.Collections.Concurrent;
     using Smart.ComponentModel;
@@ -18,7 +19,7 @@
     /// <summary>
     ///
     /// </summary>
-    public sealed class StandardResolver : DisposableObject, IKernel
+    public sealed class SmartResolver : DisposableObject, IKernel
     {
         private sealed class FactoryEntry
         {
@@ -50,7 +51,7 @@
         ///
         /// </summary>
         /// <param name="config"></param>
-        public StandardResolver(IResolverConfig config)
+        public SmartResolver(IResolverConfig config)
         {
             if (config == null)
             {
@@ -68,7 +69,7 @@
                 table.Add(group.Key, group.ToArray());
             }
 
-            var selfType = typeof(IResolver);
+            var selfType = typeof(SmartResolver);
             table.Add(selfType, new IBinding[] { new Binding(selfType, new ConstantProvider(this), null, null, null, null) });
         }
 
@@ -87,22 +88,118 @@
         }
 
         // ------------------------------------------------------------
-        // IResolver
+        // ObjectFactory
         // ------------------------------------------------------------
 
-        bool IResolver.CanResolve(Type type, IConstraint constraint)
+        IObjectFactory IKernel.ResolveFactory(Type type, IConstraint constraint)
+        {
+            return (constraint == null
+                ? FindFactoryEntry(type)
+                : FindFactoryEntry(type, constraint)).Single;
+        }
+
+        IEnumerable<IObjectFactory> IKernel.ResolveAllFactory(Type type, IConstraint constraint)
+        {
+            return (constraint == null
+                ? FindFactoryEntry(type)
+                : FindFactoryEntry(type, constraint)).Multiple;
+        }
+
+        // ------------------------------------------------------------
+        // Resolver
+        // ------------------------------------------------------------
+
+        // CanGet
+
+        public bool CanGet<T>()
+        {
+            return FindFactoryEntry(typeof(T)).Single != null;
+        }
+
+        public bool CanGet<T>(IConstraint constraint)
+        {
+            return FindFactoryEntry(typeof(T), constraint).Single != null;
+        }
+
+        public bool CanGet(Type type)
+        {
+            return FindFactoryEntry(type).Single != null;
+        }
+
+        public bool CanGet(Type type, IConstraint constraint)
         {
             return FindFactoryEntry(type, constraint).Single != null;
         }
 
-        IObjectFactory IResolver.TryResolve(Type type, IConstraint constraint, out bool result)
+        // TryGet
+
+        public T TryGet<T>(out bool result)
+        {
+            var factory = FindFactoryEntry(typeof(T)).Single;
+            result = factory != null;
+            return (T)factory?.Create();
+        }
+
+        public T TryGet<T>(IConstraint constraint, out bool result)
+        {
+            var factory = FindFactoryEntry(typeof(T), constraint).Single;
+            result = factory != null;
+            return (T)factory?.Create();
+        }
+
+        public object TryGet(Type type, out bool result)
+        {
+            var factory = FindFactoryEntry(type).Single;
+            result = factory != null;
+            return factory?.Create();
+        }
+
+        public object TryGet(Type type, IConstraint constraint, out bool result)
         {
             var factory = FindFactoryEntry(type, constraint).Single;
             result = factory != null;
-            return factory;
+            return factory?.Create();
         }
 
-        IObjectFactory IResolver.Resolve(Type type, IConstraint constraint)
+        // Get
+
+        public T Get<T>()
+        {
+            var factory = FindFactoryEntry(typeof(T)).Single;
+            if (factory == null)
+            {
+                throw new InvalidOperationException(
+                    String.Format(CultureInfo.InvariantCulture, "No such component registerd. type = {0}", typeof(T).Name));
+            }
+
+            return (T)factory.Create();
+        }
+
+        public T Get<T>(IConstraint constraint)
+        {
+            var factory = FindFactoryEntry(typeof(T), constraint).Single;
+            if (factory == null)
+            {
+                throw new InvalidOperationException(
+                    String.Format(CultureInfo.InvariantCulture, "No such component registerd. type = {0}", typeof(T).Name));
+            }
+
+            return (T)factory.Create();
+        }
+
+        public object Get(Type type)
+        {
+            var factory = FindFactoryEntry(type).Single;
+            if (factory == null)
+            {
+                throw new InvalidOperationException(
+                    String.Format(CultureInfo.InvariantCulture, "No such component registerd. type = {0}", type.Name));
+            }
+
+            return factory.Create();
+        }
+
+        public object Get(Type type, IConstraint constraint)
         {
             var factory = FindFactoryEntry(type, constraint).Single;
             if (factory == null)
@@ -111,44 +208,58 @@
                     String.Format(CultureInfo.InvariantCulture, "No such component registerd. type = {0}", type.Name));
             }
 
-            return factory;
+            return factory.Create();
         }
 
-        IEnumerable<IObjectFactory> IResolver.ResolveAll(Type type, IConstraint constraint)
+        // GetAll
+
+        public IEnumerable<T> GetAll<T>()
         {
-            return FindFactoryEntry(type, constraint).Multiple;
+            return FindFactoryEntry(typeof(T)).Multiple.Select(x => (T)x.Create());
+        }
+
+        public IEnumerable<T> GetAll<T>(IConstraint constraint)
+        {
+            return FindFactoryEntry(typeof(T), constraint).Multiple.Select(x => (T)x.Create());
+        }
+
+        public IEnumerable<object> GetAll(Type type)
+        {
+            return FindFactoryEntry(type).Multiple.Select(x => x.Create());
+        }
+
+        public IEnumerable<object> GetAll(Type type, IConstraint constraint)
+        {
+            return FindFactoryEntry(type, constraint).Multiple.Select(x => x.Create());
         }
 
         // ------------------------------------------------------------
         // Binding
         // ------------------------------------------------------------
 
+        // TODO to map ?
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private FactoryEntry FindFactoryEntry(Type type)
+        {
+            if (!factoriesCache.TryGetValue(type, out var entry))
+            {
+                entry = factoriesCache.AddIfNotExist(type, t => CreateFactoryEntry(t, null));
+            }
+
+            return entry;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private FactoryEntry FindFactoryEntry(Type type, IConstraint constraint)
         {
-            if (type == null)
+            var key = new RequestKey(type, constraint);
+            if (!factoriesCacheWithConstraint.TryGetValue(key, out var entry))
             {
-                throw new ArgumentNullException(nameof(type));
+                entry = factoriesCacheWithConstraint.AddIfNotExist(key, x => CreateFactoryEntry(x.Type, x.Constraint));
             }
 
-            if (constraint == null)
-            {
-                if (!factoriesCache.TryGetValue(type, out var entry))
-                {
-                    entry = factoriesCache.AddIfNotExist(type, t => CreateFactoryEntry(t, null));
-                }
-
-                return entry;
-            }
-            else
-            {
-                var key = new RequestKey(type, constraint);
-                if (!factoriesCacheWithConstraint.TryGetValue(key, out var entry))
-                {
-                    entry = factoriesCacheWithConstraint.AddIfNotExist(key, x => CreateFactoryEntry(x.Type, x.Constraint));
-                }
-
-                return entry;
-            }
+            return entry;
         }
 
         private FactoryEntry CreateFactoryEntry(Type type, IConstraint constraint)

@@ -137,7 +137,7 @@
                     }
 
                     // Resolve
-                    if (kernel.CanResolve(pi.ParameterType, cm.Constraints[j]))
+                    if (kernel.ResolveFactory(pi.ParameterType, cm.Constraints[j]) != null)
                     {
                         continue;
                     }
@@ -192,13 +192,13 @@
                 {
                     argumentFactories[i] = new ArrayObjectFactory(
                         arrayOperatorFactory.CreateArrayOperator(parameter.ElementType),
-                        kernel.ResolveAll(parameter.ElementType, constructor.Constraints[i]).ToArray());
+                        kernel.ResolveAllFactory(parameter.ElementType, constructor.Constraints[i]).ToArray());
                     continue;
                 }
 
                 // Resolve
-                var objectFactory = kernel.TryResolve(pi.ParameterType, constructor.Constraints[i], out var resolve);
-                if (resolve)
+                var objectFactory = kernel.ResolveFactory(pi.ParameterType, constructor.Constraints[i]);
+                if (objectFactory != null)
                 {
                     argumentFactories[i] = objectFactory;
                     continue;

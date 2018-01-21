@@ -10,13 +10,13 @@
     {
         private static readonly Type EnumerableType = typeof(IEnumerable<>);
 
-        private readonly IResolver resolver;
+        private readonly SmartResolver resolver;
 
         /// <summary>
         ///
         /// </summary>
         /// <param name="resolver"></param>
-        public SmartResolverServiceProvider(IResolver resolver)
+        public SmartResolverServiceProvider(SmartResolver resolver)
         {
             this.resolver = resolver;
         }
@@ -35,7 +35,7 @@
         {
             if (serviceType.IsGenericType && serviceType.GetGenericTypeDefinition() == EnumerableType)
             {
-                return resolver.ResolveAll(serviceType.GenericTypeArguments[0], null).Select(x => x.Create());
+                return resolver.GetAll(serviceType.GenericTypeArguments[0], null);
             }
 
             if (required)

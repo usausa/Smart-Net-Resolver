@@ -11,37 +11,44 @@
     /// </summary>
     public interface IResolver
     {
-        /// <summary>
-        ///
-        /// </summary>
-        /// <param name="type"></param>
-        /// <param name="constraint"></param>
-        /// <returns></returns>
-        bool CanResolve(Type type, IConstraint constraint);
+        // CanGet
 
-        /// <summary>
-        ///
-        /// </summary>
-        /// <param name="type"></param>
-        /// <param name="constraint"></param>
-        /// <param name="result"></param>
-        /// <returns></returns>
-        IObjectFactory TryResolve(Type type, IConstraint constraint, out bool result);
+        bool CanGet<T>();
 
-        /// <summary>
-        ///
-        /// </summary>
-        /// <param name="type"></param>
-        /// <param name="constraint"></param>
-        /// <returns></returns>
-        IObjectFactory Resolve(Type type, IConstraint constraint);
+        bool CanGet<T>(IConstraint constraint);
 
-        /// <summary>
-        ///
-        /// </summary>
-        /// <param name="type"></param>
-        /// <param name="constraint"></param>
-        /// <returns></returns>
-        IEnumerable<IObjectFactory> ResolveAll(Type type, IConstraint constraint);
+        bool CanGet(Type type);
+
+        bool CanGet(Type type, IConstraint constraint);
+
+        // TryGet
+
+        T TryGet<T>(out bool result);
+
+        T TryGet<T>(IConstraint constraint, out bool result);
+
+        object TryGet(Type type, out bool result);
+
+        object TryGet(Type type, IConstraint constraint, out bool result);
+
+        // Get
+
+        T Get<T>();
+
+        T Get<T>(IConstraint constraint);
+
+        object Get(Type type);
+
+        object Get(Type type, IConstraint constraint);
+
+        // GetAll
+
+        IEnumerable<T> GetAll<T>();
+
+        IEnumerable<T> GetAll<T>(IConstraint constraint);
+
+        IEnumerable<object> GetAll(Type type);
+
+        IEnumerable<object> GetAll(Type type, IConstraint constraint);
     }
 }

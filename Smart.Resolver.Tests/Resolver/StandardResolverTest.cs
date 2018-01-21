@@ -17,7 +17,7 @@
 
             using (var resolver = config.ToResolver())
             {
-                var obj = resolver.Get<IResolver>();
+                var obj = resolver.Get<SmartResolver>();
 
                 Assert.Same(resolver, obj);
             }
@@ -30,7 +30,7 @@
 
             using (var resolver = config.ToResolver())
             {
-                var obj = resolver.TryGet<IResolver>(out var result);
+                var obj = resolver.TryGet<SmartResolver>(out var result);
 
                 Assert.True(result);
                 Assert.Same(resolver, obj);
@@ -44,7 +44,7 @@
 
             using (var resolver = config.ToResolver())
             {
-                var result = resolver.CanGet<IResolver>();
+                var result = resolver.CanGet<SmartResolver>();
 
                 Assert.True(result);
             }

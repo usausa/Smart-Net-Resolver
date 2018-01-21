@@ -6,9 +6,9 @@
 
     public sealed class SmartResolverViewComponentActivator : IViewComponentActivator
     {
-        private readonly IResolver resolver;
+        private readonly SmartResolver resolver;
 
-        public SmartResolverViewComponentActivator(IResolver resolver)
+        public SmartResolverViewComponentActivator(SmartResolver resolver)
         {
             this.resolver = resolver;
         }

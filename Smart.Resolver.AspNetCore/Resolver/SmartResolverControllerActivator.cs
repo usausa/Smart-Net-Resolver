@@ -7,9 +7,9 @@
 
     public sealed class SmartResolverControllerActivator : IControllerActivator
     {
-        private readonly IResolver resolver;
+        private readonly SmartResolver resolver;
 
-        public SmartResolverControllerActivator(IResolver resolver)
+        public SmartResolverControllerActivator(SmartResolver resolver)
         {
             this.resolver = resolver;
         }

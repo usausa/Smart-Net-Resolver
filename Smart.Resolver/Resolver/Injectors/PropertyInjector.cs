@@ -29,8 +29,9 @@
             {
                 var property = metadata.TargetProperties[i];
                 var parameter = binding.PropertyValues.GetParameter(property.Accessor.Name);
-                var value = parameter != null ? parameter.Resolve(kernel) : kernel.Resolve(property.Accessor.Type, property.Constraint).Create();
-                property.Accessor.SetValue(instance, value);
+                property.Accessor.SetValue(
+                    instance,
+                    parameter != null ? parameter.Resolve(kernel) : kernel.Get(property.Accessor.Type, property.Constraint));
             }
         }
     }

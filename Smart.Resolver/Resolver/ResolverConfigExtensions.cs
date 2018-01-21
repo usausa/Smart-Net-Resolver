@@ -12,9 +12,9 @@
     /// </summary>
     public static class ResolverConfigExtensions
     {
-        public static StandardResolver ToResolver(this IResolverConfig config)
+        public static SmartResolver ToResolver(this IResolverConfig config)
         {
-            return new StandardResolver(config);
+            return new SmartResolver(config);
         }
 
         public static ResolverConfig UseMetadataFactory<T>(this ResolverConfig config)
