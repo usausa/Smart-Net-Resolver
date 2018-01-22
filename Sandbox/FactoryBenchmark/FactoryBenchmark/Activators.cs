@@ -1,16 +1,16 @@
 ﻿namespace FactoryBenchmark
 {
-    public interface IActivator0
+    public interface IActivator0 : IActivator
     {
         object Create();
     }
 
-    public interface IActivator1
+    public interface IActivator1 : IActivator
     {
         object Create(object argument1);
     }
 
-    public interface IActivator6
+    public interface IActivator6 : IActivator
     {
         object Create(
             object argument1,

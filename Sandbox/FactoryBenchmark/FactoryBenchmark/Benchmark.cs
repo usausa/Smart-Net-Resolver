@@ -88,6 +88,11 @@
         {
             return new Usecase1((Service1)argument1);
         }
+
+        public object Create(params object[] arguments)
+        {
+            throw new System.NotImplementedException();
+        }
     }
 
     public sealed class Usecase2Activator1 : IActivator1
@@ -95,6 +100,11 @@
         public object Create(object argument1)
         {
             return new Usecase2((Service2)argument1);
+        }
+
+        public object Create(params object[] arguments)
+        {
+            throw new System.NotImplementedException();
         }
     }
 
@@ -104,6 +114,11 @@
         {
             return new Transient1();
         }
+
+        public object Create(params object[] arguments)
+        {
+            throw new System.NotImplementedException();
+        }
     }
 
     public sealed class Transient2Activator0 : IActivator0
@@ -111,6 +126,11 @@
         public object Create()
         {
             return new Transient2();
+        }
+
+        public object Create(params object[] arguments)
+        {
+            throw new System.NotImplementedException();
         }
     }
 
