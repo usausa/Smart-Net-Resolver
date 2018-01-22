@@ -68,8 +68,8 @@
                 table.Add(group.Key, group.ToArray());
             }
 
-            var selfType = typeof(SmartResolver);
-            table.Add(selfType, new IBinding[] { new Binding(selfType, new ConstantProvider(this), null, null, null, null) });
+            table.Add(typeof(IResolver), new IBinding[] { new Binding(typeof(IResolver), new ConstantProvider(this), null, null, null, null) });
+            table.Add(typeof(SmartResolver), new IBinding[] { new Binding(typeof(SmartResolver), new ConstantProvider(this), null, null, null, null) });
         }
 
         /// <summary>
