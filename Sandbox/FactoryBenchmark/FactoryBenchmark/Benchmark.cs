@@ -1,5 +1,9 @@
-﻿namespace FactoryBenchmark
+﻿using System.Runtime.CompilerServices;
+
+namespace FactoryBenchmark
 {
+    using System;
+
     using BenchmarkDotNet.Attributes;
 
     [Config(typeof(BenchmarkConfig))]
@@ -8,6 +12,10 @@
         private readonly IObjectFactory objectFactory1 = CreateComplexActivator1();
 
         private readonly IObjectFactory objectFactory2 = CreateComplexActivator2();
+
+        private readonly Func<object> objectFactory3 = CreateComplexActivator3();
+
+        private readonly Func<object> objectFactory4 = CreateComplexActivator4();
 
         [Benchmark]
         public object Factory1()
@@ -19,6 +27,18 @@
         public object Factory2()
         {
             return objectFactory2.Create();
+        }
+
+        [Benchmark]
+        public object Factory3()
+        {
+            return objectFactory3();
+        }
+
+        [Benchmark]
+        public object Factory4()
+        {
+            return objectFactory4();
         }
 
         public static IObjectFactory CreateComplexActivator1()
@@ -78,12 +98,68 @@
 
             return complexFactory;
         }
+
+        public static Func<object> CreateComplexActivator3()
+        {
+            var service1 = new Service1();
+            var service2 = new Service2();
+
+            var factoryService1 = (Func<object>)(() => service1);
+            var factoryService2 = (Func<object>)(() => service2);
+
+            var usecase1Activator = new Usecase1Activator1();
+            var factoryUsecase1 = (Func<object>)(() => usecase1Activator.Create(factoryService1()));
+            var usecase2Activator = new Usecase2Activator1();
+            var factoryUsecase2 = (Func<object>)(() => usecase2Activator.Create(factoryService2()));
+
+            var transient1Activator = new Transient1Activator0();
+            var factoryTransient1 = (Func<object>)(() => transient1Activator.Create());
+            var transient2Activator = new Transient2Activator0();
+            var factoryTransient2 = (Func<object>)(() => transient2Activator.Create());
+
+            var complexActivator = new ComplexActivator6();
+            var complexFactory = (Func<object>) (() => complexActivator.Create(
+                factoryService1(),
+                factoryService2(),
+                factoryUsecase1(),
+                factoryUsecase2(),
+                factoryTransient1(),
+                factoryTransient2()));
+
+            return complexFactory;
+        }
+
+        public static Func<object> CreateComplexActivator4()
+        {
+            var service1 = new Service1();
+            var service2 = new Service2();
+
+            var factoryService1 = (Func<object>)(() => service1);
+            var factoryService2 = (Func<object>)(() => service2);
+
+            var factoryUsecase1 = (Func<object>)(() => new Usecase1((Service1)factoryService1()));
+            var factoryUsecase2 = (Func<object>)(() => new Usecase2((Service2)factoryService2()));
+
+            var factoryTransient1 = (Func<object>)(() => new Transient1());
+            var factoryTransient2 = (Func<object>)(() => new Transient2());
+
+            var complexFactory = (Func<object>)(() => new Complex(
+                (Service1)factoryService1(),
+                (Service2)factoryService2(),
+                (Usecase1)factoryUsecase1(),
+                (Usecase2)factoryUsecase2(),
+                (Transient1)factoryTransient1(),
+                (Transient2)factoryTransient2()));
+
+            return complexFactory;
+        }
     }
 
     //------------------------------------------------------------
 
     public sealed class Usecase1Activator1 : IActivator1
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public object Create(object argument1)
         {
             return new Usecase1((Service1)argument1);
@@ -97,6 +173,7 @@
 
     public sealed class Usecase2Activator1 : IActivator1
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public object Create(object argument1)
         {
             return new Usecase2((Service2)argument1);
@@ -110,6 +187,7 @@
 
     public sealed class Transient1Activator0 : IActivator0
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public object Create()
         {
             return new Transient1();
@@ -123,6 +201,7 @@
 
     public sealed class Transient2Activator0 : IActivator0
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public object Create()
         {
             return new Transient2();
@@ -136,6 +215,7 @@
 
     public sealed class ComplexActivator6 : IActivator6
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public object Create(params object[] arguments)
         {
             return new Complex(
@@ -169,6 +249,7 @@
 
     public sealed class Usecase1Activator : IActivator
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public object Create(params object[] arguments)
         {
             return new Usecase1((Service1)arguments[0]);
@@ -177,6 +258,7 @@
 
     public sealed class Usecase2Activator : IActivator
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public object Create(params object[] arguments)
         {
             return new Usecase2((Service2)arguments[0]);
@@ -185,6 +267,7 @@
 
     public sealed class Transient1Activator : IActivator
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public object Create(params object[] arguments)
         {
             return new Transient1();
@@ -193,6 +276,7 @@
 
     public sealed class Transient2Activator : IActivator
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public object Create(params object[] arguments)
         {
             return new Transient2();
@@ -201,6 +285,7 @@
 
     public sealed class ComplexActivator : IActivator
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public object Create(params object[] arguments)
         {
             return new Complex(
