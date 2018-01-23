@@ -7,7 +7,6 @@
     using Smart.ComponentModel;
     using Smart.Reflection;
     using Smart.Resolver.Bindings;
-    using Smart.Resolver.Factories;
     using Smart.Resolver.Injectors;
     using Smart.Resolver.Metadatas;
     using Smart.Resolver.Processors;
@@ -74,7 +73,7 @@
         /// <param name="binding"></param>
         /// <returns></returns>
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods", Justification = "Framework only")]
-        public IObjectFactory CreateFactory(IKernel kernel, IBinding binding)
+        public Func<object> CreateFactory(IKernel kernel, IBinding binding)
         {
             var constructor = FindBestConstructor(kernel, binding);
             var argumentFactories = ResolveArgumentsFactories(kernel, binding, constructor);
@@ -83,152 +82,55 @@
             switch (argumentFactories.Length)
             {
                 case 0:
-                    var activator0 = activatorFactory.CreateActivator<IActivator0>(constructor.Constructor);
-                    return processor != null
-                        ? (IObjectFactory)new Activator0ObjectFactory(processor, activator0)
-                        : new NoProcessActivator0ObjectFactory(activator0);
+                    return FactoryBuilder.Activator0(
+                        processor,
+                        activatorFactory.CreateActivator<IActivator0>(constructor.Constructor));
                 case 1:
-                    var activator1 = activatorFactory.CreateActivator<IActivator1>(constructor.Constructor);
-                    return processor != null
-                        ? (IObjectFactory)new Activator1ObjectFactory(
-                            processor,
-                            activator1,
-                            argumentFactories[0])
-                        : new NoProcessActivator1ObjectFactory(
-                            activator1,
-                            argumentFactories[0]);
+                    return FactoryBuilder.Activator1(
+                        processor,
+                        activatorFactory.CreateActivator<IActivator1>(constructor.Constructor),
+                        argumentFactories);
                 case 2:
-                    var activator2 = activatorFactory.CreateActivator<IActivator2>(constructor.Constructor);
-                    return processor != null
-                        ? (IObjectFactory)new Activator2ObjectFactory(
-                            processor,
-                            activator2,
-                            argumentFactories[0],
-                            argumentFactories[1])
-                        : new NoProcessActivator2ObjectFactory(
-                            activator2,
-                            argumentFactories[0],
-                            argumentFactories[1]);
+                    return FactoryBuilder.Activator2(
+                        processor,
+                        activatorFactory.CreateActivator<IActivator2>(constructor.Constructor),
+                        argumentFactories);
                 case 3:
-                    var activator3 = activatorFactory.CreateActivator<IActivator3>(constructor.Constructor);
-                    return processor != null
-                        ? (IObjectFactory)new Activator3ObjectFactory(
-                            processor,
-                            activator3,
-                            argumentFactories[0],
-                            argumentFactories[1],
-                            argumentFactories[2])
-                        : new NoProcessActivator3ObjectFactory(
-                            activator3,
-                            argumentFactories[0],
-                            argumentFactories[1],
-                            argumentFactories[2]);
+                    return FactoryBuilder.Activator3(
+                        processor,
+                        activatorFactory.CreateActivator<IActivator3>(constructor.Constructor),
+                        argumentFactories);
                 case 4:
-                    var activator4 = activatorFactory.CreateActivator<IActivator4>(constructor.Constructor);
-                    return processor != null
-                        ? (IObjectFactory)new Activator4ObjectFactory(
-                            processor,
-                            activator4,
-                            argumentFactories[0],
-                            argumentFactories[1],
-                            argumentFactories[2],
-                            argumentFactories[3])
-                        : new NoProcessActivator4ObjectFactory(
-                            activator4,
-                            argumentFactories[0],
-                            argumentFactories[1],
-                            argumentFactories[2],
-                            argumentFactories[3]);
+                    return FactoryBuilder.Activator4(
+                        processor,
+                        activatorFactory.CreateActivator<IActivator4>(constructor.Constructor),
+                        argumentFactories);
                 case 5:
-                    var activator5 = activatorFactory.CreateActivator<IActivator5>(constructor.Constructor);
-                    return processor != null
-                        ? (IObjectFactory)new Activator5ObjectFactory(
-                            processor,
-                            activator5,
-                            argumentFactories[0],
-                            argumentFactories[1],
-                            argumentFactories[2],
-                            argumentFactories[3],
-                            argumentFactories[4])
-                        : new NoProcessActivator5ObjectFactory(
-                            activator5,
-                            argumentFactories[0],
-                            argumentFactories[1],
-                            argumentFactories[2],
-                            argumentFactories[3],
-                            argumentFactories[4]);
+                    return FactoryBuilder.Activator5(
+                        processor,
+                        activatorFactory.CreateActivator<IActivator5>(constructor.Constructor),
+                        argumentFactories);
                 case 6:
-                    var activator6 = activatorFactory.CreateActivator<IActivator6>(constructor.Constructor);
-                    return processor != null
-                        ? (IObjectFactory)new Activator6ObjectFactory(
-                            processor,
-                            activator6,
-                            argumentFactories[0],
-                            argumentFactories[1],
-                            argumentFactories[2],
-                            argumentFactories[3],
-                            argumentFactories[4],
-                            argumentFactories[5])
-                        : new NoProcessActivator6ObjectFactory(
-                            activator6,
-                            argumentFactories[0],
-                            argumentFactories[1],
-                            argumentFactories[2],
-                            argumentFactories[3],
-                            argumentFactories[4],
-                            argumentFactories[5]);
+                    return FactoryBuilder.Activator6(
+                        processor,
+                        activatorFactory.CreateActivator<IActivator6>(constructor.Constructor),
+                        argumentFactories);
                 case 7:
-                    var activator7 = activatorFactory.CreateActivator<IActivator7>(constructor.Constructor);
-                    return processor != null
-                        ? (IObjectFactory)new Activator7ObjectFactory(
-                            processor,
-                            activator7,
-                            argumentFactories[0],
-                            argumentFactories[1],
-                            argumentFactories[2],
-                            argumentFactories[3],
-                            argumentFactories[4],
-                            argumentFactories[5],
-                            argumentFactories[6])
-                        : new NoProcessActivator7ObjectFactory(
-                            activator7,
-                            argumentFactories[0],
-                            argumentFactories[1],
-                            argumentFactories[2],
-                            argumentFactories[3],
-                            argumentFactories[4],
-                            argumentFactories[5],
-                            argumentFactories[6]);
+                    return FactoryBuilder.Activator7(
+                        processor,
+                        activatorFactory.CreateActivator<IActivator7>(constructor.Constructor),
+                        argumentFactories);
                 case 8:
-                    var activator8 = activatorFactory.CreateActivator<IActivator8>(constructor.Constructor);
-                    return processor != null
-                        ? (IObjectFactory)new Activator8ObjectFactory(
-                            processor,
-                            activator8,
-                            argumentFactories[0],
-                            argumentFactories[1],
-                            argumentFactories[2],
-                            argumentFactories[3],
-                            argumentFactories[4],
-                            argumentFactories[5],
-                            argumentFactories[6],
-                            argumentFactories[7])
-                        : new NoProcessActivator8ObjectFactory(
-                            activator8,
-                            argumentFactories[0],
-                            argumentFactories[1],
-                            argumentFactories[2],
-                            argumentFactories[3],
-                            argumentFactories[4],
-                            argumentFactories[5],
-                            argumentFactories[6],
-                            argumentFactories[7]);
+                    return FactoryBuilder.Activator8(
+                        processor,
+                        activatorFactory.CreateActivator<IActivator8>(constructor.Constructor),
+                        argumentFactories);
             }
 
-            var activator = activatorFactory.CreateActivator(constructor.Constructor);
-            return processor != null
-                ? (IObjectFactory)new ActivatorObjectFactory(processor, activator, argumentFactories)
-                : new NoProcessActivatorObjectFactory(activator, argumentFactories);
+            return FactoryBuilder.Activator(
+                processor,
+                activatorFactory.CreateActivator(constructor.Constructor),
+                argumentFactories);
         }
 
         /// <summary>
@@ -301,10 +203,10 @@
         /// <param name="binding"></param>
         /// <param name="constructor"></param>
         /// <returns></returns>
-        private IObjectFactory[] ResolveArgumentsFactories(IKernel kernel, IBinding binding, ConstructorMetadata constructor)
+        private Func<object>[] ResolveArgumentsFactories(IKernel kernel, IBinding binding, ConstructorMetadata constructor)
         {
             var parameters = constructor.Parameters;
-            var argumentFactories = new IObjectFactory[parameters.Length];
+            var argumentFactories = new Func<object>[parameters.Length];
 
             for (var i = 0; i < parameters.Length; i++)
             {
@@ -315,14 +217,14 @@
                 var argument = binding.ConstructorArguments.GetParameter(pi.Name);
                 if (argument != null)
                 {
-                    argumentFactories[i] = new ParameterObjectFactory(kernel, argument);
+                    argumentFactories[i] = FactoryBuilder.Parameter(kernel, argument);
                     continue;
                 }
 
                 // Multiple
                 if (parameter.ElementType != null)
                 {
-                    argumentFactories[i] = new ArrayObjectFactory(
+                    argumentFactories[i] = FactoryBuilder.Array(
                         arrayOperatorFactory.CreateArrayOperator(parameter.ElementType),
                         kernel.ResolveAllFactory(parameter.ElementType, constructor.Constraints[i]).ToArray());
                     continue;
@@ -339,7 +241,7 @@
                 // DefaultValue
                 if (pi.HasDefaultValue)
                 {
-                    argumentFactories[i] = new ConstantObjectFactory(pi.DefaultValue);
+                    argumentFactories[i] = FactoryBuilder.Constant(pi.DefaultValue);
                 }
             }
 

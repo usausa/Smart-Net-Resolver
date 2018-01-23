@@ -5,7 +5,6 @@
     using Smart.ComponentModel;
     using Smart.Resolver.Bindings;
     using Smart.Resolver.Disposables;
-    using Smart.Resolver.Factories;
 
     /// <summary>
     ///
@@ -14,7 +13,7 @@
     {
         private object value;
 
-        private ConstantObjectFactory objectFactory;
+        private Func<object> objectFactory;
 
         /// <summary>
         ///
@@ -50,12 +49,12 @@
         /// <param name="binding"></param>
         /// <param name="factory"></param>
         /// <returns></returns>
-        public IObjectFactory Create(IKernel kernel, IBinding binding, IObjectFactory factory)
+        public Func<object> Create(IKernel kernel, IBinding binding, Func<object> factory)
         {
             if (objectFactory == null)
             {
-                value = factory.Create();
-                objectFactory = new ConstantObjectFactory(value);
+                value = factory();
+                objectFactory = FactoryBuilder.Constant(value);
             }
 
             return objectFactory;

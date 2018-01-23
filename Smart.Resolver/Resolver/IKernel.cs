@@ -5,7 +5,6 @@
 
     using Smart.ComponentModel;
     using Smart.Resolver.Constraints;
-    using Smart.Resolver.Factories;
 
     /// <summary>
     ///
@@ -23,7 +22,7 @@
         /// <param name="type"></param>
         /// <param name="constraint"></param>
         /// <returns></returns>
-        IObjectFactory ResolveFactory(Type type, IConstraint constraint);
+        Func<object> ResolveFactory(Type type, IConstraint constraint);
 
         /// <summary>
         ///
@@ -31,6 +30,6 @@
         /// <param name="type"></param>
         /// <param name="constraint"></param>
         /// <returns></returns>
-        IEnumerable<IObjectFactory> ResolveAllFactory(Type type, IConstraint constraint);
+        IEnumerable<Func<object>> ResolveAllFactory(Type type, IConstraint constraint);
     }
 }

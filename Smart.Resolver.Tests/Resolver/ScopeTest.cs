@@ -6,7 +6,6 @@
 
     using Smart.ComponentModel;
     using Smart.Resolver.Bindings;
-    using Smart.Resolver.Factories;
     using Smart.Resolver.Mocks;
     using Smart.Resolver.Scopes;
 
@@ -87,45 +86,30 @@
             }
         }
 
-        public sealed class CustomeScopeObjectFactory : IObjectFactory
+        public sealed class CustomScope : IScope
         {
             private static readonly ThreadLocal<Dictionary<IBinding, object>> Cache =
                 new ThreadLocal<Dictionary<IBinding, object>>(() => new Dictionary<IBinding, object>());
 
-            private readonly IBinding binding;
-
-            private readonly IObjectFactory objectFactory;
-
-            public CustomeScopeObjectFactory(IBinding binding, IObjectFactory objectFactory)
-            {
-                this.binding = binding;
-                this.objectFactory = objectFactory;
-            }
-
-            public object Create()
-            {
-                if (Cache.Value.TryGetValue(binding, out var value))
-                {
-                    return value;
-                }
-
-                value = objectFactory.Create();
-                Cache.Value[binding] = value;
-
-                return value;
-            }
-        }
-
-        public sealed class CustomScope : IScope
-        {
             public IScope Copy(IComponentContainer components)
             {
                 return this;
             }
 
-            public IObjectFactory Create(IKernel kernel, IBinding binding, IObjectFactory factory)
+            public Func<object> Create(IKernel kernel, IBinding binding, Func<object> factory)
             {
-                return new CustomeScopeObjectFactory(binding, factory);
+                return () =>
+                {
+                    if (Cache.Value.TryGetValue(binding, out var value))
+                    {
+                        return value;
+                    }
+
+                    value = factory();
+                    Cache.Value[binding] = value;
+
+                    return value;
+                };
             }
         }
     }

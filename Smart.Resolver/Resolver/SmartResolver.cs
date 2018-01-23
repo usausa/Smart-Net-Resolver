@@ -9,7 +9,6 @@
     using Smart.ComponentModel;
     using Smart.Resolver.Bindings;
     using Smart.Resolver.Constraints;
-    using Smart.Resolver.Factories;
     using Smart.Resolver.Handlers;
     using Smart.Resolver.Injectors;
     using Smart.Resolver.Metadatas;
@@ -22,9 +21,9 @@
     {
         private sealed class FactoryEntry
         {
-            public IObjectFactory Single { get; set; }
+            public Func<object> Single { get; set; }
 
-            public IObjectFactory[] Multiple { get; set; }
+            public Func<object>[] Multiple { get; set; }
         }
 
         private readonly ThreadsafeTypeHashArrayMap<FactoryEntry> factoriesCache = new ThreadsafeTypeHashArrayMap<FactoryEntry>();
@@ -90,14 +89,14 @@
         // ObjectFactory
         // ------------------------------------------------------------
 
-        IObjectFactory IKernel.ResolveFactory(Type type, IConstraint constraint)
+        Func<object> IKernel.ResolveFactory(Type type, IConstraint constraint)
         {
             return (constraint == null
                 ? FindFactoryEntry(type)
                 : FindFactoryEntry(type, constraint)).Single;
         }
 
-        IEnumerable<IObjectFactory> IKernel.ResolveAllFactory(Type type, IConstraint constraint)
+        IEnumerable<Func<object>> IKernel.ResolveAllFactory(Type type, IConstraint constraint)
         {
             return (constraint == null
                 ? FindFactoryEntry(type)
@@ -134,44 +133,44 @@
 
         public T Get<T>()
         {
-            return (T)FindFactoryEntry(typeof(T)).Single?.Create();
+            return (T)FindFactoryEntry(typeof(T)).Single?.Invoke();
         }
 
         public T Get<T>(IConstraint constraint)
         {
-            return (T)FindFactoryEntry(typeof(T), constraint).Single?.Create();
+            return (T)FindFactoryEntry(typeof(T), constraint).Single?.Invoke();
         }
 
         public object Get(Type type)
         {
-            return FindFactoryEntry(type).Single?.Create();
+            return FindFactoryEntry(type).Single?.Invoke();
         }
 
         public object Get(Type type, IConstraint constraint)
         {
-            return FindFactoryEntry(type, constraint).Single?.Create();
+            return FindFactoryEntry(type, constraint).Single?.Invoke();
         }
 
         // GetAll
 
         public IEnumerable<T> GetAll<T>()
         {
-            return FindFactoryEntry(typeof(T)).Multiple.Select(x => (T)x.Create());
+            return FindFactoryEntry(typeof(T)).Multiple.Select(x => (T)x());
         }
 
         public IEnumerable<T> GetAll<T>(IConstraint constraint)
         {
-            return FindFactoryEntry(typeof(T), constraint).Multiple.Select(x => (T)x.Create());
+            return FindFactoryEntry(typeof(T), constraint).Multiple.Select(x => (T)x());
         }
 
         public IEnumerable<object> GetAll(Type type)
         {
-            return FindFactoryEntry(type).Multiple.Select(x => x.Create());
+            return FindFactoryEntry(type).Multiple.Select(x => x());
         }
 
         public IEnumerable<object> GetAll(Type type, IConstraint constraint)
         {
-            return FindFactoryEntry(type, constraint).Multiple.Select(x => x.Create());
+            return FindFactoryEntry(type, constraint).Multiple.Select(x => x());
         }
 
         // ------------------------------------------------------------

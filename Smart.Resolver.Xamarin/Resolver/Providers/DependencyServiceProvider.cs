@@ -5,7 +5,6 @@
 
     using Smart.ComponentModel;
     using Smart.Resolver.Bindings;
-    using Smart.Resolver.Factories;
 
     using Xamarin.Forms;
 
@@ -14,23 +13,6 @@
     /// </summary>
     public sealed class DependencyServiceProvider : IProvider
     {
-        private sealed class DependencyServiceObjectFactory : IObjectFactory
-        {
-            private readonly MethodInfo method;
-
-            public DependencyServiceObjectFactory(MethodInfo method)
-            {
-                this.method = method;
-            }
-
-            public object Create()
-            {
-                return method.Invoke(null, new object[] { DependencyFetchTarget.GlobalInstance });
-            }
-        }
-
-        private readonly DependencyServiceObjectFactory objectFactory;
-
         /// <summary>
         ///
         /// </summary>
@@ -43,8 +25,6 @@
         public DependencyServiceProvider(Type type)
         {
             TargetType = type;
-            var method = typeof(DependencyService).GetMethod("Get");
-            objectFactory = new DependencyServiceObjectFactory(method.MakeGenericMethod(type));
         }
 
         /// <summary>
@@ -63,9 +43,16 @@
         /// <param name="kernel"></param>
         /// <param name="binding"></param>
         /// <returns></returns>
-        public IObjectFactory CreateFactory(IKernel kernel, IBinding binding)
+        public Func<object> CreateFactory(IKernel kernel, IBinding binding)
         {
-            return objectFactory;
+            var method = typeof(DependencyService).GetMethod("Get");
+            var genericMethod = method.MakeGenericMethod(TargetType);
+            return CreateFactory(genericMethod);
+        }
+
+        private static Func<object> CreateFactory(MethodInfo method)
+        {
+            return () => method.Invoke(null, new object[] { DependencyFetchTarget.GlobalInstance });
         }
     }
 }

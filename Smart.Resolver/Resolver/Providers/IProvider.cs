@@ -4,7 +4,6 @@
 
     using Smart.ComponentModel;
     using Smart.Resolver.Bindings;
-    using Smart.Resolver.Factories;
 
     /// <summary>
     ///
@@ -22,7 +21,7 @@
         /// <param name="kernel"></param>
         /// <param name="binding"></param>
         /// <returns></returns>
-        IObjectFactory CreateFactory(IKernel kernel, IBinding binding);
+        Func<object> CreateFactory(IKernel kernel, IBinding binding);
 
         /// <summary>
         ///
