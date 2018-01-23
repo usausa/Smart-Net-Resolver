@@ -17,6 +17,15 @@ namespace FactoryBenchmark
 
         private readonly Func<object> objectFactory4 = CreateComplexActivator4();
 
+        [GlobalSetup]
+        public void Setup()
+        {
+            objectFactory1.Create();
+            objectFactory2.Create();
+            objectFactory3();
+            objectFactory4();
+        }
+
         [Benchmark]
         public object Factory1()
         {
@@ -32,13 +41,13 @@ namespace FactoryBenchmark
         [Benchmark]
         public object Factory3()
         {
-            return objectFactory3();
+            return objectFactory3.Invoke();
         }
 
         [Benchmark]
         public object Factory4()
         {
-            return objectFactory4();
+            return objectFactory4.Invoke();
         }
 
         public static IObjectFactory CreateComplexActivator1()
