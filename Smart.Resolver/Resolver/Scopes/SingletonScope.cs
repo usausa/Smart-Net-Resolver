@@ -39,7 +39,7 @@
         /// <returns></returns>
         public IScope Copy(IComponentContainer components)
         {
-            return this;
+            return new SingletonScope(components);
         }
 
         /// <summary>
