@@ -2,7 +2,6 @@
 {
     using System;
 
-    using Smart.ComponentModel;
     using Smart.Resolver.Bindings;
 
     /// <summary>
@@ -22,12 +21,5 @@
         /// <param name="binding"></param>
         /// <returns></returns>
         Func<object> CreateFactory(IKernel kernel, IBinding binding);
-
-        /// <summary>
-        ///
-        /// </summary>
-        /// <param name="components"></param>
-        /// <returns></returns>
-        IProvider Copy(IComponentContainer components);
     }
 }

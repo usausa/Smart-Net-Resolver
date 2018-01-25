@@ -1,6 +1,7 @@
 ﻿namespace Smart.Resolver
 {
     using System;
+    using System.Collections.Generic;
 
     using Smart.Resolver.Handlers;
     using Smart.Resolver.Injectors;
@@ -97,6 +98,17 @@
             return config;
         }
 
+        public static ResolverConfig UseAutoBinding(this ResolverConfig config, IEnumerable<Type> ignoreTypes)
+        {
+            if (config == null)
+            {
+                throw new ArgumentNullException(nameof(config));
+            }
+
+            config.Components.Add<IMissingHandler>(new SelfMissingHandler(ignoreTypes));
+            return config;
+        }
+
         public static ResolverConfig UseOpenGenericBinding(this ResolverConfig config)
         {
             if (config == null)
@@ -108,6 +120,39 @@
             return config;
         }
 
+        public static ResolverConfig UseOpenGenericBinding(this ResolverConfig config, IEnumerable<Type> ignoreTypes)
+        {
+            if (config == null)
+            {
+                throw new ArgumentNullException(nameof(config));
+            }
+
+            config.Components.Add<IMissingHandler>(new OpenGenericMissingHandler(ignoreTypes));
+            return config;
+        }
+
+        public static ResolverConfig UseArrayBinding(this ResolverConfig config)
+        {
+            if (config == null)
+            {
+                throw new ArgumentNullException(nameof(config));
+            }
+
+            config.Components.Add<IMissingHandler, ArrayMissingHandler>();
+            return config;
+        }
+
+        public static ResolverConfig UseArrayBinding(this ResolverConfig config, IEnumerable<Type> ignoreElementTypes)
+        {
+            if (config == null)
+            {
+                throw new ArgumentNullException(nameof(config));
+            }
+
+            config.Components.Add<IMissingHandler>(new ArrayMissingHandler(ignoreElementTypes));
+            return config;
+        }
+
         public static ResolverConfig UseAssignableBinding(this ResolverConfig config)
         {
             if (config == null)
@@ -116,6 +161,17 @@
             }
 
             config.Components.Add<IMissingHandler, AssignableMissingHandler>();
+            return config;
+        }
+
+        public static ResolverConfig UseAssignableBinding(this ResolverConfig config, IEnumerable<Type> ignoreTypes)
+        {
+            if (config == null)
+            {
+                throw new ArgumentNullException(nameof(config));
+            }
+
+            config.Components.Add<IMissingHandler>(new AssignableMissingHandler(ignoreTypes));
             return config;
         }
 

@@ -1,4 +1,4 @@
-﻿namespace Smart.Resolver
+﻿namespace Smart.Resolver.Helpers
 {
     using System;
 

@@ -2,8 +2,8 @@
 {
     using System;
 
-    using Smart.ComponentModel;
     using Smart.Resolver.Bindings;
+    using Smart.Resolver.Helpers;
 
     /// <summary>
     ///
@@ -26,16 +26,6 @@
         {
             TargetType = type;
             this.factory = factory;
-        }
-
-        /// <summary>
-        ///
-        /// </summary>
-        /// <param name="components"></param>
-        /// <returns></returns>
-        public IProvider Copy(IComponentContainer components)
-        {
-            return this;
         }
 
         /// <summary>

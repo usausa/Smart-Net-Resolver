@@ -7,6 +7,7 @@
     using Smart.ComponentModel;
     using Smart.Reflection;
     using Smart.Resolver.Bindings;
+    using Smart.Resolver.Helpers;
     using Smart.Resolver.Injectors;
     using Smart.Resolver.Metadatas;
     using Smart.Resolver.Processors;
@@ -51,16 +52,6 @@
             processors = components.GetAll<IProcessor>().ToArray();
             delegateFactory = components.Get<IDelegateFactory>();
             metadata = components.Get<IMetadataFactory>().GetMetadata(TargetType);
-        }
-
-        /// <summary>
-        ///
-        /// </summary>
-        /// <param name="components"></param>
-        /// <returns></returns>
-        public IProvider Copy(IComponentContainer components)
-        {
-            return new StandardProvider(TargetType, components);
         }
 
         /// <summary>
@@ -221,9 +212,11 @@
                 // Multiple
                 if (parameter.ElementType != null)
                 {
-                    argumentFactories[i] = FactoryBuilder.Array(
-                        delegateFactory.CreateArrayAllocator(parameter.ElementType),
-                        kernel.ResolveAllFactory(parameter.ElementType, constructor.Constraints[i]).ToArray());
+                    argumentFactories[i] =
+                        kernel.ResolveFactory(pi.ParameterType, constructor.Constraints[i]) ??
+                        FactoryBuilder.Array(
+                            delegateFactory.CreateArrayAllocator(parameter.ElementType),
+                            kernel.ResolveAllFactory(parameter.ElementType, constructor.Constraints[i]).ToArray());
                     continue;
                 }
 

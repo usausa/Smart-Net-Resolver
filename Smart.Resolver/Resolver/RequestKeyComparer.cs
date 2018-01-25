@@ -2,7 +2,7 @@
 {
     using System.Collections.Generic;
 
-    public sealed class RequestKeyComparer : IEqualityComparer<RequestKey>
+    internal sealed class RequestKeyComparer : IEqualityComparer<RequestKey>
     {
         public bool Equals(RequestKey x, RequestKey y)
         {

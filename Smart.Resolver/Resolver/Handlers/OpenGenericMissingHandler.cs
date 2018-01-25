@@ -13,6 +13,25 @@
     /// </summary>
     public sealed class OpenGenericMissingHandler : IMissingHandler
     {
+        private readonly HashSet<Type> ignoreTypes;
+
+        /// <summary>
+        ///
+        /// </summary>
+        public OpenGenericMissingHandler()
+            : this(Type.EmptyTypes)
+        {
+        }
+
+        /// <summary>
+        ///
+        /// </summary>
+        /// <param name="ignoreTypes"></param>
+        public OpenGenericMissingHandler(IEnumerable<Type> ignoreTypes)
+        {
+            this.ignoreTypes = new HashSet<Type>(ignoreTypes);
+        }
+
         /// <summary>
         ///
         /// </summary>
@@ -23,7 +42,7 @@
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods", Justification = "Framework only")]
         public IEnumerable<IBinding> Handle(IComponentContainer components, IBindingTable table, Type type)
         {
-            if (!type.IsGenericType)
+            if (!type.IsGenericType || ignoreTypes.Contains(type))
             {
                 return Enumerable.Empty<IBinding>();
             }

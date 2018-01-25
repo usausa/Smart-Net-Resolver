@@ -2,7 +2,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
   <metadata>
     <id>Usa.Smart.Resolver</id>
-    <version>1.7.0-beta2</version>
+    <version>1.7.0-beta3</version>
     <title>Smart.Resolver .NET</title>
     <authors>machi_pon</authors>
     <owners>machi_pon</owners>

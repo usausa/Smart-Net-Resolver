@@ -13,9 +13,24 @@
     /// </summary>
     public sealed class SelfMissingHandler : IMissingHandler
     {
-        private static readonly Type StringType = typeof(string);
+        private readonly HashSet<Type> ignoreTypes;
 
-        private static readonly Type DelegateType = typeof(Delegate);
+        /// <summary>
+        ///
+        /// </summary>
+        public SelfMissingHandler()
+            : this(new[] { typeof(string), typeof(Delegate) })
+        {
+        }
+
+        /// <summary>
+        ///
+        /// </summary>
+        /// <param name="ignoreTypes"></param>
+        public SelfMissingHandler(IEnumerable<Type> ignoreTypes)
+        {
+            this.ignoreTypes = new HashSet<Type>(ignoreTypes);
+        }
 
         /// <summary>
         ///
@@ -26,8 +41,8 @@
         /// <returns></returns>
         public IEnumerable<IBinding> Handle(IComponentContainer components, IBindingTable table, Type type)
         {
-            if (type.IsInterface || type.IsAbstract || type.IsValueType || (type == StringType) ||
-                DelegateType.IsAssignableFrom(type) || type.ContainsGenericParameters)
+            if (type.IsInterface || type.IsAbstract || type.IsValueType || type.ContainsGenericParameters ||
+                ignoreTypes.Contains(type))
             {
                 return Enumerable.Empty<IBinding>();
             }

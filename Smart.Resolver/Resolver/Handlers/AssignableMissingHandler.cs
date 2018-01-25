@@ -12,6 +12,25 @@
     /// </summary>
     public sealed class AssignableMissingHandler : IMissingHandler
     {
+        private readonly HashSet<Type> ignoreTypes;
+
+        /// <summary>
+        ///
+        /// </summary>
+        public AssignableMissingHandler()
+            : this(Type.EmptyTypes)
+        {
+        }
+
+        /// <summary>
+        ///
+        /// </summary>
+        /// <param name="ignoreTypes"></param>
+        public AssignableMissingHandler(IEnumerable<Type> ignoreTypes)
+        {
+            this.ignoreTypes = new HashSet<Type>(ignoreTypes);
+        }
+
         /// <summary>
         ///
         /// </summary>
@@ -21,6 +40,11 @@
         /// <returns></returns>
         public IEnumerable<IBinding> Handle(IComponentContainer components, IBindingTable table, Type type)
         {
+            if (ignoreTypes.Contains(type))
+            {
+                return Enumerable.Empty<IBinding>();
+            }
+
             return table.EnumBindings().Where(x => type.IsAssignableFrom(x.Provider.TargetType));
         }
     }

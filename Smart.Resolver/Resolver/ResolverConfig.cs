@@ -7,8 +7,8 @@
     using Smart.ComponentModel;
     using Smart.Reflection;
     using Smart.Resolver.Bindings;
+    using Smart.Resolver.Components;
     using Smart.Resolver.Configs;
-    using Smart.Resolver.Disposables;
     using Smart.Resolver.Metadatas;
 
     /// <summary>

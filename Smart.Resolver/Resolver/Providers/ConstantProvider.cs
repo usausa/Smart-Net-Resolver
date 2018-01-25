@@ -2,8 +2,8 @@
 {
     using System;
 
-    using Smart.ComponentModel;
     using Smart.Resolver.Bindings;
+    using Smart.Resolver.Helpers;
 
     /// <summary>
     ///
@@ -24,16 +24,6 @@
         public ConstantProvider(object value)
         {
             this.value = value;
-        }
-
-        /// <summary>
-        ///
-        /// </summary>
-        /// <param name="components"></param>
-        /// <returns></returns>
-        public IProvider Copy(IComponentContainer components)
-        {
-            return this;
         }
 
         /// <summary>

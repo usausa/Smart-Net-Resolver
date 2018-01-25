@@ -9,6 +9,7 @@
     using Smart.Reflection;
     using Smart.Resolver.Attributes;
     using Smart.Resolver.Constraints;
+    using Smart.Resolver.Helpers;
 
     /// <summary>
     ///
@@ -16,12 +17,6 @@
     public sealed class MetadataFactory : IMetadataFactory
     {
         private static readonly Type InjectType = typeof(InjectAttribute);
-
-        private static readonly Type EnumerableType = typeof(IEnumerable<>);
-
-        private static readonly Type CollectionType = typeof(ICollection<>);
-
-        private static readonly Type ListType = typeof(IList<>);
 
         private readonly IDelegateFactory delegateFactory;
 
@@ -94,23 +89,7 @@
         /// <returns></returns>
         private static ParameterMetadata CreateParameterMetadata(ParameterInfo pi)
         {
-            // Array
-            if (pi.ParameterType.IsArray)
-            {
-                return new ParameterMetadata(pi, pi.ParameterType.GetElementType());
-            }
-
-            // IEnumerable type
-            if (pi.ParameterType.IsGenericType)
-            {
-                var genericType = pi.ParameterType.GetGenericTypeDefinition();
-                if ((genericType == EnumerableType) || (genericType == CollectionType) || (genericType == ListType))
-                {
-                    return new ParameterMetadata(pi, pi.ParameterType.GenericTypeArguments[0]);
-                }
-            }
-
-            return new ParameterMetadata(pi, null);
+            return new ParameterMetadata(pi, TypeHelper.GetEnumerableElementType(pi.ParameterType));
         }
 
         /// <summary>

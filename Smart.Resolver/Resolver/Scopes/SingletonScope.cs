@@ -4,7 +4,8 @@
 
     using Smart.ComponentModel;
     using Smart.Resolver.Bindings;
-    using Smart.Resolver.Disposables;
+    using Smart.Resolver.Components;
+    using Smart.Resolver.Helpers;
 
     /// <summary>
     ///

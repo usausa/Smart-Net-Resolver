@@ -1,4 +1,4 @@
-﻿namespace Smart.Resolver.Disposables
+﻿namespace Smart.Resolver.Components
 {
     using System;
 

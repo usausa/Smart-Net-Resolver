@@ -43,6 +43,7 @@
             config.Bind<IHttpContextAccessor>().To<HttpContextAccessor>().InSingletonScope();
 
             config.UseOpenGenericBinding();
+            config.UseArrayBinding();
             config.UseMissingHandler<ControllerMissingHandler>();
             config.UseMissingHandler<ViewComponentMissingHandler>();
             config.Components.Remove<IMissingHandler, SelfMissingHandler>();
