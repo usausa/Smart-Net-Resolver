@@ -20,9 +20,7 @@
 
         private readonly IProcessor[] processors;
 
-        private readonly IActivatorFactory activatorFactory;
-
-        private readonly IArrayOperatorFactory arrayOperatorFactory;
+        private readonly IDelegateFactory delegateFactory;
 
         private readonly TypeMetadata metadata;
 
@@ -51,8 +49,7 @@
             TargetType = type;
             injectors = components.GetAll<IInjector>().ToArray();
             processors = components.GetAll<IProcessor>().ToArray();
-            activatorFactory = components.Get<IActivatorFactory>();
-            arrayOperatorFactory = components.Get<IArrayOperatorFactory>();
+            delegateFactory = components.Get<IDelegateFactory>();
             metadata = components.Get<IMetadataFactory>().GetMetadata(TargetType);
         }
 
@@ -84,52 +81,52 @@
                 case 0:
                     return FactoryBuilder.Activator0(
                         processor,
-                        activatorFactory.CreateActivator<IActivator0>(constructor.Constructor));
+                        delegateFactory.CreateFactory0(constructor.Constructor));
                 case 1:
                     return FactoryBuilder.Activator1(
                         processor,
-                        activatorFactory.CreateActivator<IActivator1>(constructor.Constructor),
+                        delegateFactory.CreateFactory1(constructor.Constructor),
                         argumentFactories);
                 case 2:
                     return FactoryBuilder.Activator2(
                         processor,
-                        activatorFactory.CreateActivator<IActivator2>(constructor.Constructor),
+                        delegateFactory.CreateFactory2(constructor.Constructor),
                         argumentFactories);
                 case 3:
                     return FactoryBuilder.Activator3(
                         processor,
-                        activatorFactory.CreateActivator<IActivator3>(constructor.Constructor),
+                        delegateFactory.CreateFactory3(constructor.Constructor),
                         argumentFactories);
                 case 4:
                     return FactoryBuilder.Activator4(
                         processor,
-                        activatorFactory.CreateActivator<IActivator4>(constructor.Constructor),
+                        delegateFactory.CreateFactory4(constructor.Constructor),
                         argumentFactories);
                 case 5:
                     return FactoryBuilder.Activator5(
                         processor,
-                        activatorFactory.CreateActivator<IActivator5>(constructor.Constructor),
+                        delegateFactory.CreateFactory5(constructor.Constructor),
                         argumentFactories);
                 case 6:
                     return FactoryBuilder.Activator6(
                         processor,
-                        activatorFactory.CreateActivator<IActivator6>(constructor.Constructor),
+                        delegateFactory.CreateFactory6(constructor.Constructor),
                         argumentFactories);
                 case 7:
                     return FactoryBuilder.Activator7(
                         processor,
-                        activatorFactory.CreateActivator<IActivator7>(constructor.Constructor),
+                        delegateFactory.CreateFactory7(constructor.Constructor),
                         argumentFactories);
                 case 8:
                     return FactoryBuilder.Activator8(
                         processor,
-                        activatorFactory.CreateActivator<IActivator8>(constructor.Constructor),
+                        delegateFactory.CreateFactory8(constructor.Constructor),
                         argumentFactories);
             }
 
             return FactoryBuilder.Activator(
                 processor,
-                activatorFactory.CreateActivator(constructor.Constructor),
+                delegateFactory.CreateFactory(constructor.Constructor),
                 argumentFactories);
         }
 
@@ -225,7 +222,7 @@
                 if (parameter.ElementType != null)
                 {
                     argumentFactories[i] = FactoryBuilder.Array(
-                        arrayOperatorFactory.CreateArrayOperator(parameter.ElementType),
+                        delegateFactory.CreateArrayAllocator(parameter.ElementType),
                         kernel.ResolveAllFactory(parameter.ElementType, constructor.Constraints[i]).ToArray());
                     continue;
                 }

@@ -28,10 +28,10 @@
             for (var i = 0; i < metadata.TargetProperties.Length; i++)
             {
                 var property = metadata.TargetProperties[i];
-                var parameter = binding.PropertyValues.GetParameter(property.Accessor.Name);
-                property.Accessor.SetValue(
+                var parameter = binding.PropertyValues.GetParameter(property.Name);
+                property.Setter(
                     instance,
-                    parameter != null ? parameter.Resolve(kernel) : kernel.Get(property.Accessor.Type, property.Constraint));
+                    parameter != null ? parameter.Resolve(kernel) : kernel.Get(property.PropertyType, property.Constraint));
             }
         }
     }

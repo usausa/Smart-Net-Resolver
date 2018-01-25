@@ -1,6 +1,7 @@
 ﻿namespace Smart.Resolver.Metadatas
 {
-    using Smart.Reflection;
+    using System;
+
     using Smart.Resolver.Constraints;
 
     /// <summary>
@@ -8,13 +9,19 @@
     /// </summary>
     public class PropertyMetadata
     {
-        public IAccessor Accessor { get; }
+        public string Name { get; }
+
+        public Type PropertyType { get; }
+
+        public Action<object, object> Setter { get; }
 
         public IConstraint Constraint { get; }
 
-        public PropertyMetadata(IAccessor accessor, IConstraint constraint)
+        public PropertyMetadata(string name, Type propertyType, Action<object, object> setter, IConstraint constraint)
         {
-            Accessor = accessor;
+            Name = name;
+            PropertyType = propertyType;
+            Setter = setter;
             Constraint = constraint;
         }
     }

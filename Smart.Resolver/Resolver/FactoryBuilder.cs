@@ -2,7 +2,6 @@
 {
     using System;
 
-    using Smart.Reflection;
     using Smart.Resolver.Parameters;
 
     public static class FactoryBuilder
@@ -22,11 +21,11 @@
             return () => parameter.Resolve(kernel);
         }
 
-        public static Func<object> Array(IArrayOperator arrayOperator, Func<object>[] objectFactories)
+        public static Func<object> Array(Func<int, Array> arrayAllocator, Func<object>[] objectFactories)
         {
             return () =>
             {
-                var array = arrayOperator.Create(objectFactories.Length);
+                var array = arrayAllocator(objectFactories.Length);
                 var objs = (object[])array;
                 for (var i = 0; i < objectFactories.Length; i++)
                 {
@@ -39,24 +38,24 @@
 
         public static Func<object> Activator0(
             Action<object> processor,
-            IActivator0 activator)
+            Func<object> activator)
         {
             if (processor != null)
             {
                 return () =>
                 {
-                    var instance = activator.Create();
+                    var instance = activator();
                     processor(instance);
                     return instance;
                 };
             }
 
-            return activator.Create;
+            return activator;
         }
 
         public static Func<object> Activator1(
             Action<object> processor,
-            IActivator1 activator,
+            Func<object, object> activator,
             Func<object>[] argumentFactories)
         {
             if (processor != null)
@@ -74,27 +73,27 @@
 
         private static Func<object> Activator1WithProcess(
             Action<object> processor,
-            IActivator1 activator,
+            Func<object, object> activator,
             Func<object> f1)
         {
             return () =>
             {
-                var instance = activator.Create(f1());
+                var instance = activator(f1());
                 processor(instance);
                 return instance;
             };
         }
 
         private static Func<object> Activator1WithoutProcess(
-            IActivator1 activator,
+            Func<object, object> activator,
             Func<object> f1)
         {
-            return () => activator.Create(f1());
+            return () => activator(f1());
         }
 
         public static Func<object> Activator2(
             Action<object> processor,
-            IActivator2 activator,
+            Func<object, object, object> activator,
             Func<object>[] argumentFactories)
         {
             if (processor != null)
@@ -114,29 +113,29 @@
 
         private static Func<object> Activator2WithProcess(
             Action<object> processor,
-            IActivator2 activator,
+            Func<object, object, object> activator,
             Func<object> f1,
             Func<object> f2)
         {
             return () =>
             {
-                var instance = activator.Create(f1(), f2());
+                var instance = activator(f1(), f2());
                 processor(instance);
                 return instance;
             };
         }
 
         private static Func<object> Activator2WithoutProcess(
-            IActivator2 activator,
+            Func<object, object, object> activator,
             Func<object> f1,
             Func<object> f2)
         {
-            return () => activator.Create(f1(), f2());
+            return () => activator(f1(), f2());
         }
 
         public static Func<object> Activator3(
             Action<object> processor,
-            IActivator3 activator,
+            Func<object, object, object, object> activator,
             Func<object>[] argumentFactories)
         {
             if (processor != null)
@@ -158,31 +157,31 @@
 
         private static Func<object> Activator3WithProcess(
             Action<object> processor,
-            IActivator3 activator,
+            Func<object, object, object, object> activator,
             Func<object> f1,
             Func<object> f2,
             Func<object> f3)
         {
             return () =>
             {
-                var instance = activator.Create(f1(), f2(), f3());
+                var instance = activator(f1(), f2(), f3());
                 processor(instance);
                 return instance;
             };
         }
 
         private static Func<object> Activator3WithoutProcess(
-            IActivator3 activator,
+            Func<object, object, object, object> activator,
             Func<object> f1,
             Func<object> f2,
             Func<object> f3)
         {
-            return () => activator.Create(f1(), f2(), f3());
+            return () => activator(f1(), f2(), f3());
         }
 
         public static Func<object> Activator4(
             Action<object> processor,
-            IActivator4 activator,
+            Func<object, object, object, object, object> activator,
             Func<object>[] argumentFactories)
         {
             if (processor != null)
@@ -206,7 +205,7 @@
 
         private static Func<object> Activator4WithProcess(
             Action<object> processor,
-            IActivator4 activator,
+            Func<object, object, object, object, object> activator,
             Func<object> f1,
             Func<object> f2,
             Func<object> f3,
@@ -214,25 +213,25 @@
         {
             return () =>
             {
-                var instance = activator.Create(f1(), f2(), f3(), f4());
+                var instance = activator(f1(), f2(), f3(), f4());
                 processor(instance);
                 return instance;
             };
         }
 
         private static Func<object> Activator4WithoutProcess(
-            IActivator4 activator,
+            Func<object, object, object, object, object> activator,
             Func<object> f1,
             Func<object> f2,
             Func<object> f3,
             Func<object> f4)
         {
-            return () => activator.Create(f1(), f2(), f3(), f4());
+            return () => activator(f1(), f2(), f3(), f4());
         }
 
         public static Func<object> Activator5(
             Action<object> processor,
-            IActivator5 activator,
+            Func<object, object, object, object, object, object> activator,
             Func<object>[] argumentFactories)
         {
             if (processor != null)
@@ -258,7 +257,7 @@
 
         private static Func<object> Activator5WithProcess(
             Action<object> processor,
-            IActivator5 activator,
+            Func<object, object, object, object, object, object> activator,
             Func<object> f1,
             Func<object> f2,
             Func<object> f3,
@@ -267,26 +266,26 @@
         {
             return () =>
             {
-                var instance = activator.Create(f1(), f2(), f3(), f4(), f5());
+                var instance = activator(f1(), f2(), f3(), f4(), f5());
                 processor(instance);
                 return instance;
             };
         }
 
         private static Func<object> Activator5WithoutProcess(
-            IActivator5 activator,
+            Func<object, object, object, object, object, object> activator,
             Func<object> f1,
             Func<object> f2,
             Func<object> f3,
             Func<object> f4,
             Func<object> f5)
         {
-            return () => activator.Create(f1(), f2(), f3(), f4(), f5());
+            return () => activator(f1(), f2(), f3(), f4(), f5());
         }
 
         public static Func<object> Activator6(
             Action<object> processor,
-            IActivator6 activator,
+            Func<object, object, object, object, object, object, object> activator,
             Func<object>[] argumentFactories)
         {
             if (processor != null)
@@ -314,7 +313,7 @@
 
         private static Func<object> Activator6WithProcess(
             Action<object> processor,
-            IActivator6 activator,
+            Func<object, object, object, object, object, object, object> activator,
             Func<object> f1,
             Func<object> f2,
             Func<object> f3,
@@ -324,14 +323,14 @@
         {
             return () =>
             {
-                var instance = activator.Create(f1(), f2(), f3(), f4(), f5(), f6());
+                var instance = activator(f1(), f2(), f3(), f4(), f5(), f6());
                 processor(instance);
                 return instance;
             };
         }
 
         private static Func<object> Activator6WithoutProcess(
-            IActivator6 activator,
+            Func<object, object, object, object, object, object, object> activator,
             Func<object> f1,
             Func<object> f2,
             Func<object> f3,
@@ -339,12 +338,12 @@
             Func<object> f5,
             Func<object> f6)
         {
-            return () => activator.Create(f1(), f2(), f3(), f4(), f5(), f6());
+            return () => activator(f1(), f2(), f3(), f4(), f5(), f6());
         }
 
         public static Func<object> Activator7(
             Action<object> processor,
-            IActivator7 activator,
+            Func<object, object, object, object, object, object, object, object> activator,
             Func<object>[] argumentFactories)
         {
             if (processor != null)
@@ -374,7 +373,7 @@
 
         private static Func<object> Activator7WithProcess(
             Action<object> processor,
-            IActivator7 activator,
+            Func<object, object, object, object, object, object, object, object> activator,
             Func<object> f1,
             Func<object> f2,
             Func<object> f3,
@@ -385,14 +384,14 @@
         {
             return () =>
             {
-                var instance = activator.Create(f1(), f2(), f3(), f4(), f5(), f6(), f7());
+                var instance = activator(f1(), f2(), f3(), f4(), f5(), f6(), f7());
                 processor(instance);
                 return instance;
             };
         }
 
         private static Func<object> Activator7WithoutProcess(
-            IActivator7 activator,
+            Func<object, object, object, object, object, object, object, object> activator,
             Func<object> f1,
             Func<object> f2,
             Func<object> f3,
@@ -401,12 +400,12 @@
             Func<object> f6,
             Func<object> f7)
         {
-            return () => activator.Create(f1(), f2(), f3(), f4(), f5(), f6(), f7());
+            return () => activator(f1(), f2(), f3(), f4(), f5(), f6(), f7());
         }
 
         public static Func<object> Activator8(
             Action<object> processor,
-            IActivator8 activator,
+            Func<object, object, object, object, object, object, object, object, object> activator,
             Func<object>[] argumentFactories)
         {
             if (processor != null)
@@ -438,7 +437,7 @@
 
         private static Func<object> Activator8WithProcess(
             Action<object> processor,
-            IActivator8 activator,
+            Func<object, object, object, object, object, object, object, object, object> activator,
             Func<object> f1,
             Func<object> f2,
             Func<object> f3,
@@ -450,14 +449,14 @@
         {
             return () =>
             {
-                var instance = activator.Create(f1(), f2(), f3(), f4(), f5(), f6(), f7(), f8());
+                var instance = activator(f1(), f2(), f3(), f4(), f5(), f6(), f7(), f8());
                 processor(instance);
                 return instance;
             };
         }
 
         private static Func<object> Activator8WithoutProcess(
-            IActivator8 activator,
+            Func<object, object, object, object, object, object, object, object, object> activator,
             Func<object> f1,
             Func<object> f2,
             Func<object> f3,
@@ -467,12 +466,12 @@
             Func<object> f7,
             Func<object> f8)
         {
-            return () => activator.Create(f1(), f2(), f3(), f4(), f5(), f6(), f7(), f8());
+            return () => activator(f1(), f2(), f3(), f4(), f5(), f6(), f7(), f8());
         }
 
         public static Func<object> Activator(
             Action<object> processor,
-            IActivator activator,
+            Func<object[], object> activator,
             Func<object>[] argumentFactories)
         {
             return processor != null
@@ -482,7 +481,7 @@
 
         private static Func<object> ActivatorWithProcess(
             Action<object> processor,
-            IActivator activator,
+            Func<object[], object> activator,
             Func<object>[] argumentFactories)
         {
             return () =>
@@ -493,14 +492,14 @@
                     arguments[i] = argumentFactories[i]();
                 }
 
-                var instance = activator.Create(arguments);
+                var instance = activator(arguments);
                 processor(instance);
                 return instance;
             };
         }
 
         private static Func<object> ActivatorWithoutProcess(
-            IActivator activator,
+            Func<object[], object> activator,
             Func<object>[] argumentFactories)
         {
             return () =>
@@ -511,7 +510,7 @@
                     arguments[i] = argumentFactories[i]();
                 }
 
-                return activator.Create(arguments);
+                return activator(arguments);
             };
         }
     }
