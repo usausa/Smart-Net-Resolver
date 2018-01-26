@@ -5,7 +5,6 @@
     using Smart.ComponentModel;
     using Smart.Resolver.Bindings;
     using Smart.Resolver.Components;
-    using Smart.Resolver.Helpers;
 
     /// <summary>
     ///
@@ -55,7 +54,7 @@
             if (objectFactory == null)
             {
                 value = factory();
-                objectFactory = FactoryBuilder.Constant(value);
+                objectFactory = () => value;
             }
 
             return objectFactory;

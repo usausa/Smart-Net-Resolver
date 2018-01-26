@@ -7,7 +7,6 @@
     using Smart.ComponentModel;
     using Smart.Reflection;
     using Smart.Resolver.Bindings;
-    using Smart.Resolver.Helpers;
     using Smart.Resolver.Injectors;
     using Smart.Resolver.Metadatas;
     using Smart.Resolver.Processors;
@@ -70,52 +69,52 @@
             switch (argumentFactories.Length)
             {
                 case 0:
-                    return FactoryBuilder.Activator0(
+                    return Activator0(
                         processor,
                         delegateFactory.CreateFactory0(constructor.Constructor));
                 case 1:
-                    return FactoryBuilder.Activator1(
+                    return Activator1(
                         processor,
                         delegateFactory.CreateFactory1(constructor.Constructor),
                         argumentFactories);
                 case 2:
-                    return FactoryBuilder.Activator2(
+                    return Activator2(
                         processor,
                         delegateFactory.CreateFactory2(constructor.Constructor),
                         argumentFactories);
                 case 3:
-                    return FactoryBuilder.Activator3(
+                    return Activator3(
                         processor,
                         delegateFactory.CreateFactory3(constructor.Constructor),
                         argumentFactories);
                 case 4:
-                    return FactoryBuilder.Activator4(
+                    return Activator4(
                         processor,
                         delegateFactory.CreateFactory4(constructor.Constructor),
                         argumentFactories);
                 case 5:
-                    return FactoryBuilder.Activator5(
+                    return Activator5(
                         processor,
                         delegateFactory.CreateFactory5(constructor.Constructor),
                         argumentFactories);
                 case 6:
-                    return FactoryBuilder.Activator6(
+                    return Activator6(
                         processor,
                         delegateFactory.CreateFactory6(constructor.Constructor),
                         argumentFactories);
                 case 7:
-                    return FactoryBuilder.Activator7(
+                    return Activator7(
                         processor,
                         delegateFactory.CreateFactory7(constructor.Constructor),
                         argumentFactories);
                 case 8:
-                    return FactoryBuilder.Activator8(
+                    return Activator8(
                         processor,
                         delegateFactory.CreateFactory8(constructor.Constructor),
                         argumentFactories);
             }
 
-            return FactoryBuilder.Activator(
+            return Activator(
                 processor,
                 delegateFactory.CreateFactory(constructor.Constructor),
                 argumentFactories);
@@ -205,18 +204,27 @@
                 var argument = binding.ConstructorArguments.GetParameter(pi.Name);
                 if (argument != null)
                 {
-                    argumentFactories[i] = FactoryBuilder.Parameter(kernel, argument);
+                    argumentFactories[i] = () => argument.Resolve(kernel);
                     continue;
                 }
 
                 // Multiple
                 if (parameter.ElementType != null)
                 {
-                    argumentFactories[i] =
-                        kernel.ResolveFactory(pi.ParameterType, constructor.Constraints[i]) ??
-                        FactoryBuilder.Array(
-                            delegateFactory.CreateArrayAllocator(parameter.ElementType),
-                            kernel.ResolveAllFactory(parameter.ElementType, constructor.Constraints[i]).ToArray());
+                    argumentFactories[i] = kernel.ResolveFactory(pi.ParameterType, constructor.Constraints[i]);
+                    if (argumentFactories[i] == null)
+                    {
+                        var factories = kernel.ResolveAllFactory(parameter.ElementType, constructor.Constraints[i]).ToArray();
+                        var array = delegateFactory.CreateArrayAllocator(parameter.ElementType)(factories.Length);
+                        var objs = (object[])array;
+                        for (var j = 0; j < factories.Length; j++)
+                        {
+                            objs[j] = factories[j]();
+                        }
+
+                        argumentFactories[i] = () => array;
+                    }
+
                     continue;
                 }
 
@@ -231,7 +239,7 @@
                 // DefaultValue
                 if (pi.HasDefaultValue)
                 {
-                    argumentFactories[i] = FactoryBuilder.Constant(pi.DefaultValue);
+                    argumentFactories[i] = () => pi.DefaultValue;
                 }
             }
 
@@ -288,6 +296,486 @@
             }
 
             return null;
+        }
+
+        // TODO
+
+        private static Func<object> Activator0(
+            Action<object> processor,
+            Func<object> activator)
+        {
+            if (processor != null)
+            {
+                return () =>
+                {
+                    var instance = activator();
+                    processor(instance);
+                    return instance;
+                };
+            }
+
+            return activator;
+        }
+
+        private static Func<object> Activator1(
+            Action<object> processor,
+            Func<object, object> activator,
+            Func<object>[] argumentFactories)
+        {
+            if (processor != null)
+            {
+                return Activator1WithProcess(
+                    processor,
+                    activator,
+                    argumentFactories[0]);
+            }
+
+            return Activator1WithoutProcess(
+                activator,
+                argumentFactories[0]);
+        }
+
+        private static Func<object> Activator1WithProcess(
+            Action<object> processor,
+            Func<object, object> activator,
+            Func<object> f1)
+        {
+            return () =>
+            {
+                var instance = activator(f1());
+                processor(instance);
+                return instance;
+            };
+        }
+
+        private static Func<object> Activator1WithoutProcess(
+            Func<object, object> activator,
+            Func<object> f1)
+        {
+            return () => activator(f1());
+        }
+
+        private static Func<object> Activator2(
+            Action<object> processor,
+            Func<object, object, object> activator,
+            Func<object>[] argumentFactories)
+        {
+            if (processor != null)
+            {
+                return Activator2WithProcess(
+                    processor,
+                    activator,
+                    argumentFactories[0],
+                    argumentFactories[1]);
+            }
+
+            return Activator2WithoutProcess(
+                activator,
+                argumentFactories[0],
+                argumentFactories[1]);
+        }
+
+        private static Func<object> Activator2WithProcess(
+            Action<object> processor,
+            Func<object, object, object> activator,
+            Func<object> f1,
+            Func<object> f2)
+        {
+            return () =>
+            {
+                var instance = activator(f1(), f2());
+                processor(instance);
+                return instance;
+            };
+        }
+
+        private static Func<object> Activator2WithoutProcess(
+            Func<object, object, object> activator,
+            Func<object> f1,
+            Func<object> f2)
+        {
+            return () => activator(f1(), f2());
+        }
+
+        private static Func<object> Activator3(
+            Action<object> processor,
+            Func<object, object, object, object> activator,
+            Func<object>[] argumentFactories)
+        {
+            if (processor != null)
+            {
+                return Activator3WithProcess(
+                    processor,
+                    activator,
+                    argumentFactories[0],
+                    argumentFactories[1],
+                    argumentFactories[2]);
+            }
+
+            return Activator3WithoutProcess(
+                activator,
+                argumentFactories[0],
+                argumentFactories[1],
+                argumentFactories[2]);
+        }
+
+        private static Func<object> Activator3WithProcess(
+            Action<object> processor,
+            Func<object, object, object, object> activator,
+            Func<object> f1,
+            Func<object> f2,
+            Func<object> f3)
+        {
+            return () =>
+            {
+                var instance = activator(f1(), f2(), f3());
+                processor(instance);
+                return instance;
+            };
+        }
+
+        private static Func<object> Activator3WithoutProcess(
+            Func<object, object, object, object> activator,
+            Func<object> f1,
+            Func<object> f2,
+            Func<object> f3)
+        {
+            return () => activator(f1(), f2(), f3());
+        }
+
+        private static Func<object> Activator4(
+            Action<object> processor,
+            Func<object, object, object, object, object> activator,
+            Func<object>[] argumentFactories)
+        {
+            if (processor != null)
+            {
+                return Activator4WithProcess(
+                    processor,
+                    activator,
+                    argumentFactories[0],
+                    argumentFactories[1],
+                    argumentFactories[2],
+                    argumentFactories[3]);
+            }
+
+            return Activator4WithoutProcess(
+                activator,
+                argumentFactories[0],
+                argumentFactories[1],
+                argumentFactories[2],
+                argumentFactories[3]);
+        }
+
+        private static Func<object> Activator4WithProcess(
+            Action<object> processor,
+            Func<object, object, object, object, object> activator,
+            Func<object> f1,
+            Func<object> f2,
+            Func<object> f3,
+            Func<object> f4)
+        {
+            return () =>
+            {
+                var instance = activator(f1(), f2(), f3(), f4());
+                processor(instance);
+                return instance;
+            };
+        }
+
+        private static Func<object> Activator4WithoutProcess(
+            Func<object, object, object, object, object> activator,
+            Func<object> f1,
+            Func<object> f2,
+            Func<object> f3,
+            Func<object> f4)
+        {
+            return () => activator(f1(), f2(), f3(), f4());
+        }
+
+        private static Func<object> Activator5(
+            Action<object> processor,
+            Func<object, object, object, object, object, object> activator,
+            Func<object>[] argumentFactories)
+        {
+            if (processor != null)
+            {
+                return Activator5WithProcess(
+                    processor,
+                    activator,
+                    argumentFactories[0],
+                    argumentFactories[1],
+                    argumentFactories[2],
+                    argumentFactories[3],
+                    argumentFactories[4]);
+            }
+
+            return Activator5WithoutProcess(
+                activator,
+                argumentFactories[0],
+                argumentFactories[1],
+                argumentFactories[2],
+                argumentFactories[3],
+                argumentFactories[4]);
+        }
+
+        private static Func<object> Activator5WithProcess(
+            Action<object> processor,
+            Func<object, object, object, object, object, object> activator,
+            Func<object> f1,
+            Func<object> f2,
+            Func<object> f3,
+            Func<object> f4,
+            Func<object> f5)
+        {
+            return () =>
+            {
+                var instance = activator(f1(), f2(), f3(), f4(), f5());
+                processor(instance);
+                return instance;
+            };
+        }
+
+        private static Func<object> Activator5WithoutProcess(
+            Func<object, object, object, object, object, object> activator,
+            Func<object> f1,
+            Func<object> f2,
+            Func<object> f3,
+            Func<object> f4,
+            Func<object> f5)
+        {
+            return () => activator(f1(), f2(), f3(), f4(), f5());
+        }
+
+        private static Func<object> Activator6(
+            Action<object> processor,
+            Func<object, object, object, object, object, object, object> activator,
+            Func<object>[] argumentFactories)
+        {
+            if (processor != null)
+            {
+                return Activator6WithProcess(
+                    processor,
+                    activator,
+                    argumentFactories[0],
+                    argumentFactories[1],
+                    argumentFactories[2],
+                    argumentFactories[3],
+                    argumentFactories[4],
+                    argumentFactories[5]);
+            }
+
+            return Activator6WithoutProcess(
+                activator,
+                argumentFactories[0],
+                argumentFactories[1],
+                argumentFactories[2],
+                argumentFactories[3],
+                argumentFactories[4],
+                argumentFactories[5]);
+        }
+
+        private static Func<object> Activator6WithProcess(
+            Action<object> processor,
+            Func<object, object, object, object, object, object, object> activator,
+            Func<object> f1,
+            Func<object> f2,
+            Func<object> f3,
+            Func<object> f4,
+            Func<object> f5,
+            Func<object> f6)
+        {
+            return () =>
+            {
+                var instance = activator(f1(), f2(), f3(), f4(), f5(), f6());
+                processor(instance);
+                return instance;
+            };
+        }
+
+        private static Func<object> Activator6WithoutProcess(
+            Func<object, object, object, object, object, object, object> activator,
+            Func<object> f1,
+            Func<object> f2,
+            Func<object> f3,
+            Func<object> f4,
+            Func<object> f5,
+            Func<object> f6)
+        {
+            return () => activator(f1(), f2(), f3(), f4(), f5(), f6());
+        }
+
+        private static Func<object> Activator7(
+            Action<object> processor,
+            Func<object, object, object, object, object, object, object, object> activator,
+            Func<object>[] argumentFactories)
+        {
+            if (processor != null)
+            {
+                return Activator7WithProcess(
+                    processor,
+                    activator,
+                    argumentFactories[0],
+                    argumentFactories[1],
+                    argumentFactories[2],
+                    argumentFactories[3],
+                    argumentFactories[4],
+                    argumentFactories[5],
+                    argumentFactories[6]);
+            }
+
+            return Activator7WithoutProcess(
+                activator,
+                argumentFactories[0],
+                argumentFactories[1],
+                argumentFactories[2],
+                argumentFactories[3],
+                argumentFactories[4],
+                argumentFactories[5],
+                argumentFactories[6]);
+        }
+
+        private static Func<object> Activator7WithProcess(
+            Action<object> processor,
+            Func<object, object, object, object, object, object, object, object> activator,
+            Func<object> f1,
+            Func<object> f2,
+            Func<object> f3,
+            Func<object> f4,
+            Func<object> f5,
+            Func<object> f6,
+            Func<object> f7)
+        {
+            return () =>
+            {
+                var instance = activator(f1(), f2(), f3(), f4(), f5(), f6(), f7());
+                processor(instance);
+                return instance;
+            };
+        }
+
+        private static Func<object> Activator7WithoutProcess(
+            Func<object, object, object, object, object, object, object, object> activator,
+            Func<object> f1,
+            Func<object> f2,
+            Func<object> f3,
+            Func<object> f4,
+            Func<object> f5,
+            Func<object> f6,
+            Func<object> f7)
+        {
+            return () => activator(f1(), f2(), f3(), f4(), f5(), f6(), f7());
+        }
+
+        private static Func<object> Activator8(
+            Action<object> processor,
+            Func<object, object, object, object, object, object, object, object, object> activator,
+            Func<object>[] argumentFactories)
+        {
+            if (processor != null)
+            {
+                return Activator8WithProcess(
+                    processor,
+                    activator,
+                    argumentFactories[0],
+                    argumentFactories[1],
+                    argumentFactories[2],
+                    argumentFactories[3],
+                    argumentFactories[4],
+                    argumentFactories[5],
+                    argumentFactories[6],
+                    argumentFactories[7]);
+            }
+
+            return Activator8WithoutProcess(
+                activator,
+                argumentFactories[0],
+                argumentFactories[1],
+                argumentFactories[2],
+                argumentFactories[3],
+                argumentFactories[4],
+                argumentFactories[5],
+                argumentFactories[6],
+                argumentFactories[7]);
+        }
+
+        private static Func<object> Activator8WithProcess(
+            Action<object> processor,
+            Func<object, object, object, object, object, object, object, object, object> activator,
+            Func<object> f1,
+            Func<object> f2,
+            Func<object> f3,
+            Func<object> f4,
+            Func<object> f5,
+            Func<object> f6,
+            Func<object> f7,
+            Func<object> f8)
+        {
+            return () =>
+            {
+                var instance = activator(f1(), f2(), f3(), f4(), f5(), f6(), f7(), f8());
+                processor(instance);
+                return instance;
+            };
+        }
+
+        private static Func<object> Activator8WithoutProcess(
+            Func<object, object, object, object, object, object, object, object, object> activator,
+            Func<object> f1,
+            Func<object> f2,
+            Func<object> f3,
+            Func<object> f4,
+            Func<object> f5,
+            Func<object> f6,
+            Func<object> f7,
+            Func<object> f8)
+        {
+            return () => activator(f1(), f2(), f3(), f4(), f5(), f6(), f7(), f8());
+        }
+
+        private static Func<object> Activator(
+            Action<object> processor,
+            Func<object[], object> activator,
+            Func<object>[] argumentFactories)
+        {
+            return processor != null
+                ? ActivatorWithProcess(processor, activator, argumentFactories)
+                : ActivatorWithoutProcess(activator, argumentFactories);
+        }
+
+        private static Func<object> ActivatorWithProcess(
+            Action<object> processor,
+            Func<object[], object> activator,
+            Func<object>[] argumentFactories)
+        {
+            return () =>
+            {
+                var arguments = new object[argumentFactories.Length];
+                for (var i = 0; i < argumentFactories.Length; i++)
+                {
+                    arguments[i] = argumentFactories[i]();
+                }
+
+                var instance = activator(arguments);
+                processor(instance);
+                return instance;
+            };
+        }
+
+        private static Func<object> ActivatorWithoutProcess(
+            Func<object[], object> activator,
+            Func<object>[] argumentFactories)
+        {
+            return () =>
+            {
+                var arguments = new object[argumentFactories.Length];
+                for (var i = 0; i < argumentFactories.Length; i++)
+                {
+                    arguments[i] = argumentFactories[i]();
+                }
+
+                return activator(arguments);
+            };
         }
     }
 }

@@ -34,7 +34,7 @@
         /// <returns></returns>
         public Func<object> CreateFactory(IKernel kernel, IBinding binding)
         {
-            return FactoryBuilder.Constant(value);
+            return () => value;
         }
     }
 }
