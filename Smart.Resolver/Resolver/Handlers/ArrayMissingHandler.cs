@@ -56,7 +56,7 @@
                 new Binding(
                     type,
                     new BindingArrayProvider(type, elementType, components, bindings),
-                    useSingleton ? bindings[0].Scope.Copy(components) : null,
+                    useSingleton ? new SingletonScope(components) : null,
                     null,
                     null,
                     null)
