@@ -7,6 +7,7 @@
     using Smart.ComponentModel;
     using Smart.Reflection;
     using Smart.Resolver.Bindings;
+    using Smart.Resolver.Helpers;
     using Smart.Resolver.Injectors;
     using Smart.Resolver.Metadatas;
     using Smart.Resolver.Processors;
@@ -215,14 +216,8 @@
                     if (argumentFactories[i] == null)
                     {
                         var factories = kernel.ResolveAllFactory(parameter.ElementType, constructor.Constraints[i]).ToArray();
-                        var array = delegateFactory.CreateArrayAllocator(parameter.ElementType)(factories.Length);
-                        var objs = (object[])array;
-                        for (var j = 0; j < factories.Length; j++)
-                        {
-                            objs[j] = factories[j]();
-                        }
-
-                        argumentFactories[i] = () => array;
+                        var arrayFactory = new ArrayFactory(delegateFactory.CreateArrayAllocator(parameter.ElementType), factories);
+                        argumentFactories[i] = arrayFactory.Create;
                     }
 
                     continue;

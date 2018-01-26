@@ -60,14 +60,13 @@
         /// <returns></returns>
         public Func<object> CreateFactory(IKernel kernel, IBinding binding)
         {
-            var array = arrayAllocator(bindings.Length);
-            var objs = (object[])array;
-            for (var i = 0; i < bindings.Length; i++)
+            var factories = new Func<object>[bindings.Length];
+            for (var i = 0; i < factories.Length; i++)
             {
-                objs[i] = bindings[i].Provider.CreateFactory(kernel, bindings[i])();
+                factories[i] = bindings[i].Provider.CreateFactory(kernel, bindings[i]);
             }
 
-            return () => array;
+            return new ArrayFactory(arrayAllocator, factories).Create;
         }
     }
 }

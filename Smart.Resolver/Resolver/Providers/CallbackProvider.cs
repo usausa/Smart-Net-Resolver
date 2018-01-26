@@ -3,7 +3,6 @@
     using System;
 
     using Smart.Resolver.Bindings;
-    using Smart.Resolver.Helpers;
 
     /// <summary>
     ///
