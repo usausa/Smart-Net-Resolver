@@ -4,6 +4,8 @@
 
     internal sealed class RequestKeyComparer : IEqualityComparer<RequestKey>
     {
+        public static RequestKeyComparer Default { get; } = new RequestKeyComparer();
+
         public bool Equals(RequestKey x, RequestKey y)
         {
             // ReSharper disable PossibleNullReferenceException
