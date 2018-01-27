@@ -23,17 +23,17 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Update="Resolver\Providers\StandardProvider.Factory.cs">
+    <Compile Update="Resolver\Providers\StandardProvider.Generate.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
-      <DependentUpon>StandardProvider.Factory.tt</DependentUpon>
+      <DependentUpon>StandardProvider.Generate.tt</DependentUpon>
     </Compile>
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="Resolver\Providers\StandardProvider.Factory.tt">
+    <None Update="Resolver\Providers\StandardProvider.Generate.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>StandardProvider.Factory.cs</LastGenOutput>
+      <LastGenOutput>StandardProvider.Generate.cs</LastGenOutput>
     </None>
   </ItemGroup>
 
