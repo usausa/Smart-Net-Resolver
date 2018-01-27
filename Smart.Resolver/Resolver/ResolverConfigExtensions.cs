@@ -3,6 +3,7 @@
     using System;
     using System.Collections.Generic;
 
+    using Smart.Reflection;
     using Smart.Resolver.Handlers;
     using Smart.Resolver.Injectors;
     using Smart.Resolver.Metadatas;
@@ -16,6 +17,29 @@
         public static SmartResolver ToResolver(this IResolverConfig config)
         {
             return new SmartResolver(config);
+        }
+
+        public static ResolverConfig UseDelegateFactory<T>(this ResolverConfig config)
+            where T : IDelegateFactory
+        {
+            if (config == null)
+            {
+                throw new ArgumentNullException(nameof(config));
+            }
+
+            config.Components.Add(typeof(IDelegateFactory), typeof(T));
+            return config;
+        }
+
+        public static ResolverConfig UseMetadataFactory(this ResolverConfig config, IDelegateFactory delegateFactory)
+        {
+            if (config == null)
+            {
+                throw new ArgumentNullException(nameof(config));
+            }
+
+            config.Components.Add(typeof(IDelegateFactory), delegateFactory);
+            return config;
         }
 
         public static ResolverConfig UseMetadataFactory<T>(this ResolverConfig config)
