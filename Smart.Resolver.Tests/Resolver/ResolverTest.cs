@@ -102,6 +102,49 @@
         }
 
         [Fact]
+        public void ObjectBindingCreatedByArrayMissingResolver()
+        {
+            var config = new ResolverConfig().UseArrayBinding();
+            config.Bind<IMultipleService>().To<MultipleService1>().InSingletonScope();
+            config.Bind<IMultipleService>().To<MultipleService2>().InSingletonScope();
+            config.Bind<IMultipleService>().To<MultipleService3>().InSingletonScope();
+
+            using (var resolver = config.ToResolver())
+            {
+                var objs = resolver.Get<IEnumerable<IMultipleService>>();
+
+                Assert.NotNull(objs);
+                Assert.Equal(3, objs.Count());
+            }
+        }
+
+        public interface IMultipleService
+        {
+            void Execute();
+        }
+
+        public class MultipleService1 : IMultipleService
+        {
+            public void Execute()
+            {
+            }
+        }
+
+        public class MultipleService2 : IMultipleService
+        {
+            public void Execute()
+            {
+            }
+        }
+
+        public class MultipleService3 : IMultipleService
+        {
+            public void Execute()
+            {
+            }
+        }
+
+        [Fact]
         public void ObjectBindingCreatedByCustomBindingResolver()
         {
             var config = new ResolverConfig();
