@@ -18,5 +18,12 @@
             Type = type;
             Constraint = constraint;
         }
+
+        public override int GetHashCode()
+        {
+            var hash = Type.GetHashCode();
+            hash = hash ^ Constraint.GetHashCode();
+            return hash;
+        }
     }
 }

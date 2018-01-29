@@ -17,13 +17,7 @@
 
         public int GetHashCode(RequestKey obj)
         {
-            var hash = obj.Type.GetHashCode();
-            if (obj.Constraint != null)
-            {
-                hash = hash ^ obj.Constraint.GetHashCode();
-            }
-
-            return hash;
+            return obj.GetHashCode();
         }
     }
 }
