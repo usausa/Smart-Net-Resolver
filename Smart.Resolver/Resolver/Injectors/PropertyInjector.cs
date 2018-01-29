@@ -31,7 +31,11 @@
                 var parameter = binding.PropertyValues.GetParameter(property.Name);
                 property.Setter(
                     instance,
-                    parameter != null ? parameter.Resolve(kernel) : kernel.Get(property.PropertyType, property.Constraint));
+                    parameter != null
+                        ? parameter.Resolve(kernel)
+                        : property.Constraint != null
+                            ? kernel.Get(property.PropertyType, property.Constraint)
+                            : kernel.Get(property.PropertyType));
             }
         }
     }
