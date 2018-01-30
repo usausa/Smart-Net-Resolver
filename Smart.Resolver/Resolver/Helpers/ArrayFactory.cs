@@ -28,11 +28,12 @@
         /// <returns></returns>
         public object Create()
         {
-            var array = arrayAllocator(factories.Length);
+            var length = factories.Length;
+            var array = arrayAllocator(length);
             var objs = (object[])array;
-            for (var j = 0; j < factories.Length; j++)
+            for (var i = 0; i < length; i++)
             {
-                objs[j] = factories[j]();
+                objs[i] = factories[i]();
             }
 
             return array;
