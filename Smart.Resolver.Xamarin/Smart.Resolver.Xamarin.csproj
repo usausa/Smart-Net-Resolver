@@ -3,10 +3,9 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <LangVersion>latest</LangVersion>
-    <PackageTargetFallback>$(PackageTargetFallback);portable-net45+win8+wpa81;</PackageTargetFallback>
     <CodeAnalysisRuleSet>..\Smart.Resolver.ruleset</CodeAnalysisRuleSet>
     <RootNamespace>Smart</RootNamespace>
-    <Version>1.7.0</Version>
+    <Version>1.7.1</Version>
   </PropertyGroup>
 
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
