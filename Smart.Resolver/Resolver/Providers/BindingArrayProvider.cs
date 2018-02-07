@@ -1,4 +1,6 @@
-﻿namespace Smart.Resolver.Providers
+﻿using System.Linq;
+
+namespace Smart.Resolver.Providers
 {
     using System;
 
@@ -60,12 +62,9 @@
         /// <returns></returns>
         public Func<object> CreateFactory(IKernel kernel, IBinding binding)
         {
-            var factories = new Func<object>[bindings.Length];
-            for (var i = 0; i < factories.Length; i++)
-            {
-                factories[i] = bindings[i].Provider.CreateFactory(kernel, bindings[i]);
-            }
-
+            var factories = bindings
+                .Select(b => b.Provider.CreateFactory(kernel, b))
+                .ToArray();
             return new ArrayFactory(arrayAllocator, factories).Create;
         }
     }
