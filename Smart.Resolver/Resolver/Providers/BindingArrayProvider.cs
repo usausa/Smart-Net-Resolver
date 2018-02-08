@@ -1,8 +1,7 @@
-﻿using System.Linq;
-
-namespace Smart.Resolver.Providers
+﻿namespace Smart.Resolver.Providers
 {
     using System;
+    using System.Linq;
 
     using Smart.ComponentModel;
     using Smart.Reflection;
