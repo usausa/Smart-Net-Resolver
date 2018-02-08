@@ -1,6 +1,7 @@
 ﻿namespace PerformanceBenchmark.Benchmarks
 {
     using BenchmarkDotNet.Attributes;
+    using BenchmarkDotNet.Attributes.Jobs;
 
     using PerformanceBenchmark.Classes;
 
