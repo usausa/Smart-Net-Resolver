@@ -1,0 +1,19 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>netcoreapp2.0</TargetFramework>
+    <LangVersion>latest</LangVersion>
+    <CodeAnalysisRuleSet>..\..\..\Smart.Resolver.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="BenchmarkDotNet" Version="0.10.12" />
+    <PackageReference Include="Usa.Smart.Core" Version="1.5.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\Smart.Resolver\Smart.Resolver.csproj" />
+  </ItemGroup>
+
+</Project>
