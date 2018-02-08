@@ -13,12 +13,11 @@
     <copyright></copyright>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <dependencies>
-      <group>
+      <group targetFramework="netstandard2.0">
         <dependency id="Usa.Smart.Core" version="1.5.1" />
       </group>
-      <group targetFramework="netstandard2.0">
-      </group>
       <group targetFramework="net462">
+        <dependency id="Usa.Smart.Core" version="1.5.1" />
       </group>
     </dependencies>
     <tags>smart ioc di dependencyinjection</tags>
