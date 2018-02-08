@@ -77,7 +77,7 @@
         }
 
         [Benchmark]
-        public void MultipleSinglton()
+        public void MultipleSingleton()
         {
             resolver.Get(RequestTypes.MultipleSinglton);
         }
