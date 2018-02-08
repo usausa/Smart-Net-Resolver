@@ -1,7 +1,6 @@
 ﻿namespace PerformanceBenchmark.Benchmarks
 {
     using BenchmarkDotNet.Attributes;
-    using BenchmarkDotNet.Attributes.Jobs;
 
     using PerformanceBenchmark.Classes;
 
@@ -83,6 +82,48 @@
 
         [Benchmark]
         public void MultipleTransient()
+        {
+            resolver.Get(RequestTypes.MultipleTransient);
+        }
+
+        [Benchmark(OperationsPerInvoke = Consts.N)]
+        public void SingletonN()
+        {
+            resolver.Get(RequestTypes.Singleton1);
+            resolver.Get(RequestTypes.Singleton2);
+            resolver.Get(RequestTypes.Singleton3);
+        }
+
+        [Benchmark(OperationsPerInvoke = Consts.N)]
+        public void TransientN()
+        {
+            resolver.Get(RequestTypes.Transient1);
+            resolver.Get(RequestTypes.Transient2);
+            resolver.Get(RequestTypes.Transient3);
+        }
+
+        [Benchmark(OperationsPerInvoke = Consts.N)]
+        public void CombinedN()
+        {
+            resolver.Get(RequestTypes.Combined1);
+            resolver.Get(RequestTypes.Combined2);
+            resolver.Get(RequestTypes.Combined3);
+        }
+
+        [Benchmark(OperationsPerInvoke = Consts.N)]
+        public void GenericsN()
+        {
+            resolver.Get(RequestTypes.Generic1);
+        }
+
+        [Benchmark(OperationsPerInvoke = Consts.N)]
+        public void MultipleSingletonN()
+        {
+            resolver.Get(RequestTypes.MultipleSinglton);
+        }
+
+        [Benchmark(OperationsPerInvoke = Consts.N)]
+        public void MultipleTransientN()
         {
             resolver.Get(RequestTypes.MultipleTransient);
         }
