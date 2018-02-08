@@ -20,6 +20,17 @@
 |  MultipleSinglton |  9.009 ns | 0.0546 ns | 0.0817 ns |      - |       0 B |
 | MultipleTransient | 96.954 ns | 0.5658 ns | 0.7932 ns | 0.0437 |     184 B |
 
+# Reflection - netcoreapp2.0
+
+|            Method |       Mean |     Error |    StdDev |  Gen 0 | Allocated |
+|------------------ |-----------:|----------:|----------:|-------:|----------:|
+|         Singleton |  25.987 ns | 0.1790 ns | 0.2567 ns |      - |       0 B |
+|         Transient | 470.319 ns | 2.4451 ns | 3.5840 ns | 0.0167 |      72 B |
+|          Combined | 672.911 ns | 4.7952 ns | 7.0288 ns | 0.0620 |     264 B |
+|          Generics | 135.898 ns | 1.1724 ns | 1.7548 ns | 0.0055 |      24 B |
+|  MultipleSinglton |   8.617 ns | 0.0588 ns | 0.0825 ns |      - |       0 B |
+| MultipleTransient | 631.914 ns | 5.5944 ns | 8.0234 ns | 0.0429 |     184 B |
+
 # Default(DynamicMethod) - net47
 
 |            Method |      Mean |     Error |    StdDev |  Gen 0 | Allocated |
