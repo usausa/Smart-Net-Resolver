@@ -34,16 +34,6 @@
         /// <summary>
         ///
         /// </summary>
-        /// <param name="other"></param>
-        /// <returns></returns>
-        public bool Equals(IConstraint other)
-        {
-            return other is NameConstraint constraint && String.Equals(name, constraint.name);
-        }
-
-        /// <summary>
-        ///
-        /// </summary>
         /// <param name="obj"></param>
         /// <returns></returns>
         public override bool Equals(object obj)
@@ -58,7 +48,7 @@
                 return true;
             }
 
-            return obj is NameConstraint constraint && Equals(constraint);
+            return obj is NameConstraint constraint && String.Equals(name, constraint.name);
         }
 
         /// <summary>

@@ -33,30 +33,6 @@
         /// <summary>
         ///
         /// </summary>
-        /// <param name="other"></param>
-        /// <returns></returns>
-        public bool Equals(IConstraint other)
-        {
-            if (other is ChainConstraint constraint &&
-                (constraints.Length == constraint.constraints.Length))
-            {
-                for (var i = 0; i < constraints.Length; i++)
-                {
-                    if (!constraints[i].Equals(constraint.constraints[i]))
-                    {
-                        return false;
-                    }
-                }
-
-                return true;
-            }
-
-            return false;
-        }
-
-        /// <summary>
-        ///
-        /// </summary>
         /// <param name="obj"></param>
         /// <returns></returns>
         public override bool Equals(object obj)
@@ -71,7 +47,21 @@
                 return true;
             }
 
-            return obj is ChainConstraint constraint && Equals(constraint);
+            if (obj is ChainConstraint constraint &&
+                (constraints.Length == constraint.constraints.Length))
+            {
+                for (var i = 0; i < constraints.Length; i++)
+                {
+                    if (!constraints[i].Equals(constraint.constraints[i]))
+                    {
+                        return false;
+                    }
+                }
+
+                return true;
+            }
+
+            return false;
         }
 
         /// <summary>

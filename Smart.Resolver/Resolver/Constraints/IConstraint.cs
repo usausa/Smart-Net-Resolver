@@ -7,7 +7,7 @@
     /// <summary>
     ///
     /// </summary>
-    public interface IConstraint : IEquatable<IConstraint>
+    public interface IConstraint
     {
         /// <summary>
         ///

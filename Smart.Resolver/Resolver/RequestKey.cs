@@ -19,6 +19,26 @@
             Constraint = constraint;
         }
 
+        public override bool Equals(object obj)
+        {
+            if (ReferenceEquals(null, obj))
+            {
+                return false;
+            }
+
+            if (ReferenceEquals(this, obj))
+            {
+                return true;
+            }
+
+            if (obj is RequestKey other)
+            {
+                return Type == other.Type && Constraint.Equals(other.Constraint);
+            }
+
+            return false;
+        }
+
         public override int GetHashCode()
         {
             var hash = Type.GetHashCode();
