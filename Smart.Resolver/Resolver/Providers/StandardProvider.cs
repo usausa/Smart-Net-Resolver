@@ -18,9 +18,9 @@
     /// </summary>
     public sealed partial class StandardProvider : IProvider
     {
-        private readonly IInjector[] injectors;
+        private readonly IOldInjector[] injectors;
 
-        private readonly IProcessor[] processors;
+        private readonly IOldProcessor[] processors;
 
         private readonly IDelegateFactory delegateFactory;
 
@@ -49,8 +49,8 @@
             }
 
             TargetType = type;
-            injectors = components.GetAll<IInjector>().ToArray();
-            processors = components.GetAll<IProcessor>().ToArray();
+            injectors = components.GetAll<IOldInjector>().ToArray();
+            processors = components.GetAll<IOldProcessor>().ToArray();
             delegateFactory = components.Get<IDelegateFactory>();
             metadata = components.Get<IMetadataFactory>().GetMetadata(TargetType);
         }

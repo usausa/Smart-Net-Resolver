@@ -8,7 +8,7 @@
     /// <summary>
     ///
     /// </summary>
-    public interface IInjector
+    public interface IOldInjector
     {
         /// <summary>
         ///

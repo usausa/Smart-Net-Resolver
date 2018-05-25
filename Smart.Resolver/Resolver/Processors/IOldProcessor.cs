@@ -5,7 +5,7 @@
     /// <summary>
     ///
     /// </summary>
-    public interface IProcessor
+    public interface IOldProcessor
     {
         /// <summary>
         ///

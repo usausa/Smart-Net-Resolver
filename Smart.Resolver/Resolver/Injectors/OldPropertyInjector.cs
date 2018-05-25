@@ -8,7 +8,7 @@
     /// <summary>
     ///
     /// </summary>
-    public sealed class PropertyInjector : IInjector
+    public sealed class OldPropertyInjector : IOldInjector
     {
         public bool IsTarget(IKernel kernel, IBinding binding, TypeMetadata metadata, Type type)
         {

@@ -5,7 +5,7 @@
     /// <summary>
     ///
     /// </summary>
-    public sealed class InitializeProcessor : IProcessor
+    public sealed class OldInitializeProcessor : IOldProcessor
     {
         private static readonly Type InitializableType = typeof(IInitializable);
 

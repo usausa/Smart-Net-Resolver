@@ -36,7 +36,7 @@
 
         private readonly IMetadataFactory metadataFactory;
 
-        private readonly IInjector[] injectors;
+        private readonly IOldInjector[] injectors;
 
         private readonly IMissingHandler[] handlers;
 
@@ -59,7 +59,7 @@
             Components = config.CreateComponentContainer();
 
             metadataFactory = Components.Get<IMetadataFactory>();
-            injectors = Components.GetAll<IInjector>().ToArray();
+            injectors = Components.GetAll<IOldInjector>().ToArray();
             handlers = Components.GetAll<IMissingHandler>().ToArray();
 
             foreach (var group in config.CreateBindings(Components).GroupBy(b => b.Type))

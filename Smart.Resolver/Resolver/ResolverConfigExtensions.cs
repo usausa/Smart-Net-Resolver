@@ -66,48 +66,48 @@
         }
 
         public static ResolverConfig UseProcessor<T>(this ResolverConfig config)
-            where T : IProcessor
+            where T : IOldProcessor
         {
             if (config == null)
             {
                 throw new ArgumentNullException(nameof(config));
             }
 
-            config.Components.Add(typeof(IProcessor), typeof(T));
+            config.Components.Add(typeof(IOldProcessor), typeof(T));
             return config;
         }
 
-        public static ResolverConfig UseProcessor(this ResolverConfig config, IProcessor activator)
+        public static ResolverConfig UseProcessor(this ResolverConfig config, IOldProcessor activator)
         {
             if (config == null)
             {
                 throw new ArgumentNullException(nameof(config));
             }
 
-            config.Components.Add(typeof(IProcessor), activator);
+            config.Components.Add(typeof(IOldProcessor), activator);
             return config;
         }
 
         public static ResolverConfig UseInjector<T>(this ResolverConfig config)
-            where T : IInjector
+            where T : IOldInjector
         {
             if (config == null)
             {
                 throw new ArgumentNullException(nameof(config));
             }
 
-            config.Components.Add(typeof(IInjector), typeof(T));
+            config.Components.Add(typeof(IOldInjector), typeof(T));
             return config;
         }
 
-        public static ResolverConfig UseInjector(this ResolverConfig config, IInjector injector)
+        public static ResolverConfig UseInjector(this ResolverConfig config, IOldInjector injector)
         {
             if (config == null)
             {
                 throw new ArgumentNullException(nameof(config));
             }
 
-            config.Components.Add(typeof(IInjector), injector);
+            config.Components.Add(typeof(IOldInjector), injector);
             return config;
         }
 
@@ -229,7 +229,7 @@
                 throw new ArgumentNullException(nameof(config));
             }
 
-            config.Components.Add<IInjector, PropertyInjector>();
+            config.Components.Add<IOldInjector, OldPropertyInjector>();
             return config;
         }
 
@@ -240,7 +240,7 @@
                 throw new ArgumentNullException(nameof(config));
             }
 
-            config.Components.Add<IInjector, PropertyInjector>();
+            config.Components.Add<IOldInjector, OldPropertyInjector>();
             return config;
         }
     }
