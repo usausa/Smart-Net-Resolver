@@ -1,6 +1,7 @@
 ﻿namespace Smart.Resolver.Bindings
 {
     using System;
+    using System.Collections.Generic;
 
     using Smart.Resolver.Parameters;
     using Smart.Resolver.Providers;
@@ -12,6 +13,8 @@
     public sealed class Binding : IBinding
     {
         private static readonly IBindingMetadata EmptyBindingMetadata = new BindingMetadata();
+
+        private static readonly ParameterMap EmptyPropertyMap = new ParameterMap(new Dictionary<string, IParameter>());
 
         /// <summary>
         ///
@@ -77,8 +80,8 @@
             Provider = provider;
             Scope = scope;
             Metadata = metadata ?? EmptyBindingMetadata;
-            ConstructorArguments = constructorArguments ?? new ParameterMap(null);
-            PropertyValues = propertyValues ?? new ParameterMap(null);
+            ConstructorArguments = constructorArguments ?? EmptyPropertyMap;
+            PropertyValues = propertyValues ?? EmptyPropertyMap;
         }
     }
 }

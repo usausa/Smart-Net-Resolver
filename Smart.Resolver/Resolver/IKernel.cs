@@ -11,9 +11,7 @@
     /// </summary>
     public interface IKernel : IResolver
     {
-        /// <summary>
-        ///
-        /// </summary>
+        // TODO Delete
         IComponentContainer Components { get; }
 
         /// <summary>
