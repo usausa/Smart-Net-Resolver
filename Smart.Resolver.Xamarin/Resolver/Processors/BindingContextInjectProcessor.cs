@@ -2,6 +2,7 @@
 {
     using System;
 
+    using Smart.Resolver.Bindings;
     using Smart.Resolver.Injectors;
 
     using Xamarin.Forms;
@@ -24,7 +25,7 @@
 
         public void Initialize(object instance)
         {
-            var binding = new Smart.Resolver.Bindings.Binding(instance.GetType());
+            var binding = new NullBinding(instance.GetType());
             for (var i = 0; i < injectors.Length; i++)
             {
                 injectors[i].Initialize(binding, instance);

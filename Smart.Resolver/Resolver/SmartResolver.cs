@@ -243,7 +243,7 @@
 
             var type = instance.GetType();
             var metadata = metadataFactory.GetMetadata(type);
-            var binding = new Binding(type);
+            var binding = new NullBinding(type);
 
             for (var i = 0; i < injectors.Length; i++)
             {
