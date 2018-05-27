@@ -6,6 +6,6 @@
     {
         bool IsTarget(Type type);
 
-        void Initialize(object instance);
+        Action<object> CreateProcessor(IKernel kernel);
     }
 }

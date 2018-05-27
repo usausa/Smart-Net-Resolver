@@ -2,34 +2,20 @@
 {
     using System;
 
-    using Smart.Resolver.Bindings;
-    using Smart.Resolver.Injectors;
-
     using Xamarin.Forms;
 
     public sealed class BindingContextInjectProcessor : IProcessor
     {
         private static readonly Type BindableObjectType = typeof(BindableObject);
 
-        private readonly IInjector[] injectors;
-
-        public BindingContextInjectProcessor(IInjector[] injectors)
-        {
-            this.injectors = injectors;
-        }
-
         public bool IsTarget(Type type)
         {
             return BindableObjectType.IsAssignableFrom(type);
         }
 
-        public void Initialize(object instance)
+        public Action<object> CreateProcessor(IKernel kernel)
         {
-            var binding = new NullBinding(instance.GetType());
-            for (var i = 0; i < injectors.Length; i++)
-            {
-                injectors[i].Initialize(binding, instance);
-            }
+            return x => kernel.Inject(((BindableObject)x).BindingContext);
         }
     }
 }

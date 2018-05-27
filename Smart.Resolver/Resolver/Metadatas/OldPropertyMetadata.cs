@@ -7,7 +7,7 @@
     /// <summary>
     ///
     /// </summary>
-    public class PropertyMetadata
+    public class OldPropertyMetadata
     {
         public string Name { get; }
 
@@ -17,7 +17,7 @@
 
         public IConstraint Constraint { get; }
 
-        public PropertyMetadata(string name, Type propertyType, Action<object, object> setter, IConstraint constraint)
+        public OldPropertyMetadata(string name, Type propertyType, Action<object, object> setter, IConstraint constraint)
         {
             Name = name;
             PropertyType = propertyType;

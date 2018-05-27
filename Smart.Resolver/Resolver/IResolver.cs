@@ -105,5 +105,11 @@
         /// <param name="constraint"></param>
         /// <returns></returns>
         IEnumerable<object> GetAll(Type type, IConstraint constraint);
+
+        /// <summary>
+        ///
+        /// </summary>
+        /// <param name="instance"></param>
+        void Inject(object instance);
     }
 }

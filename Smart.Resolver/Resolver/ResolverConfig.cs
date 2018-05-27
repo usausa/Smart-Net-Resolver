@@ -26,7 +26,7 @@
         public ResolverConfig()
         {
             Components.Add<IDelegateFactory>(DelegateFactory.Default);
-            Components.Add<IMetadataFactory, MetadataFactory>();
+            Components.Add<IOldMetadataFactory, OldMetadataFactory>();
             Components.Add<DisposableStorage>();
         }
 

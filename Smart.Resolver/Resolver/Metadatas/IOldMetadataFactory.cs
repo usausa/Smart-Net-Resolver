@@ -5,13 +5,13 @@
     /// <summary>
     ///
     /// </summary>
-    public interface IMetadataFactory
+    public interface IOldMetadataFactory
     {
         /// <summary>
         ///
         /// </summary>
         /// <param name="type"></param>
         /// <returns></returns>
-        TypeMetadata GetMetadata(Type type);
+        OldTypeMetadata GetMetadata(Type type);
     }
 }

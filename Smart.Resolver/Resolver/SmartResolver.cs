@@ -34,7 +34,7 @@
 
         private readonly BindingTable table = new BindingTable();
 
-        private readonly IMetadataFactory metadataFactory;
+        private readonly IOldMetadataFactory metadataFactory;
 
         private readonly IOldInjector[] injectors;
 
@@ -58,7 +58,7 @@
 
             Components = config.CreateComponentContainer();
 
-            metadataFactory = Components.Get<IMetadataFactory>();
+            metadataFactory = Components.Get<IOldMetadataFactory>();
             injectors = Components.GetAll<IOldInjector>().ToArray();
             handlers = Components.GetAll<IMissingHandler>().ToArray();
 

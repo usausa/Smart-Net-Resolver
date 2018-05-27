@@ -3,15 +3,15 @@
     /// <summary>
     ///
     /// </summary>
-    public class TypeMetadata
+    public class OldTypeMetadata
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1819:PropertiesShouldNotReturnArrays", Justification = "Performance")]
-        public ConstructorMetadata[] TargetConstructors { get; }
+        public OldConstructorMetadata[] TargetConstructors { get; }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1819:PropertiesShouldNotReturnArrays", Justification = "Performance")]
-        public PropertyMetadata[] TargetProperties { get; }
+        public OldPropertyMetadata[] TargetProperties { get; }
 
-        public TypeMetadata(ConstructorMetadata[] targetConstructors, PropertyMetadata[] targetProperties)
+        public OldTypeMetadata(OldConstructorMetadata[] targetConstructors, OldPropertyMetadata[] targetProperties)
         {
             TargetConstructors = targetConstructors;
             TargetProperties = targetProperties;

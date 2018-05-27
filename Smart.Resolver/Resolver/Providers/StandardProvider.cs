@@ -24,7 +24,7 @@
 
         private readonly IDelegateFactory delegateFactory;
 
-        private readonly TypeMetadata metadata;
+        private readonly OldTypeMetadata metadata;
 
         /// <summary>
         ///
@@ -52,7 +52,7 @@
             injectors = components.GetAll<IOldInjector>().ToArray();
             processors = components.GetAll<IOldProcessor>().ToArray();
             delegateFactory = components.Get<IDelegateFactory>();
-            metadata = components.Get<IMetadataFactory>().GetMetadata(TargetType);
+            metadata = components.Get<IOldMetadataFactory>().GetMetadata(TargetType);
         }
 
         /// <summary>
@@ -76,7 +76,7 @@
         /// <param name="kernel"></param>
         /// <param name="binding"></param>
         /// <returns></returns>
-        private ConstructorMetadata FindBestConstructor(IKernel kernel, IBinding binding)
+        private OldConstructorMetadata FindBestConstructor(IKernel kernel, IBinding binding)
         {
             if (metadata.TargetConstructors.Length == 0)
             {
@@ -140,7 +140,7 @@
         /// <param name="binding"></param>
         /// <param name="constructor"></param>
         /// <returns></returns>
-        private Func<object>[] ResolveArgumentsFactories(IKernel kernel, IBinding binding, ConstructorMetadata constructor)
+        private Func<object>[] ResolveArgumentsFactories(IKernel kernel, IBinding binding, OldConstructorMetadata constructor)
         {
             var parameters = constructor.Parameters;
             var argumentFactories = new Func<object>[parameters.Length];

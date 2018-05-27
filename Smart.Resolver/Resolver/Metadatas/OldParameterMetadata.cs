@@ -6,7 +6,7 @@
     /// <summary>
     ///
     /// </summary>
-    public class ParameterMetadata
+    public class OldParameterMetadata
     {
         public ParameterInfo Parameter { get; }
 
@@ -20,7 +20,7 @@
         /// </summary>
         /// <param name="parameter"></param>
         /// <param name="elementType"></param>
-        public ParameterMetadata(ParameterInfo parameter, Type elementType)
+        public OldParameterMetadata(ParameterInfo parameter, Type elementType)
         {
             Parameter = parameter;
             ElementType = elementType;

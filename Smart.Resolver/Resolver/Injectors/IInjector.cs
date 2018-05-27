@@ -6,8 +6,11 @@
 
     public interface IInjector
     {
-        bool IsTarget(Type type);
+        // TODO 分離するか、CreateでTypeも見るか？
+        //bool IsTarget(Type type);
 
-        void Initialize(IBinding binding, object instance);
+        //Action<object> CreateInjector(IKernel kernel, IBinding binding);
+
+        Action<object> CreateInjector(Type type, IKernel kernel, IBinding binding);
     }
 }

@@ -43,25 +43,25 @@
         }
 
         public static ResolverConfig UseMetadataFactory<T>(this ResolverConfig config)
-            where T : IMetadataFactory
+            where T : IOldMetadataFactory
         {
             if (config == null)
             {
                 throw new ArgumentNullException(nameof(config));
             }
 
-            config.Components.Add(typeof(IMetadataFactory), typeof(T));
+            config.Components.Add(typeof(IOldMetadataFactory), typeof(T));
             return config;
         }
 
-        public static ResolverConfig UseMetadataFactory(this ResolverConfig config, IMetadataFactory metadataFactory)
+        public static ResolverConfig UseMetadataFactory(this ResolverConfig config, IOldMetadataFactory metadataFactory)
         {
             if (config == null)
             {
                 throw new ArgumentNullException(nameof(config));
             }
 
-            config.Components.Add(typeof(IMetadataFactory), metadataFactory);
+            config.Components.Add(typeof(IOldMetadataFactory), metadataFactory);
             return config;
         }
 

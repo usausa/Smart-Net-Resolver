@@ -7,12 +7,12 @@
     /// <summary>
     ///
     /// </summary>
-    public class ConstructorMetadata
+    public class OldConstructorMetadata
     {
         public ConstructorInfo Constructor { get; }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1819:PropertiesShouldNotReturnArrays", Justification = "Performance")]
-        public ParameterMetadata[] Parameters { get; }
+        public OldParameterMetadata[] Parameters { get; }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1819:PropertiesShouldNotReturnArrays", Justification = "Performance")]
         public IConstraint[] Constraints { get; }
@@ -23,7 +23,7 @@
         /// <param name="constructor"></param>
         /// <param name="parameters"></param>
         /// <param name="constraints"></param>
-        public ConstructorMetadata(ConstructorInfo constructor, ParameterMetadata[] parameters, IConstraint[] constraints)
+        public OldConstructorMetadata(ConstructorInfo constructor, OldParameterMetadata[] parameters, IConstraint[] constraints)
         {
             Constructor = constructor;
             Parameters = parameters;

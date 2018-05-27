@@ -14,19 +14,19 @@
     /// <summary>
     ///
     /// </summary>
-    public sealed class MetadataFactory : IMetadataFactory
+    public sealed class OldMetadataFactory : IOldMetadataFactory
     {
         private static readonly Type InjectType = typeof(InjectAttribute);
 
         private readonly IDelegateFactory delegateFactory;
 
-        private readonly ConcurrentDictionary<Type, TypeMetadata> metadatas = new ConcurrentDictionary<Type, TypeMetadata>();
+        private readonly ConcurrentDictionary<Type, OldTypeMetadata> metadatas = new ConcurrentDictionary<Type, OldTypeMetadata>();
 
         /// <summary>
         ///
         /// </summary>
         /// <param name="delegateFactory"></param>
-        public MetadataFactory(IDelegateFactory delegateFactory)
+        public OldMetadataFactory(IDelegateFactory delegateFactory)
         {
             this.delegateFactory = delegateFactory;
         }
@@ -37,7 +37,7 @@
         /// <param name="type"></param>
         /// <returns></returns>
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods", Justification = "Framework only")]
-        public TypeMetadata GetMetadata(Type type)
+        public OldTypeMetadata GetMetadata(Type type)
         {
             if (metadatas.TryGetValue(type, out var metadata))
             {
@@ -57,7 +57,7 @@
                 .Select(CreatePropertyMetadata)
                 .ToArray();
 
-            metadata = new TypeMetadata(constructors, properties);
+            metadata = new OldTypeMetadata(constructors, properties);
 
             metadatas[type] = metadata;
 
@@ -69,7 +69,7 @@
         /// </summary>
         /// <param name="ci"></param>
         /// <returns></returns>
-        private static ConstructorMetadata CreateConstructorMetadata(ConstructorInfo ci)
+        private static OldConstructorMetadata CreateConstructorMetadata(ConstructorInfo ci)
         {
             var parameters = ci.GetParameters()
                 .Select(CreateParameterMetadata)
@@ -79,7 +79,7 @@
                 .Select(p => CreateConstraint(p.GetCustomAttributes<ConstraintAttribute>()))
                 .ToArray();
 
-            return new ConstructorMetadata(ci, parameters, constraints);
+            return new OldConstructorMetadata(ci, parameters, constraints);
         }
 
         /// <summary>
@@ -87,9 +87,9 @@
         /// </summary>
         /// <param name="pi"></param>
         /// <returns></returns>
-        private static ParameterMetadata CreateParameterMetadata(ParameterInfo pi)
+        private static OldParameterMetadata CreateParameterMetadata(ParameterInfo pi)
         {
-            return new ParameterMetadata(pi, TypeHelper.GetEnumerableElementType(pi.ParameterType));
+            return new OldParameterMetadata(pi, TypeHelper.GetEnumerableElementType(pi.ParameterType));
         }
 
         /// <summary>
@@ -97,9 +97,9 @@
         /// </summary>
         /// <param name="pi"></param>
         /// <returns></returns>
-        private PropertyMetadata CreatePropertyMetadata(PropertyInfo pi)
+        private OldPropertyMetadata CreatePropertyMetadata(PropertyInfo pi)
         {
-            return new PropertyMetadata(
+            return new OldPropertyMetadata(
                 pi.Name,
                 delegateFactory.GetExtendedPropertyType(pi),
                 delegateFactory.CreateSetter(pi, true),
