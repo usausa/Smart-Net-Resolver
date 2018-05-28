@@ -9,7 +9,6 @@
     using Smart.Resolver.Bindings;
     using Smart.Resolver.Components;
     using Smart.Resolver.Configs;
-    using Smart.Resolver.Metadatas;
 
     /// <summary>
     ///
@@ -26,7 +25,6 @@
         public ResolverConfig()
         {
             Components.Add<IDelegateFactory>(DelegateFactory.Default);
-            Components.Add<IOldMetadataFactory, OldMetadataFactory>();
             Components.Add<DisposableStorage>();
         }
 

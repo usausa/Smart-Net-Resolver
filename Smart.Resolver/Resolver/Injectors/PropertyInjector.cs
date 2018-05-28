@@ -8,13 +8,10 @@
     using Smart.Resolver.Attributes;
     using Smart.Resolver.Bindings;
     using Smart.Resolver.Constraints;
-    using Smart.Resolver.Helpers;
     using Smart.Resolver.Parameters;
 
     public sealed class PropertyInjector : IInjector
     {
-        private static readonly Type InjectType = typeof(InjectAttribute);
-
         private readonly IDelegateFactory delegateFactory;
 
         public PropertyInjector(IDelegateFactory delegateFactory)
@@ -26,7 +23,7 @@
         public Action<object> CreateInjector(Type type, IKernel kernel, IBinding binding)
         {
             var entries = type.GetRuntimeProperties()
-                .Where(p => p.IsDefined(InjectType))
+                .Where(p => p.IsInjectDefined())
                 .Select(x => CreateInjectEntry(x, kernel, binding))
                 .ToArray();
             if (entries.Length == 0)
@@ -49,7 +46,7 @@
             }
 
             var propertyType = delegateFactory.GetExtendedPropertyType(pi);
-            var constraint = ConstraintHelper.CreateConstraint(pi.GetCustomAttributes<ConstraintAttribute>());
+            var constraint = ConstraintBuilder.Build(pi.GetCustomAttributes<ConstraintAttribute>());
             if (constraint != null)
             {
                 return new InjectEntry(CreateConstraintProvider(kernel, propertyType, constraint), setter);

@@ -1,16 +1,18 @@
 ﻿namespace Smart.Resolver.Providers
 {
     using System;
+    using System.Collections.Generic;
     using System.Globalization;
     using System.Linq;
     using System.Reflection;
 
     using Smart.ComponentModel;
     using Smart.Reflection;
+    using Smart.Resolver.Attributes;
     using Smart.Resolver.Bindings;
+    using Smart.Resolver.Constraints;
     using Smart.Resolver.Helpers;
     using Smart.Resolver.Injectors;
-    using Smart.Resolver.Metadatas;
     using Smart.Resolver.Processors;
 
     /// <summary>
@@ -61,288 +63,228 @@
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods", Justification = "Framework only")]
         public Func<object> CreateFactory(IKernel kernel, IBinding binding)
         {
-            var constructor = FindBestConstructor(kernel, binding);
+            var constructors = CreateConstructorMetadata();
+            var constructor = FindBestConstructor(kernel, binding, constructors);
             var argumentFactories = ResolveArgumentsFactories(kernel, binding, constructor);
-            var processor = CreateProcessor(kernel, binding);
-            return CreateFactory(constructor.Constructor, argumentFactories, processor);
+            var actions = CreateActions(kernel, binding);
+            return CreateFactory(constructor.Constructor, argumentFactories, actions);
         }
 
-        //private sealed class ConstructorMetadata
-        //{
-        //    public ConstructorInfo Constructor { get; }
+        // ------------------------------------------------------------
+        // Helpers
+        // ------------------------------------------------------------
 
-        //    public ParameterMetadata[] Parameters { get; }
-
-        //    public ConstructorMetadata()
-        //    {
-
-        //    }
-        //}
-
-        //private sealed class ParameterMetadata
-        //{
-        //    public ParameterInfo Parameter { get; }
-
-        //    public Type ElementType { get; }
-
-        //    public IConstraint Constraint { get; }
-
-        //    public ParameterMetadata(ParameterInfo pi)
-        //    {
-
-        //    }
-        //}
-
-        // TODO metadata
-
-        private OldConstructorMetadata FindBestConstructor(IKernel kernel, IBinding binding)
+        private ConstructorMetadata[] CreateConstructorMetadata()
         {
-            //if (metadata.TargetConstructors.Length == 0)
-            //{
-            //    throw new InvalidOperationException(
-            //        String.Format(CultureInfo.InvariantCulture, "No constructor avaiable. type = {0}", TargetType.Name));
-            //}
+            return TargetType.GetConstructors()
+                .Where(c => !c.IsStatic)
+                .OrderByDescending(c => c.IsInjectDefined() ? 1 : 0)
+                .ThenByDescending(c => c.GetParameters().Length)
+                .ThenByDescending(c => c.GetParameters().Count(p => p.HasDefaultValue))
+                .Select(c => new ConstructorMetadata(c))
+                .ToArray();
+        }
 
-            //for (var i = 0; i < metadata.TargetConstructors.Length; i++)
-            //{
-            //    var match = true;
-            //    var cm = metadata.TargetConstructors[i];
+        private ConstructorMetadata FindBestConstructor(IKernel kernel, IBinding binding, ConstructorMetadata[] constructors)
+        {
+            if (constructors.Length == 0)
+            {
+                throw new InvalidOperationException(
+                    String.Format(CultureInfo.InvariantCulture, "No constructor avaiable. type = {0}", TargetType.Name));
+            }
 
-            //    var parameters = cm.Parameters;
-            //    for (var j = 0; j < parameters.Length; j++)
-            //    {
-            //        var parameter = parameters[j];
-            //        var pi = parameter.Parameter;
+            foreach (var constructor in constructors)
+            {
+                var match = true;
 
-            //        // Constructor argument
-            //        if (binding.ConstructorArguments.GetParameter(pi.Name) != null)
-            //        {
-            //            continue;
-            //        }
+                foreach (var parameter in constructor.Parameters)
+                {
+                    var pi = parameter.Parameter;
 
-            //        // Multiple
-            //        if (parameter.ElementType != null)
-            //        {
-            //            continue;
-            //        }
+                    // Constructor argument
+                    if (binding.ConstructorArguments.GetParameter(pi.Name) != null)
+                    {
+                        continue;
+                    }
 
-            //        // Resolve
-            //        if (kernel.ResolveFactory(pi.ParameterType, cm.Constraints[j]) != null)
-            //        {
-            //            continue;
-            //        }
+                    // Multiple
+                    if (parameter.ElementType != null)
+                    {
+                        continue;
+                    }
 
-            //        // DefaultValue
-            //        if (pi.HasDefaultValue)
-            //        {
-            //            continue;
-            //        }
+                    // Resolve
+                    if (kernel.ResolveFactory(pi.ParameterType, parameter.Constraint) != null)
+                    {
+                        continue;
+                    }
 
-            //        match = false;
-            //        break;
-            //    }
+                    // DefaultValue
+                    if (pi.HasDefaultValue)
+                    {
+                        continue;
+                    }
 
-            //    if (match)
-            //    {
-            //        return cm;
-            //    }
-            //}
+                    match = false;
+                    break;
+                }
+
+                if (match)
+                {
+                    return constructor;
+                }
+            }
 
             throw new InvalidOperationException(
                 String.Format(CultureInfo.InvariantCulture, "Constructor parameter unresolved. type = {0}", TargetType.Name));
         }
 
-        /// <summary>
-        ///
-        /// </summary>
-        /// <param name="kernel"></param>
-        /// <param name="binding"></param>
-        /// <param name="constructor"></param>
-        /// <returns></returns>
-        private Func<object>[] ResolveArgumentsFactories(IKernel kernel, IBinding binding, OldConstructorMetadata constructor)
+        private Func<object>[] ResolveArgumentsFactories(IKernel kernel, IBinding binding, ConstructorMetadata constructor)
         {
-            var parameters = constructor.Parameters;
-            var argumentFactories = new Func<object>[parameters.Length];
+            var argumentFactories = new List<Func<object>>(constructor.Parameters.Length);
 
-            for (var i = 0; i < parameters.Length; i++)
+            foreach (var parameter in constructor.Parameters)
             {
-                var parameter = parameters[i];
                 var pi = parameter.Parameter;
 
                 // Constructor argument
                 var argument = binding.ConstructorArguments.GetParameter(pi.Name);
                 if (argument != null)
                 {
-                    argumentFactories[i] = () => argument.Resolve(kernel);
+                    argumentFactories.Add(() => argument.Resolve(kernel));
                     continue;
                 }
 
                 // Multiple
                 if (parameter.ElementType != null)
                 {
-                    argumentFactories[i] = kernel.ResolveFactory(pi.ParameterType, constructor.Constraints[i]);
-                    if (argumentFactories[i] == null)
+                    var factory = kernel.ResolveFactory(pi.ParameterType, parameter.Constraint);
+                    if (factory == null)
                     {
-                        var factories = kernel.ResolveAllFactory(parameter.ElementType, constructor.Constraints[i]).ToArray();
+                        var factories = kernel.ResolveAllFactory(parameter.ElementType, parameter.Constraint).ToArray();
                         var arrayFactory = new ArrayFactory(delegateFactory.CreateArrayAllocator(parameter.ElementType), factories);
-                        argumentFactories[i] = arrayFactory.Create;
+                        factory = arrayFactory.Create;
                     }
 
+                    argumentFactories.Add(factory);
                     continue;
                 }
 
                 // Resolve
-                var objectFactory = kernel.ResolveFactory(pi.ParameterType, constructor.Constraints[i]);
+                var objectFactory = kernel.ResolveFactory(pi.ParameterType, parameter.Constraint);
                 if (objectFactory != null)
                 {
-                    argumentFactories[i] = objectFactory;
+                    argumentFactories.Add(objectFactory);
                     continue;
                 }
 
                 // DefaultValue
                 if (pi.HasDefaultValue)
                 {
-                    argumentFactories[i] = () => pi.DefaultValue;
+                    argumentFactories.Add(() => pi.DefaultValue);
                 }
             }
 
-            return argumentFactories;
+            return argumentFactories.ToArray();
         }
 
-        /// <summary>
-        ///
-        /// </summary>
-        /// <param name="kernel"></param>
-        /// <param name="binding"></param>
-        /// <returns></returns>
-        private Action<object> CreateProcessor(IKernel kernel, IBinding binding)
+        private Action<object>[] CreateActions(IKernel kernel, IBinding binding)
         {
-            //var targetInjectors = injectors.Where(x => x.IsTarget(kernel, binding, metadata, TargetType)).ToArray();
-            //var targetProcessors = processors.Where(x => x.IsTarget(TargetType)).ToArray();
-
-            //if ((targetInjectors.Length > 0) && (targetProcessors.Length > 0))
-            //{
-            //    return instance =>
-            //    {
-            //        for (var i = 0; i < targetInjectors.Length; i++)
-            //        {
-            //            targetInjectors[i].Inject(kernel, binding, metadata, instance);
-            //        }
-
-            //        for (var i = 0; i < targetProcessors.Length; i++)
-            //        {
-            //            targetProcessors[i].Initialize(instance);
-            //        }
-            //    };
-            //}
-
-            //if (targetInjectors.Length > 0)
-            //{
-            //    return instance =>
-            //    {
-            //        for (var i = 0; i < targetInjectors.Length; i++)
-            //        {
-            //            targetInjectors[i].Inject(kernel, binding, metadata, instance);
-            //        }
-            //    };
-            //}
-
-            //if (targetProcessors.Length > 0)
-            //{
-            //    return instance =>
-            //    {
-            //        for (var i = 0; i < targetProcessors.Length; i++)
-            //        {
-            //            targetProcessors[i].Initialize(instance);
-            //        }
-            //    };
-            //}
-
-            return null;
+            var targetInjectors = injectors
+                .Select(x => x.CreateInjector(TargetType, kernel, binding))
+                .Where(x => x != null);
+            var targetProcessors = processors
+                .Select(x => x.CreateProcessor(TargetType, kernel))
+                .Where(x => x != null);
+            return targetInjectors.Concat(targetProcessors).ToArray();
         }
 
-        /// <summary>
-        ///
-        /// </summary>
-        /// <param name="ci"></param>
-        /// <param name="factories"></param>
-        /// <param name="processor"></param>
-        /// <returns></returns>
-        private Func<object> CreateFactory(ConstructorInfo ci, Func<object>[] factories, Action<object> processor)
+        private Func<object> CreateFactory(ConstructorInfo ci, Func<object>[] factories, Action<object>[] actions)
         {
             switch (factories.Length)
             {
                 case 0:
                     var activator0 = delegateFactory.CreateFactory0(ci);
-                    return processor != null ? CreateActivator0(processor, activator0) : activator0;
+                    return actions.Length > 0 ? CreateActivator0(activator0, actions) : activator0;
                 case 1:
                     var activator1 = delegateFactory.CreateFactory1(ci);
-                    return processor != null ? CreateActivator1(processor, activator1, factories) : CreateActivator1(activator1, factories);
+                    return actions.Length > 0 ? CreateActivator1(activator1, factories, actions) : CreateActivator1(activator1, factories);
                 case 2:
                     var activator2 = delegateFactory.CreateFactory2(ci);
-                    return processor != null ? CreateActivator2(processor, activator2, factories) : CreateActivator2(activator2, factories);
+                    return actions.Length > 0 ? CreateActivator2(activator2, factories, actions) : CreateActivator2(activator2, factories);
                 case 3:
                     var activator3 = delegateFactory.CreateFactory3(ci);
-                    return processor != null ? CreateActivator3(processor, activator3, factories) : CreateActivator3(activator3, factories);
+                    return actions.Length > 0 ? CreateActivator3(activator3, factories, actions) : CreateActivator3(activator3, factories);
                 case 4:
                     var activator4 = delegateFactory.CreateFactory4(ci);
-                    return processor != null ? CreateActivator4(processor, activator4, factories) : CreateActivator4(activator4, factories);
+                    return actions.Length > 0 ? CreateActivator4(activator4, factories, actions) : CreateActivator4(activator4, factories);
                 case 5:
                     var activator5 = delegateFactory.CreateFactory5(ci);
-                    return processor != null ? CreateActivator5(processor, activator5, factories) : CreateActivator5(activator5, factories);
+                    return actions.Length > 0 ? CreateActivator5(activator5, factories, actions) : CreateActivator5(activator5, factories);
                 case 6:
                     var activator6 = delegateFactory.CreateFactory6(ci);
-                    return processor != null ? CreateActivator6(processor, activator6, factories) : CreateActivator6(activator6, factories);
+                    return actions.Length > 0 ? CreateActivator6(activator6, factories, actions) : CreateActivator6(activator6, factories);
                 case 7:
                     var activator7 = delegateFactory.CreateFactory7(ci);
-                    return processor != null ? CreateActivator7(processor, activator7, factories) : CreateActivator7(activator7, factories);
+                    return actions.Length > 0 ? CreateActivator7(activator7, factories, actions) : CreateActivator7(activator7, factories);
                 case 8:
                     var activator8 = delegateFactory.CreateFactory8(ci);
-                    return processor != null ? CreateActivator8(processor, activator8, factories) : CreateActivator8(activator8, factories);
+                    return actions.Length > 0 ? CreateActivator8(activator8, factories, actions) : CreateActivator8(activator8, factories);
                 case 9:
                     var activator9 = delegateFactory.CreateFactory9(ci);
-                    return processor != null ? CreateActivator9(processor, activator9, factories) : CreateActivator9(activator9, factories);
+                    return actions.Length > 0 ? CreateActivator9(activator9, factories, actions) : CreateActivator9(activator9, factories);
                 case 10:
                     var activator10 = delegateFactory.CreateFactory10(ci);
-                    return processor != null ? CreateActivator10(processor, activator10, factories) : CreateActivator10(activator10, factories);
+                    return actions.Length > 0 ? CreateActivator10(activator10, factories, actions) : CreateActivator10(activator10, factories);
                 case 11:
                     var activator11 = delegateFactory.CreateFactory11(ci);
-                    return processor != null ? CreateActivator11(processor, activator11, factories) : CreateActivator11(activator11, factories);
+                    return actions.Length > 0 ? CreateActivator11(activator11, factories, actions) : CreateActivator11(activator11, factories);
                 case 12:
                     var activator12 = delegateFactory.CreateFactory12(ci);
-                    return processor != null ? CreateActivator12(processor, activator12, factories) : CreateActivator12(activator12, factories);
+                    return actions.Length > 0 ? CreateActivator12(activator12, factories, actions) : CreateActivator12(activator12, factories);
                 case 13:
                     var activator13 = delegateFactory.CreateFactory13(ci);
-                    return processor != null ? CreateActivator13(processor, activator13, factories) : CreateActivator13(activator13, factories);
+                    return actions.Length > 0 ? CreateActivator13(activator13, factories, actions) : CreateActivator13(activator13, factories);
                 case 14:
                     var activator14 = delegateFactory.CreateFactory14(ci);
-                    return processor != null ? CreateActivator14(processor, activator14, factories) : CreateActivator14(activator14, factories);
+                    return actions.Length > 0 ? CreateActivator14(activator14, factories, actions) : CreateActivator14(activator14, factories);
                 case 15:
                     var activator15 = delegateFactory.CreateFactory15(ci);
-                    return processor != null ? CreateActivator15(processor, activator15, factories) : CreateActivator15(activator15, factories);
+                    return actions.Length > 0 ? CreateActivator15(activator15, factories, actions) : CreateActivator15(activator15, factories);
                 case 16:
                     var activator16 = delegateFactory.CreateFactory16(ci);
-                    return processor != null ? CreateActivator16(processor, activator16, factories) : CreateActivator16(activator16, factories);
+                    return actions.Length > 0 ? CreateActivator16(activator16, factories, actions) : CreateActivator16(activator16, factories);
             }
 
             var activator = delegateFactory.CreateFactory(ci);
-            return processor != null ? CreateActivator(processor, activator, factories) : CreateActivator(activator, factories);
+            return actions.Length > 0 ? CreateActivator(activator, factories, actions) : CreateActivator(activator, factories);
         }
 
-        private static Func<object> CreateActivator0(Action<object> processor, Func<object> activator)
+        // ------------------------------------------------------------
+        // Activator
+        // ------------------------------------------------------------
+
+        private static Func<object> CreateActivator0(
+            Func<object> activator,
+            Action<object>[] actions)
         {
             return () =>
             {
                 var instance = activator();
-                processor(instance);
+
+                for (var i = 0; i < actions.Length; i++)
+                {
+                    actions[i](instance);
+                }
+
                 return instance;
             };
         }
 
         private static Func<object> CreateActivator(
-            Action<object> processor,
             Func<object[], object> activator,
-            Func<object>[] factories)
+            Func<object>[] factories,
+            Action<object>[] actions)
         {
             return () =>
             {
@@ -353,7 +295,12 @@
                 }
 
                 var instance = activator(arguments);
-                processor(instance);
+
+                for (var i = 0; i < actions.Length; i++)
+                {
+                    actions[i](instance);
+                }
+
                 return instance;
             };
         }
@@ -372,6 +319,41 @@
 
                 return activator(arguments);
             };
+        }
+
+        // ------------------------------------------------------------
+        // Metadata
+        // ------------------------------------------------------------
+
+        private sealed class ConstructorMetadata
+        {
+            public ConstructorInfo Constructor { get; }
+
+            public ParameterMetadata[] Parameters { get; }
+
+            public ConstructorMetadata(ConstructorInfo ci)
+            {
+                Constructor = ci;
+                Parameters = ci.GetParameters()
+                    .Select(x => new ParameterMetadata(x))
+                    .ToArray();
+            }
+        }
+
+        private sealed class ParameterMetadata
+        {
+            public ParameterInfo Parameter { get; }
+
+            public Type ElementType { get; }
+
+            public IConstraint Constraint { get; }
+
+            public ParameterMetadata(ParameterInfo pi)
+            {
+                Parameter = pi;
+                ElementType = TypeHelper.GetEnumerableElementType(pi.ParameterType);
+                Constraint = ConstraintBuilder.Build(pi.GetCustomAttributes<ConstraintAttribute>());
+            }
         }
     }
 }

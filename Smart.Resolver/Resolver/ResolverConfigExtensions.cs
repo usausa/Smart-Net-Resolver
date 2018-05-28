@@ -6,7 +6,6 @@
     using Smart.Reflection;
     using Smart.Resolver.Handlers;
     using Smart.Resolver.Injectors;
-    using Smart.Resolver.Metadatas;
     using Smart.Resolver.Processors;
 
     /// <summary>
@@ -39,29 +38,6 @@
             }
 
             config.Components.Add(typeof(IDelegateFactory), delegateFactory);
-            return config;
-        }
-
-        public static ResolverConfig UseMetadataFactory<T>(this ResolverConfig config)
-            where T : IOldMetadataFactory
-        {
-            if (config == null)
-            {
-                throw new ArgumentNullException(nameof(config));
-            }
-
-            config.Components.Add(typeof(IOldMetadataFactory), typeof(T));
-            return config;
-        }
-
-        public static ResolverConfig UseMetadataFactory(this ResolverConfig config, IOldMetadataFactory metadataFactory)
-        {
-            if (config == null)
-            {
-                throw new ArgumentNullException(nameof(config));
-            }
-
-            config.Components.Add(typeof(IOldMetadataFactory), metadataFactory);
             return config;
         }
 

@@ -1,4 +1,4 @@
-﻿namespace Smart.Resolver.Helpers
+﻿namespace Smart.Resolver.Constraints
 {
     using System.Collections.Generic;
     using System.Linq;
@@ -6,9 +6,9 @@
     using Smart.Resolver.Attributes;
     using Smart.Resolver.Constraints;
 
-    public static class ConstraintHelper
+    public static class ConstraintBuilder
     {
-        public static IConstraint CreateConstraint(IEnumerable<ConstraintAttribute> attributes)
+        public static IConstraint Build(IEnumerable<ConstraintAttribute> attributes)
         {
             var constraints = attributes
                 .Select(a => a.CreateConstraint())
