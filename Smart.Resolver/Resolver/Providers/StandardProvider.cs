@@ -18,13 +18,11 @@
     /// </summary>
     public sealed partial class StandardProvider : IProvider
     {
-        private readonly IOldInjector[] injectors;
+        private readonly IInjector[] injectors;
 
-        private readonly IOldProcessor[] processors;
+        private readonly IProcessor[] processors;
 
         private readonly IDelegateFactory delegateFactory;
-
-        private readonly OldTypeMetadata metadata;
 
         /// <summary>
         ///
@@ -49,10 +47,9 @@
             }
 
             TargetType = type;
-            injectors = components.GetAll<IOldInjector>().ToArray();
-            processors = components.GetAll<IOldProcessor>().ToArray();
+            injectors = components.GetAll<IInjector>().ToArray();
+            processors = components.GetAll<IProcessor>().ToArray();
             delegateFactory = components.Get<IDelegateFactory>();
-            metadata = components.Get<IOldMetadataFactory>().GetMetadata(TargetType);
         }
 
         /// <summary>
@@ -70,64 +67,86 @@
             return CreateFactory(constructor.Constructor, argumentFactories, processor);
         }
 
-        /// <summary>
-        ///
-        /// </summary>
-        /// <param name="kernel"></param>
-        /// <param name="binding"></param>
-        /// <returns></returns>
+        //private sealed class ConstructorMetadata
+        //{
+        //    public ConstructorInfo Constructor { get; }
+
+        //    public ParameterMetadata[] Parameters { get; }
+
+        //    public ConstructorMetadata()
+        //    {
+
+        //    }
+        //}
+
+        //private sealed class ParameterMetadata
+        //{
+        //    public ParameterInfo Parameter { get; }
+
+        //    public Type ElementType { get; }
+
+        //    public IConstraint Constraint { get; }
+
+        //    public ParameterMetadata(ParameterInfo pi)
+        //    {
+
+        //    }
+        //}
+
+        // TODO metadata
+
         private OldConstructorMetadata FindBestConstructor(IKernel kernel, IBinding binding)
         {
-            if (metadata.TargetConstructors.Length == 0)
-            {
-                throw new InvalidOperationException(
-                    String.Format(CultureInfo.InvariantCulture, "No constructor avaiable. type = {0}", TargetType.Name));
-            }
+            //if (metadata.TargetConstructors.Length == 0)
+            //{
+            //    throw new InvalidOperationException(
+            //        String.Format(CultureInfo.InvariantCulture, "No constructor avaiable. type = {0}", TargetType.Name));
+            //}
 
-            for (var i = 0; i < metadata.TargetConstructors.Length; i++)
-            {
-                var match = true;
-                var cm = metadata.TargetConstructors[i];
+            //for (var i = 0; i < metadata.TargetConstructors.Length; i++)
+            //{
+            //    var match = true;
+            //    var cm = metadata.TargetConstructors[i];
 
-                var parameters = cm.Parameters;
-                for (var j = 0; j < parameters.Length; j++)
-                {
-                    var parameter = parameters[j];
-                    var pi = parameter.Parameter;
+            //    var parameters = cm.Parameters;
+            //    for (var j = 0; j < parameters.Length; j++)
+            //    {
+            //        var parameter = parameters[j];
+            //        var pi = parameter.Parameter;
 
-                    // Constructor argument
-                    if (binding.ConstructorArguments.GetParameter(pi.Name) != null)
-                    {
-                        continue;
-                    }
+            //        // Constructor argument
+            //        if (binding.ConstructorArguments.GetParameter(pi.Name) != null)
+            //        {
+            //            continue;
+            //        }
 
-                    // Multiple
-                    if (parameter.ElementType != null)
-                    {
-                        continue;
-                    }
+            //        // Multiple
+            //        if (parameter.ElementType != null)
+            //        {
+            //            continue;
+            //        }
 
-                    // Resolve
-                    if (kernel.ResolveFactory(pi.ParameterType, cm.Constraints[j]) != null)
-                    {
-                        continue;
-                    }
+            //        // Resolve
+            //        if (kernel.ResolveFactory(pi.ParameterType, cm.Constraints[j]) != null)
+            //        {
+            //            continue;
+            //        }
 
-                    // DefaultValue
-                    if (pi.HasDefaultValue)
-                    {
-                        continue;
-                    }
+            //        // DefaultValue
+            //        if (pi.HasDefaultValue)
+            //        {
+            //            continue;
+            //        }
 
-                    match = false;
-                    break;
-                }
+            //        match = false;
+            //        break;
+            //    }
 
-                if (match)
-                {
-                    return cm;
-                }
-            }
+            //    if (match)
+            //    {
+            //        return cm;
+            //    }
+            //}
 
             throw new InvalidOperationException(
                 String.Format(CultureInfo.InvariantCulture, "Constructor parameter unresolved. type = {0}", TargetType.Name));
@@ -198,46 +217,46 @@
         /// <returns></returns>
         private Action<object> CreateProcessor(IKernel kernel, IBinding binding)
         {
-            var targetInjectors = injectors.Where(x => x.IsTarget(kernel, binding, metadata, TargetType)).ToArray();
-            var targetProcessors = processors.Where(x => x.IsTarget(TargetType)).ToArray();
+            //var targetInjectors = injectors.Where(x => x.IsTarget(kernel, binding, metadata, TargetType)).ToArray();
+            //var targetProcessors = processors.Where(x => x.IsTarget(TargetType)).ToArray();
 
-            if ((targetInjectors.Length > 0) && (targetProcessors.Length > 0))
-            {
-                return instance =>
-                {
-                    for (var i = 0; i < targetInjectors.Length; i++)
-                    {
-                        targetInjectors[i].Inject(kernel, binding, metadata, instance);
-                    }
+            //if ((targetInjectors.Length > 0) && (targetProcessors.Length > 0))
+            //{
+            //    return instance =>
+            //    {
+            //        for (var i = 0; i < targetInjectors.Length; i++)
+            //        {
+            //            targetInjectors[i].Inject(kernel, binding, metadata, instance);
+            //        }
 
-                    for (var i = 0; i < targetProcessors.Length; i++)
-                    {
-                        targetProcessors[i].Initialize(instance);
-                    }
-                };
-            }
+            //        for (var i = 0; i < targetProcessors.Length; i++)
+            //        {
+            //            targetProcessors[i].Initialize(instance);
+            //        }
+            //    };
+            //}
 
-            if (targetInjectors.Length > 0)
-            {
-                return instance =>
-                {
-                    for (var i = 0; i < targetInjectors.Length; i++)
-                    {
-                        targetInjectors[i].Inject(kernel, binding, metadata, instance);
-                    }
-                };
-            }
+            //if (targetInjectors.Length > 0)
+            //{
+            //    return instance =>
+            //    {
+            //        for (var i = 0; i < targetInjectors.Length; i++)
+            //        {
+            //            targetInjectors[i].Inject(kernel, binding, metadata, instance);
+            //        }
+            //    };
+            //}
 
-            if (targetProcessors.Length > 0)
-            {
-                return instance =>
-                {
-                    for (var i = 0; i < targetProcessors.Length; i++)
-                    {
-                        targetProcessors[i].Initialize(instance);
-                    }
-                };
-            }
+            //if (targetProcessors.Length > 0)
+            //{
+            //    return instance =>
+            //    {
+            //        for (var i = 0; i < targetProcessors.Length; i++)
+            //        {
+            //            targetProcessors[i].Initialize(instance);
+            //        }
+            //    };
+            //}
 
             return null;
         }

@@ -16,7 +16,7 @@
         public void ObjectIsInitializedOnCreation()
         {
             var config = new ResolverConfig();
-            config.UseProcessor<OldInitializeProcessor>();
+            config.UseProcessor<InitializeProcessor>();
             config.Bind<InitializableObject>().ToSelf();
 
             using (var resolver = config.ToResolver())
@@ -44,7 +44,7 @@
         public void ObjectIsInitializedAtOnceInSingletonScope()
         {
             var config = new ResolverConfig();
-            config.UseProcessor<OldInitializeProcessor>();
+            config.UseProcessor<InitializeProcessor>();
             config.Bind<InitializableObject>().ToSelf().InSingletonScope();
 
             using (var resolver = config.ToResolver())
@@ -91,7 +91,7 @@
             void Initialize();
         }
 
-        public sealed class CustomInitializeProcessor : IOldProcessor
+        public sealed class CustomInitializeProcessor : IProcessor
         {
             private static readonly Type CustomInitializableType = typeof(ICustomInitializable);
 
@@ -99,15 +99,16 @@
             ///
             /// </summary>
             /// <param name="type"></param>
+            /// <param name="kernel"></param>
             /// <returns></returns>
-            public bool IsTarget(Type type)
+            public Action<object> CreateProcessor(Type type, IKernel kernel)
             {
-                return CustomInitializableType.IsAssignableFrom(type);
-            }
+                if (!CustomInitializableType.IsAssignableFrom(type))
+                {
+                    return null;
+                }
 
-            public void Initialize(object instance)
-            {
-                (instance as ICustomInitializable)?.Initialize();
+                return instance => (instance as ICustomInitializable)?.Initialize();
             }
         }
 

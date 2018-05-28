@@ -6,13 +6,13 @@
     {
         private static readonly Type InitializableType = typeof(IInitializable);
 
-        public bool IsTarget(Type type)
+        public Action<object> CreateProcessor(Type type, IKernel kernel)
         {
-            return InitializableType.IsAssignableFrom(type);
-        }
+            if (!InitializableType.IsAssignableFrom(type))
+            {
+                return null;
+            }
 
-        public Action<object> CreateProcessor(IKernel kernel)
-        {
             return x => ((IInitializable)x).Initialize();
         }
     }

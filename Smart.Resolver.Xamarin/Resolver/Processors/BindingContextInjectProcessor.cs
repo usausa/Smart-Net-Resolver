@@ -8,13 +8,13 @@
     {
         private static readonly Type BindableObjectType = typeof(BindableObject);
 
-        public bool IsTarget(Type type)
+        public Action<object> CreateProcessor(Type type, IKernel kernel)
         {
-            return BindableObjectType.IsAssignableFrom(type);
-        }
+            if (!BindableObjectType.IsAssignableFrom(type))
+            {
+                return null;
+            }
 
-        public Action<object> CreateProcessor(IKernel kernel)
-        {
             return x => kernel.Inject(((BindableObject)x).BindingContext);
         }
     }

@@ -11,7 +11,6 @@
     using Smart.Resolver.Constraints;
     using Smart.Resolver.Handlers;
     using Smart.Resolver.Injectors;
-    using Smart.Resolver.Metadatas;
     using Smart.Resolver.Providers;
 
     /// <summary>
@@ -30,13 +29,13 @@
 
         private readonly ThreadsafeHashArrayMap<RequestKey, FactoryEntry> factoriesCacheWithConstraint = new ThreadsafeHashArrayMap<RequestKey, FactoryEntry>(RequestKeyComparer.Default);
 
+        private readonly ThreadsafeTypeHashArrayMap<Action<object>[]> injectorsCache = new ThreadsafeTypeHashArrayMap<Action<object>[]>();
+
         private readonly object sync = new object();
 
         private readonly BindingTable table = new BindingTable();
 
-        private readonly IOldMetadataFactory metadataFactory;
-
-        private readonly IOldInjector[] injectors;
+        private readonly IInjector[] injectors;
 
         private readonly IMissingHandler[] handlers;
 
@@ -58,8 +57,7 @@
 
             Components = config.CreateComponentContainer();
 
-            metadataFactory = Components.Get<IOldMetadataFactory>();
-            injectors = Components.GetAll<IOldInjector>().ToArray();
+            injectors = Components.GetAll<IInjector>().ToArray();
             handlers = Components.GetAll<IMissingHandler>().ToArray();
 
             foreach (var group in config.CreateBindings(Components).GroupBy(b => b.Type))
@@ -242,16 +240,24 @@
             }
 
             var type = instance.GetType();
-            var metadata = metadataFactory.GetMetadata(type);
-            var binding = new NullBinding(type);
-
-            for (var i = 0; i < injectors.Length; i++)
+            if (!injectorsCache.TryGetValue(type, out var actions))
             {
-                if (injectors[i].IsTarget(this, binding, metadata, type))
-                {
-                    injectors[i].Inject(this, binding, metadata, instance);
-                }
+                actions = injectorsCache.AddIfNotExist(type, CreateTypeInjectors);
             }
+
+            for (var i = 0; i < actions.Length; i++)
+            {
+                actions[i](instance);
+            }
+        }
+
+        private Action<object>[] CreateTypeInjectors(Type type)
+        {
+            var binding = new NullBinding(type);
+            return injectors
+                .Select(x => x.CreateInjector(type, this, binding))
+                .Where(x => x != null)
+                .ToArray();
         }
     }
 }

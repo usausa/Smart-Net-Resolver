@@ -4,8 +4,6 @@
 
     public interface IProcessor
     {
-        bool IsTarget(Type type);
-
-        Action<object> CreateProcessor(IKernel kernel);
+        Action<object> CreateProcessor(Type type, IKernel kernel);
     }
 }

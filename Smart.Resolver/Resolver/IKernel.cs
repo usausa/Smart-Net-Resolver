@@ -3,7 +3,6 @@
     using System;
     using System.Collections.Generic;
 
-    using Smart.ComponentModel;
     using Smart.Resolver.Constraints;
 
     /// <summary>
@@ -11,9 +10,6 @@
     /// </summary>
     public interface IKernel : IResolver
     {
-        // TODO Delete
-        IComponentContainer Components { get; }
-
         /// <summary>
         ///
         /// </summary>
