@@ -253,7 +253,7 @@
 
         private Action<object>[] CreateTypeInjectors(Type type)
         {
-            var binding = new NullBinding(type);
+            var binding = new Binding(type);
             return injectors
                 .Select(x => x.CreateInjector(type, this, binding))
                 .Where(x => x != null)

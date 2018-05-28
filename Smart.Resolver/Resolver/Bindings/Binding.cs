@@ -14,7 +14,7 @@
     {
         private static readonly IBindingMetadata EmptyBindingMetadata = new BindingMetadata();
 
-        private static readonly ParameterMap EmptyPropertyMap = new ParameterMap(new Dictionary<string, IParameter>());
+        private static readonly ParameterMap EmptyPropertyMap = new ParameterMap(null);
 
         /// <summary>
         ///
