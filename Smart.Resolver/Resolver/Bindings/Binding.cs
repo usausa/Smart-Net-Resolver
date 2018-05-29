@@ -1,7 +1,6 @@
 ﻿namespace Smart.Resolver.Bindings
 {
     using System;
-    using System.Collections.Generic;
 
     using Smart.Resolver.Parameters;
     using Smart.Resolver.Providers;

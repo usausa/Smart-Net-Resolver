@@ -4,7 +4,6 @@
     using System.Linq;
 
     using Smart.Resolver.Attributes;
-    using Smart.Resolver.Constraints;
 
     public static class ConstraintBuilder
     {

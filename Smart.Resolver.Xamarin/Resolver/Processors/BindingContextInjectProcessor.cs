@@ -4,18 +4,18 @@
 
     using Xamarin.Forms;
 
-    public sealed class BindingContextProcessor : IProcessor
+    public sealed class BindingContextInjectProcessor : IProcessor
     {
         private static readonly Type BindableObjectType = typeof(BindableObject);
 
         public int Order { get; }
 
-        public BindingContextProcessor()
+        public BindingContextInjectProcessor()
             : this(0)
         {
         }
 
-        public BindingContextProcessor(int order)
+        public BindingContextInjectProcessor(int order)
         {
             Order = order;
         }

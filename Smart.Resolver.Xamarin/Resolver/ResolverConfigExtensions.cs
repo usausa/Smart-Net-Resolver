@@ -25,25 +25,47 @@
             return config.UseMissingHandler<DependencyServiceMissingHandler>();
         }
 
-        public static ResolverConfig UseBindingContextProcessor(this ResolverConfig config)
+        public static ResolverConfig UseBindingContextInjectProcessor(this ResolverConfig config)
         {
             if (config == null)
             {
                 throw new ArgumentNullException(nameof(config));
             }
 
-            config.Components.Add<IProcessor, BindingContextProcessor>();
+            config.Components.Add<IProcessor, BindingContextInjectProcessor>();
             return config;
         }
 
-        public static ResolverConfig UseBindingContextProcessor(this ResolverConfig config, int order)
+        public static ResolverConfig UseBindingContextInjectProcessor(this ResolverConfig config, int order)
         {
             if (config == null)
             {
                 throw new ArgumentNullException(nameof(config));
             }
 
-            config.Components.Add<IProcessor>(new BindingContextProcessor(order));
+            config.Components.Add<IProcessor>(new BindingContextInjectProcessor(order));
+            return config;
+        }
+
+        public static ResolverConfig UseBindingContextInitializeProcessor(this ResolverConfig config)
+        {
+            if (config == null)
+            {
+                throw new ArgumentNullException(nameof(config));
+            }
+
+            config.Components.Add<IProcessor, BindingContextInitializeProcessor>();
+            return config;
+        }
+
+        public static ResolverConfig UseBindingContextInitializeProcessor(this ResolverConfig config, int order)
+        {
+            if (config == null)
+            {
+                throw new ArgumentNullException(nameof(config));
+            }
+
+            config.Components.Add<IProcessor>(new BindingContextInitializeProcessor(order));
             return config;
         }
     }
