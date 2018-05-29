@@ -194,6 +194,7 @@
                 .Select(x => x.CreateInjector(TargetType, kernel, binding))
                 .Where(x => x != null);
             var targetProcessors = processors
+                .OrderByDescending(x => x.Order)
                 .Select(x => x.CreateProcessor(TargetType, kernel))
                 .Where(x => x != null);
             return targetInjectors.Concat(targetProcessors).ToArray();

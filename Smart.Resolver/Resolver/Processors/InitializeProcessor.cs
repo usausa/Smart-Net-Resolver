@@ -6,6 +6,18 @@
     {
         private static readonly Type InitializableType = typeof(IInitializable);
 
+        public int Order { get; }
+
+        public InitializeProcessor()
+            : this(Int32.MinValue)
+        {
+        }
+
+        public InitializeProcessor(int order)
+        {
+            Order = order;
+        }
+
         public Action<object> CreateProcessor(Type type, IKernel kernel)
         {
             if (!InitializableType.IsAssignableFrom(type))

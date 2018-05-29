@@ -219,5 +219,16 @@
             config.Components.Add<IProcessor, InitializeProcessor>();
             return config;
         }
+
+        public static ResolverConfig UseInitializeProcessor(this ResolverConfig config, int order)
+        {
+            if (config == null)
+            {
+                throw new ArgumentNullException(nameof(config));
+            }
+
+            config.Components.Add<IProcessor>(new InitializeProcessor(order));
+            return config;
+        }
     }
 }

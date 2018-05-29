@@ -25,14 +25,25 @@
             return config.UseMissingHandler<DependencyServiceMissingHandler>();
         }
 
-        public static ResolverConfig UseBindingContextInject(this ResolverConfig config)
+        public static ResolverConfig UseBindingContextProcessor(this ResolverConfig config)
         {
             if (config == null)
             {
                 throw new ArgumentNullException(nameof(config));
             }
 
-            config.Components.Add<IProcessor, BindingContextInjectProcessor>();
+            config.Components.Add<IProcessor, BindingContextProcessor>();
+            return config;
+        }
+
+        public static ResolverConfig UseBindingContextProcessor(this ResolverConfig config, int order)
+        {
+            if (config == null)
+            {
+                throw new ArgumentNullException(nameof(config));
+            }
+
+            config.Components.Add<IProcessor>(new BindingContextProcessor(order));
             return config;
         }
     }
