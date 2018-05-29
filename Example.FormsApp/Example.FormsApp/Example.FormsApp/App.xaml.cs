@@ -1,32 +1,29 @@
-using System;
-using Xamarin.Forms;
-using Xamarin.Forms.Xaml;
+[assembly: Xamarin.Forms.Xaml.XamlCompilation(Xamarin.Forms.Xaml.XamlCompilationOptions.Compile)]
 
-[assembly: XamlCompilation (XamlCompilationOptions.Compile)]
 namespace Example.FormsApp
 {
-	public partial class App : Application
-	{
-		public App ()
-		{
-			InitializeComponent();
+    public partial class App
+    {
+        public App()
+        {
+            InitializeComponent();
 
-			MainPage = new MainPage();
-		}
+            MainPage = new MainPage();
+        }
 
-		protected override void OnStart ()
-		{
-			// Handle when your app starts
-		}
+        protected override void OnStart()
+        {
+            // Handle when your app starts
+        }
 
-		protected override void OnSleep ()
-		{
-			// Handle when your app sleeps
-		}
+        protected override void OnSleep()
+        {
+            // Handle when your app sleeps
+        }
 
-		protected override void OnResume ()
-		{
-			// Handle when your app resumes
-		}
-	}
+        protected override void OnResume()
+        {
+            // Handle when your app resumes
+        }
+    }
 }

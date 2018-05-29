@@ -4,6 +4,10 @@
              xmlns:local="clr-namespace:Example.FormsApp"
              x:Class="Example.FormsApp.MainPage">
 
+    <ContentPage.BindingContext>
+        <local:MainPageViewModel/>
+    </ContentPage.BindingContext>
+
     <StackLayout>
         <!-- Place new controls here -->
     	<Label Text="Welcome to Xamarin.Forms!"
