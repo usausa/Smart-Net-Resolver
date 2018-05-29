@@ -95,6 +95,8 @@
         {
             private static readonly Type CustomInitializableType = typeof(ICustomInitializable);
 
+            public int Order { get; } = 0;
+
             /// <summary>
             ///
             /// </summary>
