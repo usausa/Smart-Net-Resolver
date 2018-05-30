@@ -1,5 +1,9 @@
 ﻿namespace Example.FormsApp
 {
+    using System;
+    using System.Reactive.Linq;
+    using System.Threading;
+
     using Example.FormsApp.Services;
 
     using Smart;
@@ -19,11 +23,18 @@
 
         public MainPageViewModel()
         {
-            IncrementCommand = MakeDelegateCommand(() => Counter.Value = CounterService.IncrementAndGet());
+            IncrementCommand = MakeDelegateCommand(() => CounterService.Increment());
         }
 
         public void Initialize()
         {
+            Disposables.Add(Observable
+                .FromEvent<EventHandler<CounterEventArgs>, CounterEventArgs>(
+                    h => (s, e) => h(e),
+                    h => CounterService.Changed += h,
+                    h => CounterService.Changed -= h)
+                .ObserveOn(SynchronizationContext.Current)
+                .Subscribe(e => Counter.Value = e.Value));
         }
     }
 }
