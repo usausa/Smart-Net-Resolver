@@ -9,7 +9,7 @@ namespace Smart.Resolver.Providers
         private static Func<object> CreateActivator<#= i #>(
             Func<object<# for (var j = 0; j < i; j++) { #>, object<# } #>> activator,
             Func<object>[] factories,
-			Action<object>[] actions)
+            Action<object>[] actions)
         {
 <# for (var j = 0; j < i; j++) { #>
             var f<#= j + 1 #> = factories[<#= j #>];
@@ -18,12 +18,12 @@ namespace Smart.Resolver.Providers
             {
                 var instance = activator(f1()<# for (var j = 0; j < i - 1; j++) { #>, f<#= j + 2 #>()<# } #>);
 
-				for(var i = 0; i < actions.Length; i++)
-				{
-				    actions[i](instance);
-				}
+                for(var i = 0; i < actions.Length; i++)
+                {
+                    actions[i](instance);
+                }
 
-				return instance;
+                return instance;
             };
         }
 
