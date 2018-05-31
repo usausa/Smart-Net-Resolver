@@ -14,10 +14,10 @@
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <dependencies>
       <group targetFramework="netstandard2.0">
-        <dependency id="Usa.Smart.Core" version="1.5.6" />
+        <dependency id="Usa.Smart.Core" version="1.5.7" />
       </group>
       <group targetFramework="net462">
-        <dependency id="Usa.Smart.Core" version="1.5.6" />
+        <dependency id="Usa.Smart.Core" version="1.5.7" />
       </group>
     </dependencies>
     <tags>smart ioc di dependencyinjection</tags>
