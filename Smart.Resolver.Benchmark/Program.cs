@@ -1,8 +1,8 @@
-﻿namespace PerformanceBenchmark
+﻿namespace Smart.Resolver.Benchmark
 {
     using BenchmarkDotNet.Running;
 
-    using PerformanceBenchmark.Benchmarks;
+    using Smart.Resolver.Benchmark.Benchmarks;
 
     public static class Program
     {

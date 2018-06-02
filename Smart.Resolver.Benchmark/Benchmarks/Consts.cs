@@ -1,4 +1,4 @@
-﻿namespace PerformanceBenchmark.Benchmarks
+﻿namespace Smart.Resolver.Benchmark.Benchmarks
 {
     public static class Consts
     {

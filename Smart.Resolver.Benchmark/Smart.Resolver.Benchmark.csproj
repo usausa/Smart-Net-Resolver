@@ -2,9 +2,10 @@
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFrameworks>net47;netcoreapp2.1</TargetFrameworks>
+    <TargetFramework>netcoreapp2.1</TargetFramework>
     <LangVersion>latest</LangVersion>
-    <CodeAnalysisRuleSet>..\..\..\Smart.Resolver.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSet>..\Smart.Resolver.ruleset</CodeAnalysisRuleSet>
+    <Version>1.7.3</Version>
   </PropertyGroup>
 
   <ItemGroup>
@@ -13,7 +14,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\Smart.Resolver\Smart.Resolver.csproj" />
+    <ProjectReference Include="..\Smart.Resolver\Smart.Resolver.csproj" />
   </ItemGroup>
 
 </Project>

@@ -1,4 +1,4 @@
-﻿namespace PerformanceBenchmark.Classes
+﻿namespace Smart.Resolver.Benchmark.Classes
 {
     public interface IMultpleSingletonService
     {

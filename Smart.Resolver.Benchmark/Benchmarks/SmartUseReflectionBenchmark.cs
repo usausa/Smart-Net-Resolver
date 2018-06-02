@@ -1,19 +1,20 @@
-﻿namespace PerformanceBenchmark.Benchmarks
+﻿namespace Smart.Resolver.Benchmark.Benchmarks
 {
     using BenchmarkDotNet.Attributes;
 
-    using PerformanceBenchmark.Classes;
-
+    using Smart.Reflection;
     using Smart.Resolver;
+    using Smart.Resolver.Benchmark.Classes;
 
     [Config(typeof(BenchmarkConfig))]
-    public class SmartDefaultBenchmark
+    public class SmartUseReflectionBenchmark
     {
         private SmartResolver resolver;
 
         [GlobalSetup]
         public void Setup()
         {
+            DelegateFactory.Default.ConfigureSafe();
             var config = new ResolverConfig();
             config.UseOpenGenericBinding();
             config.UseArrayBinding();

@@ -1,4 +1,4 @@
-﻿namespace PerformanceBenchmark
+﻿namespace Smart.Resolver.Benchmark
 {
     using BenchmarkDotNet.Configs;
     using BenchmarkDotNet.Diagnosers;
@@ -11,7 +11,7 @@
         {
             Add(MarkdownExporter.Default, MarkdownExporter.GitHub);
             Add(MemoryDiagnoser.Default);
-            Add(Job.Core, Job.Clr);
+            Add(Job.Core);
         }
     }
 }
