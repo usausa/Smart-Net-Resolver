@@ -35,4 +35,28 @@
         {
         }
     }
+
+    public interface ISingleton4
+    {
+        void DoSomething();
+    }
+
+    public class Singleton4 : ISingleton4
+    {
+        public void DoSomething()
+        {
+        }
+    }
+
+    public interface ISingleton5
+    {
+        void DoSomething();
+    }
+
+    public class Singleton5 : ISingleton5
+    {
+        public void DoSomething()
+        {
+        }
+    }
 }

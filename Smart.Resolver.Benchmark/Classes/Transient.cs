@@ -35,4 +35,28 @@
         {
         }
     }
+
+    public interface ITransient4
+    {
+        void DoSomething();
+    }
+
+    public class Transient4 : ITransient4
+    {
+        public void DoSomething()
+        {
+        }
+    }
+
+    public interface ITransient5
+    {
+        void DoSomething();
+    }
+
+    public class Transient5 : ITransient5
+    {
+        public void DoSomething()
+        {
+        }
+    }
 }

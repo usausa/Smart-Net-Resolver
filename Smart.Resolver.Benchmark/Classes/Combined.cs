@@ -41,4 +41,32 @@
         {
         }
     }
+
+    public class Combined4
+    {
+        public ISingleton4 Singleton { get; }
+
+        public Combined4(ISingleton4 singleton)
+        {
+            Singleton = singleton;
+        }
+
+        public void DoSomething()
+        {
+        }
+    }
+
+    public class Combined5
+    {
+        public ISingleton5 Singleton { get; }
+
+        public Combined5(ISingleton5 singleton)
+        {
+            Singleton = singleton;
+        }
+
+        public void DoSomething()
+        {
+        }
+    }
 }
