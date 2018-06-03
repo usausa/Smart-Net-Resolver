@@ -162,8 +162,7 @@
                     if (factory == null)
                     {
                         var factories = kernel.ResolveAllFactory(parameter.ElementType, parameter.Constraint).ToArray();
-                        var arrayFactory = new ArrayFactory(delegateFactory.CreateArrayAllocator(parameter.ElementType), factories);
-                        factory = arrayFactory.Create;
+                        factory = ArrayFactory.Create(delegateFactory.CreateArrayAllocator(parameter.ElementType), factories);
                     }
 
                     argumentFactories.Add(factory);

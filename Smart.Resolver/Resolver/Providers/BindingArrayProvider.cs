@@ -64,7 +64,7 @@
             var factories = bindings
                 .Select(b => b.Provider.CreateFactory(kernel, b))
                 .ToArray();
-            return new ArrayFactory(arrayAllocator, factories).Create;
+            return ArrayFactory.Create(arrayAllocator, factories);
         }
     }
 }

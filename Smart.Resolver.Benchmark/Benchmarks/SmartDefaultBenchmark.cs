@@ -80,27 +80,43 @@
             resolver.Get(RequestTypes.Combined5);
         }
 
-        [Benchmark]
+        [Benchmark(OperationsPerInvoke = 5)]
         public void Complex()
         {
             resolver.Get(RequestTypes.Complex);
+            resolver.Get(RequestTypes.Complex);
+            resolver.Get(RequestTypes.Complex);
+            resolver.Get(RequestTypes.Complex);
+            resolver.Get(RequestTypes.Complex);
         }
 
-        [Benchmark]
+        [Benchmark(OperationsPerInvoke = 5)]
         public void Generics()
         {
             resolver.Get(RequestTypes.Generic1);
+            resolver.Get(RequestTypes.Generic2);
+            resolver.Get(RequestTypes.Generic1);
+            resolver.Get(RequestTypes.Generic2);
+            resolver.Get(RequestTypes.Generic1);
         }
 
-        [Benchmark]
+        [Benchmark(OperationsPerInvoke = 5)]
         public void MultipleSingleton()
         {
             resolver.Get(RequestTypes.MultipleSinglton);
+            resolver.Get(RequestTypes.MultipleSinglton);
+            resolver.Get(RequestTypes.MultipleSinglton);
+            resolver.Get(RequestTypes.MultipleSinglton);
+            resolver.Get(RequestTypes.MultipleSinglton);
         }
 
-        [Benchmark]
+        [Benchmark(OperationsPerInvoke = 5)]
         public void MultipleTransient()
         {
+            resolver.Get(RequestTypes.MultipleTransient);
+            resolver.Get(RequestTypes.MultipleTransient);
+            resolver.Get(RequestTypes.MultipleTransient);
+            resolver.Get(RequestTypes.MultipleTransient);
             resolver.Get(RequestTypes.MultipleTransient);
         }
     }
