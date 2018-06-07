@@ -254,3 +254,4 @@ paket-files/
 # Folder customize
 desktop.ini
 __*
+*.db
