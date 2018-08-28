@@ -90,7 +90,7 @@
             if (constructors.Length == 0)
             {
                 throw new InvalidOperationException(
-                    String.Format(CultureInfo.InvariantCulture, "No constructor avaiable. type = {0}", TargetType.Name));
+                    String.Format(CultureInfo.InvariantCulture, "No constructor available. type = {0}", TargetType.Name));
             }
 
             foreach (var constructor in constructors)

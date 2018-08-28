@@ -111,10 +111,10 @@
 
             using (var resolver = config.ToResolver())
             {
-                var objs = resolver.Get<IEnumerable<IMultipleService>>();
+                var objects = resolver.Get<IEnumerable<IMultipleService>>();
 
-                Assert.NotNull(objs);
-                Assert.Equal(3, objs.Count());
+                Assert.NotNull(objects);
+                Assert.Equal(3, objects.Count());
             }
         }
 

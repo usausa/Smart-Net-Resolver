@@ -150,9 +150,9 @@
 
             using (var resolver = config.ToResolver())
             {
-                var objs = resolver.GetAll<SimpleObject>();
+                var objects = resolver.GetAll<SimpleObject>();
 
-                foreach (var obj in objs)
+                foreach (var obj in objects)
                 {
                     Assert.Equal(typeof(SimpleObject), obj.GetType());
                 }

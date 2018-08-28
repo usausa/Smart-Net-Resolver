@@ -31,8 +31,8 @@
 
         public static readonly Type Generic2 = typeof(IGenericObject<int>);
 
-        public static readonly Type MultipleSinglton = typeof(IEnumerable<IMultpleSingletonService>);
+        public static readonly Type MultipleSingleton = typeof(IEnumerable<IMultipleSingletonService>);
 
-        public static readonly Type MultipleTransient = typeof(IEnumerable<IMultpleTransientService>);
+        public static readonly Type MultipleTransient = typeof(IEnumerable<IMultipleTransientService>);
     }
 }

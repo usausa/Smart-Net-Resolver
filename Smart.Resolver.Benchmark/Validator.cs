@@ -100,7 +100,7 @@
             }
 
             // MultipleSingleton
-            var multipleSingletons = ((IEnumerable<IMultpleSingletonService>)solver(RequestTypes.MultipleSinglton)).ToArray();
+            var multipleSingletons = ((IEnumerable<IMultipleSingletonService>)solver(RequestTypes.MultipleSingleton)).ToArray();
 
             if (multipleSingletons.Length != 5)
             {
@@ -116,7 +116,7 @@
             }
 
             // MultipleTransient
-            var multipleTransients = ((IEnumerable<IMultpleTransientService>)solver(RequestTypes.MultipleTransient)).ToArray();
+            var multipleTransients = ((IEnumerable<IMultipleTransientService>)solver(RequestTypes.MultipleTransient)).ToArray();
 
             if (multipleTransients.Length != 5)
             {

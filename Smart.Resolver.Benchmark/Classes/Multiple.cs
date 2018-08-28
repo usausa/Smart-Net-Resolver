@@ -1,79 +1,79 @@
 ﻿namespace Smart.Resolver.Benchmark.Classes
 {
-    public interface IMultpleSingletonService
+    public interface IMultipleSingletonService
     {
         void DoSomething();
     }
 
-    public class MultpleSingletonService1 : IMultpleSingletonService
+    public class MultipleSingletonService1 : IMultipleSingletonService
     {
         public void DoSomething()
         {
         }
     }
 
-    public class MultpleSingletonService2 : IMultpleSingletonService
+    public class MultipleSingletonService2 : IMultipleSingletonService
     {
         public void DoSomething()
         {
         }
     }
 
-    public class MultpleSingletonService3 : IMultpleSingletonService
+    public class MultipleSingletonService3 : IMultipleSingletonService
     {
         public void DoSomething()
         {
         }
     }
 
-    public class MultpleSingletonService4 : IMultpleSingletonService
+    public class MultipleSingletonService4 : IMultipleSingletonService
     {
         public void DoSomething()
         {
         }
     }
 
-    public class MultpleSingletonService5 : IMultpleSingletonService
+    public class MultipleSingletonService5 : IMultipleSingletonService
     {
         public void DoSomething()
         {
         }
     }
 
-    public interface IMultpleTransientService
+    public interface IMultipleTransientService
     {
         void DoSomething();
     }
 
-    public class MultpleTransientService1 : IMultpleTransientService
+    public class MultipleTransientService1 : IMultipleTransientService
     {
         public void DoSomething()
         {
         }
     }
 
-    public class MultpleTransientService2 : IMultpleTransientService
+    public class MultipleTransientService2 : IMultipleTransientService
     {
         public void DoSomething()
         {
         }
     }
 
-    public class MultpleTransientService3 : IMultpleTransientService
+    public class MultipleTransientService3 : IMultipleTransientService
     {
         public void DoSomething()
         {
         }
     }
 
-    public class MultpleTransientService4 : IMultpleTransientService
+    public class MultipleTransientService4 : IMultipleTransientService
     {
         public void DoSomething()
         {
         }
     }
 
-    public class MultpleTransientService5 : IMultpleTransientService
+    public class MultipleTransientService5 : IMultipleTransientService
     {
         public void DoSomething()
         {

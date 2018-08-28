@@ -34,16 +34,16 @@
             config.Bind<Combined5>().ToSelf().InTransientScope();
             config.Bind<Complex>().ToSelf().InTransientScope();
             config.Bind(typeof(IGenericObject<>)).To(typeof(GenericObject<>)).InTransientScope();
-            config.Bind<IMultpleSingletonService>().To<MultpleSingletonService1>().InSingletonScope();
-            config.Bind<IMultpleSingletonService>().To<MultpleSingletonService2>().InSingletonScope();
-            config.Bind<IMultpleSingletonService>().To<MultpleSingletonService3>().InSingletonScope();
-            config.Bind<IMultpleSingletonService>().To<MultpleSingletonService4>().InSingletonScope();
-            config.Bind<IMultpleSingletonService>().To<MultpleSingletonService5>().InSingletonScope();
-            config.Bind<IMultpleTransientService>().To<MultpleTransientService1>().InTransientScope();
-            config.Bind<IMultpleTransientService>().To<MultpleTransientService2>().InTransientScope();
-            config.Bind<IMultpleTransientService>().To<MultpleTransientService3>().InTransientScope();
-            config.Bind<IMultpleTransientService>().To<MultpleTransientService4>().InTransientScope();
-            config.Bind<IMultpleTransientService>().To<MultpleTransientService5>().InTransientScope();
+            config.Bind<IMultipleSingletonService>().To<MultipleSingletonService1>().InSingletonScope();
+            config.Bind<IMultipleSingletonService>().To<MultipleSingletonService2>().InSingletonScope();
+            config.Bind<IMultipleSingletonService>().To<MultipleSingletonService3>().InSingletonScope();
+            config.Bind<IMultipleSingletonService>().To<MultipleSingletonService4>().InSingletonScope();
+            config.Bind<IMultipleSingletonService>().To<MultipleSingletonService5>().InSingletonScope();
+            config.Bind<IMultipleTransientService>().To<MultipleTransientService1>().InTransientScope();
+            config.Bind<IMultipleTransientService>().To<MultipleTransientService2>().InTransientScope();
+            config.Bind<IMultipleTransientService>().To<MultipleTransientService3>().InTransientScope();
+            config.Bind<IMultipleTransientService>().To<MultipleTransientService4>().InTransientScope();
+            config.Bind<IMultipleTransientService>().To<MultipleTransientService5>().InTransientScope();
 
             resolver = config.ToResolver();
 
@@ -103,11 +103,11 @@
         [Benchmark(OperationsPerInvoke = 5)]
         public void MultipleSingleton()
         {
-            resolver.Get(RequestTypes.MultipleSinglton);
-            resolver.Get(RequestTypes.MultipleSinglton);
-            resolver.Get(RequestTypes.MultipleSinglton);
-            resolver.Get(RequestTypes.MultipleSinglton);
-            resolver.Get(RequestTypes.MultipleSinglton);
+            resolver.Get(RequestTypes.MultipleSingleton);
+            resolver.Get(RequestTypes.MultipleSingleton);
+            resolver.Get(RequestTypes.MultipleSingleton);
+            resolver.Get(RequestTypes.MultipleSingleton);
+            resolver.Get(RequestTypes.MultipleSingleton);
         }
 
         [Benchmark(OperationsPerInvoke = 5)]

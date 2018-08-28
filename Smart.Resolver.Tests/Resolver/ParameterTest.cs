@@ -57,7 +57,7 @@
         }
 
         [Fact]
-        public void ObjectIsInjectedWhenInjectWithCallbavkParameterOnCreation()
+        public void ObjectIsInjectedWhenInjectWithCallbackParameterOnCreation()
         {
             var config = new ResolverConfig();
             config.UsePropertyInjector();

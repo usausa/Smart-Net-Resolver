@@ -12,10 +12,10 @@
             return () =>
             {
                 var array = arrayAllocator(factories.Length);
-                var objs = (object[])array;
+                var objects = (object[])array;
                 for (var i = 0; i < factories.Length; i++)
                 {
-                    objs[i] = factories[i]();
+                    objects[i] = factories[i]();
                 }
 
                 return array;

@@ -14,7 +14,7 @@
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Reliability", "CA2001:AvoidCallingProblematicMethods", Justification = "Ignore")]
         [Fact(Skip = "Benchmark")]
-        public void BenchmarkScinarioForWebControllerAndService()
+        public void BenchmarkScenarioForWebControllerAndService()
         {
             const int count = 100 * 10000;
 
