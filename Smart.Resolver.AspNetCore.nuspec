@@ -13,8 +13,8 @@
     <copyright></copyright>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <dependencies>
-      <dependency id="Microsoft.AspNetCore.Mvc" version="2.1.0" />
-      <dependency id="Usa.Smart.Core" version="1.5.7" />
+      <dependency id="Microsoft.AspNetCore.Mvc" version="2.1.2" />
+      <dependency id="Usa.Smart.Core" version="1.5.8" />
       <dependency id="Usa.Smart.Resolver" version="1.7.4" />
     </dependencies>
     <tags>smart ioc di dependencyinjection aspnet aspnetcore</tags>
