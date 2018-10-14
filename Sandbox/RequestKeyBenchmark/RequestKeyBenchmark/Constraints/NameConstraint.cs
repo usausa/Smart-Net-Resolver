@@ -1,5 +1,7 @@
 ﻿namespace RequestKeyBenchmark.Constraints
 {
+    using System;
+
     /// <summary>
     ///
     /// </summary>
@@ -18,13 +20,11 @@
 
         public bool Equals(IConstraint other)
         {
-            return other is NameConstraint constraint && string.Equals(name, constraint.name);
+            return other is NameConstraint constraint && string.Equals(name, constraint.name, StringComparison.Ordinal);
         }
 
         public override bool Equals(object obj)
         {
-            if (ReferenceEquals(null, obj)) return false;
-            if (ReferenceEquals(this, obj)) return true;
             return obj is NameConstraint constraint && Equals(constraint);
         }
 
