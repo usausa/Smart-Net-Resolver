@@ -38,16 +38,6 @@
         /// <returns></returns>
         public override bool Equals(object obj)
         {
-            if (obj is null)
-            {
-                return false;
-            }
-
-            if (ReferenceEquals(this, obj))
-            {
-                return true;
-            }
-
             return obj is NameConstraint constraint && String.Equals(name, constraint.name);
         }
 
