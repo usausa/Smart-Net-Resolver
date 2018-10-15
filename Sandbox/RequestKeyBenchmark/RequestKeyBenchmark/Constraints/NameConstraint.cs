@@ -20,7 +20,7 @@
 
         public bool Equals(IConstraint other)
         {
-            return other is NameConstraint constraint && string.Equals(name, constraint.name, StringComparison.Ordinal);
+            return other is NameConstraint constraint && string.Equals(name, constraint.name);
         }
 
         public override bool Equals(object obj)
