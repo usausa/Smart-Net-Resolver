@@ -9,8 +9,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="BenchmarkDotNet" Version="0.11.1" />
-    <PackageReference Include="Usa.Smart.Core" Version="1.5.9" />
+    <PackageReference Include="BenchmarkDotNet" Version="0.11.3" />
+    <PackageReference Include="Usa.Smart.Core" Version="1.6.0" />
   </ItemGroup>
 
   <ItemGroup>

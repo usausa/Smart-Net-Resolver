@@ -13,8 +13,8 @@
     <copyright></copyright>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <dependencies>
-      <dependency id="Xamarin.Forms" version="3.2.0.871581" />
-      <dependency id="Usa.Smart.Core" version="1.5.9" />
+      <dependency id="Xamarin.Forms" version="3.4.0.1009999" />
+      <dependency id="Usa.Smart.Core" version="1.6.0" />
       <dependency id="Usa.Smart.Resolver" version="1.7.6" />
     </dependencies>
     <tags>smart ioc di dependencyinjection xamarin</tags>
