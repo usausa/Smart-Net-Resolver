@@ -48,6 +48,10 @@
         private Func<object> direct1Func;
         private Func<object> direct2Func;
 
+        private Func<object, object> direct0Func1;
+        private Func<object, object> direct1Func1;
+        private Func<object, object> direct2Func1;
+
         [GlobalSetup]
         public void Setup()
         {
@@ -79,6 +83,9 @@
             direct0Func = () => new Data0();
             direct1Func = () => new Data1(directResolver);
             direct2Func = () => new Data2(directResolver, directResolver);
+            direct0Func1 = x => new Data0();
+            direct1Func1 = x => new Data1(directResolver);
+            direct2Func1 = x => new Data2(directResolver, directResolver);
         }
 
         // NonSealed
@@ -194,6 +201,33 @@
             for (var i = 0; i < N; i++)
             {
                 direct2Func();
+            }
+        }
+
+        [Benchmark(OperationsPerInvoke = N)]
+        public void Direct01()
+        {
+            for (var i = 0; i < N; i++)
+            {
+                direct0Func1(this);
+            }
+        }
+
+        [Benchmark(OperationsPerInvoke = N)]
+        public void Direct11()
+        {
+            for (var i = 0; i < N; i++)
+            {
+                direct1Func1(this);
+            }
+        }
+
+        [Benchmark(OperationsPerInvoke = N)]
+        public void Direct21()
+        {
+            for (var i = 0; i < N; i++)
+            {
+                direct2Func1(this);
             }
         }
     }
