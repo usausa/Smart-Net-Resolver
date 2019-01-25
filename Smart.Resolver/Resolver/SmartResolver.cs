@@ -20,6 +20,8 @@
     {
         private sealed class FactoryEntry
         {
+            public bool CanGet { get; set; }
+
             public Func<object> Single { get; set; }
 
             public Func<object>[] Multiple { get; set; }
@@ -109,44 +111,44 @@
 
         public bool CanGet<T>()
         {
-            return FindFactoryEntry(typeof(T)).Single != null;
+            return FindFactoryEntry(typeof(T)).CanGet;
         }
 
         public bool CanGet<T>(IConstraint constraint)
         {
-            return FindFactoryEntry(typeof(T), constraint).Single != null;
+            return FindFactoryEntry(typeof(T), constraint).CanGet;
         }
 
         public bool CanGet(Type type)
         {
-            return FindFactoryEntry(type).Single != null;
+            return FindFactoryEntry(type).CanGet;
         }
 
         public bool CanGet(Type type, IConstraint constraint)
         {
-            return FindFactoryEntry(type, constraint).Single != null;
+            return FindFactoryEntry(type, constraint).CanGet;
         }
 
         // Get
 
         public T Get<T>()
         {
-            return (T)FindFactoryEntry(typeof(T)).Single?.Invoke();
+            return (T)FindFactoryEntry(typeof(T)).Single();
         }
 
         public T Get<T>(IConstraint constraint)
         {
-            return (T)FindFactoryEntry(typeof(T), constraint).Single?.Invoke();
+            return (T)FindFactoryEntry(typeof(T), constraint).Single();
         }
 
         public object Get(Type type)
         {
-            return FindFactoryEntry(type).Single?.Invoke();
+            return FindFactoryEntry(type).Single();
         }
 
         public object Get(Type type, IConstraint constraint)
         {
-            return FindFactoryEntry(type, constraint).Single?.Invoke();
+            return FindFactoryEntry(type, constraint).Single();
         }
 
         // GetAll
@@ -218,7 +220,8 @@
 
                 return new FactoryEntry
                 {
-                    Single = factories.Length > 0 ? factories[factories.Length - 1] : null,
+                    CanGet = factories.Length > 0,
+                    Single = factories.Length > 0 ? factories[factories.Length - 1] : () => null,
                     Multiple = factories
                 };
             }

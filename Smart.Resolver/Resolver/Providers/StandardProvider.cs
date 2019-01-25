@@ -114,7 +114,7 @@
                     }
 
                     // Resolve
-                    if (kernel.ResolveFactory(pi.ParameterType, parameter.Constraint) != null)
+                    if (kernel.CanGet(pi.ParameterType, parameter.Constraint))
                     {
                         continue;
                     }
@@ -158,22 +158,27 @@
                 // Multiple
                 if (parameter.ElementType != null)
                 {
-                    var factory = kernel.ResolveFactory(pi.ParameterType, parameter.Constraint);
-                    if (factory == null)
+                    // TODO
+                    if (kernel.CanGet(pi.ParameterType, parameter.Constraint))
+                    {
+                        var factory = kernel.ResolveFactory(pi.ParameterType, parameter.Constraint);
+                        argumentFactories.Add(factory);
+                    }
+                    else
                     {
                         var factories = kernel.ResolveAllFactory(parameter.ElementType, parameter.Constraint).ToArray();
-                        factory = ArrayFactory.Create(delegateFactory.CreateArrayAllocator(parameter.ElementType), factories);
+                        var factory = ArrayFactory.Create(delegateFactory.CreateArrayAllocator(parameter.ElementType), factories);
+                        argumentFactories.Add(factory);
                     }
-
-                    argumentFactories.Add(factory);
                     continue;
                 }
 
+                // TODO
                 // Resolve
-                var objectFactory = kernel.ResolveFactory(pi.ParameterType, parameter.Constraint);
-                if (objectFactory != null)
+                if (kernel.CanGet(pi.ParameterType, parameter.Constraint))
                 {
-                    argumentFactories.Add(objectFactory);
+                    var factory = kernel.ResolveFactory(pi.ParameterType, parameter.Constraint);
+                    argumentFactories.Add(factory);
                     continue;
                 }
 
