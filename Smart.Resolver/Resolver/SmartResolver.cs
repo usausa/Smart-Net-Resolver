@@ -129,6 +129,36 @@
             return FindFactoryEntry(type, constraint).CanGet;
         }
 
+        // TryGet
+
+        public bool TryGet<T>(out T obj)
+        {
+            var entry = FindFactoryEntry(typeof(T));
+            obj = entry.CanGet ? (T)entry.Single() : default;
+            return entry.CanGet;
+        }
+
+        public bool TryGet<T>(IConstraint constraint, out T obj)
+        {
+            var entry = FindFactoryEntry(typeof(T), constraint);
+            obj = entry.CanGet ? (T)entry.Single() : default;
+            return entry.CanGet;
+        }
+
+        public bool TryGet(Type type, out object obj)
+        {
+            var entry = FindFactoryEntry(type);
+            obj = entry.CanGet ? entry.Single() : default;
+            return entry.CanGet;
+        }
+
+        public bool TryGet(Type type, IConstraint constraint, out object obj)
+        {
+            var entry = FindFactoryEntry(type, constraint);
+            obj = entry.CanGet ? entry.Single() : default;
+            return entry.CanGet;
+        }
+
         // Get
 
         public T Get<T>()
