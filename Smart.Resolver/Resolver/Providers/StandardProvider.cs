@@ -64,10 +64,65 @@
         public Func<object> CreateFactory(IKernel kernel, IBinding binding)
         {
             var constructors = CreateConstructorMetadata();
-            var constructor = FindBestConstructor(kernel, binding, constructors);
-            var argumentFactories = ResolveArgumentsFactories(kernel, binding, constructor);
-            var actions = CreateActions(kernel, binding);
-            return CreateFactory(constructor.Constructor, argumentFactories, actions);
+            if (constructors.Length == 0)
+            {
+                throw new InvalidOperationException(
+                    String.Format(CultureInfo.InvariantCulture, "No constructor available. type = {0}", TargetType.Name));
+            }
+
+            foreach (var constructor in constructors)
+            {
+                var match = true;
+                var argumentFactories = new List<Func<object>>(constructor.Parameters.Length);
+
+                foreach (var parameter in constructor.Parameters)
+                {
+                    var pi = parameter.Parameter;
+
+                    // Constructor argument
+                    var argument = binding.ConstructorArguments.GetParameter(pi.Name);
+                    if (argument != null)
+                    {
+                        argumentFactories.Add(() => argument.Resolve(kernel));
+                        continue;
+                    }
+
+                    // Resolve
+                    if (kernel.TryResolveFactory(pi.ParameterType, parameter.Constraint, out var factory))
+                    {
+                        argumentFactories.Add(factory);
+                        continue;
+                    }
+
+                    // Multiple
+                    if ((parameter.ElementType != null) &&
+                        kernel.TryResolveFactories(parameter.ElementType, parameter.Constraint, out var factories))
+                    {
+                        var arrayFactory = ArrayFactory.Create(delegateFactory.CreateArrayAllocator(parameter.ElementType), factories);
+                        argumentFactories.Add(arrayFactory);
+                        continue;
+                    }
+
+                    // DefaultValue
+                    if (pi.HasDefaultValue)
+                    {
+                        argumentFactories.Add(() => pi.DefaultValue);
+                        continue;
+                    }
+
+                    match = false;
+                    break;
+                }
+
+                if (match)
+                {
+                    var actions = CreateActions(kernel, binding);
+                    return CreateFactory(constructor.Constructor, argumentFactories.ToArray(), actions);
+                }
+            }
+
+            throw new InvalidOperationException(
+            String.Format(CultureInfo.InvariantCulture, "Constructor parameter unresolved. type = {0}", TargetType.Name));
         }
 
         // ------------------------------------------------------------
@@ -83,113 +138,6 @@
                 .ThenByDescending(c => c.GetParameters().Count(p => p.HasDefaultValue))
                 .Select(c => new ConstructorMetadata(c))
                 .ToArray();
-        }
-
-        private ConstructorMetadata FindBestConstructor(IKernel kernel, IBinding binding, ConstructorMetadata[] constructors)
-        {
-            if (constructors.Length == 0)
-            {
-                throw new InvalidOperationException(
-                    String.Format(CultureInfo.InvariantCulture, "No constructor available. type = {0}", TargetType.Name));
-            }
-
-            foreach (var constructor in constructors)
-            {
-                var match = true;
-
-                foreach (var parameter in constructor.Parameters)
-                {
-                    var pi = parameter.Parameter;
-
-                    // Constructor argument
-                    if (binding.ConstructorArguments.GetParameter(pi.Name) != null)
-                    {
-                        continue;
-                    }
-
-                    // Multiple
-                    if (parameter.ElementType != null)
-                    {
-                        continue;
-                    }
-
-                    // Resolve
-                    if (kernel.CanGet(pi.ParameterType, parameter.Constraint))
-                    {
-                        continue;
-                    }
-
-                    // DefaultValue
-                    if (pi.HasDefaultValue)
-                    {
-                        continue;
-                    }
-
-                    match = false;
-                    break;
-                }
-
-                if (match)
-                {
-                    return constructor;
-                }
-            }
-
-            throw new InvalidOperationException(
-                String.Format(CultureInfo.InvariantCulture, "Constructor parameter unresolved. type = {0}", TargetType.Name));
-        }
-
-        private Func<object>[] ResolveArgumentsFactories(IKernel kernel, IBinding binding, ConstructorMetadata constructor)
-        {
-            var argumentFactories = new List<Func<object>>(constructor.Parameters.Length);
-
-            foreach (var parameter in constructor.Parameters)
-            {
-                var pi = parameter.Parameter;
-
-                // Constructor argument
-                var argument = binding.ConstructorArguments.GetParameter(pi.Name);
-                if (argument != null)
-                {
-                    argumentFactories.Add(() => argument.Resolve(kernel));
-                    continue;
-                }
-
-                // Multiple
-                if (parameter.ElementType != null)
-                {
-                    // TODO
-                    if (kernel.CanGet(pi.ParameterType, parameter.Constraint))
-                    {
-                        var factory = kernel.ResolveFactory(pi.ParameterType, parameter.Constraint);
-                        argumentFactories.Add(factory);
-                    }
-                    else
-                    {
-                        var factories = kernel.ResolveAllFactory(parameter.ElementType, parameter.Constraint).ToArray();
-                        var factory = ArrayFactory.Create(delegateFactory.CreateArrayAllocator(parameter.ElementType), factories);
-                        argumentFactories.Add(factory);
-                    }
-                    continue;
-                }
-
-                // TODO
-                // Resolve
-                if (kernel.CanGet(pi.ParameterType, parameter.Constraint))
-                {
-                    var factory = kernel.ResolveFactory(pi.ParameterType, parameter.Constraint);
-                    argumentFactories.Add(factory);
-                    continue;
-                }
-
-                // DefaultValue
-                if (pi.HasDefaultValue)
-                {
-                    argumentFactories.Add(() => pi.DefaultValue);
-                }
-            }
-
-            return argumentFactories.ToArray();
         }
 
         private Action<object>[] CreateActions(IKernel kernel, IBinding binding)

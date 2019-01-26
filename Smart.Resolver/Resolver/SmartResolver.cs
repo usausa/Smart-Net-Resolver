@@ -89,18 +89,18 @@
         // ObjectFactory
         // ------------------------------------------------------------
 
-        Func<object> IKernel.ResolveFactory(Type type, IConstraint constraint)
+        bool IKernel.TryResolveFactory(Type type, IConstraint constraint, out Func<object> factory)
         {
-            return (constraint == null
-                ? FindFactoryEntry(type)
-                : FindFactoryEntry(type, constraint)).Single;
+            var entry = constraint == null ? FindFactoryEntry(type) : FindFactoryEntry(type, constraint);
+            factory = entry.Single;
+            return entry.CanGet;
         }
 
-        IEnumerable<Func<object>> IKernel.ResolveAllFactory(Type type, IConstraint constraint)
+        bool IKernel.TryResolveFactories(Type type, IConstraint constraint, out Func<object>[] factories)
         {
-            return (constraint == null
-                ? FindFactoryEntry(type)
-                : FindFactoryEntry(type, constraint)).Multiple;
+            var entry = constraint == null ? FindFactoryEntry(type) : FindFactoryEntry(type, constraint);
+            factories = entry.Multiple;
+            return entry.CanGet;
         }
 
         // ------------------------------------------------------------
