@@ -16,7 +16,7 @@
     /// <summary>
     ///
     /// </summary>
-    public sealed class SmartResolver : DisposableObject, IKernel
+    public sealed class SmartResolver : DisposableObject, IKernel, IScopeResolverSupport
     {
         private sealed class FactoryEntry
         {
