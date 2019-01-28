@@ -16,7 +16,7 @@
     /// <summary>
     ///
     /// </summary>
-    public sealed class SmartResolver : IKernel, IScopeResolverSupport, IDisposable
+    public sealed class SmartResolver : IKernel
     {
         private sealed class FactoryEntry
         {
@@ -285,116 +285,6 @@
                 .Select(x => x.CreateInjector(type, this, binding))
                 .Where(x => x != null)
                 .ToArray();
-        }
-
-        // ------------------------------------------------------------
-        // Scope
-        // ------------------------------------------------------------
-
-        public IResolver CreateScopeResolver()
-        {
-            return new ScopeResolver(this);
-        }
-
-        private sealed class ScopeResolver : IResolver, IDisposable
-        {
-            private readonly SmartResolver resolver;
-
-            public ScopeResolver(SmartResolver resolver)
-            {
-                this.resolver = resolver;
-            }
-
-            public bool CanGet<T>()
-            {
-                // TODO
-                return resolver.CanGet<T>();
-            }
-
-            public bool CanGet<T>(IConstraint constraint)
-            {
-                throw new NotImplementedException();
-            }
-
-            public bool CanGet(Type type)
-            {
-                throw new NotImplementedException();
-            }
-
-            public bool CanGet(Type type, IConstraint constraint)
-            {
-                throw new NotImplementedException();
-            }
-
-            public bool TryGet<T>(out T obj)
-            {
-                throw new NotImplementedException();
-            }
-
-            public bool TryGet<T>(IConstraint constraint, out T obj)
-            {
-                throw new NotImplementedException();
-            }
-
-            public bool TryGet(Type type, out object obj)
-            {
-                throw new NotImplementedException();
-            }
-
-            public bool TryGet(Type type, IConstraint constraint, out object obj)
-            {
-                throw new NotImplementedException();
-            }
-
-            public T Get<T>()
-            {
-                throw new NotImplementedException();
-            }
-
-            public T Get<T>(IConstraint constraint)
-            {
-                throw new NotImplementedException();
-            }
-
-            public object Get(Type type)
-            {
-                throw new NotImplementedException();
-            }
-
-            public object Get(Type type, IConstraint constraint)
-            {
-                throw new NotImplementedException();
-            }
-
-            public IEnumerable<T> GetAll<T>()
-            {
-                throw new NotImplementedException();
-            }
-
-            public IEnumerable<T> GetAll<T>(IConstraint constraint)
-            {
-                throw new NotImplementedException();
-            }
-
-            public IEnumerable<object> GetAll(Type type)
-            {
-                throw new NotImplementedException();
-            }
-
-            public IEnumerable<object> GetAll(Type type, IConstraint constraint)
-            {
-                throw new NotImplementedException();
-            }
-
-            public void Inject(object instance)
-            {
-                throw new NotImplementedException();
-            }
-
-            public void Dispose()
-            {
-                // TODO
-            }
         }
     }
 }
