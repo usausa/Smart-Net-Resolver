@@ -29,7 +29,6 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <AndroidLinkMode>None</AndroidLinkMode>
-    <LangVersion>latest</LangVersion>
     <CodeAnalysisRuleSet>..\..\..\Smart.Resolver.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
@@ -41,7 +40,6 @@
     <WarningLevel>4</WarningLevel>
     <AndroidManagedSymbols>true</AndroidManagedSymbols>
     <AndroidUseSharedRuntime>false</AndroidUseSharedRuntime>
-    <LangVersion>latest</LangVersion>
     <CodeAnalysisRuleSet>..\..\..\Smart.Resolver.ruleset</CodeAnalysisRuleSet>
     <AotAssemblies>true</AotAssemblies>
     <EnableLLVM>true</EnableLLVM>
