@@ -1,9 +1,8 @@
-﻿using System.Collections.Generic;
-using System.Threading;
-
-namespace ScopeBenchmark
+﻿namespace ScopeBenchmark
 {
     using System;
+    using System.Collections.Generic;
+    using System.Threading;
 
     using BenchmarkDotNet.Attributes;
     using BenchmarkDotNet.Configs;
@@ -41,13 +40,16 @@ namespace ScopeBenchmark
 
         private Resolver resolver;
 
-        private ChildResolver childResolver;
+        private ContextResolver childResolver;
+
+        private ScopeResolver scopeResolver;
 
         [GlobalSetup]
         public void Setup()
         {
             resolver = new Resolver();
-            childResolver = new ChildResolver(resolver, new ScopeStorage(), new object());
+            childResolver = new ContextResolver(resolver, new ScopeStorage(), new object());
+            scopeResolver = new ScopeResolver(new ScopeProvider());
         }
 
         [Benchmark]
@@ -57,16 +59,22 @@ namespace ScopeBenchmark
         }
 
         [Benchmark]
-        public object ChildResolver()
+        public object ContextResolver()
         {
             return childResolver.GetInstance(RequestType);
+        }
+
+        [Benchmark]
+        public object ScopeResolver()
+        {
+            return scopeResolver.GetInstance(RequestType);
         }
     }
 
     public sealed class ScopeStorage
     {
-        //private readonly AsyncLocal<object> store = new AsyncLocal<object>();
-        private readonly ThreadLocal<object> store = new ThreadLocal<object>(); // faster than AsyncLocal
+        private readonly AsyncLocal<object> store = new AsyncLocal<object>();
+        //private readonly ThreadLocal<object> store = new ThreadLocal<object>(); // faster than AsyncLocal
 
         public object Store => store;
 
@@ -83,13 +91,13 @@ namespace ScopeBenchmark
         }
     }
 
-    public sealed class ChildResolverScope : IDisposable
+    public sealed class ContextResolverScope : IDisposable
     {
         private readonly ScopeStorage storage;
 
         private readonly object oldStore;
 
-        public ChildResolverScope(ScopeStorage storage, object store)
+        public ContextResolverScope(ScopeStorage storage, object store)
         {
             this.storage = storage;
             oldStore = storage.Swap(store);
@@ -101,12 +109,53 @@ namespace ScopeBenchmark
         }
     }
 
-    public interface IResolver
+    public interface IScopeContainer
+    {
+        object GetOrCreate(Type type, Func<object> func);
+    }
+
+    public interface IScopeProvider
+    {
+        object GetInstance(IScopeContainer container, Type type);
+    }
+
+    public interface IResolver : IScopeContainer
     {
         object GetInstance(Type type);
     }
 
-    public sealed class ChildResolver : IResolver
+    public sealed class ScopeResolver : IResolver
+    {
+        private readonly ScopeProvider provider;
+
+        private readonly Dictionary<Type, object> cache = new Dictionary<Type, object>();
+
+        public ScopeResolver(ScopeProvider provider)
+        {
+            this.provider = provider;
+        }
+
+        public object GetOrCreate(Type type, Func<object> func)
+        {
+            lock (cache)
+            {
+                if (!cache.TryGetValue(type, out var target))
+                {
+                    target = func();
+                    cache[type] = target;
+                }
+
+                return target;
+            }
+        }
+
+        public object GetInstance(Type type)
+        {
+            return provider.GetInstance(this, type);
+        }
+    }
+
+    public sealed class ContextResolver : IResolver
     {
         private readonly Resolver resolver;
 
@@ -114,7 +163,7 @@ namespace ScopeBenchmark
 
         private readonly object store;
 
-        public ChildResolver(Resolver resolver, ScopeStorage storage, object store)
+        public ContextResolver(Resolver resolver, ScopeStorage storage, object store)
         {
             this.resolver = resolver;
             this.storage = storage;
@@ -123,10 +172,15 @@ namespace ScopeBenchmark
 
         public object GetInstance(Type type)
         {
-            using (new ChildResolverScope(storage, store))
+            using (new ContextResolverScope(storage, store))
             {
                 return resolver.GetInstance(type);
             }
+        }
+
+        public object GetOrCreate(Type type, Func<object> func)
+        {
+            throw new NotSupportedException();
         }
     }
 
@@ -138,6 +192,27 @@ namespace ScopeBenchmark
         {
             dummy.TryGetValue(type, out _);
             return new Data();
+        }
+
+        public object GetOrCreate(Type type, Func<object> func)
+        {
+            throw new NotSupportedException();
+        }
+    }
+
+    public sealed class ScopeProvider : IScopeProvider
+    {
+        private readonly Dictionary<Type, object> dummy = new Dictionary<Type, object>();
+
+        private object Factory()
+        {
+            return new Data();
+        }
+
+        public object GetInstance(IScopeContainer container, Type type)
+        {
+            dummy.TryGetValue(type, out _);
+            return container.GetOrCreate(type, Factory);
         }
     }
 
