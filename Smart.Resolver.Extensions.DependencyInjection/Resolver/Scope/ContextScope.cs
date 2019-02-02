@@ -6,7 +6,7 @@
     using Smart.Resolver.Bindings;
     using Smart.Resolver.Scopes;
 
-    public sealed class ResolverScope : IScope
+    public sealed class ContextScope : IScope
     {
         public IScope Copy(IComponentContainer components)
         {
