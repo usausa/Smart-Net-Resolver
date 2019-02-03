@@ -1,7 +1,6 @@
-﻿using System;
-
-namespace Smart.Resolver
+﻿namespace Smart.Resolver
 {
+    using System;
     using System.Collections.Generic;
     using System.Threading;
 
