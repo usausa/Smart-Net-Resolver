@@ -1,5 +1,7 @@
 ﻿namespace Example.WebApplication
 {
+    using System.IO;
+
     using Dapper;
 
     using Example.WebApplication.Services;
@@ -18,12 +20,13 @@
 
     public class Startup
     {
-        public Startup(IConfiguration configuration)
+        public IConfiguration Configuration { get; }
+
+        public Startup(IConfiguration configuration, IHostingEnvironment env)
         {
             Configuration = configuration;
+            Directory.SetCurrentDirectory(env.ContentRootPath);
         }
-
-        public IConfiguration Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
