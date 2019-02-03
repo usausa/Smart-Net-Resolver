@@ -8,6 +8,8 @@
     using Microsoft.Extensions.Hosting;
     using Microsoft.Extensions.Logging;
 
+    using Smart.Resolver;
+
     public static class Program
     {
         public static async Task Main(string[] args)
@@ -15,7 +17,7 @@
             await new HostBuilder()
                 .ConfigureAppConfiguration((hostContext, app) =>
                 {
-                    hostContext.HostingEnvironment.EnvironmentName = System.Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
+                    hostContext.HostingEnvironment.EnvironmentName = System.Environment.GetEnvironmentVariable("NETCORE_ENVIRONMENT");
 
                     app.SetBasePath(Directory.GetCurrentDirectory());
                     app.AddJsonFile("appsettings.json", optional: true);
@@ -34,14 +36,20 @@
                         logging.AddDebug();
                     }
                 })
+                .UseSmartResolver(ConfigureServices)
                 .ConfigureServices(ConfigureServices)
                 .UseConsoleLifetime()
                 .RunConsoleAsync();
         }
 
+        private static void ConfigureServices(ResolverConfig config)
+        {
+            config.Bind<SettingService>().ToSelf().InSingletonScope();
+        }
+
         private static void ConfigureServices(HostBuilderContext hostContext, IServiceCollection services)
         {
-            services.AddOptions();
+            services.Configure<Settings>(hostContext.Configuration.GetSection("Settings"));
 
             services.AddHostedService<ExampleHostedService>();
         }

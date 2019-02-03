@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "Example.GenericHost": {
+      "commandName": "Project",
+      "environmentVariables": {
+        "NETCORE_ENVIRONMENT": "Development"
+      }
+    }
+  }
+}

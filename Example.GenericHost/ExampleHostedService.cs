@@ -13,12 +13,16 @@
 
         private IApplicationLifetime ApplicationLifetime { get; }
 
+        private SettingService SettingService { get; }
+
         public ExampleHostedService(
             ILogger<ExampleHostedService> log,
-            IApplicationLifetime applicationLifetime)
+            IApplicationLifetime applicationLifetime,
+            SettingService settingService)
         {
             Log = log;
             ApplicationLifetime = applicationLifetime;
+            SettingService = settingService;
         }
 
         public Task StartAsync(CancellationToken cancellationToken)
@@ -40,6 +44,8 @@
         {
             try
             {
+                SettingService.Write();
+
                 await Task.Delay(30000, cancellationToken);
             }
             catch (Exception e)
