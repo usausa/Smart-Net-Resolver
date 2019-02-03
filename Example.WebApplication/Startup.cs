@@ -35,11 +35,7 @@
 
         public void ConfigureContainer(ResolverConfig config)
         {
-            // TODO
-            //config.UseMissingHandler<ControllerMissingHandler>();
-            //config.UseMissingHandler<ViewComponentMissingHandler>();
-            //config.Bind<IControllerActivator>().To<SmartResolverControllerActivator>().InSingletonScope();
-            //config.Bind<IViewComponentActivator>().To<SmartResolverViewComponentActivator>().InSingletonScope();
+            config.AddMvcActivatorSupport();
 
             var connectionStringMaster = Configuration.GetConnectionString("Master");
             config
