@@ -1,8 +1,6 @@
-﻿namespace Smart
+﻿namespace Smart.Resolver
 {
     using Microsoft.Extensions.DependencyInjection;
-
-    using Smart.Resolver;
 
     public static class ServiceCollectionExtensions
     {
