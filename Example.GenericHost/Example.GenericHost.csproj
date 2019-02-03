@@ -23,7 +23,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Smart.Resolver.Extensions.Hosting\Smart.Resolver.Extensions.Hosting.csproj" />
+    <ProjectReference Include="..\Smart.Resolver.Extensions.DependencyInjection\Smart.Resolver.Extensions.DependencyInjection.csproj" />
   </ItemGroup>
 
   <ItemGroup>

@@ -4,21 +4,21 @@
 
     using Microsoft.Extensions.DependencyInjection;
 
-    public sealed class SmartResolverServiceProviderFactory : IServiceProviderFactory<ResolverConfig>
+    public sealed class SmartServiceProviderFactory : IServiceProviderFactory<ResolverConfig>
     {
         private readonly ResolverConfig config;
 
-        public SmartResolverServiceProviderFactory()
+        public SmartServiceProviderFactory()
             : this(new ResolverConfig())
         {
         }
 
-        public SmartResolverServiceProviderFactory(ResolverConfig config)
+        public SmartServiceProviderFactory(ResolverConfig config)
         {
             this.config = config;
         }
 
-        public SmartResolverServiceProviderFactory(Action<ResolverConfig> action)
+        public SmartServiceProviderFactory(Action<ResolverConfig> action)
         {
             config = new ResolverConfig();
             action(config);
@@ -28,8 +28,8 @@
         {
             config.Populate(services);
 
-            config.Bind<IServiceProvider>().To<SmartResolverServiceProvider>().InSingletonScope();
-            config.Bind<IServiceScopeFactory>().To<SmartResolverServiceScopeFactory>().InSingletonScope();
+            config.Bind<IServiceProvider>().To<SmartServiceProvider>().InSingletonScope();
+            config.Bind<IServiceScopeFactory>().To<SmartServiceScopeFactory>().InSingletonScope();
 
             config.UseOpenGenericBinding();
             config.UseArrayBinding();
@@ -39,7 +39,7 @@
 
         public IServiceProvider CreateServiceProvider(ResolverConfig containerBuilder)
         {
-            return new SmartResolverServiceProvider(containerBuilder.ToResolver());
+            return new SmartServiceProvider(containerBuilder.ToResolver());
         }
     }
 }

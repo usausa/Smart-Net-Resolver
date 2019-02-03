@@ -2,11 +2,11 @@
 {
     using System;
 
-    public sealed class SmartResolverServiceProvider : IServiceProvider
+    public sealed class SmartServiceProvider : IServiceProvider
     {
         private readonly SmartResolver resolver;
 
-        public SmartResolverServiceProvider(SmartResolver resolver)
+        public SmartServiceProvider(SmartResolver resolver)
         {
             this.resolver = resolver;
         }

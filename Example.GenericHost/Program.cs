@@ -36,7 +36,7 @@
                         logging.AddDebug();
                     }
                 })
-                .UseSmartResolver(ConfigureServices)
+                .UseServiceProviderFactory(new SmartServiceProviderFactory(ConfigureServices))
                 .ConfigureServices(ConfigureServices)
                 .UseConsoleLifetime()
                 .RunConsoleAsync();

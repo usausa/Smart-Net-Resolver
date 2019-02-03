@@ -4,11 +4,11 @@
 
     using Microsoft.AspNetCore.Mvc.ViewComponents;
 
-    public sealed class SmartResolverViewComponentActivator : IViewComponentActivator
+    public sealed class SmartViewComponentActivator : IViewComponentActivator
     {
         private readonly SmartResolver resolver;
 
-        public SmartResolverViewComponentActivator(SmartResolver resolver)
+        public SmartViewComponentActivator(SmartResolver resolver)
         {
             this.resolver = resolver;
         }

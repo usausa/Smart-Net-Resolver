@@ -6,7 +6,7 @@
     {
         public static IServiceCollection AddSmartResolver(this IServiceCollection services)
         {
-            return services.AddSingleton<IServiceProviderFactory<ResolverConfig>>(new SmartResolverServiceProviderFactory());
+            return services.AddSingleton<IServiceProviderFactory<ResolverConfig>>(new SmartServiceProviderFactory());
         }
     }
 }

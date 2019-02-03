@@ -29,8 +29,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Smart.Resolver.Benchmark", 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Smart.Resolver.Extensions.DependencyInjection", "Smart.Resolver.Extensions.DependencyInjection\Smart.Resolver.Extensions.DependencyInjection.csproj", "{F13C481C-5ABC-4817-9351-409F55CEA8E8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Smart.Resolver.Extensions.Hosting", "Smart.Resolver.Extensions.Hosting\Smart.Resolver.Extensions.Hosting.csproj", "{7BB7A010-9475-4395-8C8E-B5FE13355523}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Example.GenericHost", "Example.GenericHost\Example.GenericHost.csproj", "{FB604EFA-080F-4814-A15A-7A48F921EF77}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Example.WebApplication", "Example.WebApplication\Example.WebApplication.csproj", "{998867D1-9297-4F02-86A7-F873A3EAE437}"
@@ -65,10 +63,6 @@ Global
 		{F13C481C-5ABC-4817-9351-409F55CEA8E8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F13C481C-5ABC-4817-9351-409F55CEA8E8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F13C481C-5ABC-4817-9351-409F55CEA8E8}.Release|Any CPU.Build.0 = Release|Any CPU
-		{7BB7A010-9475-4395-8C8E-B5FE13355523}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{7BB7A010-9475-4395-8C8E-B5FE13355523}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{7BB7A010-9475-4395-8C8E-B5FE13355523}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{7BB7A010-9475-4395-8C8E-B5FE13355523}.Release|Any CPU.Build.0 = Release|Any CPU
 		{FB604EFA-080F-4814-A15A-7A48F921EF77}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{FB604EFA-080F-4814-A15A-7A48F921EF77}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FB604EFA-080F-4814-A15A-7A48F921EF77}.Release|Any CPU.ActiveCfg = Release|Any CPU

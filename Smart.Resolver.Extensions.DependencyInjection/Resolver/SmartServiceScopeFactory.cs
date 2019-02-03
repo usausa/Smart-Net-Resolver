@@ -4,18 +4,18 @@
 
     using Microsoft.Extensions.DependencyInjection;
 
-    public sealed class SmartResolverServiceScopeFactory : IServiceScopeFactory
+    public sealed class SmartServiceScopeFactory : IServiceScopeFactory
     {
         private readonly IServiceProvider serviceProvider;
 
-        public SmartResolverServiceScopeFactory(IServiceProvider serviceProvider)
+        public SmartServiceScopeFactory(IServiceProvider serviceProvider)
         {
             this.serviceProvider = serviceProvider;
         }
 
         public IServiceScope CreateScope()
         {
-            return new SmartResolverServiceScope(serviceProvider);
+            return new SmartServiceScope(serviceProvider);
         }
     }
 }

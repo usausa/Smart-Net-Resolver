@@ -5,11 +5,11 @@
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.AspNetCore.Mvc.Controllers;
 
-    public sealed class SmartResolverControllerActivator : IControllerActivator
+    public sealed class SmartControllerActivator : IControllerActivator
     {
         private readonly SmartResolver resolver;
 
-        public SmartResolverControllerActivator(SmartResolver resolver)
+        public SmartControllerActivator(SmartResolver resolver)
         {
             this.resolver = resolver;
         }

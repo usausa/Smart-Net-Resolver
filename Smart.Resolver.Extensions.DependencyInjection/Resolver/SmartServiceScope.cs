@@ -4,11 +4,11 @@
 
     using Microsoft.Extensions.DependencyInjection;
 
-    public sealed class SmartResolverServiceScope : IServiceScope
+    public sealed class SmartServiceScope : IServiceScope
     {
         public IServiceProvider ServiceProvider { get; }
 
-        public SmartResolverServiceScope(IServiceProvider serviceProvider)
+        public SmartServiceScope(IServiceProvider serviceProvider)
         {
             ServiceProvider = serviceProvider;
             AsyncContext.Initializable();
