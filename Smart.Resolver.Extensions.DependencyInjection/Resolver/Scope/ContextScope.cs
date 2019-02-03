@@ -10,12 +10,27 @@
     {
         public IScope Copy(IComponentContainer components)
         {
-            throw new NotImplementedException();
+            return this;
         }
 
         public Func<object> Create(IKernel kernel, IBinding binding, Func<object> factory)
         {
-            throw new NotImplementedException();
+            return () =>
+            {
+                var store = AsyncContext.Store;
+                if (store == null)
+                {
+                    return factory();
+                }
+
+                if (!store.TryGetValue(binding, out var value))
+                {
+                    value = factory();
+                    store[binding] = value;
+                }
+
+                return value;
+            };
         }
     }
 }
