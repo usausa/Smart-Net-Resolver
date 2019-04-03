@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
   <metadata>
     <id>Usa.Smart.Resolver.Xamarin</id>
@@ -13,7 +13,7 @@
     <copyright></copyright>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <dependencies>
-      <dependency id="Xamarin.Forms" version="3.4.0.1009999" />
+      <dependency id="Xamarin.Forms" version="3.6.0.264807" />
       <dependency id="Usa.Smart.Core" version="1.6.0" />
       <dependency id="Usa.Smart.Resolver" version="1.7.6" />
     </dependencies>
