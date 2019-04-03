@@ -47,7 +47,7 @@
         /// <returns></returns>
         public override int GetHashCode()
         {
-            return name != null ? name.GetHashCode() : 0;
+            return name?.GetHashCode() ?? 0;
         }
     }
 }

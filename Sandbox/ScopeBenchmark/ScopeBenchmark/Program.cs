@@ -173,7 +173,7 @@
         public object GetInstance(Type type)
         {
             var cache = storage.Store;
-            if (cache == null)
+            if (cache is null)
             {
                 return new Data();
             }

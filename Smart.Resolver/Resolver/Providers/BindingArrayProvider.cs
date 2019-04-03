@@ -28,22 +28,22 @@
         /// <param name="bindings"></param>
         public BindingArrayProvider(Type type, Type elementType, IComponentContainer components, IBinding[] bindings)
         {
-            if (type == null)
+            if (type is null)
             {
                 throw new ArgumentNullException(nameof(type));
             }
 
-            if (elementType == null)
+            if (elementType is null)
             {
                 throw new ArgumentNullException(nameof(elementType));
             }
 
-            if (components == null)
+            if (components is null)
             {
                 throw new ArgumentNullException(nameof(components));
             }
 
-            if (bindings == null)
+            if (bindings is null)
             {
                 throw new ArgumentNullException(nameof(bindings));
             }

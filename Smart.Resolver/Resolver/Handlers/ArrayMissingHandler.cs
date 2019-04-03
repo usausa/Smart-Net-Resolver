@@ -37,7 +37,7 @@
         public IEnumerable<IBinding> Handle(IComponentContainer components, IBindingTable table, Type type)
         {
             var elementType = TypeHelper.GetEnumerableElementType(type);
-            if (elementType == null)
+            if (elementType is null)
             {
                 return Enumerable.Empty<IBinding>();
             }

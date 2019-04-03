@@ -113,7 +113,7 @@
 
         public IBindingWithSyntax WithMetadata(string key, object value)
         {
-            if (metadataValues == null)
+            if (metadataValues is null)
             {
                 metadataValues = new Dictionary<string, object>();
             }
@@ -124,7 +124,7 @@
 
         public IBindingWithSyntax WithConstructorArgument(string name, Func<IComponentContainer, IParameter> factory)
         {
-            if (constructorArgumentFactories == null)
+            if (constructorArgumentFactories is null)
             {
                 constructorArgumentFactories = new Dictionary<string, Func<IComponentContainer, IParameter>>();
             }
@@ -147,7 +147,7 @@
 
         public IBindingWithSyntax WithPropertyValue(string name, Func<IComponentContainer, IParameter> factory)
         {
-            if (propertyValueFactories == null)
+            if (propertyValueFactories is null)
             {
                 propertyValueFactories = new Dictionary<string, Func<IComponentContainer, IParameter>>();
             }

@@ -9,7 +9,7 @@
         public bool Equals(RequestKey x, RequestKey y)
         {
             return (x.Type == y.Type) &&
-                   (((x.Constraint == null) && (y.Constraint == null)) ||
+                   ((x.Constraint is null && y.Constraint is null) ||
                     ((x.Constraint != null) && (y.Constraint != null) && x.Constraint.Equals(y.Constraint)));
         }
 

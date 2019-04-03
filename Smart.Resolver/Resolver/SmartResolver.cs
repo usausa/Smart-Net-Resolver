@@ -52,7 +52,7 @@
         /// <param name="config"></param>
         public SmartResolver(IResolverConfig config)
         {
-            if (config == null)
+            if (config is null)
             {
                 throw new ArgumentNullException(nameof(config));
             }
@@ -85,14 +85,14 @@
 
         bool IKernel.TryResolveFactory(Type type, IConstraint constraint, out Func<object> factory)
         {
-            var entry = constraint == null ? FindFactoryEntry(type) : FindFactoryEntry(type, constraint);
+            var entry = constraint is null ? FindFactoryEntry(type) : FindFactoryEntry(type, constraint);
             factory = entry.Single;
             return entry.CanGet;
         }
 
         bool IKernel.TryResolveFactories(Type type, IConstraint constraint, out Func<object>[] factories)
         {
-            var entry = constraint == null ? FindFactoryEntry(type) : FindFactoryEntry(type, constraint);
+            var entry = constraint is null ? FindFactoryEntry(type) : FindFactoryEntry(type, constraint);
             factories = entry.Multiple;
             return entry.CanGet;
         }
@@ -238,7 +238,7 @@
                     .Select(b =>
                     {
                         var factory = b.Provider.CreateFactory(this, b);
-                        return b.Scope != null ? b.Scope.Create(this, b, factory) : factory;
+                        return b.Scope is null ? factory : b.Scope.Create(this, b, factory);
                     })
                     .ToArray();
 
@@ -261,7 +261,7 @@
         /// <param name="instance"></param>
         public void Inject(object instance)
         {
-            if (instance == null)
+            if (instance is null)
             {
                 throw new ArgumentNullException(nameof(instance));
             }

@@ -65,7 +65,7 @@
         /// <returns></returns>
         public T Get<T>(string key, T defaultValue)
         {
-            return values != null ? (T)values.GetOr(key, defaultValue) : defaultValue;
+            return values is null ? defaultValue : (T)values.GetOr(key, defaultValue);
         }
     }
 }

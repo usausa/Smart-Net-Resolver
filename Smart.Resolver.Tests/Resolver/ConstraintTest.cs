@@ -107,7 +107,7 @@
 
             public override int GetHashCode()
             {
-                return Key != null ? Key.GetHashCode() : 0;
+                return Key?.GetHashCode() ?? 0;
             }
         }
 

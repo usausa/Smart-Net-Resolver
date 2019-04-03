@@ -38,12 +38,12 @@
         /// <param name="components"></param>
         public StandardProvider(Type type, IComponentContainer components)
         {
-            if (type == null)
+            if (type is null)
             {
                 throw new ArgumentNullException(nameof(type));
             }
 
-            if (components == null)
+            if (components is null)
             {
                 throw new ArgumentNullException(nameof(components));
             }

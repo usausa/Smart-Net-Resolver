@@ -17,7 +17,7 @@
         /// <returns></returns>
         public static ResolverConfig UseDependencyService(this ResolverConfig config)
         {
-            if (config == null)
+            if (config is null)
             {
                 throw new ArgumentNullException(nameof(config));
             }
@@ -27,7 +27,7 @@
 
         public static ResolverConfig UseBindingContextInjectProcessor(this ResolverConfig config)
         {
-            if (config == null)
+            if (config is null)
             {
                 throw new ArgumentNullException(nameof(config));
             }
@@ -38,7 +38,7 @@
 
         public static ResolverConfig UseBindingContextInjectProcessor(this ResolverConfig config, int order)
         {
-            if (config == null)
+            if (config is null)
             {
                 throw new ArgumentNullException(nameof(config));
             }
@@ -49,7 +49,7 @@
 
         public static ResolverConfig UseBindingContextInitializeProcessor(this ResolverConfig config)
         {
-            if (config == null)
+            if (config is null)
             {
                 throw new ArgumentNullException(nameof(config));
             }
@@ -60,7 +60,7 @@
 
         public static ResolverConfig UseBindingContextInitializeProcessor(this ResolverConfig config, int order)
         {
-            if (config == null)
+            if (config is null)
             {
                 throw new ArgumentNullException(nameof(config));
             }

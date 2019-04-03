@@ -18,7 +18,7 @@
             return () =>
             {
                 var store = AsyncContext.Store;
-                if (store == null)
+                if (store is null)
                 {
                     return factory();
                 }

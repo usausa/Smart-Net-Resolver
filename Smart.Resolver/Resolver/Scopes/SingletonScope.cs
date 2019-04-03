@@ -51,7 +51,7 @@
         /// <returns></returns>
         public Func<object> Create(IKernel kernel, IBinding binding, Func<object> factory)
         {
-            if (objectFactory == null)
+            if (objectFactory is null)
             {
                 value = factory();
                 objectFactory = () => value;

@@ -89,12 +89,12 @@
             var generic1 = (IGenericObject<string>)solver(RequestTypes.Generic1);
             var generic2 = (IGenericObject<int>)solver(RequestTypes.Generic2);
 
-            if (generic1 == null)
+            if (generic1 is null)
             {
                 throw new Exception("Validation error of combined.");
             }
 
-            if (generic2 == null)
+            if (generic2 is null)
             {
                 throw new Exception("Validation error of combined.");
             }

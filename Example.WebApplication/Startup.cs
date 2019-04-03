@@ -38,7 +38,7 @@
 
         public void ConfigureContainer(ResolverConfig config)
         {
-            config.AddMvcActivatorSupport();
+            //config.AddMvcActivatorSupport();
 
             var connectionStringMaster = Configuration.GetConnectionString("Master");
             config

@@ -21,7 +21,7 @@
         public static ResolverConfig UseDelegateFactory<T>(this ResolverConfig config)
             where T : IDelegateFactory
         {
-            if (config == null)
+            if (config is null)
             {
                 throw new ArgumentNullException(nameof(config));
             }
@@ -32,7 +32,7 @@
 
         public static ResolverConfig UseMetadataFactory(this ResolverConfig config, IDelegateFactory delegateFactory)
         {
-            if (config == null)
+            if (config is null)
             {
                 throw new ArgumentNullException(nameof(config));
             }
@@ -44,7 +44,7 @@
         public static ResolverConfig UseProcessor<T>(this ResolverConfig config)
             where T : IProcessor
         {
-            if (config == null)
+            if (config is null)
             {
                 throw new ArgumentNullException(nameof(config));
             }
@@ -55,7 +55,7 @@
 
         public static ResolverConfig UseProcessor(this ResolverConfig config, IProcessor activator)
         {
-            if (config == null)
+            if (config is null)
             {
                 throw new ArgumentNullException(nameof(config));
             }
@@ -67,7 +67,7 @@
         public static ResolverConfig UseInjector<T>(this ResolverConfig config)
             where T : IInjector
         {
-            if (config == null)
+            if (config is null)
             {
                 throw new ArgumentNullException(nameof(config));
             }
@@ -78,7 +78,7 @@
 
         public static ResolverConfig UseInjector(this ResolverConfig config, IInjector injector)
         {
-            if (config == null)
+            if (config is null)
             {
                 throw new ArgumentNullException(nameof(config));
             }
@@ -89,7 +89,7 @@
 
         public static ResolverConfig UseAutoBinding(this ResolverConfig config)
         {
-            if (config == null)
+            if (config is null)
             {
                 throw new ArgumentNullException(nameof(config));
             }
@@ -100,7 +100,7 @@
 
         public static ResolverConfig UseAutoBinding(this ResolverConfig config, IEnumerable<Type> ignoreTypes)
         {
-            if (config == null)
+            if (config is null)
             {
                 throw new ArgumentNullException(nameof(config));
             }
@@ -111,7 +111,7 @@
 
         public static ResolverConfig UseOpenGenericBinding(this ResolverConfig config)
         {
-            if (config == null)
+            if (config is null)
             {
                 throw new ArgumentNullException(nameof(config));
             }
@@ -122,7 +122,7 @@
 
         public static ResolverConfig UseOpenGenericBinding(this ResolverConfig config, IEnumerable<Type> ignoreTypes)
         {
-            if (config == null)
+            if (config is null)
             {
                 throw new ArgumentNullException(nameof(config));
             }
@@ -133,7 +133,7 @@
 
         public static ResolverConfig UseArrayBinding(this ResolverConfig config)
         {
-            if (config == null)
+            if (config is null)
             {
                 throw new ArgumentNullException(nameof(config));
             }
@@ -144,7 +144,7 @@
 
         public static ResolverConfig UseArrayBinding(this ResolverConfig config, IEnumerable<Type> ignoreElementTypes)
         {
-            if (config == null)
+            if (config is null)
             {
                 throw new ArgumentNullException(nameof(config));
             }
@@ -155,7 +155,7 @@
 
         public static ResolverConfig UseAssignableBinding(this ResolverConfig config)
         {
-            if (config == null)
+            if (config is null)
             {
                 throw new ArgumentNullException(nameof(config));
             }
@@ -166,7 +166,7 @@
 
         public static ResolverConfig UseAssignableBinding(this ResolverConfig config, IEnumerable<Type> ignoreTypes)
         {
-            if (config == null)
+            if (config is null)
             {
                 throw new ArgumentNullException(nameof(config));
             }
@@ -178,7 +178,7 @@
         public static ResolverConfig UseMissingHandler<T>(this ResolverConfig config)
             where T : IMissingHandler
         {
-            if (config == null)
+            if (config is null)
             {
                 throw new ArgumentNullException(nameof(config));
             }
@@ -189,7 +189,7 @@
 
         public static ResolverConfig UseMissingHandler(this ResolverConfig config, IMissingHandler handler)
         {
-            if (config == null)
+            if (config is null)
             {
                 throw new ArgumentNullException(nameof(config));
             }
@@ -200,7 +200,7 @@
 
         public static ResolverConfig UsePropertyInjector(this ResolverConfig config)
         {
-            if (config == null)
+            if (config is null)
             {
                 throw new ArgumentNullException(nameof(config));
             }
@@ -211,7 +211,7 @@
 
         public static ResolverConfig UseInitializeProcessor(this ResolverConfig config)
         {
-            if (config == null)
+            if (config is null)
             {
                 throw new ArgumentNullException(nameof(config));
             }
@@ -222,7 +222,7 @@
 
         public static ResolverConfig UseInitializeProcessor(this ResolverConfig config, int order)
         {
-            if (config == null)
+            if (config is null)
             {
                 throw new ArgumentNullException(nameof(config));
             }
