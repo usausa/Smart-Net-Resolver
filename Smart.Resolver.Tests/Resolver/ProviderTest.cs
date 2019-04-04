@@ -180,7 +180,6 @@
 
         public class ArrayInjectedObject
         {
-            [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1819:PropertiesShouldNotReturnArrays", Justification = "Ignore")]
             public SimpleObject[] Objects { get; }
 
             public ArrayInjectedObject(SimpleObject[] objects)

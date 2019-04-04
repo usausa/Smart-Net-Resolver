@@ -8,10 +8,6 @@
         {
             Singleton = singleton;
         }
-
-        public void DoSomething()
-        {
-        }
     }
 
     public class Combined2
@@ -21,10 +17,6 @@
         public Combined2(ISingleton2 singleton)
         {
             Singleton = singleton;
-        }
-
-        public void DoSomething()
-        {
         }
     }
 
@@ -36,10 +28,6 @@
         {
             Singleton = singleton;
         }
-
-        public void DoSomething()
-        {
-        }
     }
 
     public class Combined4
@@ -50,10 +38,6 @@
         {
             Singleton = singleton;
         }
-
-        public void DoSomething()
-        {
-        }
     }
 
     public class Combined5
@@ -63,10 +47,6 @@
         public Combined5(ISingleton5 singleton)
         {
             Singleton = singleton;
-        }
-
-        public void DoSomething()
-        {
         }
     }
 }

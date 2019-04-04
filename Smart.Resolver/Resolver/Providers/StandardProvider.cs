@@ -60,7 +60,6 @@
         /// <param name="kernel"></param>
         /// <param name="binding"></param>
         /// <returns></returns>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods", Justification = "Framework only")]
         public Func<object> CreateFactory(IKernel kernel, IBinding binding)
         {
             var constructors = CreateConstructorMetadata();

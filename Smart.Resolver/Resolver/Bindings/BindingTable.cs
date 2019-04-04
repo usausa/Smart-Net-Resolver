@@ -6,7 +6,7 @@
 
     public sealed class BindingTable : IBindingTable
     {
-        private static readonly IBinding[] EmptyBindings = new IBinding[0];
+        private static readonly IBinding[] EmptyBindings = Array.Empty<IBinding>();
 
         private readonly Dictionary<Type, IBinding[]> table = new Dictionary<Type, IBinding[]>();
 

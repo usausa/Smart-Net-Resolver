@@ -25,7 +25,6 @@
         /// </summary>
         /// <param name="metadata"></param>
         /// <returns></returns>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods", Justification = "Framework only")]
         public bool Match(IBindingMetadata metadata)
         {
             return name == metadata.Name;
@@ -38,7 +37,7 @@
         /// <returns></returns>
         public override bool Equals(object obj)
         {
-            return obj is NameConstraint constraint && String.Equals(name, constraint.name);
+            return obj is NameConstraint constraint && String.Equals(name, constraint.name, StringComparison.Ordinal);
         }
 
         /// <summary>

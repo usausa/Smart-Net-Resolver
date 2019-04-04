@@ -19,7 +19,6 @@
             this.delegateFactory = delegateFactory;
         }
 
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods", Justification = "Framework only")]
         public Action<object> CreateInjector(Type type, IKernel kernel, IBinding binding)
         {
             var entries = type.GetRuntimeProperties()

@@ -12,6 +12,7 @@
 
     public static class Program
     {
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Reliability", "CA2007:DoNotDirectlyAwaitATask", Justification = "Ignore")]
         public static async Task Main(string[] args)
         {
             await new HostBuilder()

@@ -3,46 +3,19 @@
     using System;
     using System.Reflection;
 
-    using Smart.ComponentModel;
     using Smart.Resolver.Bindings;
 
     using Xamarin.Forms;
 
-    /// <summary>
-    ///
-    /// </summary>
     public sealed class DependencyServiceProvider : IProvider
     {
-        /// <summary>
-        ///
-        /// </summary>
         public Type TargetType { get; }
 
-        /// <summary>
-        ///
-        /// </summary>
-        /// <param name="type"></param>
         public DependencyServiceProvider(Type type)
         {
             TargetType = type;
         }
 
-        /// <summary>
-        ///
-        /// </summary>
-        /// <param name="components"></param>
-        /// <returns></returns>
-        public IProvider Copy(IComponentContainer components)
-        {
-            return this;
-        }
-
-        /// <summary>
-        ///
-        /// </summary>
-        /// <param name="kernel"></param>
-        /// <param name="binding"></param>
-        /// <returns></returns>
         public Func<object> CreateFactory(IKernel kernel, IBinding binding)
         {
             var method = typeof(DependencyService).GetMethod("Get");

@@ -29,9 +29,5 @@
             Combined2 = combined2;
             Combined3 = combined3;
         }
-
-        public void DoSomething()
-        {
-        }
     }
 }

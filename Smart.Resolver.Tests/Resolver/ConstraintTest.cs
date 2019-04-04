@@ -79,7 +79,6 @@
                 Key = key;
             }
 
-            [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods", Justification = "Ignore")]
             public bool Match(IBindingMetadata metadata)
             {
                 return metadata.Has(Key);
@@ -87,7 +86,7 @@
 
             public bool Equals(IConstraint other)
             {
-                return other is HasMetadataConstraint constraint && String.Equals(Key, constraint.Key);
+                return other is HasMetadataConstraint constraint && String.Equals(Key, constraint.Key, StringComparison.Ordinal);
             }
 
             public override bool Equals(object obj)
@@ -107,7 +106,7 @@
 
             public override int GetHashCode()
             {
-                return Key?.GetHashCode() ?? 0;
+                return Key?.GetHashCode(StringComparison.Ordinal) ?? 0;
             }
         }
 

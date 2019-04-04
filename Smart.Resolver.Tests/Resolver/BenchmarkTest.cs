@@ -12,7 +12,6 @@
     /// </summary>
     public class BenchmarkTest
     {
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Reliability", "CA2001:AvoidCallingProblematicMethods", Justification = "Ignore")]
         [Fact(Skip = "Benchmark")]
         public void BenchmarkScenarioForWebControllerAndService()
         {

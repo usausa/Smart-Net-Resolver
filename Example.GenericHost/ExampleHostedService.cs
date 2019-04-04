@@ -40,13 +40,14 @@
             return Task.CompletedTask;
         }
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes", Justification = "Ignore")]
         private async void Run(CancellationToken cancellationToken)
         {
             try
             {
                 SettingService.Write();
 
-                await Task.Delay(30000, cancellationToken);
+                await Task.Delay(30000, cancellationToken).ConfigureAwait(false);
             }
             catch (Exception e)
             {

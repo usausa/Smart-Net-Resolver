@@ -39,7 +39,6 @@
         /// <param name="table"></param>
         /// <param name="type"></param>
         /// <returns></returns>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods", Justification = "Framework only")]
         public IEnumerable<IBinding> Handle(IComponentContainer components, IBindingTable table, Type type)
         {
             if (!type.IsGenericType || ignoreTypes.Contains(type))
