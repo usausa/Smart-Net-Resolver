@@ -1,13 +1,10 @@
-﻿namespace Smart.Resolver
+namespace Smart.Resolver
 {
     using System;
     using System.Runtime.CompilerServices;
 
     using Smart.Resolver.Constraints;
 
-    /// <summary>
-    ///
-    /// </summary>
     public static class SmartResolverExtensions
     {
         // CanGet

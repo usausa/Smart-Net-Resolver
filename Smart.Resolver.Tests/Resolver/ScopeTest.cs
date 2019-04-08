@@ -1,4 +1,4 @@
-﻿namespace Smart.Resolver
+namespace Smart.Resolver
 {
     using System;
     using System.Collections.Generic;
@@ -11,9 +11,6 @@
 
     using Xunit;
 
-    /// <summary>
-    ///
-    /// </summary>
     public class ScopeTest
     {
         [Fact]

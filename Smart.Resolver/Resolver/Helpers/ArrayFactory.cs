@@ -1,10 +1,7 @@
-﻿namespace Smart.Resolver.Helpers
+namespace Smart.Resolver.Helpers
 {
     using System;
 
-    /// <summary>
-    ///
-    /// </summary>
     public static class ArrayFactory
     {
         public static Func<object> Create(Func<int, Array> arrayAllocator, Func<object>[] factories)

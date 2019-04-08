@@ -1,4 +1,4 @@
-﻿namespace Smart.Resolver.Configs
+namespace Smart.Resolver.Configs
 {
     using System;
     using System.Collections.Generic;
@@ -10,10 +10,6 @@
     using Smart.Resolver.Providers;
     using Smart.Resolver.Scopes;
 
-    /// <summary>
-    ///
-    /// </summary>
-    /// <typeparam name="T"></typeparam>
     public class BindingBuilder<T> : IBindingFactory, IBindingToInNamedWithSyntax<T>
     {
         private readonly Type targetType;
@@ -30,10 +26,6 @@
 
         private Dictionary<string, Func<IComponentContainer, IParameter>> propertyValueFactories;
 
-        /// <summary>
-        ///
-        /// </summary>
-        /// <param name="type"></param>
         public BindingBuilder(Type type)
         {
             targetType = type;

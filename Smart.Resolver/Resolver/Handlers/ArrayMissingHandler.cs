@@ -1,4 +1,4 @@
-﻿namespace Smart.Resolver.Handlers
+namespace Smart.Resolver.Handlers
 {
     using System;
     using System.Collections.Generic;
@@ -10,25 +10,15 @@
     using Smart.Resolver.Providers;
     using Smart.Resolver.Scopes;
 
-    /// <summary>
-    ///
-    /// </summary>
     public class ArrayMissingHandler : IMissingHandler
     {
         private readonly HashSet<Type> ignoreElementTypes;
 
-        /// <summary>
-        ///
-        /// </summary>
         public ArrayMissingHandler()
             : this(Type.EmptyTypes)
         {
         }
 
-        /// <summary>
-        ///
-        /// </summary>
-        /// <param name="ignoreElementTypes"></param>
         public ArrayMissingHandler(IEnumerable<Type> ignoreElementTypes)
         {
             this.ignoreElementTypes = new HashSet<Type>(ignoreElementTypes);

@@ -1,4 +1,4 @@
-﻿namespace Smart.Resolver
+namespace Smart.Resolver
 {
     using System;
     using System.Collections.Generic;
@@ -8,9 +8,6 @@
     using Smart.Resolver.Injectors;
     using Smart.Resolver.Processors;
 
-    /// <summary>
-    ///
-    /// </summary>
     public static class ResolverConfigExtensions
     {
         public static SmartResolver ToResolver(this IResolverConfig config)

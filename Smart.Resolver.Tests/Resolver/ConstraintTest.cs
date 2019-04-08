@@ -1,4 +1,4 @@
-﻿namespace Smart.Resolver
+namespace Smart.Resolver
 {
     using System;
 
@@ -9,9 +9,6 @@
 
     using Xunit;
 
-    /// <summary>
-    ///
-    /// </summary>
     public class ConstraintTest
     {
         [Fact]

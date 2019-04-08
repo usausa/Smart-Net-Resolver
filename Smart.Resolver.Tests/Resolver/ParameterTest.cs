@@ -1,12 +1,9 @@
-﻿namespace Smart.Resolver
+namespace Smart.Resolver
 {
     using Smart.Resolver.Mocks;
 
     using Xunit;
 
-    /// <summary>
-    ///
-    /// </summary>
     public class ParameterTest
     {
         [Fact]

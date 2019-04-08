@@ -1,4 +1,4 @@
-﻿namespace Smart.Resolver.Providers
+namespace Smart.Resolver.Providers
 {
     using System;
     using System.Collections.Generic;
@@ -15,9 +15,6 @@
     using Smart.Resolver.Injectors;
     using Smart.Resolver.Processors;
 
-    /// <summary>
-    ///
-    /// </summary>
     public sealed partial class StandardProvider : IProvider
     {
         private readonly IInjector[] injectors;
@@ -26,16 +23,8 @@
 
         private readonly IDelegateFactory delegateFactory;
 
-        /// <summary>
-        ///
-        /// </summary>
         public Type TargetType { get; }
 
-        /// <summary>
-        ///
-        /// </summary>
-        /// <param name="type"></param>
-        /// <param name="components"></param>
         public StandardProvider(Type type, IComponentContainer components)
         {
             if (type is null)
@@ -54,12 +43,6 @@
             delegateFactory = components.Get<IDelegateFactory>();
         }
 
-        /// <summary>
-        ///
-        /// </summary>
-        /// <param name="kernel"></param>
-        /// <param name="binding"></param>
-        /// <returns></returns>
         public Func<object> CreateFactory(IKernel kernel, IBinding binding)
         {
             var constructors = CreateConstructorMetadata();

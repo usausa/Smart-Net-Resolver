@@ -1,4 +1,4 @@
-﻿namespace Smart.Resolver
+namespace Smart.Resolver
 {
     using System;
     using System.Diagnostics;
@@ -7,9 +7,6 @@
 
     using Xunit;
 
-    /// <summary>
-    ///
-    /// </summary>
     public class BenchmarkTest
     {
         [Fact(Skip = "Benchmark")]

@@ -1,4 +1,4 @@
-﻿namespace Smart.Resolver
+namespace Smart.Resolver
 {
     using System;
     using System.Collections.Generic;
@@ -13,9 +13,6 @@
     using Smart.Resolver.Injectors;
     using Smart.Resolver.Providers;
 
-    /// <summary>
-    ///
-    /// </summary>
     public sealed class SmartResolver : IKernel
     {
         private sealed class FactoryEntry
@@ -41,15 +38,8 @@
 
         private readonly IMissingHandler[] handlers;
 
-        /// <summary>
-        ///
-        /// </summary>
         public IComponentContainer Components { get; }
 
-        /// <summary>
-        ///
-        /// </summary>
-        /// <param name="config"></param>
         public SmartResolver(IResolverConfig config)
         {
             if (config is null)
@@ -71,9 +61,6 @@
             table.Add(typeof(SmartResolver), new IBinding[] { new Binding(typeof(SmartResolver), new ConstantProvider(this), null, null, null, null) });
         }
 
-        /// <summary>
-        ///
-        /// </summary>
         public void Dispose()
         {
             Components.Dispose();
@@ -255,10 +242,6 @@
         // Inject
         // ------------------------------------------------------------
 
-        /// <summary>
-        ///
-        /// </summary>
-        /// <param name="instance"></param>
         public void Inject(object instance)
         {
             if (instance is null)

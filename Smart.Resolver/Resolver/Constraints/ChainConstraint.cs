@@ -1,40 +1,23 @@
-﻿namespace Smart.Resolver.Constraints
+namespace Smart.Resolver.Constraints
 {
     using System.Linq;
 
     using Smart.Resolver.Bindings;
 
-    /// <summary>
-    ///
-    /// </summary>
     public sealed class ChainConstraint : IConstraint
     {
         private readonly IConstraint[] constraints;
 
-        /// <summary>
-        ///
-        /// </summary>
-        /// <param name="constraints"></param>
         public ChainConstraint(params IConstraint[] constraints)
         {
             this.constraints = constraints;
         }
 
-        /// <summary>
-        ///
-        /// </summary>
-        /// <param name="metadata"></param>
-        /// <returns></returns>
         public bool Match(IBindingMetadata metadata)
         {
             return constraints.All(c => c.Match(metadata));
         }
 
-        /// <summary>
-        ///
-        /// </summary>
-        /// <param name="obj"></param>
-        /// <returns></returns>
         public override bool Equals(object obj)
         {
             if (obj is ChainConstraint constraint &&
@@ -54,10 +37,6 @@
             return false;
         }
 
-        /// <summary>
-        ///
-        /// </summary>
-        /// <returns></returns>
         public override int GetHashCode()
         {
             var hash = 0;

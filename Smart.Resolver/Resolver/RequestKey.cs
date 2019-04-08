@@ -1,12 +1,9 @@
-﻿namespace Smart.Resolver
+namespace Smart.Resolver
 {
     using System;
 
     using Smart.Resolver.Constraints;
 
-    /// <summary>
-    ///
-    /// </summary>
     internal sealed class RequestKey
     {
         public Type Type { get; }

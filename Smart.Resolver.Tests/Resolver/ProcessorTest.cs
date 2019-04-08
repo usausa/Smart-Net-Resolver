@@ -1,4 +1,4 @@
-﻿namespace Smart.Resolver
+namespace Smart.Resolver
 {
     using System;
 
@@ -7,9 +7,6 @@
 
     using Xunit;
 
-    /// <summary>
-    ///
-    /// </summary>
     public class ProcessorTest
     {
         [Fact]
@@ -97,12 +94,6 @@
 
             public int Order { get; } = 0;
 
-            /// <summary>
-            ///
-            /// </summary>
-            /// <param name="type"></param>
-            /// <param name="kernel"></param>
-            /// <returns></returns>
             public Action<object> CreateProcessor(Type type, IKernel kernel)
             {
                 if (!CustomInitializableType.IsAssignableFrom(type))

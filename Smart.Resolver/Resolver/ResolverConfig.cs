@@ -1,4 +1,4 @@
-﻿namespace Smart.Resolver
+namespace Smart.Resolver
 {
     using System;
     using System.Collections.Generic;
@@ -10,18 +10,12 @@
     using Smart.Resolver.Components;
     using Smart.Resolver.Configs;
 
-    /// <summary>
-    ///
-    /// </summary>
     public class ResolverConfig : IResolverConfig, IBindingRoot
     {
         public ComponentConfig Components { get; } = new ComponentConfig();
 
         private readonly List<IBindingFactory> bindingFactories = new List<IBindingFactory>();
 
-        /// <summary>
-        ///
-        /// </summary>
         public ResolverConfig()
         {
             Components.Add<IDelegateFactory>(DelegateFactory.Default);
@@ -32,39 +26,21 @@
         // IResolverConfig
         // ------------------------------------------------------------
 
-        /// <summary>
-        ///
-        /// </summary>
-        /// <returns></returns>
         IComponentContainer IResolverConfig.CreateComponentContainer()
         {
             return CreateComponentContainer();
         }
 
-        /// <summary>
-        ///
-        /// </summary>
-        /// <returns></returns>
         protected virtual IComponentContainer CreateComponentContainer()
         {
             return Components.ToContainer();
         }
 
-        /// <summary>
-        ///
-        /// </summary>
-        /// <param name="components"></param>
-        /// <returns></returns>
         IEnumerable<IBinding> IResolverConfig.CreateBindings(IComponentContainer components)
         {
             return CreateBindings(components);
         }
 
-        /// <summary>
-        ///
-        /// </summary>
-        /// <param name="components"></param>
-        /// <returns></returns>
         protected virtual IEnumerable<IBinding> CreateBindings(IComponentContainer components)
         {
             return bindingFactories.Select(f => f.CreateBinding(components));
@@ -74,11 +50,6 @@
         // IBindingRoot
         // ------------------------------------------------------------
 
-        /// <summary>
-        ///
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <returns></returns>
         public IBindingToSyntax<T> Bind<T>()
         {
             var builder = new BindingBuilder<T>(typeof(T));
@@ -86,11 +57,6 @@
             return builder;
         }
 
-        /// <summary>
-        ///
-        /// </summary>
-        /// <param name="type"></param>
-        /// <returns></returns>
         public IBindingToSyntax<object> Bind(Type type)
         {
             var builder = new BindingBuilder<object>(type);

@@ -1,4 +1,4 @@
-﻿namespace Smart.Resolver
+namespace Smart.Resolver
 {
     using System.Collections.Generic;
     using System.Linq;
@@ -8,9 +8,6 @@
 
     using Xunit;
 
-    /// <summary>
-    ///
-    /// </summary>
     public class ProviderTest
     {
         [Fact]
