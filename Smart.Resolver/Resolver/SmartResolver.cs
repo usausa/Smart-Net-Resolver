@@ -19,16 +19,16 @@ namespace Smart.Resolver
         {
             public bool CanGet { get; set; }
 
-            public Func<IKernel, object> Single { get; set; }
+            public Func<IResolver, object> Single { get; set; }
 
-            public Func<IKernel, object>[] Multiple { get; set; }
+            public Func<IResolver, object>[] Multiple { get; set; }
         }
 
         private readonly ThreadsafeTypeHashArrayMap<FactoryEntry> factoriesCache = new ThreadsafeTypeHashArrayMap<FactoryEntry>();
 
         private readonly ThreadsafeHashArrayMap<RequestKey, FactoryEntry> factoriesCacheWithConstraint = new ThreadsafeHashArrayMap<RequestKey, FactoryEntry>(RequestKeyComparer.Default);
 
-        private readonly ThreadsafeTypeHashArrayMap<Action<IKernel, object>[]> injectorsCache = new ThreadsafeTypeHashArrayMap<Action<IKernel, object>[]>();
+        private readonly ThreadsafeTypeHashArrayMap<Action<IResolver, object>[]> injectorsCache = new ThreadsafeTypeHashArrayMap<Action<IResolver, object>[]>();
 
         private readonly object sync = new object();
 
@@ -70,14 +70,14 @@ namespace Smart.Resolver
         // ObjectFactory
         // ------------------------------------------------------------
 
-        bool IKernel.TryResolveFactory(Type type, IConstraint constraint, out Func<IKernel, object> factory)
+        bool IKernel.TryResolveFactory(Type type, IConstraint constraint, out Func<IResolver, object> factory)
         {
             var entry = constraint is null ? FindFactoryEntry(type) : FindFactoryEntry(type, constraint);
             factory = entry.Single;
             return entry.CanGet;
         }
 
-        bool IKernel.TryResolveFactories(Type type, IConstraint constraint, out Func<IKernel, object>[] factories)
+        bool IKernel.TryResolveFactories(Type type, IConstraint constraint, out Func<IResolver, object>[] factories)
         {
             var entry = constraint is null ? FindFactoryEntry(type) : FindFactoryEntry(type, constraint);
             factories = entry.Multiple;
@@ -261,7 +261,7 @@ namespace Smart.Resolver
             }
         }
 
-        private Action<IKernel, object>[] CreateTypeInjectors(Type type)
+        private Action<IResolver, object>[] CreateTypeInjectors(Type type)
         {
             var binding = new Binding(type);
             return injectors

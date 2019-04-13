@@ -9,7 +9,7 @@ namespace Smart.Resolver.Parameters
             this.value = value;
         }
 
-        public object Resolve(IKernel kernel)
+        public object Resolve(IResolver resolver)
         {
             return value;
         }

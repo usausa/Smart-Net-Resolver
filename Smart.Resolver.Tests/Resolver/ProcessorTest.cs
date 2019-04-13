@@ -94,14 +94,14 @@ namespace Smart.Resolver
 
             public int Order { get; } = 0;
 
-            public Action<IKernel, object> CreateProcessor(Type type, IKernel kernel)
+            public Action<IResolver, object> CreateProcessor(Type type, IKernel kernel)
             {
                 if (!CustomInitializableType.IsAssignableFrom(type))
                 {
                     return null;
                 }
 
-                return (k, x) => (x as ICustomInitializable)?.Initialize();
+                return (r, x) => (x as ICustomInitializable)?.Initialize();
             }
         }
 

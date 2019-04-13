@@ -18,14 +18,14 @@ namespace Smart.Resolver.Processors
             Order = order;
         }
 
-        public Action<IKernel, object> CreateProcessor(Type type, IKernel kernel)
+        public Action<IResolver, object> CreateProcessor(Type type, IKernel kernel)
         {
             if (!InitializableType.IsAssignableFrom(type))
             {
                 return null;
             }
 
-            return (k, x) => ((IInitializable)x).Initialize();
+            return (r, x) => ((IInitializable)x).Initialize();
         }
     }
 }

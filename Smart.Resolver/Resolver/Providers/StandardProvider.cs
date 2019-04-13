@@ -43,7 +43,7 @@ namespace Smart.Resolver.Providers
             delegateFactory = components.Get<IDelegateFactory>();
         }
 
-        public Func<IKernel, object> CreateFactory(IKernel kernel, IBinding binding)
+        public Func<IResolver, object> CreateFactory(IKernel kernel, IBinding binding)
         {
             var constructors = CreateConstructorMetadata();
             if (constructors.Length == 0)
@@ -55,7 +55,7 @@ namespace Smart.Resolver.Providers
             foreach (var constructor in constructors)
             {
                 var match = true;
-                var argumentFactories = new List<Func<IKernel, object>>(constructor.Parameters.Length);
+                var argumentFactories = new List<Func<IResolver, object>>(constructor.Parameters.Length);
 
                 foreach (var parameter in constructor.Parameters)
                 {
@@ -122,7 +122,7 @@ namespace Smart.Resolver.Providers
                 .ToArray();
         }
 
-        private Action<IKernel, object>[] CreateActions(IKernel kernel, IBinding binding)
+        private Action<IResolver, object>[] CreateActions(IKernel kernel, IBinding binding)
         {
             var targetInjectors = injectors
                 .Select(x => x.CreateInjector(TargetType, kernel, binding))
@@ -134,7 +134,7 @@ namespace Smart.Resolver.Providers
             return targetInjectors.Concat(targetProcessors).ToArray();
         }
 
-        private Func<IKernel, object> CreateFactory(ConstructorInfo ci, Func<IKernel, object>[] factories, Action<IKernel, object>[] actions)
+        private Func<IResolver, object> CreateFactory(ConstructorInfo ci, Func<IResolver, object>[] factories, Action<IResolver, object>[] actions)
         {
             switch (factories.Length)
             {
@@ -199,9 +199,9 @@ namespace Smart.Resolver.Providers
         // Activator
         // ------------------------------------------------------------
 
-        private static Func<IKernel, object> CreateActivator0(
+        private static Func<IResolver, object> CreateActivator0(
             Func<object> activator,
-            Action<IKernel, object>[] actions)
+            Action<IResolver, object>[] actions)
         {
             return k =>
             {
@@ -216,10 +216,10 @@ namespace Smart.Resolver.Providers
             };
         }
 
-        private static Func<IKernel, object> CreateActivator(
+        private static Func<IResolver, object> CreateActivator(
             Func<object[], object> activator,
-            Func<IKernel, object>[] factories,
-            Action<IKernel, object>[] actions)
+            Func<IResolver, object>[] factories,
+            Action<IResolver, object>[] actions)
         {
             return k =>
             {
@@ -240,9 +240,9 @@ namespace Smart.Resolver.Providers
             };
         }
 
-        private static Func<IKernel, object> CreateActivator(
+        private static Func<IResolver, object> CreateActivator(
             Func<object[], object> activator,
-            Func<IKernel, object>[] factories)
+            Func<IResolver, object>[] factories)
         {
             return k =>
             {

@@ -6,35 +6,35 @@ namespace Smart.Resolver.Providers
     public sealed partial class StandardProvider
     {
 <# for (var i = 1; i <= 16; i++) { #>
-        private static Func<IKernel, object> CreateActivator<#= i #>(
+        private static Func<IResolver, object> CreateActivator<#= i #>(
             Func<object<# for (var j = 0; j < i; j++) { #>, object<# } #>> activator,
-            Func<IKernel, object>[] factories,
-            Action<IKernel, object>[] actions)
+            Func<IResolver, object>[] factories,
+            Action<IResolver, object>[] actions)
         {
 <# for (var j = 0; j < i; j++) { #>
             var f<#= j + 1 #> = factories[<#= j #>];
 <# } #>
-            return k =>
+            return r =>
             {
-                var instance = activator(f1(k)<# for (var j = 0; j < i - 1; j++) { #>, f<#= j + 2 #>(k)<# } #>);
+                var instance = activator(f1(r)<# for (var j = 0; j < i - 1; j++) { #>, f<#= j + 2 #>(r)<# } #>);
 
                 for(var i = 0; i < actions.Length; i++)
                 {
-                    actions[i](k, instance);
+                    actions[i](r, instance);
                 }
 
                 return instance;
             };
         }
 
-        private static Func<IKernel, object> CreateActivator<#= i #>(
+        private static Func<IResolver, object> CreateActivator<#= i #>(
             Func<object<# for (var j = 0; j < i; j++) { #>, object<# } #>> activator,
-            Func<IKernel, object>[] factories)
+            Func<IResolver, object>[] factories)
         {
 <# for (var j = 0; j < i; j++) { #>
             var f<#= j + 1 #> = factories[<#= j #>];
 <# } #>
-            return k => activator(f1(k)<# for (var j = 0; j < i - 1; j++) { #>, f<#= j + 2 #>(k)<# } #>);
+            return r => activator(f1(r)<# for (var j = 0; j < i - 1; j++) { #>, f<#= j + 2 #>(r)<# } #>);
         }
 
 <# } #>

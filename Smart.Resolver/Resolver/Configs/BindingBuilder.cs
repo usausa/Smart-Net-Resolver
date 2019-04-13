@@ -57,9 +57,9 @@ namespace Smart.Resolver.Configs
             return ToProvider(c => new StandardProvider(implementationType, c));
         }
 
-        public IBindingInNamedWithSyntax ToMethod(Func<IKernel, T> factory)
+        public IBindingInNamedWithSyntax ToMethod(Func<IResolver, T> factory)
         {
-            return ToProvider(c => new CallbackProvider(targetType, kernel => factory(kernel)));
+            return ToProvider(c => new CallbackProvider(targetType, resolver => factory(resolver)));
         }
 
         public IBindingInNamedWithSyntax ToConstant(T value)
@@ -131,7 +131,7 @@ namespace Smart.Resolver.Configs
             return this;
         }
 
-        public IBindingWithSyntax WithConstructorArgument(string name, Func<IKernel, object> factory)
+        public IBindingWithSyntax WithConstructorArgument(string name, Func<IResolver, object> factory)
         {
             WithConstructorArgument(name, c => new CallbackParameter(factory));
             return this;
@@ -154,7 +154,7 @@ namespace Smart.Resolver.Configs
             return this;
         }
 
-        public IBindingWithSyntax WithPropertyValue(string name, Func<IKernel, object> factory)
+        public IBindingWithSyntax WithPropertyValue(string name, Func<IResolver, object> factory)
         {
             WithPropertyValue(name, c => new CallbackParameter(factory));
             return this;

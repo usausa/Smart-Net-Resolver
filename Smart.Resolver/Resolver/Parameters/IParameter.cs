@@ -2,6 +2,6 @@ namespace Smart.Resolver.Parameters
 {
     public interface IParameter
     {
-        object Resolve(IKernel kernel);
+        object Resolve(IResolver resolver);
     }
 }

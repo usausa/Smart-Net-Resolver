@@ -20,14 +20,14 @@ namespace Smart.Resolver.Processors
             Order = order;
         }
 
-        public Action<IKernel, object> CreateProcessor(Type type, IKernel kernel)
+        public Action<IResolver, object> CreateProcessor(Type type, IKernel kernel)
         {
             if (!BindableObjectType.IsAssignableFrom(type))
             {
                 return null;
             }
 
-            return (k, x) => (((BindableObject)x).BindingContext as IInitializable)?.Initialize();
+            return (r, x) => (((BindableObject)x).BindingContext as IInitializable)?.Initialize();
         }
     }
 }

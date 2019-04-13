@@ -19,7 +19,7 @@ namespace Smart.Resolver.Injectors
             this.delegateFactory = delegateFactory;
         }
 
-        public Action<IKernel, object> CreateInjector(Type type, IKernel kernel, IBinding binding)
+        public Action<IResolver, object> CreateInjector(Type type, IKernel kernel, IBinding binding)
         {
             var entries = type.GetRuntimeProperties()
                 .Where(p => p.IsInjectDefined())
@@ -54,36 +54,36 @@ namespace Smart.Resolver.Injectors
             return new InjectEntry(CreateProvider(propertyType), setter);
         }
 
-        private static Func<IKernel, object> CreateParameterProvider(IParameter parameter)
+        private static Func<IResolver, object> CreateParameterProvider(IParameter parameter)
         {
             return parameter.Resolve;
         }
 
-        private static Func<IKernel, object> CreateConstraintProvider(Type propertyType, IConstraint constraint)
+        private static Func<IResolver, object> CreateConstraintProvider(Type propertyType, IConstraint constraint)
         {
-            return k => k.Get(propertyType, constraint);
+            return resolver => resolver.Get(propertyType, constraint);
         }
 
-        private static Func<IKernel, object> CreateProvider(Type propertyType)
+        private static Func<IResolver, object> CreateProvider(Type propertyType)
         {
-            return k => k.Get(propertyType);
+            return resolver => resolver.Get(propertyType);
         }
 
         private sealed class InjectEntry
         {
-            private readonly Func<IKernel, object> provider;
+            private readonly Func<IResolver, object> provider;
 
             private readonly Action<object, object> setter;
 
-            public InjectEntry(Func<IKernel, object> provider, Action<object, object> setter)
+            public InjectEntry(Func<IResolver, object> provider, Action<object, object> setter)
             {
                 this.provider = provider;
                 this.setter = setter;
             }
 
-            public void Inject(IKernel kernel, object instance)
+            public void Inject(IResolver resolver, object instance)
             {
-                setter(instance, provider(kernel));
+                setter(instance, provider(resolver));
             }
         }
 
@@ -96,11 +96,11 @@ namespace Smart.Resolver.Injectors
                 this.entries = entries;
             }
 
-            public void Inject(IKernel kernel, object instance)
+            public void Inject(IResolver resolver, object instance)
             {
                 for (var i = 0; i < entries.Length; i++)
                 {
-                    entries[i].Inject(kernel, instance);
+                    entries[i].Inject(resolver, instance);
                 }
             }
         }

@@ -10,7 +10,7 @@ namespace Smart.Resolver.Scopes
     {
         private object value;
 
-        private Func<IKernel, object> objectFactory;
+        private Func<IResolver, object> objectFactory;
 
         public SingletonScope(IComponentContainer container)
         {
@@ -27,7 +27,7 @@ namespace Smart.Resolver.Scopes
             return new SingletonScope(components);
         }
 
-        public Func<IKernel, object> Create(IKernel kernel, IBinding binding, Func<IKernel, object> factory)
+        public Func<IResolver, object> Create(IKernel kernel, IBinding binding, Func<IResolver, object> factory)
         {
             if (objectFactory is null)
             {

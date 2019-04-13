@@ -20,7 +20,7 @@
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1716:IdentifiersShouldNotMatchKeywords", Justification = "Ignore")]
         IBindingInNamedWithSyntax To(Type implementationType);
 
-        IBindingInNamedWithSyntax ToMethod(Func<IKernel, T> factory);
+        IBindingInNamedWithSyntax ToMethod(Func<IResolver, T> factory);
 
         IBindingInNamedWithSyntax ToConstant(T value);
     }
@@ -47,13 +47,13 @@
 
         IBindingWithSyntax WithConstructorArgument(string name, object value);
 
-        IBindingWithSyntax WithConstructorArgument(string name, Func<IKernel, object> factory);
+        IBindingWithSyntax WithConstructorArgument(string name, Func<IResolver, object> factory);
 
         IBindingWithSyntax WithPropertyValue(string name, Func<IComponentContainer, IParameter> factory);
 
         IBindingWithSyntax WithPropertyValue(string name, object value);
 
-        IBindingWithSyntax WithPropertyValue(string name, Func<IKernel, object> factory);
+        IBindingWithSyntax WithPropertyValue(string name, Func<IResolver, object> factory);
     }
 
     public interface IBindingToInNamedWithSyntax<in T> : IBindingToSyntax<T>, IBindingInNamedWithSyntax

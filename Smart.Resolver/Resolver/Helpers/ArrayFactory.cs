@@ -4,15 +4,15 @@ namespace Smart.Resolver.Helpers
 
     public static class ArrayFactory
     {
-        public static Func<IKernel, object> Create(Func<int, Array> arrayAllocator, Func<IKernel, object>[] factories)
+        public static Func<IResolver, object> Create(Func<int, Array> arrayAllocator, Func<IResolver, object>[] factories)
         {
-            return k =>
+            return resolver =>
             {
                 var array = arrayAllocator(factories.Length);
                 var objects = (object[])array;
                 for (var i = 0; i < factories.Length; i++)
                 {
-                    objects[i] = factories[i](k);
+                    objects[i] = factories[i](resolver);
                 }
 
                 return array;
