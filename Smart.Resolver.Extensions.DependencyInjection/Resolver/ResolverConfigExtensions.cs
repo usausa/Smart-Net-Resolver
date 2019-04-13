@@ -1,4 +1,4 @@
-﻿namespace Smart.Resolver
+namespace Smart.Resolver
 {
     using System;
     using System.Collections.Generic;
@@ -48,7 +48,7 @@
                     syntax.InTransientScope();
                     break;
                 case ServiceLifetime.Scoped:
-                    syntax.InContextScope();
+                    syntax.InContainerScope();
                     break;
             }
         }

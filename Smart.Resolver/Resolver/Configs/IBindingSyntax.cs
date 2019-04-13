@@ -7,6 +7,8 @@
     using Smart.Resolver.Providers;
     using Smart.Resolver.Scopes;
 
+    // TODO Extension
+
     public interface IBindingToSyntax<in T>
     {
         IBindingInNamedWithSyntax ToProvider(Func<IComponentContainer, IProvider> factory);
@@ -32,6 +34,8 @@
         IBindingNamedWithSyntax InTransientScope();
 
         IBindingNamedWithSyntax InSingletonScope();
+
+        IBindingNamedWithSyntax InContainerScope();
     }
 
     public interface IBindingNamedSyntax

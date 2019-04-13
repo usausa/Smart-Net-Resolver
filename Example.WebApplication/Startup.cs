@@ -1,4 +1,4 @@
-﻿namespace Example.WebApplication
+namespace Example.WebApplication
 {
     using System.IO;
 
@@ -70,7 +70,7 @@
             config
                 .Bind<ScopedObject>()
                 .ToSelf()
-                .InContextScope();
+                .InContainerScope();
 
             // Prepare database
             SetupMasterDatabase(connectionStringMaster);

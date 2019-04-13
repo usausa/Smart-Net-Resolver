@@ -1,4 +1,4 @@
-﻿namespace Smart.Resolver
+namespace Smart.Resolver
 {
     using System;
 
@@ -11,12 +11,12 @@
         public SmartServiceScope(IServiceProvider serviceProvider)
         {
             ServiceProvider = serviceProvider;
-            AsyncContext.Initializable();
+            //AsyncContext.Initializable();
         }
 
         public void Dispose()
         {
-            AsyncContext.Clear();
+            //AsyncContext.Clear();
         }
     }
 }
