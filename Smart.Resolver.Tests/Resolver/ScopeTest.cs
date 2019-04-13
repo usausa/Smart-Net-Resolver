@@ -93,7 +93,7 @@ namespace Smart.Resolver
                 return this;
             }
 
-            public Func<IResolver, object> Create(IKernel kernel, IBinding binding, Func<IResolver, object> factory)
+            public Func<IResolver, object> Create(IBinding binding, Func<object> factory)
             {
                 return resolver =>
                 {
@@ -102,7 +102,7 @@ namespace Smart.Resolver
                         return value;
                     }
 
-                    value = factory(resolver);
+                    value = factory();
                     Cache.Value[binding] = value;
 
                     return value;

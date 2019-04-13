@@ -13,19 +13,19 @@ namespace Smart.Resolver.Scope
             return this;
         }
 
-        public Func<IResolver, object> Create(IKernel kernel, IBinding binding, Func<IResolver, object> factory)
+        public Func<IResolver, object> Create(IBinding binding, Func<object> factory)
         {
             return resolver =>
             {
                 var store = AsyncContext.Store;
                 if (store is null)
                 {
-                    return factory(resolver);
+                    return factory();
                 }
 
                 if (!store.TryGetValue(binding, out var value))
                 {
-                    value = factory(resolver);
+                    value = factory();
                     store[binding] = value;
                 }
 

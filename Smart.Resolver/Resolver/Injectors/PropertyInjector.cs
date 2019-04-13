@@ -19,7 +19,7 @@ namespace Smart.Resolver.Injectors
             this.delegateFactory = delegateFactory;
         }
 
-        public Action<IResolver, object> CreateInjector(Type type, IKernel kernel, IBinding binding)
+        public Action<IResolver, object> CreateInjector(Type type, IBinding binding)
         {
             var entries = type.GetRuntimeProperties()
                 .Where(p => p.IsInjectDefined())

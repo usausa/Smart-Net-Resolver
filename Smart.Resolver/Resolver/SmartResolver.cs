@@ -13,7 +13,7 @@ namespace Smart.Resolver
     using Smart.Resolver.Injectors;
     using Smart.Resolver.Providers;
 
-    public sealed class SmartResolver : IKernel
+    public sealed class SmartResolver : IResolver, IKernel
     {
         private sealed class FactoryEntry
         {
@@ -225,7 +225,7 @@ namespace Smart.Resolver
                     .Select(b =>
                     {
                         var factory = b.Provider.CreateFactory(this, b);
-                        return b.Scope is null ? factory : b.Scope.Create(this, b, factory);
+                        return b.Scope is null ? factory : b.Scope.Create(b, () => factory(this));
                     })
                     .ToArray();
 
@@ -265,7 +265,7 @@ namespace Smart.Resolver
         {
             var binding = new Binding(type);
             return injectors
-                .Select(x => x.CreateInjector(type, this, binding))
+                .Select(x => x.CreateInjector(type, binding))
                 .Where(x => x != null)
                 .ToArray();
         }

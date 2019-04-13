@@ -6,6 +6,6 @@ namespace Smart.Resolver.Injectors
 
     public interface IInjector
     {
-        Action<IResolver, object> CreateInjector(Type type, IKernel kernel, IBinding binding);
+        Action<IResolver, object> CreateInjector(Type type, IBinding binding);
     }
 }

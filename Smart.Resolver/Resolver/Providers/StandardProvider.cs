@@ -98,7 +98,7 @@ namespace Smart.Resolver.Providers
 
                 if (match)
                 {
-                    var actions = CreateActions(kernel, binding);
+                    var actions = CreateActions(binding);
                     return CreateFactory(constructor.Constructor, argumentFactories.ToArray(), actions);
                 }
             }
@@ -122,14 +122,14 @@ namespace Smart.Resolver.Providers
                 .ToArray();
         }
 
-        private Action<IResolver, object>[] CreateActions(IKernel kernel, IBinding binding)
+        private Action<IResolver, object>[] CreateActions(IBinding binding)
         {
             var targetInjectors = injectors
-                .Select(x => x.CreateInjector(TargetType, kernel, binding))
+                .Select(x => x.CreateInjector(TargetType, binding))
                 .Where(x => x != null);
             var targetProcessors = processors
                 .OrderByDescending(x => x.Order)
-                .Select(x => x.CreateProcessor(TargetType, kernel))
+                .Select(x => x.CreateProcessor(TargetType))
                 .Where(x => x != null);
             return targetInjectors.Concat(targetProcessors).ToArray();
         }

@@ -94,7 +94,7 @@ namespace Smart.Resolver
 
             public int Order { get; } = 0;
 
-            public Action<IResolver, object> CreateProcessor(Type type, IKernel kernel)
+            public Action<IResolver, object> CreateProcessor(Type type)
             {
                 if (!CustomInitializableType.IsAssignableFrom(type))
                 {

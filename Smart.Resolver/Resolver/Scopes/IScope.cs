@@ -9,6 +9,6 @@ namespace Smart.Resolver.Scopes
     {
         IScope Copy(IComponentContainer components);
 
-        Func<IResolver, object> Create(IKernel kernel, IBinding binding, Func<IResolver, object> factory);
+        Func<IResolver, object> Create(IBinding binding, Func<object> factory);
     }
 }
