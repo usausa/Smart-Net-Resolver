@@ -1,4 +1,4 @@
-﻿namespace Smart.Resolver.Processors
+namespace Smart.Resolver.Processors
 {
     using System;
 
@@ -18,14 +18,14 @@
             Order = order;
         }
 
-        public Action<object> CreateProcessor(Type type, IKernel kernel)
+        public Action<IKernel, object> CreateProcessor(Type type, IKernel kernel)
         {
             if (!InitializableType.IsAssignableFrom(type))
             {
                 return null;
             }
 
-            return x => ((IInitializable)x).Initialize();
+            return (k, x) => ((IInitializable)x).Initialize();
         }
     }
 }

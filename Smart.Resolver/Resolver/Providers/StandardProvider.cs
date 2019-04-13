@@ -122,7 +122,7 @@ namespace Smart.Resolver.Providers
                 .ToArray();
         }
 
-        private Action<object>[] CreateActions(IKernel kernel, IBinding binding)
+        private Action<IKernel, object>[] CreateActions(IKernel kernel, IBinding binding)
         {
             var targetInjectors = injectors
                 .Select(x => x.CreateInjector(TargetType, kernel, binding))
@@ -134,7 +134,7 @@ namespace Smart.Resolver.Providers
             return targetInjectors.Concat(targetProcessors).ToArray();
         }
 
-        private Func<IKernel, object> CreateFactory(ConstructorInfo ci, Func<IKernel, object>[] factories, Action<object>[] actions)
+        private Func<IKernel, object> CreateFactory(ConstructorInfo ci, Func<IKernel, object>[] factories, Action<IKernel, object>[] actions)
         {
             switch (factories.Length)
             {
@@ -201,7 +201,7 @@ namespace Smart.Resolver.Providers
 
         private static Func<IKernel, object> CreateActivator0(
             Func<object> activator,
-            Action<object>[] actions)
+            Action<IKernel, object>[] actions)
         {
             return k =>
             {
@@ -209,7 +209,7 @@ namespace Smart.Resolver.Providers
 
                 for (var i = 0; i < actions.Length; i++)
                 {
-                    actions[i](instance);
+                    actions[i](k, instance);
                 }
 
                 return instance;
@@ -219,7 +219,7 @@ namespace Smart.Resolver.Providers
         private static Func<IKernel, object> CreateActivator(
             Func<object[], object> activator,
             Func<IKernel, object>[] factories,
-            Action<object>[] actions)
+            Action<IKernel, object>[] actions)
         {
             return k =>
             {
@@ -233,7 +233,7 @@ namespace Smart.Resolver.Providers
 
                 for (var i = 0; i < actions.Length; i++)
                 {
-                    actions[i](instance);
+                    actions[i](k, instance);
                 }
 
                 return instance;

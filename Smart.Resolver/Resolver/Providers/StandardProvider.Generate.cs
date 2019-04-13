@@ -8,7 +8,7 @@ namespace Smart.Resolver.Providers
         private static Func<IKernel, object> CreateActivator1(
             Func<object, object> activator,
             Func<IKernel, object>[] factories,
-            Action<object>[] actions)
+            Action<IKernel, object>[] actions)
         {
             var f1 = factories[0];
             return k =>
@@ -17,7 +17,7 @@ namespace Smart.Resolver.Providers
 
                 for(var i = 0; i < actions.Length; i++)
                 {
-                    actions[i](instance);
+                    actions[i](k, instance);
                 }
 
                 return instance;
@@ -35,7 +35,7 @@ namespace Smart.Resolver.Providers
         private static Func<IKernel, object> CreateActivator2(
             Func<object, object, object> activator,
             Func<IKernel, object>[] factories,
-            Action<object>[] actions)
+            Action<IKernel, object>[] actions)
         {
             var f1 = factories[0];
             var f2 = factories[1];
@@ -45,7 +45,7 @@ namespace Smart.Resolver.Providers
 
                 for(var i = 0; i < actions.Length; i++)
                 {
-                    actions[i](instance);
+                    actions[i](k, instance);
                 }
 
                 return instance;
@@ -64,7 +64,7 @@ namespace Smart.Resolver.Providers
         private static Func<IKernel, object> CreateActivator3(
             Func<object, object, object, object> activator,
             Func<IKernel, object>[] factories,
-            Action<object>[] actions)
+            Action<IKernel, object>[] actions)
         {
             var f1 = factories[0];
             var f2 = factories[1];
@@ -75,7 +75,7 @@ namespace Smart.Resolver.Providers
 
                 for(var i = 0; i < actions.Length; i++)
                 {
-                    actions[i](instance);
+                    actions[i](k, instance);
                 }
 
                 return instance;
@@ -95,7 +95,7 @@ namespace Smart.Resolver.Providers
         private static Func<IKernel, object> CreateActivator4(
             Func<object, object, object, object, object> activator,
             Func<IKernel, object>[] factories,
-            Action<object>[] actions)
+            Action<IKernel, object>[] actions)
         {
             var f1 = factories[0];
             var f2 = factories[1];
@@ -107,7 +107,7 @@ namespace Smart.Resolver.Providers
 
                 for(var i = 0; i < actions.Length; i++)
                 {
-                    actions[i](instance);
+                    actions[i](k, instance);
                 }
 
                 return instance;
@@ -128,7 +128,7 @@ namespace Smart.Resolver.Providers
         private static Func<IKernel, object> CreateActivator5(
             Func<object, object, object, object, object, object> activator,
             Func<IKernel, object>[] factories,
-            Action<object>[] actions)
+            Action<IKernel, object>[] actions)
         {
             var f1 = factories[0];
             var f2 = factories[1];
@@ -141,7 +141,7 @@ namespace Smart.Resolver.Providers
 
                 for(var i = 0; i < actions.Length; i++)
                 {
-                    actions[i](instance);
+                    actions[i](k, instance);
                 }
 
                 return instance;
@@ -163,7 +163,7 @@ namespace Smart.Resolver.Providers
         private static Func<IKernel, object> CreateActivator6(
             Func<object, object, object, object, object, object, object> activator,
             Func<IKernel, object>[] factories,
-            Action<object>[] actions)
+            Action<IKernel, object>[] actions)
         {
             var f1 = factories[0];
             var f2 = factories[1];
@@ -177,7 +177,7 @@ namespace Smart.Resolver.Providers
 
                 for(var i = 0; i < actions.Length; i++)
                 {
-                    actions[i](instance);
+                    actions[i](k, instance);
                 }
 
                 return instance;
@@ -200,7 +200,7 @@ namespace Smart.Resolver.Providers
         private static Func<IKernel, object> CreateActivator7(
             Func<object, object, object, object, object, object, object, object> activator,
             Func<IKernel, object>[] factories,
-            Action<object>[] actions)
+            Action<IKernel, object>[] actions)
         {
             var f1 = factories[0];
             var f2 = factories[1];
@@ -215,7 +215,7 @@ namespace Smart.Resolver.Providers
 
                 for(var i = 0; i < actions.Length; i++)
                 {
-                    actions[i](instance);
+                    actions[i](k, instance);
                 }
 
                 return instance;
@@ -239,7 +239,7 @@ namespace Smart.Resolver.Providers
         private static Func<IKernel, object> CreateActivator8(
             Func<object, object, object, object, object, object, object, object, object> activator,
             Func<IKernel, object>[] factories,
-            Action<object>[] actions)
+            Action<IKernel, object>[] actions)
         {
             var f1 = factories[0];
             var f2 = factories[1];
@@ -255,7 +255,7 @@ namespace Smart.Resolver.Providers
 
                 for(var i = 0; i < actions.Length; i++)
                 {
-                    actions[i](instance);
+                    actions[i](k, instance);
                 }
 
                 return instance;
@@ -280,7 +280,7 @@ namespace Smart.Resolver.Providers
         private static Func<IKernel, object> CreateActivator9(
             Func<object, object, object, object, object, object, object, object, object, object> activator,
             Func<IKernel, object>[] factories,
-            Action<object>[] actions)
+            Action<IKernel, object>[] actions)
         {
             var f1 = factories[0];
             var f2 = factories[1];
@@ -297,7 +297,7 @@ namespace Smart.Resolver.Providers
 
                 for(var i = 0; i < actions.Length; i++)
                 {
-                    actions[i](instance);
+                    actions[i](k, instance);
                 }
 
                 return instance;
@@ -323,7 +323,7 @@ namespace Smart.Resolver.Providers
         private static Func<IKernel, object> CreateActivator10(
             Func<object, object, object, object, object, object, object, object, object, object, object> activator,
             Func<IKernel, object>[] factories,
-            Action<object>[] actions)
+            Action<IKernel, object>[] actions)
         {
             var f1 = factories[0];
             var f2 = factories[1];
@@ -341,7 +341,7 @@ namespace Smart.Resolver.Providers
 
                 for(var i = 0; i < actions.Length; i++)
                 {
-                    actions[i](instance);
+                    actions[i](k, instance);
                 }
 
                 return instance;
@@ -368,7 +368,7 @@ namespace Smart.Resolver.Providers
         private static Func<IKernel, object> CreateActivator11(
             Func<object, object, object, object, object, object, object, object, object, object, object, object> activator,
             Func<IKernel, object>[] factories,
-            Action<object>[] actions)
+            Action<IKernel, object>[] actions)
         {
             var f1 = factories[0];
             var f2 = factories[1];
@@ -387,7 +387,7 @@ namespace Smart.Resolver.Providers
 
                 for(var i = 0; i < actions.Length; i++)
                 {
-                    actions[i](instance);
+                    actions[i](k, instance);
                 }
 
                 return instance;
@@ -415,7 +415,7 @@ namespace Smart.Resolver.Providers
         private static Func<IKernel, object> CreateActivator12(
             Func<object, object, object, object, object, object, object, object, object, object, object, object, object> activator,
             Func<IKernel, object>[] factories,
-            Action<object>[] actions)
+            Action<IKernel, object>[] actions)
         {
             var f1 = factories[0];
             var f2 = factories[1];
@@ -435,7 +435,7 @@ namespace Smart.Resolver.Providers
 
                 for(var i = 0; i < actions.Length; i++)
                 {
-                    actions[i](instance);
+                    actions[i](k, instance);
                 }
 
                 return instance;
@@ -464,7 +464,7 @@ namespace Smart.Resolver.Providers
         private static Func<IKernel, object> CreateActivator13(
             Func<object, object, object, object, object, object, object, object, object, object, object, object, object, object> activator,
             Func<IKernel, object>[] factories,
-            Action<object>[] actions)
+            Action<IKernel, object>[] actions)
         {
             var f1 = factories[0];
             var f2 = factories[1];
@@ -485,7 +485,7 @@ namespace Smart.Resolver.Providers
 
                 for(var i = 0; i < actions.Length; i++)
                 {
-                    actions[i](instance);
+                    actions[i](k, instance);
                 }
 
                 return instance;
@@ -515,7 +515,7 @@ namespace Smart.Resolver.Providers
         private static Func<IKernel, object> CreateActivator14(
             Func<object, object, object, object, object, object, object, object, object, object, object, object, object, object, object> activator,
             Func<IKernel, object>[] factories,
-            Action<object>[] actions)
+            Action<IKernel, object>[] actions)
         {
             var f1 = factories[0];
             var f2 = factories[1];
@@ -537,7 +537,7 @@ namespace Smart.Resolver.Providers
 
                 for(var i = 0; i < actions.Length; i++)
                 {
-                    actions[i](instance);
+                    actions[i](k, instance);
                 }
 
                 return instance;
@@ -568,7 +568,7 @@ namespace Smart.Resolver.Providers
         private static Func<IKernel, object> CreateActivator15(
             Func<object, object, object, object, object, object, object, object, object, object, object, object, object, object, object, object> activator,
             Func<IKernel, object>[] factories,
-            Action<object>[] actions)
+            Action<IKernel, object>[] actions)
         {
             var f1 = factories[0];
             var f2 = factories[1];
@@ -591,7 +591,7 @@ namespace Smart.Resolver.Providers
 
                 for(var i = 0; i < actions.Length; i++)
                 {
-                    actions[i](instance);
+                    actions[i](k, instance);
                 }
 
                 return instance;
@@ -623,7 +623,7 @@ namespace Smart.Resolver.Providers
         private static Func<IKernel, object> CreateActivator16(
             Func<object, object, object, object, object, object, object, object, object, object, object, object, object, object, object, object, object> activator,
             Func<IKernel, object>[] factories,
-            Action<object>[] actions)
+            Action<IKernel, object>[] actions)
         {
             var f1 = factories[0];
             var f2 = factories[1];
@@ -647,7 +647,7 @@ namespace Smart.Resolver.Providers
 
                 for(var i = 0; i < actions.Length; i++)
                 {
-                    actions[i](instance);
+                    actions[i](k, instance);
                 }
 
                 return instance;

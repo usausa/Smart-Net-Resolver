@@ -1,4 +1,4 @@
-﻿namespace Smart.Resolver.Processors
+namespace Smart.Resolver.Processors
 {
     using System;
 
@@ -6,6 +6,6 @@
     {
         int Order { get; }
 
-        Action<object> CreateProcessor(Type type, IKernel kernel);
+        Action<IKernel, object> CreateProcessor(Type type, IKernel kernel);
     }
 }

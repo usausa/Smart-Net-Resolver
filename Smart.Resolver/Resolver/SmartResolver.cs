@@ -28,7 +28,7 @@ namespace Smart.Resolver
 
         private readonly ThreadsafeHashArrayMap<RequestKey, FactoryEntry> factoriesCacheWithConstraint = new ThreadsafeHashArrayMap<RequestKey, FactoryEntry>(RequestKeyComparer.Default);
 
-        private readonly ThreadsafeTypeHashArrayMap<Action<object>[]> injectorsCache = new ThreadsafeTypeHashArrayMap<Action<object>[]>();
+        private readonly ThreadsafeTypeHashArrayMap<Action<IKernel, object>[]> injectorsCache = new ThreadsafeTypeHashArrayMap<Action<IKernel, object>[]>();
 
         private readonly object sync = new object();
 
@@ -257,11 +257,11 @@ namespace Smart.Resolver
 
             for (var i = 0; i < actions.Length; i++)
             {
-                actions[i](instance);
+                actions[i](this, instance);
             }
         }
 
-        private Action<object>[] CreateTypeInjectors(Type type)
+        private Action<IKernel, object>[] CreateTypeInjectors(Type type)
         {
             var binding = new Binding(type);
             return injectors

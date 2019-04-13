@@ -19,11 +19,11 @@ namespace Smart.Resolver.Injectors
             this.delegateFactory = delegateFactory;
         }
 
-        public Action<object> CreateInjector(Type type, IKernel kernel, IBinding binding)
+        public Action<IKernel, object> CreateInjector(Type type, IKernel kernel, IBinding binding)
         {
             var entries = type.GetRuntimeProperties()
                 .Where(p => p.IsInjectDefined())
-                .Select(x => CreateInjectEntry(x, kernel, binding))
+                .Select(x => CreateInjectEntry(x, binding))
                 .ToArray();
             if (entries.Length == 0)
             {
@@ -34,56 +34,56 @@ namespace Smart.Resolver.Injectors
             return injector.Inject;
         }
 
-        private InjectEntry CreateInjectEntry(PropertyInfo pi, IKernel kernel, IBinding binding)
+        private InjectEntry CreateInjectEntry(PropertyInfo pi, IBinding binding)
         {
             var setter = delegateFactory.CreateSetter(pi, true);
 
             var parameter = binding.PropertyValues.GetParameter(pi.Name);
             if (parameter != null)
             {
-                return new InjectEntry(CreateParameterProvider(kernel, parameter), setter);
+                return new InjectEntry(CreateParameterProvider(parameter), setter);
             }
 
             var propertyType = delegateFactory.GetExtendedPropertyType(pi);
             var constraint = ConstraintBuilder.Build(pi.GetCustomAttributes<ConstraintAttribute>());
             if (constraint != null)
             {
-                return new InjectEntry(CreateConstraintProvider(kernel, propertyType, constraint), setter);
+                return new InjectEntry(CreateConstraintProvider(propertyType, constraint), setter);
             }
 
-            return new InjectEntry(CreateProvider(kernel, propertyType), setter);
+            return new InjectEntry(CreateProvider(propertyType), setter);
         }
 
-        private static Func<object> CreateParameterProvider(IKernel kernel, IParameter parameter)
+        private static Func<IKernel, object> CreateParameterProvider(IParameter parameter)
         {
-            return () => parameter.Resolve(kernel);
+            return parameter.Resolve;
         }
 
-        private static Func<object> CreateConstraintProvider(IResolver resolver, Type propertyType, IConstraint constraint)
+        private static Func<IKernel, object> CreateConstraintProvider(Type propertyType, IConstraint constraint)
         {
-            return () => resolver.Get(propertyType, constraint);
+            return k => k.Get(propertyType, constraint);
         }
 
-        private static Func<object> CreateProvider(IResolver resolver, Type propertyType)
+        private static Func<IKernel, object> CreateProvider(Type propertyType)
         {
-            return () => resolver.Get(propertyType);
+            return k => k.Get(propertyType);
         }
 
         private sealed class InjectEntry
         {
-            private readonly Func<object> provider;
+            private readonly Func<IKernel, object> provider;
 
             private readonly Action<object, object> setter;
 
-            public InjectEntry(Func<object> provider, Action<object, object> setter)
+            public InjectEntry(Func<IKernel, object> provider, Action<object, object> setter)
             {
                 this.provider = provider;
                 this.setter = setter;
             }
 
-            public void Inject(object instance)
+            public void Inject(IKernel kernel, object instance)
             {
-                setter(instance, provider());
+                setter(instance, provider(kernel));
             }
         }
 
@@ -96,11 +96,11 @@ namespace Smart.Resolver.Injectors
                 this.entries = entries;
             }
 
-            public void Inject(object instance)
+            public void Inject(IKernel kernel, object instance)
             {
                 for (var i = 0; i < entries.Length; i++)
                 {
-                    entries[i].Inject(instance);
+                    entries[i].Inject(kernel, instance);
                 }
             }
         }
