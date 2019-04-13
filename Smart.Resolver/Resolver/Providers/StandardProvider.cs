@@ -43,7 +43,7 @@ namespace Smart.Resolver.Providers
             delegateFactory = components.Get<IDelegateFactory>();
         }
 
-        public Func<object> CreateFactory(IKernel kernel, IBinding binding)
+        public Func<IKernel, object> CreateFactory(IKernel kernel, IBinding binding)
         {
             var constructors = CreateConstructorMetadata();
             if (constructors.Length == 0)
@@ -55,7 +55,7 @@ namespace Smart.Resolver.Providers
             foreach (var constructor in constructors)
             {
                 var match = true;
-                var argumentFactories = new List<Func<object>>(constructor.Parameters.Length);
+                var argumentFactories = new List<Func<IKernel, object>>(constructor.Parameters.Length);
 
                 foreach (var parameter in constructor.Parameters)
                 {
@@ -65,7 +65,7 @@ namespace Smart.Resolver.Providers
                     var argument = binding.ConstructorArguments.GetParameter(pi.Name);
                     if (argument != null)
                     {
-                        argumentFactories.Add(() => argument.Resolve(kernel));
+                        argumentFactories.Add(k => argument.Resolve(k));
                         continue;
                     }
 
@@ -88,7 +88,7 @@ namespace Smart.Resolver.Providers
                     // DefaultValue
                     if (pi.HasDefaultValue)
                     {
-                        argumentFactories.Add(() => pi.DefaultValue);
+                        argumentFactories.Add(k => pi.DefaultValue);
                         continue;
                     }
 
@@ -134,13 +134,13 @@ namespace Smart.Resolver.Providers
             return targetInjectors.Concat(targetProcessors).ToArray();
         }
 
-        private Func<object> CreateFactory(ConstructorInfo ci, Func<object>[] factories, Action<object>[] actions)
+        private Func<IKernel, object> CreateFactory(ConstructorInfo ci, Func<IKernel, object>[] factories, Action<object>[] actions)
         {
             switch (factories.Length)
             {
                 case 0:
                     var activator0 = delegateFactory.CreateFactory0(ci);
-                    return actions.Length > 0 ? CreateActivator0(activator0, actions) : activator0;
+                    return actions.Length > 0 ? CreateActivator0(activator0, actions) : k => activator0();
                 case 1:
                     var activator1 = delegateFactory.CreateFactory1(ci);
                     return actions.Length > 0 ? CreateActivator1(activator1, factories, actions) : CreateActivator1(activator1, factories);
@@ -199,11 +199,11 @@ namespace Smart.Resolver.Providers
         // Activator
         // ------------------------------------------------------------
 
-        private static Func<object> CreateActivator0(
+        private static Func<IKernel, object> CreateActivator0(
             Func<object> activator,
             Action<object>[] actions)
         {
-            return () =>
+            return k =>
             {
                 var instance = activator();
 
@@ -216,17 +216,17 @@ namespace Smart.Resolver.Providers
             };
         }
 
-        private static Func<object> CreateActivator(
+        private static Func<IKernel, object> CreateActivator(
             Func<object[], object> activator,
-            Func<object>[] factories,
+            Func<IKernel, object>[] factories,
             Action<object>[] actions)
         {
-            return () =>
+            return k =>
             {
                 var arguments = new object[factories.Length];
                 for (var i = 0; i < factories.Length; i++)
                 {
-                    arguments[i] = factories[i]();
+                    arguments[i] = factories[i](k);
                 }
 
                 var instance = activator(arguments);
@@ -240,16 +240,16 @@ namespace Smart.Resolver.Providers
             };
         }
 
-        private static Func<object> CreateActivator(
+        private static Func<IKernel, object> CreateActivator(
             Func<object[], object> activator,
-            Func<object>[] factories)
+            Func<IKernel, object>[] factories)
         {
-            return () =>
+            return k =>
             {
                 var arguments = new object[factories.Length];
                 for (var i = 0; i < factories.Length; i++)
                 {
-                    arguments[i] = factories[i]();
+                    arguments[i] = factories[i](k);
                 }
 
                 return activator(arguments);

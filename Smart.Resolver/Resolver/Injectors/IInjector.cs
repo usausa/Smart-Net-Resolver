@@ -1,4 +1,4 @@
-﻿namespace Smart.Resolver.Injectors
+namespace Smart.Resolver.Injectors
 {
     using System;
 

@@ -8,6 +8,6 @@ namespace Smart.Resolver.Providers
     {
         Type TargetType { get; }
 
-        Func<object> CreateFactory(IKernel kernel, IBinding binding);
+        Func<IKernel, object> CreateFactory(IKernel kernel, IBinding binding);
     }
 }

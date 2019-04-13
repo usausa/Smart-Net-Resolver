@@ -93,16 +93,16 @@ namespace Smart.Resolver
                 return this;
             }
 
-            public Func<object> Create(IKernel kernel, IBinding binding, Func<object> factory)
+            public Func<IKernel, object> Create(IKernel kernel, IBinding binding, Func<IKernel, object> factory)
             {
-                return () =>
+                return k =>
                 {
                     if (Cache.Value.TryGetValue(binding, out var value))
                     {
                         return value;
                     }
 
-                    value = factory();
+                    value = factory(k);
                     Cache.Value[binding] = value;
 
                     return value;

@@ -1,4 +1,4 @@
-﻿namespace Smart.Resolver.Providers
+namespace Smart.Resolver.Providers
 {
     using System;
     using System.Reflection;
@@ -16,16 +16,16 @@
             TargetType = type;
         }
 
-        public Func<object> CreateFactory(IKernel kernel, IBinding binding)
+        public Func<IKernel, object> CreateFactory(IKernel kernel, IBinding binding)
         {
             var method = typeof(DependencyService).GetMethod("Get");
             var genericMethod = method.MakeGenericMethod(TargetType);
             return CreateFactory(genericMethod);
         }
 
-        private static Func<object> CreateFactory(MethodInfo method)
+        private static Func<IKernel, object> CreateFactory(MethodInfo method)
         {
-            return () => method.Invoke(null, new object[] { DependencyFetchTarget.GlobalInstance });
+            return k => method.Invoke(null, new object[] { DependencyFetchTarget.GlobalInstance });
         }
     }
 }

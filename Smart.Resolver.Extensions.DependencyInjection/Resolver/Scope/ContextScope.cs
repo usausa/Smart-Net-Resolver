@@ -1,4 +1,4 @@
-﻿namespace Smart.Resolver.Scope
+namespace Smart.Resolver.Scope
 {
     using System;
 
@@ -13,19 +13,19 @@
             return this;
         }
 
-        public Func<object> Create(IKernel kernel, IBinding binding, Func<object> factory)
+        public Func<IKernel, object> Create(IKernel kernel, IBinding binding, Func<IKernel, object> factory)
         {
-            return () =>
+            return k =>
             {
                 var store = AsyncContext.Store;
                 if (store is null)
                 {
-                    return factory();
+                    return factory(k);
                 }
 
                 if (!store.TryGetValue(binding, out var value))
                 {
-                    value = factory();
+                    value = factory(k);
                     store[binding] = value;
                 }
 
