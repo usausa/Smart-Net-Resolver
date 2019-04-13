@@ -1,7 +1,11 @@
 namespace Smart.Resolver
 {
-    public interface IContainer : IResolver
+    using System;
+
+    using Smart.Resolver.Bindings;
+
+    public interface IContainer
     {
-        // TODO
+        object Create(IBinding binding, Func<object> factory);
     }
 }

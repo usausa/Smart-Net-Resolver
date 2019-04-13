@@ -269,5 +269,82 @@ namespace Smart.Resolver
                 .Where(x => x != null)
                 .ToArray();
         }
+
+        // ------------------------------------------------------------
+        // Scope
+        // ------------------------------------------------------------
+
+        public IResolver CreateChildResolver()
+        {
+            return new ChildResolver(this);
+        }
+
+        private sealed class ChildResolver : IResolver, IContainer
+        {
+            private readonly SmartResolver resolver;
+
+            private readonly Dictionary<IBinding, object> cache = new Dictionary<IBinding, object>();
+
+            public ChildResolver(SmartResolver resolver)
+            {
+                this.resolver = resolver;
+            }
+
+            public void Dispose()
+            {
+                foreach (var obj in cache.Values)
+                {
+                    (obj as IDisposable)?.Dispose();
+                }
+            }
+
+            public object Create(IBinding binding, Func<object> factory)
+            {
+                lock (cache)
+                {
+                    if (!cache.TryGetValue(binding, out var value))
+                    {
+                        value = factory();
+                        cache[binding] = value;
+                    }
+
+                    return value;
+                }
+            }
+
+            public bool CanGet<T>() => resolver.CanGet<T>();
+
+            public bool CanGet<T>(IConstraint constraint) => resolver.CanGet<T>(constraint);
+
+            public bool CanGet(Type type) => resolver.CanGet(type);
+
+            public bool CanGet(Type type, IConstraint constraint) => resolver.CanGet(type, constraint);
+
+            public bool TryGet<T>(out T obj) => resolver.TryGet(out obj);
+
+            public bool TryGet<T>(IConstraint constraint, out T obj) => resolver.TryGet(constraint, out obj);
+
+            public bool TryGet(Type type, out object obj) => resolver.TryGet(type, out obj);
+
+            public bool TryGet(Type type, IConstraint constraint, out object obj) => resolver.TryGet(type, constraint, out obj);
+
+            public T Get<T>() => resolver.Get<T>();
+
+            public T Get<T>(IConstraint constraint) => resolver.Get<T>(constraint);
+
+            public object Get(Type type) => resolver.Get(type);
+
+            public object Get(Type type, IConstraint constraint) => resolver.Get(type, constraint);
+
+            public IEnumerable<T> GetAll<T>() => resolver.GetAll<T>();
+
+            public IEnumerable<T> GetAll<T>(IConstraint constraint) => resolver.GetAll<T>(constraint);
+
+            public IEnumerable<object> GetAll(Type type) => resolver.GetAll(type);
+
+            public IEnumerable<object> GetAll(Type type, IConstraint constraint) => resolver.GetAll(type, constraint);
+
+            public void Inject(object instance) => resolver.Inject(instance);
+        }
     }
 }
