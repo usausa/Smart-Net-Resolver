@@ -248,19 +248,24 @@ namespace Smart.Resolver
                 throw new ArgumentNullException(nameof(instance));
             }
 
-            var type = instance.GetType();
-            if (!injectorsCache.TryGetValue(type, out var actions))
-            {
-                actions = injectorsCache.AddIfNotExist(type, CreateTypeInjectors);
-            }
-
+            var actions = FindInjectors(instance.GetType());
             for (var i = 0; i < actions.Length; i++)
             {
                 actions[i](this, instance);
             }
         }
 
-        private Action<IResolver, object>[] CreateTypeInjectors(Type type)
+        private Action<IResolver, object>[] FindInjectors(Type type)
+        {
+            if (!injectorsCache.TryGetValue(type, out var actions))
+            {
+                actions = injectorsCache.AddIfNotExist(type, CreateInjectors);
+            }
+
+            return actions;
+        }
+
+        private Action<IResolver, object>[] CreateInjectors(Type type)
         {
             var binding = new Binding(type);
             return injectors
@@ -291,9 +296,14 @@ namespace Smart.Resolver
 
             public void Dispose()
             {
-                foreach (var obj in cache.Values)
+                lock (cache)
                 {
-                    (obj as IDisposable)?.Dispose();
+                    foreach (var obj in cache.Values)
+                    {
+                        (obj as IDisposable)?.Dispose();
+                    }
+
+                    cache.Clear();
                 }
             }
 
@@ -385,7 +395,16 @@ namespace Smart.Resolver
 
             public void Inject(object instance)
             {
-                throw new NotImplementedException();
+                if (instance is null)
+                {
+                    throw new ArgumentNullException(nameof(instance));
+                }
+
+                var actions = resolver.FindInjectors(instance.GetType());
+                for (var i = 0; i < actions.Length; i++)
+                {
+                    actions[i](this, instance);
+                }
             }
         }
     }

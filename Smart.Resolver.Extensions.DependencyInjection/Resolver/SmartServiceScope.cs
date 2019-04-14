@@ -4,21 +4,36 @@ namespace Smart.Resolver
 
     using Microsoft.Extensions.DependencyInjection;
 
-    public sealed class SmartServiceScope : IServiceScope
+    internal sealed class SmartServiceScope : IServiceScope
     {
         private readonly IResolver resolver;
 
         public IServiceProvider ServiceProvider { get; }
 
-        public SmartServiceScope(IResolver resolver)
+        public SmartServiceScope(SmartResolver resolver)
         {
             this.resolver = resolver;
-            ServiceProvider = new SmartChildServiceProvider(resolver);
+            ServiceProvider = new SmartChildServiceProvider(resolver.CreateChildResolver());
         }
 
         public void Dispose()
         {
             resolver.Dispose();
+        }
+
+        private sealed class SmartChildServiceProvider : IServiceProvider
+        {
+            private readonly IResolver resolver;
+
+            public SmartChildServiceProvider(IResolver resolver)
+            {
+                this.resolver = resolver;
+            }
+
+            public object GetService(Type serviceType)
+            {
+                return resolver.Get(serviceType);
+            }
         }
     }
 }

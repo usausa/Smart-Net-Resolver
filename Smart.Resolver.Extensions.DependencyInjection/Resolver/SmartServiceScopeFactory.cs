@@ -15,7 +15,7 @@ namespace Smart.Resolver
 
         public IServiceScope CreateScope()
         {
-            return new SmartServiceScope(resolver.CreateChildResolver());
+            return new SmartServiceScope(resolver);
         }
     }
 }
