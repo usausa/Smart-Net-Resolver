@@ -30,15 +30,17 @@ namespace Example.WebApplication
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+            services.AddMvc()
+                .AddControllersAsServices()
+                .AddViewComponentsAsServices()
+                .AddTagHelpersAsServices()
+                .SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
             services.Configure<ProfileSettings>(Configuration.GetSection("ProfileSettings"));
         }
 
         public void ConfigureContainer(ResolverConfig config)
         {
-            //config.AddMvcActivatorSupport();
-
             var connectionStringMaster = Configuration.GetConnectionString("Master");
             config
                 .Bind<IConnectionFactory>()

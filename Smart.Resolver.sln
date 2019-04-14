@@ -5,8 +5,6 @@ VisualStudioVersion = 16.0.28729.10
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Smart.Resolver", "Smart.Resolver\Smart.Resolver.csproj", "{198FCDD9-BC14-4C99-BDDE-9912B25C42E4}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Smart.Resolver.AspNetCore", "Smart.Resolver.AspNetCore\Smart.Resolver.AspNetCore.csproj", "{BA96E24B-5444-4E4D-BF34-11EF91F7CD6C}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Smart.Resolver.Xamarin", "Smart.Resolver.Xamarin\Smart.Resolver.Xamarin.csproj", "{1DB2D26B-D269-4445-965C-099C89FDC149}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Smart.Resolver.Tests", "Smart.Resolver.Tests\Smart.Resolver.Tests.csproj", "{38EF8F58-AE3B-454A-A9DA-31048F1FF0C3}"
@@ -19,7 +17,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		Directory.Build.props = Directory.Build.props
 		Directory.Build.targets = Directory.Build.targets
 		README.md = README.md
-		Smart.Resolver.AspNetCore.nuspec = Smart.Resolver.AspNetCore.nuspec
+		Smart.Resolver.Extensions.DependencyInjection.nuspec = Smart.Resolver.Extensions.DependencyInjection.nuspec
 		Smart.Resolver.nuspec = Smart.Resolver.nuspec
 		Smart.Resolver.ruleset = Smart.Resolver.ruleset
 		Smart.Resolver.sln.DotSettings = Smart.Resolver.sln.DotSettings
@@ -44,10 +42,6 @@ Global
 		{198FCDD9-BC14-4C99-BDDE-9912B25C42E4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{198FCDD9-BC14-4C99-BDDE-9912B25C42E4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{198FCDD9-BC14-4C99-BDDE-9912B25C42E4}.Release|Any CPU.Build.0 = Release|Any CPU
-		{BA96E24B-5444-4E4D-BF34-11EF91F7CD6C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{BA96E24B-5444-4E4D-BF34-11EF91F7CD6C}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{BA96E24B-5444-4E4D-BF34-11EF91F7CD6C}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{BA96E24B-5444-4E4D-BF34-11EF91F7CD6C}.Release|Any CPU.Build.0 = Release|Any CPU
 		{1DB2D26B-D269-4445-965C-099C89FDC149}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{1DB2D26B-D269-4445-965C-099C89FDC149}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1DB2D26B-D269-4445-965C-099C89FDC149}.Release|Any CPU.ActiveCfg = Release|Any CPU
