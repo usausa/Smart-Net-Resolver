@@ -2,11 +2,11 @@ namespace Smart.Resolver
 {
     using System;
 
-    public sealed class SmartServiceProvider : IServiceProvider
+    public sealed class SmartChildServiceProvider : IServiceProvider
     {
-        private readonly SmartResolver resolver;
+        private readonly IResolver resolver;
 
-        public SmartServiceProvider(SmartResolver resolver)
+        public SmartChildServiceProvider(IResolver resolver)
         {
             this.resolver = resolver;
         }

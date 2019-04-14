@@ -16,7 +16,6 @@ namespace Example.WebApplication
 
     using Smart.Data;
     using Smart.Resolver;
-    using Smart.Resolver.Configs;
 
     public class Startup
     {

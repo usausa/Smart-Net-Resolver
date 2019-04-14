@@ -1,4 +1,4 @@
-﻿namespace Smart.Resolver
+namespace Smart.Resolver
 {
     using System;
 
@@ -6,16 +6,16 @@
 
     public sealed class SmartServiceScopeFactory : IServiceScopeFactory
     {
-        private readonly IServiceProvider serviceProvider;
+        private readonly SmartResolver resolver;
 
-        public SmartServiceScopeFactory(IServiceProvider serviceProvider)
+        public SmartServiceScopeFactory(SmartResolver resolver)
         {
-            this.serviceProvider = serviceProvider;
+            this.resolver = resolver;
         }
 
         public IServiceScope CreateScope()
         {
-            return new SmartServiceScope(serviceProvider);
+            return new SmartServiceScope(resolver.CreateChildResolver());
         }
     }
 }
