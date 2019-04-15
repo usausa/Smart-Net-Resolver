@@ -4,6 +4,7 @@ namespace Smart.Resolver
     using System.Collections.Generic;
     using System.Linq;
     using System.Runtime.CompilerServices;
+    using System.Threading;
 
     using Smart.Collections.Concurrent;
     using Smart.ComponentModel;
@@ -38,6 +39,8 @@ namespace Smart.Resolver
 
         private readonly IMissingHandler[] handlers;
 
+        private int disposed;
+
         public IComponentContainer Components { get; }
 
         public SmartResolver(IResolverConfig config)
@@ -63,6 +66,11 @@ namespace Smart.Resolver
 
         public void Dispose()
         {
+            if (Interlocked.CompareExchange(ref disposed, 1, 0) == 1)
+            {
+                return;
+            }
+
             Components.Dispose();
         }
 
