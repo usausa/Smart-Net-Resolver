@@ -6,19 +6,19 @@ namespace Smart.Resolver
 
     internal sealed class SmartServiceScope : IServiceScope
     {
-        private readonly IResolver resolver;
+        private readonly IResolver childResolver;
 
         public IServiceProvider ServiceProvider { get; }
 
         public SmartServiceScope(SmartResolver resolver)
         {
-            this.resolver = resolver;
-            ServiceProvider = new SmartChildServiceProvider(resolver.CreateChildResolver());
+            childResolver = resolver.CreateChildResolver();
+            ServiceProvider = new SmartChildServiceProvider(childResolver);
         }
 
         public void Dispose()
         {
-            resolver.Dispose();
+            childResolver.Dispose();
         }
 
         private sealed class SmartChildServiceProvider : IServiceProvider
