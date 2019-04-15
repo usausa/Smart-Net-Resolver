@@ -1,4 +1,4 @@
-﻿namespace Example.GenericHost
+namespace Example.GenericHost
 {
     using System.IO;
     using System.Threading.Tasks;
@@ -37,15 +37,11 @@
                         logging.AddDebug();
                     }
                 })
-                .UseServiceProviderFactory(new SmartServiceProviderFactory(ConfigureServices))
                 .ConfigureServices(ConfigureServices)
+                .UseServiceProviderFactory(new SmartServiceProviderFactory())
+                .ConfigureContainer<ResolverConfig>(ConfigureContainer)
                 .UseConsoleLifetime()
                 .RunConsoleAsync();
-        }
-
-        private static void ConfigureServices(ResolverConfig config)
-        {
-            config.Bind<SettingService>().ToSelf().InSingletonScope();
         }
 
         private static void ConfigureServices(HostBuilderContext hostContext, IServiceCollection services)
@@ -53,6 +49,11 @@
             services.Configure<Settings>(hostContext.Configuration.GetSection("Settings"));
 
             services.AddHostedService<ExampleHostedService>();
+        }
+
+        private static void ConfigureContainer(ResolverConfig config)
+        {
+            config.Bind<SettingService>().ToSelf().InSingletonScope();
         }
     }
 }

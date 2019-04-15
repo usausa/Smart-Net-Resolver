@@ -1,4 +1,4 @@
-﻿namespace Example.GenericHost
+namespace Example.GenericHost
 {
     using System;
     using System.Threading;
@@ -7,29 +7,30 @@
     using Microsoft.Extensions.Hosting;
     using Microsoft.Extensions.Logging;
 
-    public class ExampleHostedService : IHostedService
+    public sealed class ExampleHostedService : IHostedService, IDisposable
     {
         private ILogger<ExampleHostedService> Log { get; }
-
-        private IApplicationLifetime ApplicationLifetime { get; }
 
         private SettingService SettingService { get; }
 
         public ExampleHostedService(
             ILogger<ExampleHostedService> log,
-            IApplicationLifetime applicationLifetime,
             SettingService settingService)
         {
             Log = log;
-            ApplicationLifetime = applicationLifetime;
             SettingService = settingService;
+        }
+
+        public void Dispose()
+        {
         }
 
         public Task StartAsync(CancellationToken cancellationToken)
         {
             Log.LogInformation("StartAsync");
 
-            ApplicationLifetime.ApplicationStarted.Register(() => Run(cancellationToken));
+            SettingService.Write();
+
             return Task.CompletedTask;
         }
 
@@ -38,25 +39,6 @@
             Log.LogInformation("StopAsync");
 
             return Task.CompletedTask;
-        }
-
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes", Justification = "Ignore")]
-        private async void Run(CancellationToken cancellationToken)
-        {
-            try
-            {
-                SettingService.Write();
-
-                await Task.Delay(30000, cancellationToken).ConfigureAwait(false);
-            }
-            catch (Exception e)
-            {
-                Log.LogError(e, "Error");
-            }
-            finally
-            {
-                ApplicationLifetime.StopApplication();
-            }
         }
     }
 }
