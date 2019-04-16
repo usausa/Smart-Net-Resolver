@@ -1,4 +1,4 @@
-﻿namespace Smart.Resolver.Benchmark
+namespace Smart.Resolver.Benchmark
 {
     using System;
     using System.Collections.Generic;
@@ -11,24 +11,24 @@
         public static void Validate(Func<Type, object> solver)
         {
             // Singleton
-            var singleton11 = (ISingleton1)solver(RequestTypes.Singleton1);
-            var singleton12 = (ISingleton1)solver(RequestTypes.Singleton1);
+            var singleton11 = (ISingleton1)solver(typeof(ISingleton1));
+            var singleton12 = (ISingleton1)solver(typeof(ISingleton1));
 
             if (singleton11 != singleton12)
             {
                 throw new Exception("Validation error of singleton.");
             }
 
-            var singleton21 = (ISingleton2)solver(RequestTypes.Singleton2);
-            var singleton22 = (ISingleton2)solver(RequestTypes.Singleton2);
+            var singleton21 = (ISingleton2)solver(typeof(ISingleton2));
+            var singleton22 = (ISingleton2)solver(typeof(ISingleton2));
 
             if (singleton21 != singleton22)
             {
                 throw new Exception("Validation error of singleton.");
             }
 
-            var singleton31 = (ISingleton3)solver(RequestTypes.Singleton3);
-            var singleton32 = (ISingleton3)solver(RequestTypes.Singleton3);
+            var singleton31 = (ISingleton3)solver(typeof(ISingleton3));
+            var singleton32 = (ISingleton3)solver(typeof(ISingleton3));
 
             if (singleton31 != singleton32)
             {
@@ -36,24 +36,24 @@
             }
 
             // Transient
-            var transient11 = (ITransient1)solver(RequestTypes.Transient1);
-            var transient12 = (ITransient1)solver(RequestTypes.Transient1);
+            var transient11 = (ITransient1)solver(typeof(ITransient1));
+            var transient12 = (ITransient1)solver(typeof(ITransient1));
 
             if (transient11 == transient12)
             {
                 throw new Exception("Validation error of transient.");
             }
 
-            var transient21 = (ITransient2)solver(RequestTypes.Transient2);
-            var transient22 = (ITransient2)solver(RequestTypes.Transient2);
+            var transient21 = (ITransient2)solver(typeof(ITransient2));
+            var transient22 = (ITransient2)solver(typeof(ITransient2));
 
             if (transient21 == transient22)
             {
                 throw new Exception("Validation error of transient.");
             }
 
-            var transient31 = (ITransient3)solver(RequestTypes.Transient3);
-            var transient32 = (ITransient3)solver(RequestTypes.Transient3);
+            var transient31 = (ITransient3)solver(typeof(ITransient3));
+            var transient32 = (ITransient3)solver(typeof(ITransient3));
 
             if (transient31 == transient32)
             {
@@ -61,24 +61,24 @@
             }
 
             // Combined
-            var combined11 = (Combined1)solver(RequestTypes.Combined1);
-            var combined12 = (Combined1)solver(RequestTypes.Combined1);
+            var combined11 = (Combined1)solver(typeof(Combined1));
+            var combined12 = (Combined1)solver(typeof(Combined1));
 
             if (combined11 == combined12)
             {
                 throw new Exception("Validation error of combined.");
             }
 
-            var combined21 = (Combined2)solver(RequestTypes.Combined2);
-            var combined22 = (Combined2)solver(RequestTypes.Combined2);
+            var combined21 = (Combined2)solver(typeof(Combined2));
+            var combined22 = (Combined2)solver(typeof(Combined2));
 
             if (combined21 == combined22)
             {
                 throw new Exception("Validation error of combined.");
             }
 
-            var combined31 = (Combined3)solver(RequestTypes.Combined3);
-            var combined32 = (Combined3)solver(RequestTypes.Combined3);
+            var combined31 = (Combined3)solver(typeof(Combined3));
+            var combined32 = (Combined3)solver(typeof(Combined3));
 
             if (combined31 == combined32)
             {
@@ -86,8 +86,8 @@
             }
 
             // Generic
-            var generic1 = (IGenericObject<string>)solver(RequestTypes.Generic1);
-            var generic2 = (IGenericObject<int>)solver(RequestTypes.Generic2);
+            var generic1 = (IGenericObject<string>)solver(typeof(IGenericObject<string>));
+            var generic2 = (IGenericObject<int>)solver(typeof(IGenericObject<int>));
 
             if (generic1 is null)
             {
@@ -100,7 +100,7 @@
             }
 
             // MultipleSingleton
-            var multipleSingletons = ((IEnumerable<IMultipleSingletonService>)solver(RequestTypes.MultipleSingleton)).ToArray();
+            var multipleSingletons = ((IEnumerable<IMultipleSingletonService>)solver(typeof(IEnumerable<IMultipleSingletonService>))).ToArray();
 
             if (multipleSingletons.Length != 5)
             {
@@ -116,7 +116,7 @@
             }
 
             // MultipleTransient
-            var multipleTransients = ((IEnumerable<IMultipleTransientService>)solver(RequestTypes.MultipleTransient)).ToArray();
+            var multipleTransients = ((IEnumerable<IMultipleTransientService>)solver(typeof(IEnumerable<IMultipleTransientService>))).ToArray();
 
             if (multipleTransients.Length != 5)
             {

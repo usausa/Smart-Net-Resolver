@@ -1,4 +1,4 @@
-﻿namespace Smart.Resolver.Benchmark
+namespace Smart.Resolver.Benchmark
 {
     using BenchmarkDotNet.Running;
 

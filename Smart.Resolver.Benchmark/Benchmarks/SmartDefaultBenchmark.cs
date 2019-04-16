@@ -1,6 +1,11 @@
-﻿namespace Smart.Resolver.Benchmark.Benchmarks
+namespace Smart.Resolver.Benchmark.Benchmarks
 {
+    using System;
+    using System.Collections.Generic;
+
     using BenchmarkDotNet.Attributes;
+
+    using Microsoft.Extensions.DependencyInjection;
 
     using Smart.Resolver;
     using Smart.Resolver.Benchmark.Classes;
@@ -9,6 +14,8 @@
     public class SmartDefaultBenchmark
     {
         private SmartResolver resolver;
+
+        private IServiceProvider provider;
 
         [GlobalSetup]
         public void Setup()
@@ -45,79 +52,124 @@
             config.Bind<IMultipleTransientService>().To<MultipleTransientService4>().InTransientScope();
             config.Bind<IMultipleTransientService>().To<MultipleTransientService5>().InTransientScope();
 
+            // ASP.NET Core simulation
+            config.Bind<IServiceProvider>().To<SmartServiceProvider>().InSingletonScope();
+            config.Bind<IServiceScopeFactory>().To<SmartServiceScopeFactory>().InSingletonScope();
+            config.Bind<Controller>().ToSelf().InTransientScope();
+            config.Bind<ITransientService1>().To<TransientService1>().InTransientScope();
+            config.Bind<ITransientService2>().To<TransientService2>().InTransientScope();
+            config.Bind<ITransientService3>().To<TransientService3>().InTransientScope();
+            config.Bind<IScopedService>().To<ScopedService>().InContainerScope();
+
             resolver = config.ToResolver();
 
             Validator.Validate(t => resolver.Get(t));
+
+            provider = resolver.Get<IServiceProvider>();
         }
 
         [Benchmark(OperationsPerInvoke = 5)]
         public void Singleton()
         {
-            resolver.Get(RequestTypes.Singleton1);
-            resolver.Get(RequestTypes.Singleton2);
-            resolver.Get(RequestTypes.Singleton3);
-            resolver.Get(RequestTypes.Singleton4);
-            resolver.Get(RequestTypes.Singleton5);
+            resolver.Get(typeof(ISingleton1));
+            resolver.Get(typeof(ISingleton2));
+            resolver.Get(typeof(ISingleton3));
+            resolver.Get(typeof(ISingleton4));
+            resolver.Get(typeof(ISingleton5));
         }
 
         [Benchmark(OperationsPerInvoke = 5)]
         public void Transient()
         {
-            resolver.Get(RequestTypes.Transient1);
-            resolver.Get(RequestTypes.Transient2);
-            resolver.Get(RequestTypes.Transient3);
-            resolver.Get(RequestTypes.Transient4);
-            resolver.Get(RequestTypes.Transient5);
+            resolver.Get(typeof(ITransient1));
+            resolver.Get(typeof(ITransient2));
+            resolver.Get(typeof(ITransient3));
+            resolver.Get(typeof(ITransient4));
+            resolver.Get(typeof(ITransient5));
         }
 
         [Benchmark(OperationsPerInvoke = 5)]
         public void Combined()
         {
-            resolver.Get(RequestTypes.Combined1);
-            resolver.Get(RequestTypes.Combined2);
-            resolver.Get(RequestTypes.Combined3);
-            resolver.Get(RequestTypes.Combined4);
-            resolver.Get(RequestTypes.Combined5);
+            resolver.Get(typeof(Combined1));
+            resolver.Get(typeof(Combined2));
+            resolver.Get(typeof(Combined3));
+            resolver.Get(typeof(Combined4));
+            resolver.Get(typeof(Combined5));
         }
 
         [Benchmark(OperationsPerInvoke = 5)]
         public void Complex()
         {
-            resolver.Get(RequestTypes.Complex);
-            resolver.Get(RequestTypes.Complex);
-            resolver.Get(RequestTypes.Complex);
-            resolver.Get(RequestTypes.Complex);
-            resolver.Get(RequestTypes.Complex);
+            resolver.Get(typeof(Complex));
+            resolver.Get(typeof(Complex));
+            resolver.Get(typeof(Complex));
+            resolver.Get(typeof(Complex));
+            resolver.Get(typeof(Complex));
         }
 
         [Benchmark(OperationsPerInvoke = 5)]
         public void Generics()
         {
-            resolver.Get(RequestTypes.Generic1);
-            resolver.Get(RequestTypes.Generic2);
-            resolver.Get(RequestTypes.Generic1);
-            resolver.Get(RequestTypes.Generic2);
-            resolver.Get(RequestTypes.Generic1);
+            resolver.Get(typeof(IGenericObject<string>));
+            resolver.Get(typeof(IGenericObject<int>));
+            resolver.Get(typeof(IGenericObject<string>));
+            resolver.Get(typeof(IGenericObject<int>));
+            resolver.Get(typeof(IGenericObject<string>));
         }
 
         [Benchmark(OperationsPerInvoke = 5)]
         public void MultipleSingleton()
         {
-            resolver.Get(RequestTypes.MultipleSingleton);
-            resolver.Get(RequestTypes.MultipleSingleton);
-            resolver.Get(RequestTypes.MultipleSingleton);
-            resolver.Get(RequestTypes.MultipleSingleton);
-            resolver.Get(RequestTypes.MultipleSingleton);
+            resolver.Get(typeof(IEnumerable<IMultipleSingletonService>));
+            resolver.Get(typeof(IEnumerable<IMultipleSingletonService>));
+            resolver.Get(typeof(IEnumerable<IMultipleSingletonService>));
+            resolver.Get(typeof(IEnumerable<IMultipleSingletonService>));
+            resolver.Get(typeof(IEnumerable<IMultipleSingletonService>));
         }
 
         [Benchmark(OperationsPerInvoke = 5)]
         public void MultipleTransient()
         {
-            resolver.Get(RequestTypes.MultipleTransient);
-            resolver.Get(RequestTypes.MultipleTransient);
-            resolver.Get(RequestTypes.MultipleTransient);
-            resolver.Get(RequestTypes.MultipleTransient);
-            resolver.Get(RequestTypes.MultipleTransient);
+            resolver.Get(typeof(IEnumerable<IMultipleTransientService>));
+            resolver.Get(typeof(IEnumerable<IMultipleTransientService>));
+            resolver.Get(typeof(IEnumerable<IMultipleTransientService>));
+            resolver.Get(typeof(IEnumerable<IMultipleTransientService>));
+            resolver.Get(typeof(IEnumerable<IMultipleTransientService>));
+        }
+
+        [Benchmark(OperationsPerInvoke = 5)]
+        public void AspNet()
+        {
+            var factory = (IServiceScopeFactory)provider.GetService(typeof(IServiceScopeFactory));
+            using (var scope = factory.CreateScope())
+            {
+                scope.ServiceProvider.GetService(typeof(Controller));
+            }
+
+            factory = (IServiceScopeFactory)provider.GetService(typeof(IServiceScopeFactory));
+            using (var scope = factory.CreateScope())
+            {
+                scope.ServiceProvider.GetService(typeof(Controller));
+            }
+
+            factory = (IServiceScopeFactory)provider.GetService(typeof(IServiceScopeFactory));
+            using (var scope = factory.CreateScope())
+            {
+                scope.ServiceProvider.GetService(typeof(Controller));
+            }
+
+            factory = (IServiceScopeFactory)provider.GetService(typeof(IServiceScopeFactory));
+            using (var scope = factory.CreateScope())
+            {
+                scope.ServiceProvider.GetService(typeof(Controller));
+            }
+
+            factory = (IServiceScopeFactory)provider.GetService(typeof(IServiceScopeFactory));
+            using (var scope = factory.CreateScope())
+            {
+                scope.ServiceProvider.GetService(typeof(Controller));
+            }
         }
     }
 }
