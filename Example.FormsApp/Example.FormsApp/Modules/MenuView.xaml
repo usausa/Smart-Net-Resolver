@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<ContentView x:Class="Example.FormsApp.Modules.MenuView"
+             xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:sr="clr-namespace:Smart.Forms.Resolver;assembly=Smart.Forms"
+             xmlns:modules="clr-namespace:Example.FormsApp.Modules;assembly=Example.FormsApp"
+             xmlns:shell="clr-namespace:Example.FormsApp.Shell;assembly=Example.FormsApp"
+             BindingContext="{Binding Source={x:Static modules:MenuViewModel.DesignInstance}}"
+             sr:BindingContextResolver.Type="{x:Type modules:MenuViewModel}"
+             shell:ShellProperty.Title="Menu">
+
+    <Grid Style="{StaticResource MenuGrid}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <Button Grid.Row="0" Style="{StaticResource MenuButton}"
+                Text="Message"
+                Command="{Binding MessageCommand}"/>
+        <Button Grid.Row="1" Style="{StaticResource MenuButton}"
+                Text="Message2"
+                Command="{Binding Message2Command}"/>
+        <Button Grid.Row="2" Style="{StaticResource MenuButton}"
+                Text="Counter"
+                Command="{Binding IncrementCommand}"/>
+        <Label Grid.Row="3" Style="{StaticResource DisplayLabel}"
+               Text="{Binding Counter.Value}"/>
+
+    </Grid>
+
+</ContentView>

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage x:Class="Example.FormsApp.MainPage"
+             xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:ios="clr-namespace:Xamarin.Forms.PlatformConfiguration.iOSSpecific;assembly=Xamarin.Forms.Core"
+             xmlns:sr="clr-namespace:Smart.Forms.Resolver;assembly=Smart.Forms"
+             xmlns:navigation="clr-namespace:Smart.Navigation;assembly=Smart.Navigation.Forms"
+             xmlns:shell="clr-namespace:Example.FormsApp.Shell;assembly=Example.FormsApp"
+             xmlns:local="clr-namespace:Example.FormsApp"
+             BindingContext="{Binding Source={x:Static local:MainPageViewModel.DesignInstance}}"
+             sr:BindingContextResolver.Type="{x:Type local:MainPageViewModel}"
+             ios:Page.UseSafeArea="true"
+             IsBusy="{Binding ApplicationState.IsBusy}">
+
+    <ContentPage.Behaviors>
+        <shell:ShellUpdateBehavior Navigator="{Binding Navigator, Mode=OneTime}"/>
+    </ContentPage.Behaviors>
+
+    <StackLayout Style="{StaticResource MainLayout}">
+        <!-- title -->
+        <Label Style="{StaticResource TitleLabel}"
+               Text="{Binding Title.Value}" />
+        <!-- view container -->
+        <AbsoluteLayout Style="{StaticResource ContainerLayout}">
+            <AbsoluteLayout.Behaviors>
+                <navigation:NavigationContainerBehavior Navigator="{Binding Navigator}" />
+            </AbsoluteLayout.Behaviors>
+        </AbsoluteLayout>
+    </StackLayout>
+
+</ContentPage>
