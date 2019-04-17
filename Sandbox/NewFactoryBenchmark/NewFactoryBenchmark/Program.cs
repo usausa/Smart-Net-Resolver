@@ -23,7 +23,7 @@ namespace NewFactoryBenchmark
         {
             Add(MarkdownExporter.Default, MarkdownExporter.GitHub);
             Add(MemoryDiagnoser.Default);
-            Add(Job.MediumRun);
+            Add(Job.LongRun);
         }
     }
 
@@ -32,27 +32,38 @@ namespace NewFactoryBenchmark
     {
         private const int N = 1_000;
 
-        private Func<Data0> direct0Func;
-        private Func<Data1> direct1Func;
-        private Func<Data2> direct2Func;
+        private Func<Data0> funcFunc0;
+        private Func<Data1> funcFunc1;
+        private Func<Data2> funcFunc2;
 
-        private Func<Data0> func0Func;
-        private Func<Data1> func1Func;
-        private Func<Data2> func2Func;
+        private Func<Data0> classFunc0;
+        private Func<Data1> classFunc1;
+        private Func<Data2> classFunc2;
+
+        private Func<Data0> staticFunc0;
+        private Func<Data1> staticFunc1;
+        private Func<Data2> staticFunc2;
 
         [GlobalSetup]
         public void Setup()
         {
-            var direct0Resolver = new DirectResolver0();
-            direct0Func = direct0Resolver.Resolve;
-            var direct1Resolver = new DirectResolver1 { arg1Resolver = direct0Func };
-            direct1Func = direct1Resolver.Resolve;
-            var direct2Resolver = new DirectResolver2 { arg1Resolver = direct0Func, arg2Resolver = direct1Func };
-            direct2Func = direct2Resolver.Resolve;
+            funcFunc0 = CreateFunc0();
+            funcFunc1 = CreateFunc1(funcFunc0);
+            funcFunc2 = CreateFunc2(funcFunc0, funcFunc1);
 
-            func0Func = CreateFunc0();
-            func1Func = CreateFunc1(func0Func);
-            func2Func = CreateFunc2(func0Func, func1Func);
+            var classResolver0 = new ClassResolver0();
+            classFunc0 = classResolver0.Resolve;
+            var classResolver1 = new ClassResolver1 { arg1Resolver = classFunc0 };
+            classFunc1 = classResolver1.Resolve;
+            var classResolver2 = new ClassResolver2 { arg1Resolver = classFunc0, arg2Resolver = classFunc1 };
+            classFunc2 = classResolver2.Resolve;
+
+            staticFunc0 = StaticResolver0.Resolve;
+            StaticResolver1.arg1Resolver = staticFunc0;
+            staticFunc1 = StaticResolver1.Resolve;
+            StaticResolver2.arg1Resolver = staticFunc0;
+            StaticResolver2.arg2Resolver = staticFunc1;
+            staticFunc2 = StaticResolver2.Resolve;
         }
 
         private static Func<Data0> CreateFunc0() => () => new Data0();
@@ -62,37 +73,48 @@ namespace NewFactoryBenchmark
         private static Func<Data2> CreateFunc2(Func<Data0> f0, Func<Data1> f1) => () => new Data2(f0(), f1());
 
         [Benchmark(OperationsPerInvoke = N)]
-        public void Direct2Func()
+        public void FuncFunc2()
         {
             for (var i = 0; i < N; i++)
             {
-                direct2Func();
+                funcFunc2();
             }
         }
 
         [Benchmark(OperationsPerInvoke = N)]
-        public void Func2Func()
+        public void ClassFunc2()
         {
             for (var i = 0; i < N; i++)
             {
-                func2Func();
+                classFunc2();
+            }
+        }
+
+        [Benchmark(OperationsPerInvoke = N)]
+        public void StaticFunc2()
+        {
+            for (var i = 0; i < N; i++)
+            {
+                staticFunc2();
             }
         }
     }
 
-    public sealed class DirectResolver0
+    // Resolver
+
+    public sealed class ClassResolver0
     {
         public Data0 Resolve() => new Data0();
     }
 
-    public sealed class DirectResolver1
+    public sealed class ClassResolver1
     {
         public Func<Data0> arg1Resolver;
 
         public Data1 Resolve() => new Data1(arg1Resolver());
     }
 
-    public sealed class DirectResolver2
+    public sealed class ClassResolver2
     {
         public Func<Data0> arg1Resolver;
 
@@ -100,6 +122,31 @@ namespace NewFactoryBenchmark
 
         public Data2 Resolve() => new Data2(arg1Resolver(), arg2Resolver());
     }
+
+    // Resolver(static)
+
+    public static class StaticResolver0
+    {
+        public static Data0 Resolve() => new Data0();
+    }
+
+    public static class StaticResolver1
+    {
+        public static Func<Data0> arg1Resolver;
+
+        public static Data1 Resolve() => new Data1(arg1Resolver());
+    }
+
+    public static class StaticResolver2
+    {
+        public static Func<Data0> arg1Resolver;
+
+        public static Func<Data1> arg2Resolver;
+
+        public static Data2 Resolve() => new Data2(arg1Resolver(), arg2Resolver());
+    }
+
+    // Data
 
     public sealed class Data0
     {
