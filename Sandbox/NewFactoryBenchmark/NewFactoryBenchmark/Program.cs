@@ -1,6 +1,9 @@
 namespace NewFactoryBenchmark
 {
     using System;
+    using System.Collections.Generic;
+    using System.Reflection;
+    using System.Reflection.Emit;
 
     using BenchmarkDotNet.Attributes;
     using BenchmarkDotNet.Configs;
@@ -44,6 +47,11 @@ namespace NewFactoryBenchmark
         private Func<Data1> staticFunc1;
         private Func<Data2> staticFunc2;
 
+        // Dynamic with context
+        private Func<IContainer, Data0> dynamicFunc0;
+        private Func<IContainer, Data1> dynamicFunc1;
+        private Func<IContainer, Data2> dynamicFunc2;
+
         [GlobalSetup]
         public void Setup()
         {
@@ -64,6 +72,11 @@ namespace NewFactoryBenchmark
             StaticResolver2.arg1Resolver = staticFunc0;
             StaticResolver2.arg2Resolver = staticFunc1;
             staticFunc2 = StaticResolver2.Resolve;
+
+            var builder = new Builder();
+            dynamicFunc0 = (Func<IContainer, Data0>)builder.Build(typeof(Data0).GetConstructors()[0]);
+            dynamicFunc1 = (Func<IContainer, Data1>)builder.Build(typeof(Data1).GetConstructors()[0], dynamicFunc0);
+            dynamicFunc2 = (Func<IContainer, Data2>)builder.Build(typeof(Data2).GetConstructors()[0], dynamicFunc0, dynamicFunc1);
         }
 
         private static Func<Data0> CreateFunc0() => () => new Data0();
@@ -98,6 +111,21 @@ namespace NewFactoryBenchmark
                 staticFunc2();
             }
         }
+
+        [Benchmark(OperationsPerInvoke = N)]
+        public void DynamicFunc2()
+        {
+            for (var i = 0; i < N; i++)
+            {
+                dynamicFunc2(null);
+            }
+        }
+    }
+
+    // Context
+
+    public interface IContainer
+    {
     }
 
     // Resolver
@@ -144,6 +172,97 @@ namespace NewFactoryBenchmark
         public static Func<Data1> arg2Resolver;
 
         public static Data2 Resolve() => new Data2(arg1Resolver(), arg2Resolver());
+    }
+
+    // Builder
+
+    public class Builder
+    {
+        private const string AssemblyName = "ResolverAssembly";
+
+        private const string ModuleName = "ResolverModule";
+
+        private AssemblyBuilder assemblyBuilder;
+
+        private ModuleBuilder moduleBuilder;
+
+        private ModuleBuilder ModuleBuilder
+        {
+            get
+            {
+                if (moduleBuilder == null)
+                {
+                    assemblyBuilder = AssemblyBuilder.DefineDynamicAssembly(
+                        new AssemblyName(AssemblyName),
+                        AssemblyBuilderAccess.Run);
+                    moduleBuilder = assemblyBuilder.DefineDynamicModule(
+                        ModuleName);
+                }
+                return moduleBuilder;
+            }
+        }
+
+        public object Build(ConstructorInfo ci, params object[] factories)
+        {
+            if (ci.GetParameters().Length != factories.Length)
+            {
+                throw new ArgumentException("Invalid factories length.");
+            }
+
+            // Type
+            var typeBuilder = ModuleBuilder.DefineType(
+                $"{ci.DeclaringType.FullName}_DynamicActivator{Array.IndexOf(ci.DeclaringType.GetConstructors(), ci)}",
+                TypeAttributes.Public | TypeAttributes.AutoLayout | TypeAttributes.AnsiClass | TypeAttributes.Sealed | TypeAttributes.BeforeFieldInit);
+
+            // Field
+            var fields = new List<FieldBuilder>();
+            for (var i = 0; i < factories.Length; i++)
+            {
+                fields.Add(typeBuilder.DefineField(
+                    $"factory{i}",
+                    factories[i].GetType(),
+                    FieldAttributes.Public | FieldAttributes.InitOnly));
+            }
+
+            // Method
+            var method = typeBuilder.DefineMethod(
+                "Create",
+                MethodAttributes.Public | MethodAttributes.HideBySig,
+                ci.DeclaringType,
+                new[] { typeof(IContainer) });
+
+            var ilGenerator = method.GetILGenerator();
+
+            for (var i = 0; i < factories.Length; i++)
+            {
+                ilGenerator.Emit(OpCodes.Ldarg_0);
+                ilGenerator.Emit(OpCodes.Ldfld, fields[i]);
+                ilGenerator.Emit(OpCodes.Ldarg_1);
+                var invokeMethod = factories[i].GetType().GetMethod("Invoke", new[] { typeof(IContainer) });
+                // [MEMO] hack
+                ilGenerator.Emit(OpCodes.Call, invokeMethod);
+            }
+
+            ilGenerator.Emit(OpCodes.Newobj, ci);
+
+            ilGenerator.Emit(OpCodes.Ret);
+
+            var typeInfo = typeBuilder.CreateTypeInfo();
+            var type = typeInfo.AsType();
+
+            var instance = Activator.CreateInstance(type);
+
+            for (var i = 0; i < factories.Length; i++)
+            {
+                var fi = type.GetField($"factory{i}");
+                fi.SetValue(instance, factories[i]);
+            }
+
+            var funcType = typeof(Func<,>).MakeGenericType(typeof(IContainer), ci.DeclaringType);
+
+            // ReSharper disable once AssignNullToNotNullAttribute
+            return Delegate.CreateDelegate(funcType, instance, type.GetMethod("Create"));
+        }
     }
 
     // Data
