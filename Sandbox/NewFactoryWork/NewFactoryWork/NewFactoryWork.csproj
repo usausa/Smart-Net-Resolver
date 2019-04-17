@@ -6,6 +6,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Usa.Smart.Core" Version="1.7.1" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\NewFactoryLib\NewFactoryLib.csproj" />
   </ItemGroup>
 
