@@ -2,6 +2,7 @@ namespace NewFactoryBenchmark
 {
     using System;
     using System.Collections.Generic;
+    using System.Linq;
     using System.Reflection;
     using System.Reflection.Emit;
 
@@ -11,6 +12,8 @@ namespace NewFactoryBenchmark
     using BenchmarkDotNet.Exporters;
     using BenchmarkDotNet.Jobs;
     using BenchmarkDotNet.Running;
+
+    using Smart.Reflection.Emit;
 
     public static class Program
     {
@@ -52,6 +55,13 @@ namespace NewFactoryBenchmark
         private Func<IContainer, Data1> dynamicFunc1;
         private Func<IContainer, Data2> dynamicFunc2;
 
+        // Service
+        private Func<IContainer, IService[]> classArrayFunc1;
+
+        private Func<IContainer, IService[]> classArrayFunc2;
+
+        private Func<IContainer, IService[]> dynamicArrayFunc;
+
         [GlobalSetup]
         public void Setup()
         {
@@ -77,6 +87,29 @@ namespace NewFactoryBenchmark
             dynamicFunc0 = (Func<IContainer, Data0>)builder.Build(typeof(Data0).GetConstructors()[0]);
             dynamicFunc1 = (Func<IContainer, Data1>)builder.Build(typeof(Data1).GetConstructors()[0], dynamicFunc0);
             dynamicFunc2 = (Func<IContainer, Data2>)builder.Build(typeof(Data2).GetConstructors()[0], dynamicFunc0, dynamicFunc1);
+
+            var service1Factory = new Service1Factory();
+            var service1Func = (Func<IContainer, Service1>)service1Factory.Create;
+            var service2Factory = new Service2Factory();
+            var service2Func = (Func<IContainer, Service2>)service2Factory.Create;
+            var service3Factory = new Service3Factory();
+            var service3Func = (Func<IContainer, Service3>)service3Factory.Create;
+
+            var serviceArrayFactory1 = new ServiceArrayFactory1
+            {
+                factories = new Func<IContainer, IService>[] { service1Func, service2Func, service3Func }
+            };
+            classArrayFunc1 = serviceArrayFactory1.Create;
+
+            var serviceArrayFactory2 = new ServiceArrayFactory2
+            {
+                factory1 = service1Func,
+                factory2 = service2Func,
+                factory3 = service3Func,
+            };
+            classArrayFunc2 = serviceArrayFactory2.Create;
+
+            dynamicArrayFunc = (Func<IContainer, IService[]>)builder.BuildArray(typeof(IService), service1Func, service2Func, service3Func);
         }
 
         private static Func<Data0> CreateFunc0() => () => new Data0();
@@ -118,6 +151,33 @@ namespace NewFactoryBenchmark
             for (var i = 0; i < N; i++)
             {
                 dynamicFunc2(null);
+            }
+        }
+
+        [Benchmark(OperationsPerInvoke = N)]
+        public void ClassArrayFunc1()
+        {
+            for (var i = 0; i < N; i++)
+            {
+                classArrayFunc1(null);
+            }
+        }
+
+        [Benchmark(OperationsPerInvoke = N)]
+        public void ClassArrayFunc2()
+        {
+            for (var i = 0; i < N; i++)
+            {
+                classArrayFunc2(null);
+            }
+        }
+
+        [Benchmark(OperationsPerInvoke = N)]
+        public void DynamicArrayFunc2()
+        {
+            for (var i = 0; i < N; i++)
+            {
+                dynamicArrayFunc(null);
             }
         }
     }
@@ -181,6 +241,8 @@ namespace NewFactoryBenchmark
         private const string AssemblyName = "ResolverAssembly";
 
         private const string ModuleName = "ResolverModule";
+
+        private readonly Dictionary<Type, int> arrayFactoryIds = new Dictionary<Type, int>();
 
         private AssemblyBuilder assemblyBuilder;
 
@@ -263,6 +325,83 @@ namespace NewFactoryBenchmark
             // ReSharper disable once AssignNullToNotNullAttribute
             return Delegate.CreateDelegate(funcType, instance, type.GetMethod("Create"));
         }
+
+        private int GenerateArrayFactoryId(Type type)
+        {
+            lock (arrayFactoryIds)
+            {
+                if (!arrayFactoryIds.TryGetValue(type, out var id))
+                {
+                    arrayFactoryIds[type] = 2;
+                    return 1;
+                }
+
+                arrayFactoryIds[type] = id + 1;
+                return id;
+            }
+        }
+
+        public object BuildArray(Type baseType, params object[] factories)
+        {
+            var arrayType = baseType.MakeArrayType();
+
+            // Define type
+            var typeBuilder = ModuleBuilder.DefineType(
+                $"{arrayType.FullName}_Resolver{GenerateArrayFactoryId(baseType)}",
+                TypeAttributes.Public | TypeAttributes.AutoLayout | TypeAttributes.AnsiClass | TypeAttributes.Sealed | TypeAttributes.BeforeFieldInit);
+
+            // Define field
+            var fields = factories
+                .Select((t, i) => typeBuilder.DefineField(
+                    $"factory{i}",
+                    t.GetType(),
+                    FieldAttributes.Public | FieldAttributes.InitOnly))
+                .ToList();
+
+            // Define method
+            var method = typeBuilder.DefineMethod(
+                "Create",
+                MethodAttributes.Public | MethodAttributes.HideBySig,
+                arrayType,
+                new[] { typeof(IContainer) });
+
+            var ilGenerator = method.GetILGenerator();
+
+            ilGenerator.EmitLdcI4(factories.Length);
+            ilGenerator.Emit(OpCodes.Newarr, baseType);
+
+            for (var i = 0; i < factories.Length; i++)
+            {
+                ilGenerator.Emit(OpCodes.Dup);
+                ilGenerator.EmitLdcI4(i);
+
+                ilGenerator.Emit(OpCodes.Ldarg_0);
+                ilGenerator.Emit(OpCodes.Ldfld, fields[i]);
+                ilGenerator.Emit(OpCodes.Ldarg_1);
+                var invokeMethod = factories[i].GetType().GetMethod("Invoke", new[] { typeof(IContainer) });
+                ilGenerator.Emit(OpCodes.Call, invokeMethod);
+
+                ilGenerator.Emit(OpCodes.Stelem_Ref);
+            }
+
+            ilGenerator.Emit(OpCodes.Ret);
+
+            var typeInfo = typeBuilder.CreateTypeInfo();
+            var type = typeInfo.AsType();
+
+            // Prepare instance
+            var instance = Activator.CreateInstance(type);
+
+            for (var i = 0; i < factories.Length; i++)
+            {
+                var fi = type.GetField($"factory{i}");
+                fi.SetValue(instance, factories[i]);
+            }
+
+            // Make delegate
+            var funcType = typeof(Func<,>).MakeGenericType(typeof(IContainer), arrayType);
+            return Delegate.CreateDelegate(funcType, instance, type.GetMethod("Create"));
+        }
     }
 
     // Data
@@ -292,5 +431,74 @@ namespace NewFactoryBenchmark
             Arg1 = arg1;
             Arg2 = arg2;
         }
+    }
+
+    // Service
+
+    public class Service1Factory
+    {
+        public Service1 Create(IContainer c) => new Service1();
+    }
+
+    public class Service2Factory
+    {
+        public Service2 Create(IContainer c) => new Service2();
+    }
+
+    public class Service3Factory
+    {
+        public Service3 Create(IContainer c) => new Service3();
+    }
+
+    public class ServiceArrayFactory1
+    {
+        public Func<IContainer, IService>[] factories;
+
+        public IService[] Create(IContainer c)
+        {
+            var array = new IService[factories.Length];
+            for (var i = 0; i < factories.Length; i++)
+            {
+                array[i] = factories[i](c);
+            }
+
+            return array;
+        }
+    }
+
+    public class ServiceArrayFactory2
+    {
+        public Func<IContainer, IService> factory1;
+
+        public Func<IContainer, IService> factory2;
+
+        public Func<IContainer, IService> factory3;
+
+        public IService[] Create(IContainer c)
+        {
+            var array = new IService[3];
+            array[0] = factory1(c);
+            array[1] = factory2(c);
+            array[2] = factory3(c);
+
+            return array;
+        }
+    }
+
+
+    public interface IService
+    {
+    }
+
+    public sealed class Service1 : IService
+    {
+    }
+
+    public sealed class Service2 : IService
+    {
+    }
+
+    public sealed class Service3 : IService
+    {
     }
 }
