@@ -8,7 +8,7 @@ namespace NewFactoryWork
     {
         private static readonly object[] EmptyFactories = new object[0];
 
-        private static readonly Action<IContainer, object>[] EmptyActions = new Action<IContainer, object>[0];
+        private static readonly object[] EmptyActions = new object[0];
 
         static void Main()
         {

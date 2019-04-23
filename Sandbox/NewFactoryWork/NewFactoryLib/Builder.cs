@@ -14,11 +14,11 @@ namespace NewFactoryLib
 
         private const string ModuleName = "ResolverModule";
 
-        private readonly Dictionary<Type, int> arrayFactoryIds = new Dictionary<Type, int>();
-
         private AssemblyBuilder assemblyBuilder;
 
         private ModuleBuilder moduleBuilder;
+
+        private int nextId = 1;
 
         private ModuleBuilder ModuleBuilder
         {
@@ -36,6 +36,13 @@ namespace NewFactoryLib
             }
         }
 
+        private int GenerateId()
+        {
+            lock (assemblyBuilder)
+            {
+                return nextId++;
+            }
+        }
 
         public object ToConstant<T>(T value)
         {
@@ -56,7 +63,7 @@ namespace NewFactoryLib
 
             // Define type
             var typeBuilder = ModuleBuilder.DefineType(
-                $"{ci.DeclaringType.FullName}_Resolver_{Array.IndexOf(ci.DeclaringType.GetConstructors(), ci)}",
+                $"{ci.DeclaringType.FullName}_Factory_{GenerateId()}",
                 TypeAttributes.Public | TypeAttributes.AutoLayout | TypeAttributes.AnsiClass | TypeAttributes.Sealed | TypeAttributes.BeforeFieldInit);
 
             // Define field
@@ -85,11 +92,17 @@ namespace NewFactoryLib
 
             for (var i = 0; i < factories.Length; i++)
             {
+                var invokeMethod = factories[i].GetType().GetMethod("Invoke");
+                if ((invokeMethod == null) ||
+                    (invokeMethod.GetParameters().Length != 1) ||
+                    (invokeMethod.GetParameters()[0].ParameterType != typeof(IContainer)))
+                {
+                    throw new ArgumentException($"Invalid factory[{i}]");
+                }
+
                 ilGenerator.Emit(OpCodes.Ldarg_0);
                 ilGenerator.Emit(OpCodes.Ldfld, factoryFields[i]);
                 ilGenerator.Emit(OpCodes.Ldarg_1);
-                var invokeMethod = factories[i].GetType().GetMethod("Invoke");
-                // TODO check ?
                 ilGenerator.Emit(OpCodes.Call, invokeMethod);
             }
 
@@ -103,12 +116,18 @@ namespace NewFactoryLib
 
                 for (var i = 0; i < actions.Length; i++)
                 {
+                    var invokeMethod = actions[i].GetType().GetMethod("Invoke");
+                    if ((invokeMethod == null) ||
+                        (invokeMethod.GetParameters().Length != 2) ||
+                        (invokeMethod.GetParameters()[0].ParameterType != typeof(IContainer)))
+                    {
+                        throw new ArgumentException($"Invalid actions[{i}]");
+                    }
+
                     ilGenerator.Emit(OpCodes.Ldarg_0);
                     ilGenerator.Emit(OpCodes.Ldfld, actionFields[i]);
                     ilGenerator.Emit(OpCodes.Ldarg_1);
                     ilGenerator.Emit(OpCodes.Ldloc_0);
-                    var invokeMethod = actions[i].GetType().GetMethod("Invoke");
-                    // TODO check ?
                     ilGenerator.Emit(OpCodes.Callvirt, invokeMethod);
                 }
 
@@ -140,28 +159,13 @@ namespace NewFactoryLib
             return Delegate.CreateDelegate(funcType, instance, type.GetMethod("Create"));
         }
 
-        private int GenerateArrayFactoryId(Type type)
-        {
-            lock (arrayFactoryIds)
-            {
-                if (!arrayFactoryIds.TryGetValue(type, out var id))
-                {
-                    arrayFactoryIds[type] = 2;
-                    return 1;
-                }
-
-                arrayFactoryIds[type] = id + 1;
-                return id;
-            }
-        }
-
         public object ToArray(Type baseType, params object[] factories)
         {
             var arrayType = baseType.MakeArrayType();
 
             // Define type
             var typeBuilder = ModuleBuilder.DefineType(
-                $"{arrayType.FullName}_Resolver{GenerateArrayFactoryId(baseType)}",
+                $"{arrayType.FullName}_Factory_{GenerateId()}",
                 TypeAttributes.Public | TypeAttributes.AutoLayout | TypeAttributes.AnsiClass | TypeAttributes.Sealed | TypeAttributes.BeforeFieldInit);
 
             // Define field
