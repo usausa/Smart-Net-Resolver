@@ -47,7 +47,7 @@ namespace NewFactoryLib
             return func;
         }
 
-        public object To(ConstructorInfo ci, params object[] factories)
+        public object To(ConstructorInfo ci, object[] factories, object[] actions)
         {
             if (ci.GetParameters().Length != factories.Length)
             {
@@ -56,13 +56,20 @@ namespace NewFactoryLib
 
             // Define type
             var typeBuilder = ModuleBuilder.DefineType(
-                $"{ci.DeclaringType.FullName}_Resolver{Array.IndexOf(ci.DeclaringType.GetConstructors(), ci)}",
+                $"{ci.DeclaringType.FullName}_Resolver_{Array.IndexOf(ci.DeclaringType.GetConstructors(), ci)}",
                 TypeAttributes.Public | TypeAttributes.AutoLayout | TypeAttributes.AnsiClass | TypeAttributes.Sealed | TypeAttributes.BeforeFieldInit);
 
             // Define field
-            var fields = factories
+            var factoryFields = factories
                 .Select((t, i) => typeBuilder.DefineField(
                     $"factory{i}",
+                    t.GetType(),
+                    FieldAttributes.Public | FieldAttributes.InitOnly))
+                .ToList();
+
+            var actionFields = actions
+                .Select((t, i) => typeBuilder.DefineField(
+                    $"actions{i}",
                     t.GetType(),
                     FieldAttributes.Public | FieldAttributes.InitOnly))
                 .ToList();
@@ -79,13 +86,34 @@ namespace NewFactoryLib
             for (var i = 0; i < factories.Length; i++)
             {
                 ilGenerator.Emit(OpCodes.Ldarg_0);
-                ilGenerator.Emit(OpCodes.Ldfld, fields[i]);
+                ilGenerator.Emit(OpCodes.Ldfld, factoryFields[i]);
                 ilGenerator.Emit(OpCodes.Ldarg_1);
-                var invokeMethod = factories[i].GetType().GetMethod("Invoke", new[] { typeof(IContainer) });
+                var invokeMethod = factories[i].GetType().GetMethod("Invoke");
+                // TODO check ?
                 ilGenerator.Emit(OpCodes.Call, invokeMethod);
             }
 
             ilGenerator.Emit(OpCodes.Newobj, ci);
+
+            if (actions.Length > 0)
+            {
+                ilGenerator.DeclareLocal(ci.DeclaringType);
+
+                ilGenerator.Emit(OpCodes.Stloc_0);
+
+                for (var i = 0; i < actions.Length; i++)
+                {
+                    ilGenerator.Emit(OpCodes.Ldarg_0);
+                    ilGenerator.Emit(OpCodes.Ldfld, actionFields[i]);
+                    ilGenerator.Emit(OpCodes.Ldarg_1);
+                    ilGenerator.Emit(OpCodes.Ldloc_0);
+                    var invokeMethod = actions[i].GetType().GetMethod("Invoke");
+                    // TODO check ?
+                    ilGenerator.Emit(OpCodes.Callvirt, invokeMethod);
+                }
+
+                ilGenerator.Emit(OpCodes.Ldloc_0);
+            }
 
             ilGenerator.Emit(OpCodes.Ret);
 
@@ -99,6 +127,12 @@ namespace NewFactoryLib
             {
                 var fi = type.GetField($"factory{i}");
                 fi.SetValue(instance, factories[i]);
+            }
+
+            for (var i = 0; i < actions.Length; i++)
+            {
+                var fi = type.GetField($"actions{i}");
+                fi.SetValue(instance, actions[i]);
             }
 
             // Make delegate
