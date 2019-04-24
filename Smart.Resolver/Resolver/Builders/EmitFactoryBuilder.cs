@@ -7,7 +7,7 @@ namespace Smart.Resolver.Builders
 
     using Smart.Reflection.Emit;
 
-    public sealed class EmitBuilder : IBuilder
+    public sealed class EmitFactoryBuilder : IFactoryBuilder
     {
         private AssemblyBuilder assemblyBuilder;
 

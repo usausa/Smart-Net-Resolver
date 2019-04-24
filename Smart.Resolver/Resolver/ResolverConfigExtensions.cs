@@ -4,6 +4,7 @@ namespace Smart.Resolver
     using System.Collections.Generic;
 
     using Smart.Reflection;
+    using Smart.Resolver.Builders;
     using Smart.Resolver.Handlers;
     using Smart.Resolver.Injectors;
     using Smart.Resolver.Processors;
@@ -24,6 +25,18 @@ namespace Smart.Resolver
             }
 
             config.Components.Add(typeof(IDelegateFactory), typeof(T));
+            return config;
+        }
+
+        public static ResolverConfig UseFactoryBuilder<T>(this ResolverConfig config)
+            where T : IFactoryBuilder
+        {
+            if (config is null)
+            {
+                throw new ArgumentNullException(nameof(config));
+            }
+
+            config.Components.Add(typeof(IFactoryBuilder), typeof(T));
             return config;
         }
 

@@ -7,6 +7,7 @@ namespace Smart.Resolver
     using Smart.ComponentModel;
     using Smart.Reflection;
     using Smart.Resolver.Bindings;
+    using Smart.Resolver.Builders;
     using Smart.Resolver.Components;
     using Smart.Resolver.Configs;
 
@@ -18,8 +19,16 @@ namespace Smart.Resolver
 
         public ResolverConfig()
         {
-            Components.Add<IDelegateFactory>(DelegateFactory.Default);
             Components.Add<DisposableStorage>();
+            Components.Add<IDelegateFactory>(DelegateFactory.Default);
+            if (ReflectionHelper.IsCodegenAllowed)
+            {
+                Components.Add<IFactoryBuilder, EmitFactoryBuilder>();
+            }
+            else
+            {
+                Components.Add<IFactoryBuilder, ReflectionFactoryBuilder>();
+            }
         }
 
         // ------------------------------------------------------------

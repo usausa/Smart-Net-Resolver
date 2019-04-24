@@ -3,7 +3,7 @@ namespace Smart.Resolver.Builders
     using System;
     using System.Reflection;
 
-    public interface IBuilder
+    public interface IFactoryBuilder
     {
         object CreateFactory(ConstructorInfo ci, object[] factories, object[] actions);
 

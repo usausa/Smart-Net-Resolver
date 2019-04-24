@@ -5,7 +5,7 @@ namespace Smart.Resolver.Builders
     using System.Reflection;
 
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1812:AvoidUninstantiatedInternalClasses", Justification = "Ignore")]
-    public sealed class ReflectionBuilder : IBuilder
+    public sealed class ReflectionFactoryBuilder : IFactoryBuilder
     {
         public object CreateFactory(ConstructorInfo ci, object[] factories, object[] actions)
         {
