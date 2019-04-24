@@ -5,7 +5,9 @@ namespace Smart.Resolver.Builders
     using System.Reflection;
     using System.Reflection.Emit;
 
-    public sealed class EmitBuilder
+    using Smart.Reflection.Emit;
+
+    public sealed class EmitBuilder : IBuilder
     {
         private AssemblyBuilder assemblyBuilder;
 
@@ -116,27 +118,90 @@ namespace Smart.Resolver.Builders
             ilGenerator.Emit(OpCodes.Ret);
 
             var typeInfo = typeBuilder.CreateTypeInfo();
-            var type = typeInfo.AsType();
+            var factoryType = typeInfo.AsType();
 
             // Prepare instance
-            var instance = Activator.CreateInstance(type);
+            var instance = Activator.CreateInstance(factoryType);
 
             for (var i = 0; i < factories.Length; i++)
             {
-                var fi = type.GetField($"factory{i}");
+                var fi = factoryType.GetField($"factory{i}");
                 fi.SetValue(instance, factories[i]);
             }
 
             for (var i = 0; i < actions.Length; i++)
             {
-                var fi = type.GetField($"actions{i}");
+                var fi = factoryType.GetField($"actions{i}");
                 fi.SetValue(instance, actions[i]);
             }
 
             // Make delegate
             var funcType = typeof(Func<,>).MakeGenericType(typeof(IContainer), ci.DeclaringType);
             // ReSharper disable once AssignNullToNotNullAttribute
-            return Delegate.CreateDelegate(funcType, instance, type.GetMethod("Create"));
+            return Delegate.CreateDelegate(funcType, instance, factoryType.GetMethod("Create"));
+        }
+
+        public object CreateArrayFactory(Type type, object[] factories)
+        {
+            var arrayType = type.MakeArrayType();
+
+            // Define type
+            var typeBuilder = ModuleBuilder.DefineType(
+                $"{arrayType.FullName}_Factory_{GenerateId()}",
+                TypeAttributes.Public | TypeAttributes.AutoLayout | TypeAttributes.AnsiClass | TypeAttributes.Sealed | TypeAttributes.BeforeFieldInit);
+
+            // Define field
+            var fields = factories
+                .Select((t, i) => typeBuilder.DefineField(
+                    $"factory{i}",
+                    t.GetType(),
+                    FieldAttributes.Public | FieldAttributes.InitOnly))
+                .ToList();
+
+            // Define method
+            var method = typeBuilder.DefineMethod(
+                "Create",
+                MethodAttributes.Public | MethodAttributes.HideBySig,
+                arrayType,
+                new[] { typeof(IContainer) });
+
+            var ilGenerator = method.GetILGenerator();
+
+            ilGenerator.EmitLdcI4(factories.Length);
+            ilGenerator.Emit(OpCodes.Newarr, type);
+
+            for (var i = 0; i < factories.Length; i++)
+            {
+                ilGenerator.Emit(OpCodes.Dup);
+                ilGenerator.EmitLdcI4(i);
+
+                ilGenerator.Emit(OpCodes.Ldarg_0);
+                ilGenerator.Emit(OpCodes.Ldfld, fields[i]);
+                ilGenerator.Emit(OpCodes.Ldarg_1);
+                var invokeMethod = factories[i].GetType().GetMethod("Invoke", new[] { typeof(IContainer) });
+                ilGenerator.Emit(OpCodes.Call, invokeMethod);
+
+                ilGenerator.Emit(OpCodes.Stelem_Ref);
+            }
+
+            ilGenerator.Emit(OpCodes.Ret);
+
+            var typeInfo = typeBuilder.CreateTypeInfo();
+            var factoryType = typeInfo.AsType();
+
+            // Prepare instance
+            var instance = Activator.CreateInstance(factoryType);
+
+            for (var i = 0; i < factories.Length; i++)
+            {
+                var fi = factoryType.GetField($"factory{i}");
+                fi.SetValue(instance, factories[i]);
+            }
+
+            // Make delegate
+            var funcType = typeof(Func<,>).MakeGenericType(typeof(IContainer), arrayType);
+            // ReSharper disable once AssignNullToNotNullAttribute
+            return Delegate.CreateDelegate(funcType, instance, factoryType.GetMethod("Create"));
         }
     }
 }
