@@ -4,20 +4,20 @@ namespace Smart.Resolver.Providers
 
     using Smart.Resolver.Bindings;
 
-    public sealed class ConstantProvider : IProvider
+    public sealed class ConstantProvider<T> : IProvider
     {
-        private readonly object value;
+        private readonly Func<IResolver, T> factory;
 
-        public Type TargetType => value.GetType();
+        public Type TargetType => typeof(T);
 
-        public ConstantProvider(object value)
+        public ConstantProvider(T value)
         {
-            this.value = value;
+            factory = r => value;
         }
 
         public Func<IResolver, object> CreateFactory(IKernel kernel, IBinding binding)
         {
-            return r => value;
+            return (Func<IResolver, object>)(object)factory;
         }
     }
 }

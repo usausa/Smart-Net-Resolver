@@ -1,4 +1,4 @@
-﻿namespace Smart.Resolver.Configs
+namespace Smart.Resolver.Configs
 {
     using System;
     using Smart.ComponentModel;
@@ -6,8 +6,6 @@
     using Smart.Resolver.Parameters;
     using Smart.Resolver.Providers;
     using Smart.Resolver.Scopes;
-
-    // TODO Extension
 
     public interface IBindingToSyntax<in T>
     {

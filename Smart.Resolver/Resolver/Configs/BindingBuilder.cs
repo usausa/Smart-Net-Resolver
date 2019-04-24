@@ -59,12 +59,12 @@ namespace Smart.Resolver.Configs
 
         public IBindingInNamedWithSyntax ToMethod(Func<IResolver, T> factory)
         {
-            return ToProvider(c => new CallbackProvider(targetType, resolver => factory(resolver)));
+            return ToProvider(c => new CallbackProvider<T>(factory));
         }
 
         public IBindingInNamedWithSyntax ToConstant(T value)
         {
-            return ToProvider(c => new ConstantProvider(value));
+            return ToProvider(c => new ConstantProvider<T>(value));
         }
 
         // ------------------------------------------------------------

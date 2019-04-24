@@ -60,8 +60,8 @@ namespace Smart.Resolver
                 table.Add(group.Key, group.ToArray());
             }
 
-            table.Add(typeof(IResolver), new IBinding[] { new Binding(typeof(IResolver), new ConstantProvider(this), null, null, null, null) });
-            table.Add(typeof(SmartResolver), new IBinding[] { new Binding(typeof(SmartResolver), new ConstantProvider(this), null, null, null, null) });
+            table.Add(typeof(IResolver), new IBinding[] { new Binding(typeof(IResolver), new ConstantProvider<IResolver>(this), null, null, null, null) });
+            table.Add(typeof(SmartResolver), new IBinding[] { new Binding(typeof(SmartResolver), new ConstantProvider<SmartResolver>(this), null, null, null, null) });
         }
 
         public void Dispose()
