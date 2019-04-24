@@ -1,4 +1,4 @@
-﻿namespace ReflectionNewBenchmark
+namespace ReflectionNewBenchmark
 {
     using System;
     using System.Reflection;
@@ -39,26 +39,26 @@
             private readonly ConstructorInfo Ctor2 = typeof(Data2).GetConstructors()[0];
 
             [Benchmark]
-            public object TypedActivator0() => Activator.CreateInstance<Data0>();
+            public Data0 TypedActivator0() => Activator.CreateInstance<Data0>();
 
             [Benchmark]
-            public object Activator0() => Activator.CreateInstance(Type0);
+            public Data0 Activator0() => (Data0)Activator.CreateInstance(Type0);
 
             [Benchmark]
-            public object Activator1() => Activator.CreateInstance(Type1, 0);
+            public Data1 Activator1() => (Data1)Activator.CreateInstance(Type1, 0);
 
             [Benchmark]
-            public object Activator2() => Activator.CreateInstance(Type2, 0, string.Empty);
+            public Data2 Activator2() => (Data2)Activator.CreateInstance(Type2, 0, string.Empty);
 
             [Benchmark]
-            public object Constructor0() => Ctor0.Invoke(null);
+            public Data0 Constructor0() => (Data0)Ctor0.Invoke(null);
 
 
             [Benchmark]
-            public object Constructor1() => Ctor1.Invoke(new object[] { 0 });
+            public Data1 Constructor1() => (Data1)Ctor1.Invoke(new object[] { 0 });
 
             [Benchmark]
-            public object Constructor2() => Ctor2.Invoke(new object[] { 0, string.Empty });
+            public Data2 Constructor2() => (Data2)Ctor2.Invoke(new object[] { 0, string.Empty });
         }
     }
 
