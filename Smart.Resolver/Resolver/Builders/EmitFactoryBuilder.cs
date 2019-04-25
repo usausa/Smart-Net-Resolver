@@ -40,7 +40,7 @@ namespace Smart.Resolver.Builders
             }
         }
 
-        public object CreateFactory(ConstructorInfo ci, object[] factories, object[] actions)
+        public object CreateFactory(ConstructorInfo ci, Func<IResolver, object>[] factories, Action<IResolver, object>[] actions)
         {
             // Define type
             var typeBuilder = ModuleBuilder.DefineType(
@@ -67,7 +67,7 @@ namespace Smart.Resolver.Builders
                 "Create",
                 MethodAttributes.Public | MethodAttributes.HideBySig,
                 ci.DeclaringType,
-                new[] { typeof(IContainer) });
+                new[] { typeof(IResolver) });
 
             var ilGenerator = method.GetILGenerator();
 
@@ -76,7 +76,7 @@ namespace Smart.Resolver.Builders
                 var invokeMethod = factories[i].GetType().GetMethod("Invoke");
                 if ((invokeMethod == null) ||
                     (invokeMethod.GetParameters().Length != 1) ||
-                    (invokeMethod.GetParameters()[0].ParameterType != typeof(IContainer)))
+                    (invokeMethod.GetParameters()[0].ParameterType != typeof(IResolver)))
                 {
                     throw new ArgumentException($"Invalid factory[{i}]");
                 }
@@ -100,7 +100,7 @@ namespace Smart.Resolver.Builders
                     var invokeMethod = actions[i].GetType().GetMethod("Invoke");
                     if ((invokeMethod == null) ||
                         (invokeMethod.GetParameters().Length != 2) ||
-                        (invokeMethod.GetParameters()[0].ParameterType != typeof(IContainer)))
+                        (invokeMethod.GetParameters()[0].ParameterType != typeof(IResolver)))
                     {
                         throw new ArgumentException($"Invalid actions[{i}]");
                     }
@@ -136,12 +136,12 @@ namespace Smart.Resolver.Builders
             }
 
             // Make delegate
-            var funcType = typeof(Func<,>).MakeGenericType(typeof(IContainer), ci.DeclaringType);
+            var funcType = typeof(Func<,>).MakeGenericType(typeof(IResolver), ci.DeclaringType);
             // ReSharper disable once AssignNullToNotNullAttribute
             return Delegate.CreateDelegate(funcType, instance, factoryType.GetMethod("Create"));
         }
 
-        public object CreateArrayFactory(Type type, object[] factories)
+        public object CreateArrayFactory(Type type, Func<IResolver, object>[] factories)
         {
             var arrayType = type.MakeArrayType();
 
@@ -163,7 +163,7 @@ namespace Smart.Resolver.Builders
                 "Create",
                 MethodAttributes.Public | MethodAttributes.HideBySig,
                 arrayType,
-                new[] { typeof(IContainer) });
+                new[] { typeof(IResolver) });
 
             var ilGenerator = method.GetILGenerator();
 
@@ -178,7 +178,7 @@ namespace Smart.Resolver.Builders
                 ilGenerator.Emit(OpCodes.Ldarg_0);
                 ilGenerator.Emit(OpCodes.Ldfld, fields[i]);
                 ilGenerator.Emit(OpCodes.Ldarg_1);
-                var invokeMethod = factories[i].GetType().GetMethod("Invoke", new[] { typeof(IContainer) });
+                var invokeMethod = factories[i].GetType().GetMethod("Invoke", new[] { typeof(IResolver) });
                 ilGenerator.Emit(OpCodes.Call, invokeMethod);
 
                 ilGenerator.Emit(OpCodes.Stelem_Ref);
@@ -199,7 +199,7 @@ namespace Smart.Resolver.Builders
             }
 
             // Make delegate
-            var funcType = typeof(Func<,>).MakeGenericType(typeof(IContainer), arrayType);
+            var funcType = typeof(Func<,>).MakeGenericType(typeof(IResolver), arrayType);
             // ReSharper disable once AssignNullToNotNullAttribute
             return Delegate.CreateDelegate(funcType, instance, factoryType.GetMethod("Create"));
         }
