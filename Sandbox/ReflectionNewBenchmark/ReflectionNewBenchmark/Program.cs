@@ -24,12 +24,15 @@ namespace ReflectionNewBenchmark
         {
             Add(MarkdownExporter.Default, MarkdownExporter.GitHub);
             Add(MemoryDiagnoser.Default);
-            Add(Job.ShortRun);
+            Add(Job.MediumRun);
         }
 
         [Config(typeof(BenchmarkConfig))]
         public class Benchmark
         {
+            private readonly Func<Data0> Func0a = Builder.CreateFactoryA<Data0>();
+            private readonly Func<Data0> Func0b = Builder.CreateFactoryB<Data0>();
+
             private readonly Type Type0 = typeof(Data0);
             private readonly Type Type1 = typeof(Data1);
             private readonly Type Type2 = typeof(Data2);
@@ -37,6 +40,12 @@ namespace ReflectionNewBenchmark
             private readonly ConstructorInfo Ctor0 = typeof(Data0).GetConstructors()[0];
             private readonly ConstructorInfo Ctor1 = typeof(Data1).GetConstructors()[0];
             private readonly ConstructorInfo Ctor2 = typeof(Data2).GetConstructors()[0];
+
+            [Benchmark]
+            public Data0 FuncActivator0a() => Func0a();
+
+            [Benchmark]
+            public Data0 FuncActivator0b() => Func0b();
 
             [Benchmark]
             public Data0 TypedActivator0() => Activator.CreateInstance<Data0>();
@@ -59,6 +68,20 @@ namespace ReflectionNewBenchmark
 
             [Benchmark]
             public Data2 Constructor2() => (Data2)Ctor2.Invoke(new object[] { 0, string.Empty });
+        }
+    }
+
+    public static class Builder
+    {
+        public static Func<T> CreateFactoryA<T>()
+        {
+            var type = typeof(T);
+            return () => (T)Activator.CreateInstance(type);
+        }
+
+        public static Func<T> CreateFactoryB<T>()
+        {
+            return Activator.CreateInstance<T>;
         }
     }
 
