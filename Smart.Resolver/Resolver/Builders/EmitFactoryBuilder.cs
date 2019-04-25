@@ -40,8 +40,10 @@ namespace Smart.Resolver.Builders
             }
         }
 
-        public object CreateFactory(ConstructorInfo ci, Func<IResolver, object>[] factories, Action<IResolver, object>[] actions)
+        public Func<IResolver, object> CreateFactory(ConstructorInfo ci, Func<IResolver, object>[] factories, Action<IResolver, object>[] actions)
         {
+            var returnType = ci.DeclaringType.IsValueType ? typeof(object) : ci.DeclaringType;
+
             // Define type
             var typeBuilder = ModuleBuilder.DefineType(
                 $"{ci.DeclaringType.FullName}_Factory_{GenerateId()}",
@@ -66,7 +68,7 @@ namespace Smart.Resolver.Builders
             var method = typeBuilder.DefineMethod(
                 "Create",
                 MethodAttributes.Public | MethodAttributes.HideBySig,
-                ci.DeclaringType,
+                returnType,
                 new[] { typeof(IResolver) });
 
             var ilGenerator = method.GetILGenerator();
@@ -115,6 +117,11 @@ namespace Smart.Resolver.Builders
                 ilGenerator.Emit(OpCodes.Ldloc_0);
             }
 
+            if (ci.DeclaringType.IsValueType)
+            {
+                ilGenerator.Emit(OpCodes.Box, ci.DeclaringType);
+            }
+
             ilGenerator.Emit(OpCodes.Ret);
 
             var typeInfo = typeBuilder.CreateTypeInfo();
@@ -136,12 +143,12 @@ namespace Smart.Resolver.Builders
             }
 
             // Make delegate
-            var funcType = typeof(Func<,>).MakeGenericType(typeof(IResolver), ci.DeclaringType);
+            var funcType = typeof(Func<,>).MakeGenericType(typeof(IResolver), returnType);
             // ReSharper disable once AssignNullToNotNullAttribute
-            return Delegate.CreateDelegate(funcType, instance, factoryType.GetMethod("Create"));
+            return (Func<IResolver, object>)Delegate.CreateDelegate(funcType, instance, factoryType.GetMethod("Create"));
         }
 
-        public object CreateArrayFactory(Type type, Func<IResolver, object>[] factories)
+        public Func<IResolver, object> CreateArrayFactory(Type type, Func<IResolver, object>[] factories)
         {
             var arrayType = type.MakeArrayType();
 
@@ -201,7 +208,7 @@ namespace Smart.Resolver.Builders
             // Make delegate
             var funcType = typeof(Func<,>).MakeGenericType(typeof(IResolver), arrayType);
             // ReSharper disable once AssignNullToNotNullAttribute
-            return Delegate.CreateDelegate(funcType, instance, factoryType.GetMethod("Create"));
+            return (Func<IResolver, object>)Delegate.CreateDelegate(funcType, instance, factoryType.GetMethod("Create"));
         }
     }
 }
