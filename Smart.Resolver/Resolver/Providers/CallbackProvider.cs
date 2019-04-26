@@ -4,20 +4,21 @@ namespace Smart.Resolver.Providers
 
     using Smart.Resolver.Bindings;
 
-    public sealed class CallbackProvider<T> : IProvider
+    public sealed class CallbackProvider : IProvider
     {
-        private readonly Func<IResolver, T> factory;
+        private readonly Func<IResolver, object> factory;
 
-        public Type TargetType => typeof(T);
+        public Type TargetType { get; }
 
-        public CallbackProvider(Func<IResolver, T> factory)
+        public CallbackProvider(Type type, Func<IResolver, object> factory)
         {
+            TargetType = type;
             this.factory = factory;
         }
 
         public Func<IResolver, object> CreateFactory(IKernel kernel, IBinding binding)
         {
-            return (Func<IResolver, object>)(object)factory;
+            return r => factory(r);
         }
     }
 }
