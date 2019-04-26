@@ -1,7 +1,6 @@
 namespace NewFactoryLib
 {
     using System;
-    using System.Collections.Generic;
     using System.Linq;
     using System.Reflection;
     using System.Reflection.Emit;
@@ -44,17 +43,17 @@ namespace NewFactoryLib
             }
         }
 
-        public object ToConstant<T>(T value)
+        public Func<IResolver, object> ToConstant<T>(T value)
         {
-            return (Func<IContainer, T>)(c => value);
+            return c => value;
         }
 
-        public object ToMethod<T>(Func<IContainer, T> func)
+        public Func<IResolver, object> ToMethod(Func<IResolver, object> func)
         {
             return func;
         }
 
-        public object To(ConstructorInfo ci, object[] factories, object[] actions)
+        public Func<IResolver, object> To(ConstructorInfo ci, object[] factories, object[] actions)
         {
             if (ci.GetParameters().Length != factories.Length)
             {
@@ -86,7 +85,7 @@ namespace NewFactoryLib
                 "Create",
                 MethodAttributes.Public | MethodAttributes.HideBySig,
                 ci.DeclaringType,
-                new[] { typeof(IContainer) });
+                new[] { typeof(IResolver) });
 
             var ilGenerator = method.GetILGenerator();
 
@@ -95,7 +94,7 @@ namespace NewFactoryLib
                 var invokeMethod = factories[i].GetType().GetMethod("Invoke");
                 if ((invokeMethod == null) ||
                     (invokeMethod.GetParameters().Length != 1) ||
-                    (invokeMethod.GetParameters()[0].ParameterType != typeof(IContainer)))
+                    (invokeMethod.GetParameters()[0].ParameterType != typeof(IResolver)))
                 {
                     throw new ArgumentException($"Invalid factory[{i}]");
                 }
@@ -123,7 +122,7 @@ namespace NewFactoryLib
                     var invokeMethod = actions[i].GetType().GetMethod("Invoke");
                     if ((invokeMethod == null) ||
                         (invokeMethod.GetParameters().Length != 2) ||
-                        (invokeMethod.GetParameters()[0].ParameterType != typeof(IContainer)))
+                        (invokeMethod.GetParameters()[0].ParameterType != typeof(IResolver)))
                     {
                         throw new ArgumentException($"Invalid actions[{i}]");
                     }
@@ -159,11 +158,11 @@ namespace NewFactoryLib
             }
 
             // Make delegate
-            var funcType = typeof(Func<,>).MakeGenericType(typeof(IContainer), ci.DeclaringType);
-            return Delegate.CreateDelegate(funcType, instance, type.GetMethod("Create"));
+            var funcType = typeof(Func<,>).MakeGenericType(typeof(IResolver), ci.DeclaringType);
+            return (Func<IResolver, object>)Delegate.CreateDelegate(funcType, instance, type.GetMethod("Create"));
         }
 
-        public object ToArray(Type baseType, params object[] factories)
+        public Func<IResolver, object> ToArray(Type baseType, params object[] factories)
         {
             var arrayType = baseType.MakeArrayType();
 
@@ -185,7 +184,7 @@ namespace NewFactoryLib
                 "Create",
                 MethodAttributes.Public | MethodAttributes.HideBySig,
                 arrayType,
-                new[] { typeof(IContainer) });
+                new[] { typeof(IResolver) });
 
             var ilGenerator = method.GetILGenerator();
 
@@ -200,7 +199,7 @@ namespace NewFactoryLib
                 ilGenerator.Emit(OpCodes.Ldarg_0);
                 ilGenerator.Emit(OpCodes.Ldfld, fields[i]);
                 ilGenerator.Emit(OpCodes.Ldarg_1);
-                var invokeMethod = factories[i].GetType().GetMethod("Invoke", new[] { typeof(IContainer) });
+                var invokeMethod = factories[i].GetType().GetMethod("Invoke", new[] { typeof(IResolver) });
                 ilGenerator.Emit(OpCodes.Call, invokeMethod);
 
                 ilGenerator.Emit(OpCodes.Stelem_Ref);
@@ -221,10 +220,8 @@ namespace NewFactoryLib
             }
 
             // Make delegate
-            var funcType = typeof(Func<,>).MakeGenericType(typeof(IContainer), arrayType);
-            return Delegate.CreateDelegate(funcType, instance, type.GetMethod("Create"));
+            var funcType = typeof(Func<,>).MakeGenericType(typeof(IResolver), arrayType);
+            return (Func<IResolver, object>)Delegate.CreateDelegate(funcType, instance, type.GetMethod("Create"));
         }
-
-        // TODO Reflection version * 2
     }
 }

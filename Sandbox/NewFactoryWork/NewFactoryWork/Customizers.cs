@@ -11,16 +11,12 @@ namespace NewFactoryWork
 
     public static class ActionBuilder
     {
-        public static Action<IContainer, IInitialize> Create1()
+        public static Action<IResolver, object> Create1()
         {
-            return (c, o) => o.Initialize();
+            return (c, o) => ((IInitialize)o).Initialize();
         }
-        //public static Action<IContainer, object> Create1()
-        //{
-        //    return (c, o) => ((IInitialize)o).Initialize();
-        //}
 
-        public static Action<IContainer, object> Create2()
+        public static Action<IResolver, object> Create2()
         {
             return (c, o) => System.Diagnostics.Debug.WriteLine("Called");
         }
