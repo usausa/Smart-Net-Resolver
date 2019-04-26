@@ -46,6 +46,14 @@ var resolver = config.ToResolver();
 var controller = resolver.Get<Controller>();
 ```
 
+## NuGet
+
+| Id                                                | Note                                                 |
+|---------------------------------------------------|------------------------------------------------------|
+| Usa.Smart.Resolver                                | Core libyrary                                        |
+| Usa.Smart.Resolver.Extensions.DependencyInjection | Microsoft.Extensions.DependencyInjection integration |
+| Usa.Smart.Resolver.Xamarin                        | Xamarin DependencyService integration                |
+
 ## Bindings
 
 Supported binding syntax.
@@ -248,7 +256,7 @@ config.Components.Add<CustomScopeStorage>();
 config.Bind<SimpleObject>().ToSelf().InScope(new CustomScope());
 ```
 
-## Host integration
+## Integration
 
 ### ASP.NET Core
 
@@ -303,6 +311,12 @@ public static class Program
     }
 }
 ```
+
+### Xamarin
+
+See the linked example.
+
+* [Smart.Forms](https://github.com/usausa/Smart-Net-Forms)
 
 ## Other
 
