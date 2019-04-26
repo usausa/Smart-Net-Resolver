@@ -27,7 +27,7 @@ namespace NewFactoryWork
             var data = factoryData(null);
 
             // Factory
-            var factorySingleton = builder.To(typeof(Singleton).GetConstructors()[0], EmptyFactories, EmptyActions);
+            var factorySingleton = Scope.ToSingleton(null, builder.To(typeof(Singleton).GetConstructors()[0], EmptyFactories, EmptyActions));
             var singleton = factorySingleton(null);
             var singleton2 = factorySingleton(null);
 

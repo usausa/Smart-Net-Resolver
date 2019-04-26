@@ -27,6 +27,13 @@ namespace NewFactoryWork
 
     public class Singleton : ISingleton
     {
+        public static int Created { get; set; }
+
+        public Singleton()
+        {
+            Created++;
+        }
+
         public void DoSomething()
         {
         }
