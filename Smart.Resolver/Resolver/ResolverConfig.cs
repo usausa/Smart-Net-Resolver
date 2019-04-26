@@ -21,7 +21,7 @@ namespace Smart.Resolver
         {
             Components.Add<DisposableStorage>();
             Components.Add<IDelegateFactory>(DelegateFactory.Default);
-            if (ReflectionHelper.IsCodegenAllowed)
+            if (DelegateFactory.Default.IsCodegenRequired)
             {
                 Components.Add<IFactoryBuilder, EmitFactoryBuilder>();
             }

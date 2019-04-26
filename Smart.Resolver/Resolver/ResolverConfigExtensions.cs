@@ -28,6 +28,17 @@ namespace Smart.Resolver
             return config;
         }
 
+        public static ResolverConfig UseDelegateFactory(this ResolverConfig config, IDelegateFactory factory)
+        {
+            if (config is null)
+            {
+                throw new ArgumentNullException(nameof(config));
+            }
+
+            config.Components.Add(typeof(IDelegateFactory), factory);
+            return config;
+        }
+
         public static ResolverConfig UseFactoryBuilder<T>(this ResolverConfig config)
             where T : IFactoryBuilder
         {
@@ -37,6 +48,17 @@ namespace Smart.Resolver
             }
 
             config.Components.Add(typeof(IFactoryBuilder), typeof(T));
+            return config;
+        }
+
+        public static ResolverConfig UseFactoryBuilder(this ResolverConfig config, IFactoryBuilder builder)
+        {
+            if (config is null)
+            {
+                throw new ArgumentNullException(nameof(config));
+            }
+
+            config.Components.Add(typeof(IFactoryBuilder), builder);
             return config;
         }
 
@@ -63,14 +85,14 @@ namespace Smart.Resolver
             return config;
         }
 
-        public static ResolverConfig UseProcessor(this ResolverConfig config, IProcessor activator)
+        public static ResolverConfig UseProcessor(this ResolverConfig config, IProcessor processor)
         {
             if (config is null)
             {
                 throw new ArgumentNullException(nameof(config));
             }
 
-            config.Components.Add(typeof(IProcessor), activator);
+            config.Components.Add(typeof(IProcessor), processor);
             return config;
         }
 
