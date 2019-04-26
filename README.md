@@ -4,6 +4,19 @@
 
 Smart.Resolver .NET is simplified resolver library, degradation version of Ninject.
 
+* ASP.NET Core / Generic Host support
+* Xamarin support (Code generation mode and Reflection mode both supported)
+* Transient, Singleton, Container(child) and custom scope supported
+* Callback, Constant provider supported
+* Property injection supported (optional)
+* Custom initialize processor supported
+* Construct with parameter supported
+* Constraint supported (like named)
+* Missing handler supported (For automatic registration, Xamarin integration, open generic type, ...)
+* Customization-first implementation, but not too late (see benchmark)
+
+### Usage example
+
 ```csharp
 public interface IService
 {
@@ -100,6 +113,15 @@ config.Bind<TransientObject>().ToSelf();
 config.Bind<SingletonObject>().ToSelf().InSingletonScope();
 ```
 
+### Container
+
+* Single instance created and same instance returned per child container
+* Lifecycle managed by child container and Dispose called when resolver disposed
+
+```csharp
+config.Bind<ScopeObject>().ToSelf().InContainerScope();
+```
+
 ### Custom
 
 * You can create a custom scope
@@ -194,17 +216,31 @@ config.UseProcessor<CustomInitializeProcessor>();
 ```
 
 ```csharp
-// Add custome scope and storage
-public sealed class CustomScopeStorage : IScopeStorage
-{
-...
-}
-
+// Add custome scope
 public sealed class CustomScope : IScope
 {
-    public IScopeStorage GetStorage(IKernel kernel)
+    private static readonly ThreadLocal<Dictionary<IBinding, object>> Cache =
+        new ThreadLocal<Dictionary<IBinding, object>>(() => new Dictionary<IBinding, object>());
+
+    public IScope Copy(IComponentContainer components)
     {
-        return kernel.Components.Get<CustomScopeStorage>();
+        return this;
+    }
+
+    public Func<IResolver, object> Create(IBinding binding, Func<object> factory)
+    {
+        return resolver =>
+        {
+            if (Cache.Value.TryGetValue(binding, out var value))
+            {
+                return value;
+            }
+
+            value = factory();
+            Cache.Value[binding] = value;
+
+            return value;
+        };
     }
 }
 
@@ -212,6 +248,61 @@ config.Components.Add<CustomScopeStorage>();
 config.Bind<SimpleObject>().ToSelf().InScope(new CustomScope());
 ```
 
+## Host integration
+
+### ASP.NET Core
+
+```csharp
+public static class Program
+{
+    public static void Main(string[] args)
+    {
+        CreateWebHostBuilder(args).Build().Run();
+    }
+
+    public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
+        WebHost.CreateDefaultBuilder(args)
+            .ConfigureServices(services => services.AddSmartResolver())
+            .UseStartup<Startup>();
+}
+```
+
+```csharp
+public class Startup
+{
+...
+    public void ConfigureServices(IServiceCollection services)
+    {
+        services.AddMvc();
+    }
+
+    public void ConfigureContainer(ResolverConfig config)
+    {
+        // Add component
+    }
+...
+}
+```
+
+### Generic Host
+
+```csharp
+public static class Program
+{
+    public static async Task Main(string[] args)
+    {
+        await new HostBuilder()
+            .UseServiceProviderFactory(new SmartServiceProviderFactory())
+            .ConfigureContainer<ResolverConfig>(ConfigureContainer)
+            .RunAsync();
+    }
+
+    private static void ConfigureContainer(ResolverConfig config)
+    {
+        // Add component
+    }
+}
+```
 
 ## Other
 
@@ -293,10 +384,23 @@ config.Bind<Child>().ToSelf().InSingletonScope().WithMetadata("hoge", null);
 config.Bind<Parent>().ToSelf();
 ```
 
+## Benchmark (for reference purpose only)
+
+Benchmark result on .NET Core 2.2 with Code generation mode.
+
+|            Method |       Mean |     Error |    StdDev |  Gen 0 | Gen 1 | Gen 2 | Allocated |
+|------------------ |-----------:|----------:|----------:|-------:|------:|------:|----------:|
+|         Singleton |   8.918 ns | 0.0507 ns | 0.0474 ns |      - |     - |     - |         - |
+|         Transient |  11.120 ns | 0.0301 ns | 0.0267 ns | 0.0057 |     - |     - |      24 B |
+|          Combined |  13.992 ns | 0.0576 ns | 0.0510 ns | 0.0057 |     - |     - |      24 B |
+|           Complex |  47.584 ns | 0.2030 ns | 0.1899 ns | 0.0323 |     - |     - |     136 B |
+|          Generics |  10.451 ns | 0.0656 ns | 0.0613 ns | 0.0057 |     - |     - |      24 B |
+| MultipleSingleton |   7.488 ns | 0.0198 ns | 0.0175 ns |      - |     - |     - |         - |
+| MultipleTransient |  64.217 ns | 0.3959 ns | 0.3509 ns | 0.0438 |     - |     - |     184 B |
+|            AspNet | 303.576 ns | 1.4357 ns | 1.2727 ns | 0.1179 |     - |     - |     496 B |
 
 ## Unsupported
 
 * AOP( ﾟдﾟ)､ﾍﾟｯ
-* Method Injection (I don't need)
-* Request scope (supported by Smart.Resolver.AspNetCore)
+* Method Injection (I don't need but it is possible to cope)
 * Circular reference detection (Your design bug)
