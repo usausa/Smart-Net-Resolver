@@ -14,6 +14,11 @@ namespace NewFactoryWork
         {
             var builder = new Builder();
 
+            var factoryP1 = (Func<IContainer, object>)(x => "a");
+            var factoryP2 = (Func<IContainer, object>)(x => 1);
+            var factoryData2 = builder.To(typeof(Data2).GetConstructors()[0], new[] { factoryP1, factoryP2 }, EmptyActions);
+            var data2 = ((Func<IContainer, Data2>)factoryData2)(null);
+
             // Actions
             var factoryData = builder.To(typeof(Data).GetConstructors()[0], EmptyFactories, new[]
             {

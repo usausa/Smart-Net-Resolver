@@ -1,5 +1,25 @@
 namespace NewFactoryWork
 {
+    public class Data2
+    {
+        public string Parameter1 { get; }
+
+        public int Parameter2 { get; }
+
+        public Data2(string p1, int p2)
+        {
+            Parameter1 = p1;
+            Parameter2 = p2;
+        }
+    }
+
+    public class Data : IInitialize
+    {
+        public void Initialize()
+        {
+        }
+    }
+
     public interface ISingleton
     {
         void DoSomething();
