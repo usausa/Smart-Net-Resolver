@@ -6,10 +6,11 @@ namespace Smart.Resolver.Providers
     using Smart.ComponentModel;
     using Smart.Resolver.Bindings;
     using Smart.Resolver.Builders;
-    using Smart.Resolver.Helpers;
 
     internal sealed class BindingArrayProvider : IProvider
     {
+        private readonly Type elementType;
+
         private readonly IFactoryBuilder builder;
 
         private readonly IBinding[] bindings;
@@ -39,6 +40,7 @@ namespace Smart.Resolver.Providers
             }
 
             TargetType = type;
+            this.elementType = elementType;
             builder = components.Get<IFactoryBuilder>();
             this.bindings = bindings;
         }
@@ -48,7 +50,7 @@ namespace Smart.Resolver.Providers
             var factories = bindings
                 .Select(b => b.Provider.CreateFactory(kernel, b))
                 .ToArray();
-            return builder.CreateArrayFactory(TargetType, factories);
+            return builder.CreateArrayFactory(elementType, factories);
         }
     }
 }
