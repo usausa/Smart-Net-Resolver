@@ -258,6 +258,8 @@ config.Bind<SimpleObject>().ToSelf().InScope(new CustomScope());
 
 ## Integration
 
+See the sample project for details.
+
 ### ASP.NET Core
 
 ```csharp
@@ -314,9 +316,12 @@ public static class Program
 
 ### Xamarin
 
-See the linked example.
+```csharp
+var config = new ResolverConfig()
+    .UseDependencyService();
 
-* [Smart.Forms](https://github.com/usausa/Smart-Net-Forms)
+var resolver = config.ToResolver();
+```
 
 ## Other
 
