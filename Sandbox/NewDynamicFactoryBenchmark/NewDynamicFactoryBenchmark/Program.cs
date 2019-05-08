@@ -1,4 +1,4 @@
-﻿namespace NewDynamicFactoryBenchmark
+namespace NewDynamicFactoryBenchmark
 {
     using System;
     using System.Linq;
@@ -36,19 +36,28 @@
         private const int N = 1_000;
 
         private static readonly ConstructorInfo ci0 = typeof(Data0).GetConstructors()[0];
+        private static readonly ConstructorInfo ci1 = typeof(Data1).GetConstructors()[0];
+
+        private readonly Func<IResolver, object> stringFactory = r => string.Empty;
 
         private Func<IResolver, object> dynamicFactory0;
+        private Func<IResolver, object> dynamicFactory1;
 
         private Func<IResolver, object> classFactory0;
+        private Func<IResolver, object> classFactory1;
 
-        // TODO combined, 1, 2, 8 ?
+        // TODO combined, 2, 8 ?
 
         [GlobalSetup]
         public void Setup()
         {
             var builder = new Builder();
+
             dynamicFactory0 = builder.CreateDynamicFactory(ci0);
+            dynamicFactory1 = builder.CreateDynamicFactory(ci1, typeof(ParameterContainer1), new[] { stringFactory });
+
             classFactory0 = builder.CreateFactory(ci0, new Func<IResolver, object>[0]);
+            classFactory1 = builder.CreateFactory(ci1, new[] { stringFactory });
         }
 
         [Benchmark(OperationsPerInvoke = N)]
@@ -69,6 +78,24 @@
             }
         }
 
+        [Benchmark(OperationsPerInvoke = N)]
+        public void DynamicFactory1()
+        {
+            for (var i = 0; i < N; i++)
+            {
+                dynamicFactory1(null);
+            }
+        }
+
+        [Benchmark(OperationsPerInvoke = N)]
+        public void ClassFactory1()
+        {
+            for (var i = 0; i < N; i++)
+            {
+                classFactory1(null);
+            }
+        }
+
         // TODO Other
     }
 
@@ -84,7 +111,25 @@
     {
     }
 
-    //
+    public sealed class Data1
+    {
+        public string Parameter1 { get; }
+
+        public Data1(string parameter1)
+        {
+            Parameter1 = parameter1;
+        }
+    }
+
+    // Container
+
+    public sealed class ParameterContainer1
+    {
+        public Func<IResolver, object> ParameterFactory0;
+    }
+
+
+    // Builder
 
     public class Builder
     {
@@ -117,6 +162,46 @@
             {
                 return nextId++;
             }
+        }
+
+        // TODO dynamic create container type
+        public Func<IResolver, object> CreateDynamicFactory(ConstructorInfo ci, Type containerType, Func<IResolver, object>[] factories)
+        {
+            var returnType = ci.DeclaringType.IsValueType ? typeof(object) : ci.DeclaringType;
+
+            var dynamicMethod = new DynamicMethod(string.Empty, returnType, new[] { containerType, typeof(IResolver) }, true);
+            var ilGenerator = dynamicMethod.GetILGenerator();
+
+            var container = Activator.CreateInstance(containerType);
+
+            for (var i = 0; i < factories.Length; i++)
+            {
+                var invokeMethod = factories[i].GetType().GetMethod("Invoke");
+
+                var field = containerType.GetField($"ParameterFactory{i}");
+                field.SetValue(container, factories[i]);
+
+                ilGenerator.Emit(OpCodes.Ldarg_0);
+                ilGenerator.Emit(OpCodes.Ldfld, field);
+                ilGenerator.Emit(OpCodes.Ldarg_1);
+                ilGenerator.Emit(OpCodes.Call, invokeMethod);
+                if (ci.GetParameters()[i].ParameterType.IsValueType)
+                {
+                    ilGenerator.Emit(OpCodes.Unbox_Any, ci.GetParameters()[i].ParameterType);
+                }
+            }
+
+            ilGenerator.Emit(OpCodes.Newobj, ci);
+
+            if (ci.DeclaringType.IsValueType)
+            {
+                ilGenerator.Emit(OpCodes.Box, ci.DeclaringType);
+            }
+
+            ilGenerator.Emit(OpCodes.Ret);
+
+            var funcType = typeof(Func<,>).MakeGenericType(typeof(IResolver), returnType);
+            return (Func<IResolver, object>)dynamicMethod.CreateDelegate(funcType, container);
         }
 
         // TODO for combine
