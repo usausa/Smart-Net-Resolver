@@ -9,13 +9,13 @@ namespace Smart.Resolver.Builders
 
     public sealed class EmitFactoryBuilder : IFactoryBuilder
     {
-        private static readonly Action<IResolver, object>[] EmptyActions = new Action<IResolver, object>[0];
+        private static readonly Action<IResolver, object>[] EmptyActions = Array.Empty<Action<IResolver, object>>();
 
-        private readonly HolderBuilder holderBuilder = new HolderBuilder();
+        private static readonly HolderBuilder DefaultHolderBuilder = new HolderBuilder();
 
         public Func<IResolver, object> CreateFactory(ConstructorInfo ci, Func<IResolver, object>[] factories, Action<IResolver, object>[] actions)
         {
-            var holder = holderBuilder.CreateHolder(factories, actions);
+            var holder = DefaultHolderBuilder.CreateHolder(factories, actions);
             var holderType = holder?.GetType() ?? typeof(object);
 
             var returnType = ci.DeclaringType.IsValueType ? typeof(object) : ci.DeclaringType;
@@ -88,7 +88,7 @@ namespace Smart.Resolver.Builders
 
         public Func<IResolver, object> CreateArrayFactory(Type type, Func<IResolver, object>[] factories)
         {
-            var holder = holderBuilder.CreateHolder(factories, EmptyActions);
+            var holder = DefaultHolderBuilder.CreateHolder(factories, EmptyActions);
             var holderType = holder?.GetType() ?? typeof(object);
 
             var arrayType = type.MakeArrayType();
