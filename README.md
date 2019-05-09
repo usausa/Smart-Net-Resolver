@@ -409,14 +409,14 @@ Benchmark result on .NET Core 2.2 with Code generation mode.
 
 |            Method |       Mean |     Error |    StdDev |  Gen 0 | Gen 1 | Gen 2 | Allocated |
 |------------------ |-----------:|----------:|----------:|-------:|------:|------:|----------:|
-|         Singleton |   8.918 ns | 0.0507 ns | 0.0474 ns |      - |     - |     - |         - |
-|         Transient |  11.120 ns | 0.0301 ns | 0.0267 ns | 0.0057 |     - |     - |      24 B |
-|          Combined |  13.992 ns | 0.0576 ns | 0.0510 ns | 0.0057 |     - |     - |      24 B |
-|           Complex |  47.584 ns | 0.2030 ns | 0.1899 ns | 0.0323 |     - |     - |     136 B |
-|          Generics |  10.451 ns | 0.0656 ns | 0.0613 ns | 0.0057 |     - |     - |      24 B |
-| MultipleSingleton |   7.488 ns | 0.0198 ns | 0.0175 ns |      - |     - |     - |         - |
-| MultipleTransient |  64.217 ns | 0.3959 ns | 0.3509 ns | 0.0438 |     - |     - |     184 B |
-|            AspNet | 303.576 ns | 1.4357 ns | 1.2727 ns | 0.1179 |     - |     - |     496 B |
+|         Singleton |   8.830 ns | 0.0127 ns | 0.0119 ns |      - |     - |     - |         - |
+|         Transient |  10.706 ns | 0.0115 ns | 0.0102 ns | 0.0057 |     - |     - |      24 B |
+|          Combined |  14.928 ns | 0.0106 ns | 0.0099 ns | 0.0057 |     - |     - |      24 B |
+|           Complex |  47.246 ns | 0.1279 ns | 0.1196 ns | 0.0324 |     - |     - |     136 B |
+|          Generics |   9.892 ns | 0.0580 ns | 0.0543 ns | 0.0057 |     - |     - |      24 B |
+| MultipleSingleton |   6.989 ns | 0.0108 ns | 0.0101 ns |      - |     - |     - |         - |
+| MultipleTransient |  62.508 ns | 0.0715 ns | 0.0634 ns | 0.0438 |     - |     - |     184 B |
+|            AspNet | 303.839 ns | 0.2027 ns | 0.1896 ns | 0.1179 |     - |     - |     496 B |
 
 ## Unsupported
 
