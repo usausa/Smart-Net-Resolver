@@ -19,11 +19,18 @@ namespace Smart.Resolver
         [System.Diagnostics.CodeAnalysis.SuppressMessage("StyleCop.CSharp.MaintainabilityRules", "SA1401:FieldsMustBePrivate", Justification = "Performance")]
         private sealed class FactoryEntry
         {
-            public bool CanGet;
+            public readonly bool CanGet;
 
-            public Func<IResolver, object> Single;
+            public readonly Func<IResolver, object> Single;
 
-            public Func<IResolver, object>[] Multiple;
+            public readonly Func<IResolver, object>[] Multiple;
+
+            public FactoryEntry(bool canGet, Func<IResolver, object> single, Func<IResolver, object>[] multiple)
+            {
+                CanGet = canGet;
+                Single = single;
+                Multiple = multiple;
+            }
         }
 
         private readonly ThreadsafeTypeHashArrayMap<FactoryEntry> factoriesCache = new ThreadsafeTypeHashArrayMap<FactoryEntry>();
@@ -237,12 +244,10 @@ namespace Smart.Resolver
                     })
                     .ToArray();
 
-                return new FactoryEntry
-                {
-                    CanGet = factories.Length > 0,
-                    Single = factories.Length > 0 ? factories[factories.Length - 1] : k => null,
-                    Multiple = factories
-                };
+                return new FactoryEntry(
+                    factories.Length > 0,
+                    factories.Length > 0 ? factories[factories.Length - 1] : k => null,
+                    factories);
             }
         }
 

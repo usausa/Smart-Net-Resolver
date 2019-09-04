@@ -30,7 +30,7 @@ namespace Smart.Resolver.Injectors
                 return null;
             }
 
-            var injector = new Injector { Entries = entries };
+            var injector = new Injector(entries);
             return injector.Inject;
         }
 
@@ -41,17 +41,17 @@ namespace Smart.Resolver.Injectors
             var parameter = binding.PropertyValues.GetParameter(pi.Name);
             if (parameter != null)
             {
-                return new InjectEntry { Provider = CreateParameterProvider(parameter), Setter = setter };
+                return new InjectEntry(CreateParameterProvider(parameter), setter);
             }
 
             var propertyType = delegateFactory.GetExtendedPropertyType(pi);
             var constraint = ConstraintBuilder.Build(pi.GetCustomAttributes<ConstraintAttribute>());
             if (constraint != null)
             {
-                return new InjectEntry { Provider = CreateConstraintProvider(propertyType, constraint), Setter = setter };
+                return new InjectEntry(CreateConstraintProvider(propertyType, constraint), setter);
             }
 
-            return new InjectEntry { Provider = CreateProvider(propertyType), Setter = setter };
+            return new InjectEntry(CreateProvider(propertyType), setter);
         }
 
         private static Func<IResolver, object> CreateParameterProvider(IParameter parameter)
@@ -72,21 +72,31 @@ namespace Smart.Resolver.Injectors
         [System.Diagnostics.CodeAnalysis.SuppressMessage("StyleCop.CSharp.MaintainabilityRules", "SA1401:FieldsMustBePrivate", Justification = "Performance")]
         private sealed class InjectEntry
         {
-            public Func<IResolver, object> Provider;
+            public readonly Func<IResolver, object> Provider;
 
-            public Action<object, object> Setter;
+            public readonly Action<object, object> Setter;
+
+            public InjectEntry(Func<IResolver, object> provider, Action<object, object> setter)
+            {
+                Provider = provider;
+                Setter = setter;
+            }
         }
 
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("StyleCop.CSharp.MaintainabilityRules", "SA1401:FieldsMustBePrivate", Justification = "Performance")]
         private sealed class Injector
         {
-            public InjectEntry[] Entries;
+            private readonly InjectEntry[] entries;
+
+            public Injector(InjectEntry[] entries)
+            {
+                this.entries = entries;
+            }
 
             public void Inject(IResolver resolver, object instance)
             {
-                for (var i = 0; i < Entries.Length; i++)
+                for (var i = 0; i < entries.Length; i++)
                 {
-                    var entry = Entries[i];
+                    var entry = entries[i];
                     entry.Setter(instance, entry.Provider(resolver));
                 }
             }
