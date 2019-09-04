@@ -16,13 +16,14 @@ namespace Smart.Resolver
 
     public sealed class SmartResolver : IResolver, IKernel
     {
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("StyleCop.CSharp.MaintainabilityRules", "SA1401:FieldsMustBePrivate", Justification = "Performance")]
         private sealed class FactoryEntry
         {
-            public bool CanGet { get; set; }
+            public bool CanGet;
 
-            public Func<IResolver, object> Single { get; set; }
+            public Func<IResolver, object> Single;
 
-            public Func<IResolver, object>[] Multiple { get; set; }
+            public Func<IResolver, object>[] Multiple;
         }
 
         private readonly ThreadsafeTypeHashArrayMap<FactoryEntry> factoriesCache = new ThreadsafeTypeHashArrayMap<FactoryEntry>();
