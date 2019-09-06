@@ -24,6 +24,8 @@ namespace Smart.Resolver.Handlers
             this.ignoreElementTypes = new HashSet<Type>(ignoreElementTypes);
         }
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods", Justification = "Ignore")]
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Reliability", "CA2000:DisposeObjectsBeforeLosingScope", Justification = "Factory")]
         public IEnumerable<IBinding> Handle(IComponentContainer components, IBindingTable table, Type type)
         {
             var elementType = TypeHelper.GetEnumerableElementType(type);

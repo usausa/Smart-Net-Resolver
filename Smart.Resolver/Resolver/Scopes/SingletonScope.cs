@@ -12,6 +12,7 @@ namespace Smart.Resolver.Scopes
 
         private Func<IResolver, object> objectFactory;
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods", Justification = "Ignore")]
         public SingletonScope(IComponentContainer container)
         {
             container.Get<DisposableStorage>().Add(this);
@@ -27,6 +28,7 @@ namespace Smart.Resolver.Scopes
             return new SingletonScope(components);
         }
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods", Justification = "Ignore")]
         public Func<IResolver, object> Create(IBinding binding, Func<object> factory)
         {
             if (objectFactory is null)

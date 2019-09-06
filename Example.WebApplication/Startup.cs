@@ -43,25 +43,25 @@ namespace Example.WebApplication
         {
             var connectionStringMaster = Configuration.GetConnectionString("Master");
             config
-                .Bind<IConnectionFactory>()
-                .ToConstant(new CallbackConnectionFactory(() => new SqliteConnection(connectionStringMaster)))
+                .Bind<IDbProvider>()
+                .ToConstant(new DelegateDbProvider(() => new SqliteConnection(connectionStringMaster)))
                 .Named("Master");
             var connectionStringCharacter = Configuration.GetConnectionString("Character");
             config
-                .Bind<IConnectionFactory>()
-                .ToConstant(new CallbackConnectionFactory(() => new SqliteConnection(connectionStringCharacter)))
+                .Bind<IDbProvider>()
+                .ToConstant(new DelegateDbProvider(() => new SqliteConnection(connectionStringCharacter)))
                 .Named("Character");
 
             config
                 .Bind<MasterService>()
                 .ToSelf()
                 .InSingletonScope()
-                .WithConstructorArgument("connectionFactory", kernel => kernel.Get<IConnectionFactory>("Master"));
+                .WithConstructorArgument("provider", kernel => kernel.Get<IDbProvider>("Master"));
             config
                 .Bind<CharacterService>()
                 .ToSelf()
                 .InSingletonScope()
-                .WithConstructorArgument("connectionFactory", kernel => kernel.Get<IConnectionFactory>("Character"));
+                .WithConstructorArgument("provider", kernel => kernel.Get<IDbProvider>("Character"));
 
             config
                 .Bind<MetricsManager>()

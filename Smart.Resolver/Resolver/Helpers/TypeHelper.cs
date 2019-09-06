@@ -1,4 +1,4 @@
-﻿namespace Smart.Resolver.Helpers
+namespace Smart.Resolver.Helpers
 {
     using System;
     using System.Collections.Generic;
@@ -11,6 +11,7 @@
 
         private static readonly Type ListType = typeof(IList<>);
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods", Justification = "Ignore")]
         public static Type GetEnumerableElementType(Type type)
         {
             // Array

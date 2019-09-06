@@ -43,6 +43,7 @@ namespace Smart.Resolver.Providers
             builder = components.Get<IFactoryBuilder>();
         }
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods", Justification = "Ignore")]
         public Func<IResolver, object> CreateFactory(IKernel kernel, IBinding binding)
         {
             var constructors = CreateConstructorMetadata();

@@ -1,4 +1,4 @@
-﻿namespace Example.WebApplication.Services
+namespace Example.WebApplication.Services
 {
     using System.Collections.Generic;
     using System.Linq;
@@ -11,16 +11,16 @@
 
     public class MasterService
     {
-        private IConnectionFactory ConnectionFactory { get; }
+        private IDbProvider Provider { get; }
 
-        public MasterService(IConnectionFactory connectionFactory)
+        public MasterService(IDbProvider provider)
         {
-            ConnectionFactory = connectionFactory;
+            Provider = provider;
         }
 
         public IList<ItemEntity> QueryItemList()
         {
-            return ConnectionFactory.Using(
+            return Provider.Using(
                 con => con.Query<ItemEntity>("SELECT * FROM Item ORDER BY Id", buffered: false).ToList());
         }
     }

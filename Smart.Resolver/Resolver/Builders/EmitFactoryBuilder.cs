@@ -13,6 +13,7 @@ namespace Smart.Resolver.Builders
 
         private static readonly HolderBuilder DefaultHolderBuilder = new HolderBuilder();
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods", Justification = "Ignore")]
         public Func<IResolver, object> CreateFactory(ConstructorInfo ci, Func<IResolver, object>[] factories, Action<IResolver, object>[] actions)
         {
             var holder = DefaultHolderBuilder.CreateHolder(factories, actions);
@@ -86,6 +87,7 @@ namespace Smart.Resolver.Builders
             return (Func<IResolver, object>)dynamicMethod.CreateDelegate(funcType, holder);
         }
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods", Justification = "Ignore")]
         public Func<IResolver, object> CreateArrayFactory(Type type, Func<IResolver, object>[] factories)
         {
             var holder = DefaultHolderBuilder.CreateHolder(factories, EmptyActions);

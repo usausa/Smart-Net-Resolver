@@ -1,18 +1,18 @@
 <Project>
 
   <PropertyGroup>
-    <Deterministic>true</Deterministic>
     <LangVersion>latest</LangVersion>
+    <Deterministic>true</Deterministic>
     <Version>1.8.1</Version>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)' == 'Debug'">
-    <DebugType>full</DebugType>
-    <DebugSymbols>true</DebugSymbols>
-  </PropertyGroup>
+  <ItemGroup Condition="'$(Configuration)' == 'Release'">
+    <PackageReference Include="Microsoft.CodeAnalysis.Analyzers" Version="2.9.4" PrivateAssets="All" />
+    <PackageReference Include="Microsoft.CodeAnalysis.FxCopAnalyzers" Version="2.9.4" PrivateAssets="All" />
+  </ItemGroup>
 
-  <PropertyGroup Condition="'$(Configuration)' == 'Release'">
-    <DebugType>pdbonly</DebugType>
-  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="StyleCop.Analyzers" Version="1.1.118" PrivateAssets="all"/>
+  </ItemGroup>
 
 </Project>

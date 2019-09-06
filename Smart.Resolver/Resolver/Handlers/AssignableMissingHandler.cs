@@ -21,6 +21,7 @@ namespace Smart.Resolver.Handlers
             this.ignoreTypes = new HashSet<Type>(ignoreTypes);
         }
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods", Justification = "Ignore")]
         public IEnumerable<IBinding> Handle(IComponentContainer components, IBindingTable table, Type type)
         {
             if (ignoreTypes.Contains(type))

@@ -1,4 +1,4 @@
-﻿namespace Smart.Resolver
+namespace Smart.Resolver
 {
     using System;
 
@@ -20,6 +20,11 @@
 
         public SmartServiceProviderFactory(Action<ResolverConfig> action)
         {
+            if (action is null)
+            {
+                throw new ArgumentNullException(nameof(action));
+            }
+
             config = new ResolverConfig();
             action(config);
         }
