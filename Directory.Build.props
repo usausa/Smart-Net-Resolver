@@ -2,8 +2,8 @@
 
   <PropertyGroup>
     <LangVersion>latest</LangVersion>
-    <Deterministic>true</Deterministic>
     <Version>1.8.1</Version>
+    <Deterministic>true</Deterministic>
   </PropertyGroup>
 
   <ItemGroup Condition="'$(Configuration)' == 'Release'">
