@@ -35,7 +35,7 @@ namespace Smart.Resolver
 
         private readonly ThreadsafeTypeHashArrayMap<FactoryEntry> factoriesCache = new ThreadsafeTypeHashArrayMap<FactoryEntry>();
 
-        private readonly ThreadsafeHashArrayMap<RequestKey, FactoryEntry> factoriesCacheWithConstraint = new ThreadsafeHashArrayMap<RequestKey, FactoryEntry>(RequestKeyComparer.Default);
+        private readonly TypeConstraintHashArray<FactoryEntry> factoriesCacheWithConstraint = new TypeConstraintHashArray<FactoryEntry>();
 
         private readonly ThreadsafeTypeHashArrayMap<Action<IResolver, object>[]> injectorsCache = new ThreadsafeTypeHashArrayMap<Action<IResolver, object>[]>();
 
@@ -194,10 +194,9 @@ namespace Smart.Resolver
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private FactoryEntry FindFactoryEntry(Type type, IConstraint constraint)
         {
-            var key = new RequestKey(type, constraint);
-            if (!factoriesCacheWithConstraint.TryGetValue(key, out var entry))
+            if (!factoriesCacheWithConstraint.TryGetValue(type, constraint, out var entry))
             {
-                entry = factoriesCacheWithConstraint.AddIfNotExist(key, x => CreateFactoryEntry(x.Type, x.Constraint, this));
+                entry = factoriesCacheWithConstraint.AddIfNotExist(type, constraint, (t, c) => CreateFactoryEntry(t, c, this));
             }
 
             return entry;
@@ -217,10 +216,9 @@ namespace Smart.Resolver
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private FactoryEntry FindFactoryEntry(IResolver resolver, Type type, IConstraint constraint)
         {
-            var key = new RequestKey(type, constraint);
-            if (!factoriesCacheWithConstraint.TryGetValue(key, out var entry))
+            if (!factoriesCacheWithConstraint.TryGetValue(type, constraint, out var entry))
             {
-                entry = factoriesCacheWithConstraint.AddIfNotExist(key, x => CreateFactoryEntry(x.Type, x.Constraint, resolver));
+                entry = factoriesCacheWithConstraint.AddIfNotExist(type, constraint, (t, c) => CreateFactoryEntry(t, c, resolver));
             }
 
             return entry;

@@ -20,6 +20,7 @@
     <Rule Id="SA1402" Action="Hidden" />
     <Rule Id="SA1413" Action="Hidden" />
     <Rule Id="SA1512" Action="Hidden" />
+    <Rule Id="SA1513" Action="Hidden" />
     <Rule Id="SA1515" Action="Hidden" />
     <Rule Id="SA1600" Action="Hidden" />
     <Rule Id="SA1606" Action="Hidden" />
