@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
@@ -9,7 +9,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Usa.Smart.Core" Version="1.7.8-beta1" />
+    <PackageReference Include="Usa.Smart.Core" Version="1.7.8" />
     <PackageReference Include="Xamarin.Forms" Version="4.2.0.709249">
       <NoWarn>NU1701</NoWarn>
     </PackageReference>
