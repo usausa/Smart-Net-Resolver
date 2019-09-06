@@ -4,6 +4,8 @@
     <LangVersion>latest</LangVersion>
     <Version>1.8.1</Version>
     <Deterministic>true</Deterministic>
+    <RepoRoot>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\'))</RepoRoot>
+    <PathMap>$(RepoRoot)=.</PathMap>
   </PropertyGroup>
 
   <ItemGroup Condition="'$(Configuration)' == 'Release'">
