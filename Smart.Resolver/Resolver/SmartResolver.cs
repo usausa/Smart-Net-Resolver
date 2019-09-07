@@ -33,7 +33,7 @@ namespace Smart.Resolver
             }
         }
 
-        private readonly ThreadsafeTypeHashArrayMap<FactoryEntry> factoriesCache = new ThreadsafeTypeHashArrayMap<FactoryEntry>();
+        private readonly ThreadsafeTypeHashArrayMap<FactoryEntry> factoriesCache = new ThreadsafeTypeHashArrayMap<FactoryEntry>(128);
 
         private readonly TypeConstraintHashArray<FactoryEntry> factoriesCacheWithConstraint = new TypeConstraintHashArray<FactoryEntry>();
 
