@@ -35,6 +35,22 @@ namespace Smart.Resolver.Benchmark
                 throw new Exception("Validation error of singleton.");
             }
 
+            var singleton41 = (ISingleton4)solver(typeof(ISingleton4));
+            var singleton42 = (ISingleton4)solver(typeof(ISingleton4));
+
+            if (singleton41 != singleton42)
+            {
+                throw new Exception("Validation error of singleton.");
+            }
+
+            var singleton51 = (ISingleton5)solver(typeof(ISingleton5));
+            var singleton52 = (ISingleton5)solver(typeof(ISingleton5));
+
+            if (singleton51 != singleton52)
+            {
+                throw new Exception("Validation error of singleton.");
+            }
+
             // Transient
             var transient11 = (ITransient1)solver(typeof(ITransient1));
             var transient12 = (ITransient1)solver(typeof(ITransient1));
@@ -60,6 +76,22 @@ namespace Smart.Resolver.Benchmark
                 throw new Exception("Validation error of transient.");
             }
 
+            var transient41 = (ITransient4)solver(typeof(ITransient4));
+            var transient42 = (ITransient4)solver(typeof(ITransient4));
+
+            if (transient41 == transient42)
+            {
+                throw new Exception("Validation error of transient.");
+            }
+
+            var transient51 = (ITransient4)solver(typeof(ITransient4));
+            var transient52 = (ITransient4)solver(typeof(ITransient4));
+
+            if (transient51 == transient52)
+            {
+                throw new Exception("Validation error of transient.");
+            }
+
             // Combined
             var combined11 = (Combined1)solver(typeof(Combined1));
             var combined12 = (Combined1)solver(typeof(Combined1));
@@ -81,6 +113,22 @@ namespace Smart.Resolver.Benchmark
             var combined32 = (Combined3)solver(typeof(Combined3));
 
             if (combined31 == combined32)
+            {
+                throw new Exception("Validation error of combined.");
+            }
+
+            var combined41 = (Combined4)solver(typeof(Combined4));
+            var combined42 = (Combined4)solver(typeof(Combined4));
+
+            if (combined41 == combined42)
+            {
+                throw new Exception("Validation error of combined.");
+            }
+
+            var combined51 = (Combined5)solver(typeof(Combined5));
+            var combined52 = (Combined5)solver(typeof(Combined5));
+
+            if (combined51 == combined52)
             {
                 throw new Exception("Validation error of combined.");
             }
