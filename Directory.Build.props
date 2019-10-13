@@ -2,10 +2,12 @@
 
   <PropertyGroup>
     <LangVersion>latest</LangVersion>
-    <Version>1.8.2</Version>
     <Deterministic>true</Deterministic>
     <RepoRoot>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\'))</RepoRoot>
     <PathMap>$(RepoRoot)=.</PathMap>
+    <NoWarn>$(NoWarn),1573,1591,1712</NoWarn>
+    <MSBuildWarningsAsMessages>SA0001</MSBuildWarningsAsMessages>
+    <Version>1.8.2</Version>
   </PropertyGroup>
 
   <ItemGroup Condition="'$(Configuration)' == 'Release'">
