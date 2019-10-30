@@ -40,10 +40,7 @@ namespace Smart.Resolver.Builders
                 ilGenerator.Emit(OpCodes.Ldfld, field);
                 ilGenerator.Emit(OpCodes.Ldarg_1);
                 ilGenerator.Emit(OpCodes.Call, invokeMethod);
-                if (ci.GetParameters()[i].ParameterType.IsValueType)
-                {
-                    ilGenerator.Emit(OpCodes.Unbox_Any, ci.GetParameters()[i].ParameterType);
-                }
+                ilGenerator.EmitTypeConversion(ci.GetParameters()[i].ParameterType);
             }
 
             ilGenerator.Emit(OpCodes.Newobj, ci);
