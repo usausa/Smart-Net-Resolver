@@ -7,8 +7,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Usa.Smart.Core" Version="1.7.8" />
-    <PackageReference Include="Xamarin.Forms" Version="4.3.0.947036">
+    <PackageReference Include="Usa.Smart.Core" Version="1.7.9" />
+    <PackageReference Include="Xamarin.Forms" Version="4.3.0.991211">
       <NoWarn>NU1701</NoWarn>
     </PackageReference>
   </ItemGroup>
