@@ -24,6 +24,7 @@ namespace Smart.Resolver.Constraints
             return obj is NameConstraint constraint && String.Equals(name, constraint.name, StringComparison.Ordinal);
         }
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Globalization", "CA1307:SpecifyStringComparison", Justification = "Ignore")]
         public override int GetHashCode()
         {
             return name?.GetHashCode() ?? 0;
