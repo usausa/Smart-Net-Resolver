@@ -20,7 +20,7 @@
     <tags>smart ioc di dependencyinjection</tags>
   </metadata>
   <files>
-    <!-- netstandard2.0 -->
-    <file src="Smart.Resolver\bin\Release\netstandard2.0\Smart.Resolver.dll" target="lib\netstandard2.0" />
+    <!-- netstandard2.1 -->
+    <file src="Smart.Resolver\bin\Release\netstandard2.1\Smart.Resolver.dll" target="lib\netstandard2.1" />
   </files>
 </package>

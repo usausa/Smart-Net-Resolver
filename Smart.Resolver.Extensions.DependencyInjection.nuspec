@@ -20,7 +20,7 @@
     <tags>smart ioc di dependencyinjection aspnet aspnetcore</tags>
   </metadata>
   <files>
-    <!-- netstandard2.0 -->
-    <file src="Smart.Resolver.Extensions.DependencyInjection\bin\Release\netstandard2.0\Smart.Resolver.Extensions.DependencyInjection.dll" target="lib\netstandard2.0" />
+    <!-- netstandard2.1 -->
+    <file src="Smart.Resolver.Extensions.DependencyInjection\bin\Release\netstandard2.1\Smart.Resolver.Extensions.DependencyInjection.dll" target="lib\netstandard2.1" />
   </files>
 </package>
