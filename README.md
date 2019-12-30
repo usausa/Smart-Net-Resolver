@@ -260,20 +260,23 @@ config.Bind<SimpleObject>().ToSelf().InScope(new CustomScope());
 
 See the sample project for details.
 
-### ASP.NET Core
+### ASP.NET Core 3.1
 
 ```csharp
 public static class Program
 {
     public static void Main(string[] args)
     {
-        CreateWebHostBuilder(args).Build().Run();
+        CreateHostBuilder(args).Build().Run();
     }
 
-    public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
-        WebHost.CreateDefaultBuilder(args)
-            .ConfigureServices(services => services.AddSmartResolver())
-            .UseStartup<Startup>();
+    public static IHostBuilder CreateHostBuilder(string[] args) =>
+        Host.CreateDefaultBuilder(args)
+            .UseServiceProviderFactory(new SmartServiceProviderFactory())
+            .ConfigureWebHostDefaults(webBuilder =>
+            {
+                webBuilder.UseStartup<Startup>();
+            });
 }
 ```
 
@@ -405,18 +408,23 @@ config.Bind<Parent>().ToSelf();
 
 ## Benchmark (for reference purpose only)
 
-Benchmark result on .NET Core 2.2 with Code generation mode.
-
-|            Method |       Mean |     Error |    StdDev |  Gen 0 | Gen 1 | Gen 2 | Allocated |
-|------------------ |-----------:|----------:|----------:|-------:|------:|------:|----------:|
-|         Singleton |   8.830 ns | 0.0127 ns | 0.0119 ns |      - |     - |     - |         - |
-|         Transient |  10.706 ns | 0.0115 ns | 0.0102 ns | 0.0057 |     - |     - |      24 B |
-|          Combined |  14.928 ns | 0.0106 ns | 0.0099 ns | 0.0057 |     - |     - |      24 B |
-|           Complex |  47.246 ns | 0.1279 ns | 0.1196 ns | 0.0324 |     - |     - |     136 B |
-|          Generics |   9.892 ns | 0.0580 ns | 0.0543 ns | 0.0057 |     - |     - |      24 B |
-| MultipleSingleton |   6.989 ns | 0.0108 ns | 0.0101 ns |      - |     - |     - |         - |
-| MultipleTransient |  62.508 ns | 0.0715 ns | 0.0634 ns | 0.0438 |     - |     - |     184 B |
-|            AspNet | 303.839 ns | 0.2027 ns | 0.1896 ns | 0.1179 |     - |     - |     496 B |
+``` ini
+BenchmarkDotNet=v0.12.0, OS=Windows 10.0.18363
+Intel Core i5-9500 CPU 3.00GHz, 1 CPU, 6 logical and 6 physical cores
+.NET Core SDK=3.1.100
+  [Host]     : .NET Core 3.1.0 (CoreCLR 4.700.19.56402, CoreFX 4.700.19.56404), X64 RyuJIT
+  DefaultJob : .NET Core 3.1.0 (CoreCLR 4.700.19.56402, CoreFX 4.700.19.56404), X64 RyuJIT
+```
+|            Method |       Mean |     Error |    StdDev |     Median |  Gen 0 | Gen 1 | Gen 2 | Allocated |
+|------------------ |-----------:|----------:|----------:|-----------:|-------:|------:|------:|----------:|
+|         Singleton |   6.871 ns | 0.0257 ns | 0.0228 ns |   6.872 ns |      - |     - |     - |         - |
+|         Transient |   8.632 ns | 0.0288 ns | 0.0241 ns |   8.630 ns | 0.0051 |     - |     - |      24 B |
+|          Combined |  13.558 ns | 0.0423 ns | 0.0395 ns |  13.564 ns | 0.0051 |     - |     - |      24 B |
+|           Complex |  52.439 ns | 0.1478 ns | 0.1310 ns |  52.416 ns | 0.0289 |     - |     - |     136 B |
+|          Generics |   8.225 ns | 0.0317 ns | 0.0297 ns |   8.239 ns | 0.0051 |     - |     - |      24 B |
+| MultipleSingleton |   6.351 ns | 0.1292 ns | 0.1634 ns |   6.241 ns |      - |     - |     - |         - |
+| MultipleTransient |  58.940 ns | 0.2128 ns | 0.1990 ns |  58.883 ns | 0.0391 |     - |     - |     184 B |
+|            AspNet | 242.820 ns | 0.4607 ns | 0.4309 ns | 242.839 ns | 0.1034 |     - |     - |     488 B |
 
 ## Unsupported
 
