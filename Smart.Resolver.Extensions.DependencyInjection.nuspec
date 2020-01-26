@@ -13,7 +13,7 @@
     <copyright></copyright>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <dependencies>
-      <dependency id="Microsoft.Extensions.DependencyInjection.Abstractions" version="3.1.0" />
+      <dependency id="Microsoft.Extensions.DependencyInjection.Abstractions" version="3.1.1" />
       <dependency id="Usa.Smart.Core" version="1.8.0" />
       <dependency id="Usa.Smart.Resolver" version="1.9.0" />
     </dependencies>
