@@ -1,4 +1,4 @@
-﻿namespace Example.WebApplication.Controllers
+namespace Example.WebApplication.Controllers
 {
     using System;
 
@@ -15,6 +15,7 @@
             ScopedObject = scopedObject;
         }
 
+        // ReSharper disable once ParameterOnlyUsedForPreconditionCheck.Global
         public IActionResult Index([FromServices] ScopedObject scopedObject)
         {
             if (ScopedObject != scopedObject)

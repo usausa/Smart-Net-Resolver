@@ -42,7 +42,7 @@ namespace Smart.Resolver.Constraints
             var hash = 0;
             for (var i = 0; i < constraints.Length; i++)
             {
-                hash = hash ^ constraints[i].GetHashCode();
+                hash ^= constraints[i].GetHashCode();
             }
 
             return hash;
