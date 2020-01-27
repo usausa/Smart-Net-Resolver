@@ -9,22 +9,22 @@ namespace Smart.Resolver.Handlers
 
     public sealed class AssignableMissingHandler : IMissingHandler
     {
-        private readonly HashSet<Type> ignoreTypes;
+        private readonly HashSet<Type> targetTypes;
 
         public AssignableMissingHandler()
             : this(Type.EmptyTypes)
         {
         }
 
-        public AssignableMissingHandler(IEnumerable<Type> ignoreTypes)
+        public AssignableMissingHandler(IEnumerable<Type> types)
         {
-            this.ignoreTypes = new HashSet<Type>(ignoreTypes);
+            this.targetTypes = new HashSet<Type>(types);
         }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods", Justification = "Ignore")]
         public IEnumerable<IBinding> Handle(IComponentContainer components, IBindingTable table, Type type)
         {
-            if (ignoreTypes.Contains(type))
+            if ((targetTypes.Count > 0) && !targetTypes.Contains(type))
             {
                 return Enumerable.Empty<IBinding>();
             }

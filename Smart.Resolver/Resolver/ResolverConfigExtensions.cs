@@ -196,14 +196,14 @@ namespace Smart.Resolver
             return config;
         }
 
-        public static ResolverConfig UseAssignableBinding(this ResolverConfig config, IEnumerable<Type> ignoreTypes)
+        public static ResolverConfig UseAssignableBinding(this ResolverConfig config, IEnumerable<Type> targetTypes)
         {
             if (config is null)
             {
                 throw new ArgumentNullException(nameof(config));
             }
 
-            config.Components.Add<IMissingHandler>(new AssignableMissingHandler(ignoreTypes));
+            config.Components.Add<IMissingHandler>(new AssignableMissingHandler(targetTypes));
             return config;
         }
 
