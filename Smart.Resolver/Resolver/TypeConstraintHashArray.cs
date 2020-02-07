@@ -7,7 +7,7 @@ namespace Smart.Resolver
 
     using Smart.Resolver.Constraints;
 
-    [DebuggerDisplay("Count = {" + nameof(Count) + "}")]
+    [DebuggerDisplay("{" + nameof(Diagnostics) + "}")]
     internal class TypeConstraintHashArray<T>
     {
         private const int InitialSize = 64;
@@ -20,6 +20,10 @@ namespace Smart.Resolver
 
         private Node[] nodes;
 
+        private int width;
+
+        private int depth;
+
         private int count;
 
         //--------------------------------------------------------------------------------
@@ -29,6 +33,7 @@ namespace Smart.Resolver
         public TypeConstraintHashArray()
         {
             nodes = CreateInitialTable();
+            width = nodes.Length;
         }
 
         //--------------------------------------------------------------------------------
@@ -45,6 +50,36 @@ namespace Smart.Resolver
             }
 
             return hash;
+        }
+
+        private static int CalculateDepth(Node node)
+        {
+            var length = 0;
+
+            do
+            {
+                length++;
+                node = node.Next;
+            }
+            while (node != null);
+
+            return length;
+        }
+
+        private static int CalculateDepth(Node[] targetNodes)
+        {
+            var depth = 0;
+
+            for (var i = 0; i < targetNodes.Length; i++)
+            {
+                var node = targetNodes[i];
+                if (node != EmptyNode)
+                {
+                    depth = Math.Max(CalculateDepth(node), depth);
+                }
+            }
+
+            return depth;
         }
 
         private static int CalculateSize(int requestSize)
@@ -136,7 +171,8 @@ namespace Smart.Resolver
                 Interlocked.MemoryBarrier();
 
                 nodes = newNodes;
-
+                width = size;
+                depth = CalculateDepth(newNodes);
                 count++;
             }
             else
@@ -145,6 +181,7 @@ namespace Smart.Resolver
 
                 UpdateLink(ref nodes[CalculateHash(node.Type, node.Constraint) & (nodes.Length - 1)], node);
 
+                depth = Math.Max(CalculateDepth(nodes[CalculateHash(node.Type, node.Constraint) & (nodes.Length - 1)]), depth);
                 count++;
             }
         }
@@ -153,13 +190,13 @@ namespace Smart.Resolver
         // Public
         //--------------------------------------------------------------------------------
 
-        public int Count
+        public DiagnosticsInfo Diagnostics
         {
             get
             {
                 lock (sync)
                 {
-                    return count;
+                    return new DiagnosticsInfo(width, depth, count);
                 }
             }
         }
@@ -235,6 +272,28 @@ namespace Smart.Resolver
                 Constraint = constraint;
                 Value = value;
             }
+        }
+
+        //--------------------------------------------------------------------------------
+        // Diagnostics
+        //--------------------------------------------------------------------------------
+
+        public sealed class DiagnosticsInfo
+        {
+            public int Width { get; }
+
+            public int Depth { get; }
+
+            public int Count { get; }
+
+            public DiagnosticsInfo(int width, int depth, int count)
+            {
+                Width = width;
+                Depth = depth;
+                Count = count;
+            }
+
+            public override string ToString() => $"Count={Count}, Width={Width}, Depth={Depth}";
         }
     }
 }
