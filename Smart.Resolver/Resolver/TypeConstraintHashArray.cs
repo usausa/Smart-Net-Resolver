@@ -179,9 +179,11 @@ namespace Smart.Resolver
             {
                 Interlocked.MemoryBarrier();
 
-                UpdateLink(ref nodes[CalculateHash(node.Type, node.Constraint) & (nodes.Length - 1)], node);
+                var hash = CalculateHash(node.Type, node.Constraint);
 
-                depth = Math.Max(CalculateDepth(nodes[CalculateHash(node.Type, node.Constraint) & (nodes.Length - 1)]), depth);
+                UpdateLink(ref nodes[hash & (nodes.Length - 1)], node);
+
+                depth = Math.Max(CalculateDepth(nodes[hash & (nodes.Length - 1)]), depth);
                 count++;
             }
         }
