@@ -20,8 +20,6 @@ namespace Smart.Resolver
 
         private Node[] nodes;
 
-        private int width;
-
         private int depth;
 
         private int count;
@@ -33,7 +31,6 @@ namespace Smart.Resolver
         public TypeConstraintHashArray()
         {
             nodes = CreateInitialTable();
-            width = nodes.Length;
         }
 
         //--------------------------------------------------------------------------------
@@ -171,7 +168,6 @@ namespace Smart.Resolver
                 Interlocked.MemoryBarrier();
 
                 nodes = newNodes;
-                width = size;
                 depth = CalculateDepth(newNodes);
                 count++;
             }
@@ -198,7 +194,7 @@ namespace Smart.Resolver
             {
                 lock (sync)
                 {
-                    return new DiagnosticsInfo(width, depth, count);
+                    return new DiagnosticsInfo(nodes.Length, depth, count);
                 }
             }
         }
