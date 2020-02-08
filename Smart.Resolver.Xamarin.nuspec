@@ -2,7 +2,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
   <metadata>
     <id>Usa.Smart.Resolver.Xamarin</id>
-    <version>1.9.1</version>
+    <version>1.9.2</version>
     <title>Smart.Resolver.Xamarin .NET</title>
     <authors>machi_pon</authors>
     <owners>machi_pon</owners>
@@ -15,7 +15,7 @@
     <dependencies>
       <dependency id="Xamarin.Forms" version="4.4.0.991640" />
       <dependency id="Usa.Smart.Core" version="1.8.1" />
-      <dependency id="Usa.Smart.Resolver" version="1.9.1" />
+      <dependency id="Usa.Smart.Resolver" version="1.9.2" />
     </dependencies>
     <tags>smart ioc di dependencyinjection xamarin</tags>
   </metadata>
