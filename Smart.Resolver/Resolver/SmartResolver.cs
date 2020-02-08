@@ -419,5 +419,73 @@ namespace Smart.Resolver
                 }
             }
         }
+
+        // ------------------------------------------------------------
+        // Diagnostics
+        // ------------------------------------------------------------
+
+        public DiagnosticsInfo Diagnostics
+        {
+            get
+            {
+                var factoryDiagnostics = factoriesCache.Diagnostics;
+                var constraintFactoryDiagnostics = factoriesCacheWithConstraint.Diagnostics;
+                var injectorDiagnostics = injectorsCache.Diagnostics;
+
+                return new DiagnosticsInfo(
+                    factoryDiagnostics.Count,
+                    factoryDiagnostics.Width,
+                    factoryDiagnostics.Depth,
+                    constraintFactoryDiagnostics.Count,
+                    constraintFactoryDiagnostics.Width,
+                    constraintFactoryDiagnostics.Depth,
+                    injectorDiagnostics.Count,
+                    injectorDiagnostics.Width,
+                    injectorDiagnostics.Depth);
+            }
+        }
+
+        public sealed class DiagnosticsInfo
+        {
+            public int FactoryCacheCount { get; }
+
+            public int FactoryCacheWidth { get; }
+
+            public int FactoryCacheDepth { get; }
+
+            public int ConstraintFactoryCacheCount { get; }
+
+            public int ConstraintFactoryCacheWidth { get; }
+
+            public int ConstraintFactoryCacheDepth { get; }
+
+            public int InjectorCacheCount { get; }
+
+            public int InjectorCacheWidth { get; }
+
+            public int InjectorCacheDepth { get; }
+
+            public DiagnosticsInfo(
+                int factoryCacheCount,
+                int factoryCacheWidth,
+                int factoryCacheDepth,
+                int constraintFactoryCacheCount,
+                int constraintFactoryCacheWidth,
+                int constraintFactoryCacheDepth,
+                int injectorCacheCount,
+                int injectorCacheWidth,
+                int injectorCacheDepth)
+            {
+                FactoryCacheCount = factoryCacheCount;
+                FactoryCacheWidth = factoryCacheWidth;
+                FactoryCacheDepth = factoryCacheDepth;
+                ConstraintFactoryCacheCount = constraintFactoryCacheCount;
+                ConstraintFactoryCacheWidth = constraintFactoryCacheWidth;
+                ConstraintFactoryCacheDepth = constraintFactoryCacheDepth;
+                InjectorCacheCount = injectorCacheCount;
+                InjectorCacheWidth = injectorCacheWidth;
+                InjectorCacheDepth = injectorCacheDepth;
+            }
+        }
     }
 }
