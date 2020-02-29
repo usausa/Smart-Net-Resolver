@@ -10,11 +10,11 @@ namespace Smart.Resolver
     [DebuggerDisplay("{" + nameof(Diagnostics) + "}")]
     internal class TypeConstraintHashArray<T>
     {
+        private static readonly Node EmptyNode = new Node(typeof(EmptyKey), null, default);
+
         private const int InitialSize = 64;
 
         private const int Factor = 3;
-
-        private static readonly Node EmptyNode = new Node(typeof(EmptyKey), null, default);
 
         private readonly object sync = new object();
 
@@ -199,11 +199,24 @@ namespace Smart.Resolver
             }
         }
 
+        public void Clear()
+        {
+            lock (sync)
+            {
+                var newNodes = CreateInitialTable();
+
+                Interlocked.MemoryBarrier();
+
+                nodes = newNodes;
+                depth = 0;
+                count = 0;
+            }
+        }
+
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods", Justification = "Performance")]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool TryGetValue(Type type, IConstraint constraint, out T value)
         {
-            // ReSharper disable once InconsistentlySynchronizedField
             var temp = nodes;
             var node = temp[CalculateHash(type, constraint) & (temp.Length - 1)];
             do
