@@ -203,7 +203,9 @@ namespace Smart.Resolver
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool TryGetValue(Type type, IConstraint constraint, out T value)
         {
-            var node = nodes[CalculateHash(type, constraint) & (nodes.Length - 1)];
+            // ReSharper disable once InconsistentlySynchronizedField
+            var temp = nodes;
+            var node = temp[CalculateHash(type, constraint) & (temp.Length - 1)];
             do
             {
                 if ((node.Type == type) && node.Constraint.Equals(constraint))
