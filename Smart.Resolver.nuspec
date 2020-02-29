@@ -15,7 +15,7 @@
     <dependencies>
       <dependency id="System.Reflection.Emit" version="4.7.0" />
       <dependency id="System.Reflection.Emit.Lightweight" version="4.7.0" />
-      <dependency id="Usa.Smart.Core" version="1.8.1" />
+      <dependency id="Usa.Smart.Core" version="1.8.2" />
     </dependencies>
     <tags>smart ioc di dependencyinjection</tags>
   </metadata>
