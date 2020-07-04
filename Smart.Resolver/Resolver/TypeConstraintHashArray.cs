@@ -10,11 +10,11 @@ namespace Smart.Resolver
     [DebuggerDisplay("{" + nameof(Diagnostics) + "}")]
     internal class TypeConstraintHashArray<T>
     {
-        private static readonly Node EmptyNode = new Node(typeof(EmptyKey), null, default);
-
         private const int InitialSize = 64;
 
         private const int Factor = 3;
+
+        private static readonly Node EmptyNode = new Node(typeof(EmptyKey), null, default);
 
         private readonly object sync = new object();
 
