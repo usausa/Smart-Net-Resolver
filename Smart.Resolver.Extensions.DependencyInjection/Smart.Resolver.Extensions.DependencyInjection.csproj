@@ -1,9 +1,17 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netstandard2.1</TargetFramework>
     <CodeAnalysisRuleSet>..\Smart.Resolver.ruleset</CodeAnalysisRuleSet>
     <RootNamespace>Smart</RootNamespace>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <PackageId>Usa.Smart.Resolver.Extensions.DependencyInjection</PackageId>
+    <Title>Smart.Resolver.Extensions.DependencyInjection .NET</Title>
+    <Description>Smart container library depenency injection extensions for .NET</Description>
+    <Summary>Smart container library depenency injection extensions for .NET</Summary>
+    <PackageTags>smart ioc di dependencyinjection aspnet aspnetcore</PackageTags>
   </PropertyGroup>
 
   <ItemGroup>

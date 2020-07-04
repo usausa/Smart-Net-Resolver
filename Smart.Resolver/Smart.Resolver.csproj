@@ -6,6 +6,14 @@
     <RootNamespace>Smart</RootNamespace>
   </PropertyGroup>
 
+  <PropertyGroup>
+    <PackageId>Usa.Smart.Resolver</PackageId>
+    <Title>Smart.Resolver .NET</Title>
+    <Description>Smart container library for .NET</Description>
+    <Summary>Smart container library for .NET</Summary>
+    <PackageTags>smart ioc di dependencyinjection</PackageTags>
+  </PropertyGroup>
+
   <ItemGroup>
     <PackageReference Include="System.Reflection.Emit" Version="4.7.0" />
     <PackageReference Include="System.Reflection.Emit.Lightweight" Version="4.7.0" />
