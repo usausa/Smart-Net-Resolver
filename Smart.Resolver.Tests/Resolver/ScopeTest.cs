@@ -5,7 +5,6 @@ namespace Smart.Resolver
     using System.Threading;
 
     using Smart.ComponentModel;
-    using Smart.Resolver.Bindings;
     using Smart.Resolver.Mocks;
     using Smart.Resolver.Scopes;
 
@@ -133,25 +132,25 @@ namespace Smart.Resolver
 
         public sealed class CustomScope : IScope
         {
-            private static readonly ThreadLocal<Dictionary<IBinding, object>> Cache =
-                new ThreadLocal<Dictionary<IBinding, object>>(() => new Dictionary<IBinding, object>());
+            private static readonly ThreadLocal<Dictionary<CustomScope, object>> Cache =
+                new ThreadLocal<Dictionary<CustomScope, object>>(() => new Dictionary<CustomScope, object>());
 
             public IScope Copy(IComponentContainer components)
             {
                 return this;
             }
 
-            public Func<IResolver, object> Create(IBinding binding, Func<object> factory)
+            public Func<IResolver, object> Create(Func<object> factory)
             {
                 return resolver =>
                 {
-                    if (Cache.Value.TryGetValue(binding, out var value))
+                    if (Cache.Value.TryGetValue(this, out var value))
                     {
                         return value;
                     }
 
                     value = factory();
-                    Cache.Value[binding] = value;
+                    Cache.Value[this] = value;
 
                     return value;
                 };

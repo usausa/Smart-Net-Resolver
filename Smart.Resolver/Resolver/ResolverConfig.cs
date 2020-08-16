@@ -20,6 +20,7 @@ namespace Smart.Resolver
         public ResolverConfig()
         {
             Components.Add<DisposableStorage>();
+            Components.Add<ContainerIndexManager>();
             Components.Add<IDelegateFactory>(DelegateFactory.Default);
             if (DelegateFactory.Default.IsCodegenRequired)
             {

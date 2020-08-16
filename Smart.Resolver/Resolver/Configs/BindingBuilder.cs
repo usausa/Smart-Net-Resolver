@@ -91,7 +91,7 @@ namespace Smart.Resolver.Configs
 
         public IBindingNamedWithSyntax InContainerScope()
         {
-            InScope(c => new ContainerScope());
+            InScope(c => new ContainerScope(c));
             return this;
         }
 

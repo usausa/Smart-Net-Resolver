@@ -3,7 +3,6 @@ namespace Smart.Resolver.Scopes
     using System;
 
     using Smart.ComponentModel;
-    using Smart.Resolver.Bindings;
     using Smart.Resolver.Components;
 
     public sealed class SingletonScope : IScope, IDisposable
@@ -13,9 +12,9 @@ namespace Smart.Resolver.Scopes
         private Func<IResolver, object> objectFactory;
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods", Justification = "Ignore")]
-        public SingletonScope(IComponentContainer container)
+        public SingletonScope(IComponentContainer components)
         {
-            container.Get<DisposableStorage>().Add(this);
+            components.Get<DisposableStorage>().Add(this);
         }
 
         public void Dispose()
@@ -29,7 +28,7 @@ namespace Smart.Resolver.Scopes
         }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods", Justification = "Ignore")]
-        public Func<IResolver, object> Create(IBinding binding, Func<object> factory)
+        public Func<IResolver, object> Create(Func<object> factory)
         {
             if (objectFactory is null)
             {

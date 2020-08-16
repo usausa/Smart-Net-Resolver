@@ -9,6 +9,7 @@ namespace Smart.Resolver
     using Smart.Collections.Concurrent;
     using Smart.ComponentModel;
     using Smart.Resolver.Bindings;
+    using Smart.Resolver.Components;
     using Smart.Resolver.Constraints;
     using Smart.Resolver.Handlers;
     using Smart.Resolver.Injectors;
@@ -238,7 +239,7 @@ namespace Smart.Resolver
                     .Select(b =>
                     {
                         var factory = b.Provider.CreateFactory(this, b);
-                        return b.Scope is null ? factory : b.Scope.Create(b, () => factory(resolver));
+                        return b.Scope is null ? factory : b.Scope.Create(() => factory(resolver));
                     })
                     .ToArray();
 
@@ -297,39 +298,34 @@ namespace Smart.Resolver
 
         private sealed class ChildResolver : IResolver, IContainer
         {
+            [ThreadStatic]
+            private static ContainerSlot pool;
+
             private readonly SmartResolver resolver;
 
-            private readonly Dictionary<IBinding, object> cache = new Dictionary<IBinding, object>();
+            public ContainerSlot Slot { get; }
 
             public ChildResolver(SmartResolver resolver)
             {
                 this.resolver = resolver;
+
+                if (pool is null)
+                {
+                    Slot = new ContainerSlot();
+                }
+                else
+                {
+                    Slot = pool;
+                    pool = null;
+                }
             }
 
             public void Dispose()
             {
-                lock (cache)
+                Slot.Clear();
+                if (pool is null)
                 {
-                    foreach (var obj in cache.Values)
-                    {
-                        (obj as IDisposable)?.Dispose();
-                    }
-
-                    cache.Clear();
-                }
-            }
-
-            public object Create(IBinding binding, Func<object> factory)
-            {
-                lock (cache)
-                {
-                    if (!cache.TryGetValue(binding, out var value))
-                    {
-                        value = factory();
-                        cache[binding] = value;
-                    }
-
-                    return value;
+                    pool = Slot;
                 }
             }
 
