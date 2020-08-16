@@ -26,17 +26,17 @@ namespace Smart.Resolver.Handlers
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods", Justification = "Ignore")]
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Reliability", "CA2000:DisposeObjectsBeforeLosingScope", Justification = "Factory")]
-        public IEnumerable<IBinding> Handle(IComponentContainer components, BindingTable table, Type type)
+        public IEnumerable<Binding> Handle(IComponentContainer components, BindingTable table, Type type)
         {
             var elementType = TypeHelper.GetEnumerableElementType(type);
             if (elementType is null)
             {
-                return Enumerable.Empty<IBinding>();
+                return Enumerable.Empty<Binding>();
             }
 
             if (ignoreElementTypes.Contains(elementType))
             {
-                return Enumerable.Empty<IBinding>();
+                return Enumerable.Empty<Binding>();
             }
 
             var bindings = table.FindBindings(elementType);

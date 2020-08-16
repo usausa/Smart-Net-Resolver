@@ -1,4 +1,4 @@
-﻿namespace Smart.Resolver.Configs
+namespace Smart.Resolver.Configs
 {
     using Smart.ComponentModel;
 
@@ -6,6 +6,6 @@
 
     public interface IBindingFactory
     {
-        IBinding CreateBinding(IComponentContainer components);
+        Binding CreateBinding(IComponentContainer components);
     }
 }

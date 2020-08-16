@@ -170,12 +170,12 @@ namespace Smart.Resolver.Configs
         // Factory
         // ------------------------------------------------------------
 
-        IBinding IBindingFactory.CreateBinding(IComponentContainer components)
+        Binding IBindingFactory.CreateBinding(IComponentContainer components)
         {
             return CreateBinding(components);
         }
 
-        protected virtual IBinding CreateBinding(IComponentContainer components)
+        protected virtual Binding CreateBinding(IComponentContainer components)
         {
             return new Binding(
                 targetType,

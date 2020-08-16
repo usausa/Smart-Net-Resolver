@@ -19,7 +19,7 @@ namespace Smart.Resolver.Injectors
             this.delegateFactory = delegateFactory;
         }
 
-        public Action<IResolver, object> CreateInjector(Type type, IBinding binding)
+        public Action<IResolver, object> CreateInjector(Type type, Binding binding)
         {
             var entries = type.GetRuntimeProperties()
                 .Where(p => p.IsInjectDefined())
@@ -34,7 +34,7 @@ namespace Smart.Resolver.Injectors
             return injector.Inject;
         }
 
-        private InjectEntry CreateInjectEntry(PropertyInfo pi, IBinding binding)
+        private InjectEntry CreateInjectEntry(PropertyInfo pi, Binding binding)
         {
             var setter = delegateFactory.CreateSetter(pi, true);
 

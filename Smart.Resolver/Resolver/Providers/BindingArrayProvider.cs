@@ -13,11 +13,11 @@ namespace Smart.Resolver.Providers
 
         private readonly IFactoryBuilder builder;
 
-        private readonly IBinding[] bindings;
+        private readonly Binding[] bindings;
 
         public Type TargetType { get; }
 
-        public BindingArrayProvider(Type type, Type elementType, IComponentContainer components, IBinding[] bindings)
+        public BindingArrayProvider(Type type, Type elementType, IComponentContainer components, Binding[] bindings)
         {
             if (type is null)
             {
@@ -45,7 +45,7 @@ namespace Smart.Resolver.Providers
             this.bindings = bindings;
         }
 
-        public Func<IResolver, object> CreateFactory(IKernel kernel, IBinding binding)
+        public Func<IResolver, object> CreateFactory(IKernel kernel, Binding binding)
         {
             var factories = bindings
                 .Select(b => b.Provider.CreateFactory(kernel, b))

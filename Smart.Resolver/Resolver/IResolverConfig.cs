@@ -9,6 +9,6 @@ namespace Smart.Resolver
     {
         IComponentContainer CreateComponentContainer();
 
-        IEnumerable<IBinding> CreateBindings(IComponentContainer components);
+        IEnumerable<Binding> CreateBindings(IComponentContainer components);
     }
 }

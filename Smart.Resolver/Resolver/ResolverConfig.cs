@@ -46,12 +46,12 @@ namespace Smart.Resolver
             return Components.ToContainer();
         }
 
-        IEnumerable<IBinding> IResolverConfig.CreateBindings(IComponentContainer components)
+        IEnumerable<Binding> IResolverConfig.CreateBindings(IComponentContainer components)
         {
             return CreateBindings(components);
         }
 
-        protected virtual IEnumerable<IBinding> CreateBindings(IComponentContainer components)
+        protected virtual IEnumerable<Binding> CreateBindings(IComponentContainer components)
         {
             return bindingFactories.Select(f => f.CreateBinding(components));
         }

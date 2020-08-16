@@ -23,12 +23,12 @@ namespace Smart.Resolver.Handlers
         }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods", Justification = "Ignore")]
-        public IEnumerable<IBinding> Handle(IComponentContainer components, BindingTable table, Type type)
+        public IEnumerable<Binding> Handle(IComponentContainer components, BindingTable table, Type type)
         {
             if (type.IsInterface || type.IsAbstract || type.IsValueType || type.ContainsGenericParameters ||
                 ignoreTypes.Contains(type))
             {
-                return Enumerable.Empty<IBinding>();
+                return Enumerable.Empty<Binding>();
             }
 
             return new[]

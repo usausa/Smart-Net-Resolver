@@ -6,7 +6,7 @@ namespace Smart.Resolver.Bindings
     using Smart.Resolver.Providers;
     using Smart.Resolver.Scopes;
 
-    public sealed class Binding : IBinding
+    public sealed class Binding
     {
         private static readonly IBindingMetadata EmptyBindingMetadata = new BindingMetadata();
 

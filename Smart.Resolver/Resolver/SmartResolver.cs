@@ -64,15 +64,15 @@ namespace Smart.Resolver
             injectors = Components.GetAll<IInjector>().ToArray();
             handlers = Components.GetAll<IMissingHandler>().ToArray();
 
-            var tableEntries = new Dictionary<Type, IBinding[]>();
+            var tableEntries = new Dictionary<Type, Binding[]>();
 
             foreach (var group in config.CreateBindings(Components).GroupBy(b => b.Type))
             {
                 tableEntries.Add(group.Key, group.ToArray());
             }
 
-            tableEntries.Add(typeof(IResolver), new IBinding[] { new Binding(typeof(IResolver), new ConstantProvider(this), null, null, null, null) });
-            tableEntries.Add(typeof(SmartResolver), new IBinding[] { new Binding(typeof(SmartResolver), new ConstantProvider(this), null, null, null, null) });
+            tableEntries.Add(typeof(IResolver), new Binding[] { new Binding(typeof(IResolver), new ConstantProvider(this), null, null, null, null) });
+            tableEntries.Add(typeof(SmartResolver), new Binding[] { new Binding(typeof(SmartResolver), new ConstantProvider(this), null, null, null, null) });
 
             table = new BindingTable(tableEntries);
         }

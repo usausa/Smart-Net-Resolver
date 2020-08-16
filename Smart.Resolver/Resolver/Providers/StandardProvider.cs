@@ -44,7 +44,7 @@ namespace Smart.Resolver.Providers
         }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods", Justification = "Ignore")]
-        public Func<IResolver, object> CreateFactory(IKernel kernel, IBinding binding)
+        public Func<IResolver, object> CreateFactory(IKernel kernel, Binding binding)
         {
             var constructors = CreateConstructorMetadata();
             if (constructors.Length == 0)
@@ -123,7 +123,7 @@ namespace Smart.Resolver.Providers
                 .ToArray();
         }
 
-        private Action<IResolver, object>[] CreateActions(IBinding binding)
+        private Action<IResolver, object>[] CreateActions(Binding binding)
         {
             var targetInjectors = injectors
                 .Select(x => x.CreateInjector(TargetType, binding))

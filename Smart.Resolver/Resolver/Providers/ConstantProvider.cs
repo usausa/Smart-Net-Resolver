@@ -15,7 +15,7 @@ namespace Smart.Resolver.Providers
             this.value = value;
         }
 
-        public Func<IResolver, object> CreateFactory(IKernel kernel, IBinding binding)
+        public Func<IResolver, object> CreateFactory(IKernel kernel, Binding binding)
         {
             return r => value;
         }

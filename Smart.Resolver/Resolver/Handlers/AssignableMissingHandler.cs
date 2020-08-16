@@ -22,11 +22,11 @@ namespace Smart.Resolver.Handlers
         }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods", Justification = "Ignore")]
-        public IEnumerable<IBinding> Handle(IComponentContainer components, BindingTable table, Type type)
+        public IEnumerable<Binding> Handle(IComponentContainer components, BindingTable table, Type type)
         {
             if ((targetTypes.Count > 0) && !targetTypes.Contains(type))
             {
-                return Enumerable.Empty<IBinding>();
+                return Enumerable.Empty<Binding>();
             }
 
             return table.EnumBindings().Where(x => type.IsAssignableFrom(x.Provider.TargetType));
