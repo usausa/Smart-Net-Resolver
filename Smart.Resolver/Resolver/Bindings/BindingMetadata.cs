@@ -4,7 +4,7 @@ namespace Smart.Resolver.Bindings
 
     using Smart.Collections.Generic;
 
-    public sealed class BindingMetadata : IBindingMetadata
+    public sealed class BindingMetadata
     {
         private readonly IDictionary<string, object> values;
 

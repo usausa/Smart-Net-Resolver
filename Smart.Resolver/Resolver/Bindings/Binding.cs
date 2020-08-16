@@ -8,7 +8,7 @@ namespace Smart.Resolver.Bindings
 
     public sealed class Binding
     {
-        private static readonly IBindingMetadata EmptyBindingMetadata = new BindingMetadata();
+        private static readonly BindingMetadata EmptyBindingMetadata = new BindingMetadata();
 
         private static readonly ParameterMap EmptyPropertyMap = new ParameterMap(null);
 
@@ -18,7 +18,7 @@ namespace Smart.Resolver.Bindings
 
         public IScope Scope { get; }
 
-        public IBindingMetadata Metadata { get; }
+        public BindingMetadata Metadata { get; }
 
         public ParameterMap ConstructorArguments { get; }
 
@@ -34,7 +34,7 @@ namespace Smart.Resolver.Bindings
         {
         }
 
-        public Binding(Type type, IProvider provider, IScope scope, IBindingMetadata metadata, ParameterMap constructorArguments, ParameterMap propertyValues)
+        public Binding(Type type, IProvider provider, IScope scope, BindingMetadata metadata, ParameterMap constructorArguments, ParameterMap propertyValues)
         {
             Type = type;
             Provider = provider;

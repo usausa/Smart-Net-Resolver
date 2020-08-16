@@ -13,7 +13,7 @@ namespace Smart.Resolver.Constraints
             this.constraints = constraints;
         }
 
-        public bool Match(IBindingMetadata metadata)
+        public bool Match(BindingMetadata metadata)
         {
             return constraints.All(c => c.Match(metadata));
         }

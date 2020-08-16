@@ -14,7 +14,7 @@ namespace Smart.Resolver.Constraints
         }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods", Justification = "Ignore")]
-        public bool Match(IBindingMetadata metadata)
+        public bool Match(BindingMetadata metadata)
         {
             return name == metadata.Name;
         }

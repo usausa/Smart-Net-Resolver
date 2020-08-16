@@ -76,7 +76,7 @@ namespace Smart.Resolver
                 Key = key;
             }
 
-            public bool Match(IBindingMetadata metadata)
+            public bool Match(BindingMetadata metadata)
             {
                 return metadata.Has(Key);
             }

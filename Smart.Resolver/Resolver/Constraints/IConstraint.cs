@@ -4,6 +4,6 @@ namespace Smart.Resolver.Constraints
 
     public interface IConstraint
     {
-        bool Match(IBindingMetadata metadata);
+        bool Match(BindingMetadata metadata);
     }
 }
