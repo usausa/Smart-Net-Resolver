@@ -42,7 +42,7 @@ namespace Smart.Resolver
 
         private readonly object sync = new object();
 
-        private readonly BindingTable table = new BindingTable();
+        private readonly BindingTable table;
 
         private readonly IInjector[] injectors;
 
@@ -64,13 +64,17 @@ namespace Smart.Resolver
             injectors = Components.GetAll<IInjector>().ToArray();
             handlers = Components.GetAll<IMissingHandler>().ToArray();
 
+            var tableEntries = new Dictionary<Type, IBinding[]>();
+
             foreach (var group in config.CreateBindings(Components).GroupBy(b => b.Type))
             {
-                table.Add(group.Key, group.ToArray());
+                tableEntries.Add(group.Key, group.ToArray());
             }
 
-            table.Add(typeof(IResolver), new IBinding[] { new Binding(typeof(IResolver), new ConstantProvider(this), null, null, null, null) });
-            table.Add(typeof(SmartResolver), new IBinding[] { new Binding(typeof(SmartResolver), new ConstantProvider(this), null, null, null, null) });
+            tableEntries.Add(typeof(IResolver), new IBinding[] { new Binding(typeof(IResolver), new ConstantProvider(this), null, null, null, null) });
+            tableEntries.Add(typeof(SmartResolver), new IBinding[] { new Binding(typeof(SmartResolver), new ConstantProvider(this), null, null, null, null) });
+
+            table = new BindingTable(tableEntries);
         }
 
         public void Dispose()

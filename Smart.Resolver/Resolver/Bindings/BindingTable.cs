@@ -1,18 +1,18 @@
-﻿namespace Smart.Resolver.Bindings
+namespace Smart.Resolver.Bindings
 {
     using System;
     using System.Collections.Generic;
     using System.Linq;
 
-    public sealed class BindingTable : IBindingTable
+    public sealed class BindingTable
     {
         private static readonly IBinding[] EmptyBindings = Array.Empty<IBinding>();
 
-        private readonly Dictionary<Type, IBinding[]> table = new Dictionary<Type, IBinding[]>();
+        private readonly Dictionary<Type, IBinding[]> table;
 
-        public void Add(Type type, IBinding[] bindings)
+        public BindingTable(Dictionary<Type, IBinding[]> table)
         {
-            table.Add(type, bindings);
+            this.table = table;
         }
 
         public IBinding[] Get(Type type)

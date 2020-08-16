@@ -11,7 +11,7 @@ namespace Smart.Resolver.Handlers
     public sealed class DependencyServiceMissingHandler : IMissingHandler
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods", Justification = "Ignore")]
-        public IEnumerable<IBinding> Handle(IComponentContainer components, IBindingTable table, Type type)
+        public IEnumerable<IBinding> Handle(IComponentContainer components, BindingTable table, Type type)
         {
             if (!type.IsInterface)
             {

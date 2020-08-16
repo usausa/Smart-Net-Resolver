@@ -8,6 +8,6 @@ namespace Smart.Resolver.Handlers
 
     public interface IMissingHandler
     {
-        IEnumerable<IBinding> Handle(IComponentContainer components, IBindingTable table, Type type);
+        IEnumerable<IBinding> Handle(IComponentContainer components, BindingTable table, Type type);
     }
 }
