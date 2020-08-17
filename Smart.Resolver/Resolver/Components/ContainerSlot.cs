@@ -37,7 +37,7 @@ namespace Smart.Resolver.Components
 
         private void Grow(int index)
         {
-            var newEntries = new object[((index >> 5) << 5) + 8];
+            var newEntries = new object[((index >> 3) << 3) + 8];
             Array.Copy(entries, 0, newEntries, 0, entries.Length);
             entries = newEntries;
         }
