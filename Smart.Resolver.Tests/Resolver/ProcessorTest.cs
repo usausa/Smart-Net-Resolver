@@ -92,7 +92,7 @@ namespace Smart.Resolver
         {
             private static readonly Type CustomInitializableType = typeof(ICustomInitializable);
 
-            public int Order { get; } = 0;
+            public int Order { get; } = 1;
 
             public Action<IResolver, object> CreateProcessor(Type type)
             {
