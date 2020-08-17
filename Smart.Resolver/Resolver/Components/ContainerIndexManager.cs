@@ -1,14 +1,14 @@
 namespace Smart.Resolver.Components
 {
-    internal sealed class ContainerIndexManager
+    internal static class ContainerIndexManager
     {
-        private readonly object sync = new object();
+        private static readonly object Sync = new object();
 
-        private int index;
+        private static int index;
 
-        public int Acquire()
+        public static int Acquire()
         {
-            lock (sync)
+            lock (Sync)
             {
                 return index++;
             }

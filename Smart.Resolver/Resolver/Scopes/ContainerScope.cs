@@ -9,14 +9,15 @@ namespace Smart.Resolver.Scopes
     {
         private readonly int index;
 
-        public ContainerScope(IComponentContainer components)
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods", Justification = "Ignore")]
+        public ContainerScope()
         {
-            index = components.Get<ContainerIndexManager>().Acquire();
+            index = ContainerIndexManager.Acquire();
         }
 
         public IScope Copy(IComponentContainer components)
         {
-            return this;
+            return new ContainerScope();
         }
 
         public Func<IResolver, object> Create(Func<object> factory)
