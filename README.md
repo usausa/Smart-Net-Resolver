@@ -1,5 +1,7 @@
 # Smart.Resolver .NET - resolver library for .NET
 
+[![NuGet Badge](https://buildstats.info/nuget/Usa.Smart.Resolver)](https://www.nuget.org/packages/Usa.Smart.Resolver/)
+
 ## What is this?
 
 Smart.Resolver .NET is simplified resolver library, degradation version of Ninject.
@@ -48,11 +50,11 @@ var controller = resolver.Get<Controller>();
 
 ## NuGet
 
-| Id                                                | Note                                                 |
-|---------------------------------------------------|------------------------------------------------------|
-| Usa.Smart.Resolver                                | Core libyrary                                        |
-| Usa.Smart.Resolver.Extensions.DependencyInjection | Microsoft.Extensions.DependencyInjection integration |
-| Usa.Smart.Resolver.Xamarin                        | Xamarin DependencyService integration                |
+| Package | Note  |
+|-|-|
+| [![NuGet Badge](https://buildstats.info/nuget/Usa.Smart.Resolver)](https://www.nuget.org/packages/Usa.Smart.Resolver/) | Core libyrary  |
+| [![NuGet Badge](https://buildstats.info/nuget/Usa.Smart.Resolver.Extensions.DependencyInjection)](https://www.nuget.org/packages/Usa.Smart.Resolver.Extensions.DependencyInjection/) | Microsoft.Extensions.DependencyInjection integration |
+| [![NuGet Badge](https://buildstats.info/nuget/Usa.Smart.Resolver.Xamarin)](https://www.nuget.org/packages/Usa.Smart.Resolver.Xamarin/) | Xamarin DependencyService integration |
 
 ## Bindings
 
