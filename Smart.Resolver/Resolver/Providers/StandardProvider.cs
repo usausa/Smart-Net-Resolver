@@ -62,6 +62,13 @@ namespace Smart.Resolver.Providers
                 {
                     var pi = parameter.Parameter;
 
+                    // Ignore self
+                    if (pi.ParameterType == TargetType)
+                    {
+                        match = false;
+                        break;
+                    }
+
                     // Constructor argument
                     var argument = binding.ConstructorArguments.GetParameter(pi.Name);
                     if (argument != null)
