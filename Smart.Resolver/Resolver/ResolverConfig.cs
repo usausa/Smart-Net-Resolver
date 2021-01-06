@@ -13,9 +13,9 @@ namespace Smart.Resolver
 
     public class ResolverConfig : IResolverConfig, IBindingRoot
     {
-        public ComponentConfig Components { get; } = new ComponentConfig();
+        public ComponentConfig Components { get; } = new();
 
-        private readonly List<IBindingFactory> bindingFactories = new List<IBindingFactory>();
+        private readonly List<IBindingFactory> bindingFactories = new();
 
         public ResolverConfig()
         {
@@ -35,22 +35,22 @@ namespace Smart.Resolver
         // IResolverConfig
         // ------------------------------------------------------------
 
-        IComponentContainer IResolverConfig.CreateComponentContainer()
+        ComponentContainer IResolverConfig.CreateComponentContainer()
         {
             return CreateComponentContainer();
         }
 
-        protected virtual IComponentContainer CreateComponentContainer()
+        protected virtual ComponentContainer CreateComponentContainer()
         {
             return Components.ToContainer();
         }
 
-        IEnumerable<Binding> IResolverConfig.CreateBindings(IComponentContainer components)
+        IEnumerable<Binding> IResolverConfig.CreateBindings(ComponentContainer components)
         {
             return CreateBindings(components);
         }
 
-        protected virtual IEnumerable<Binding> CreateBindings(IComponentContainer components)
+        protected virtual IEnumerable<Binding> CreateBindings(ComponentContainer components)
         {
             return bindingFactories.Select(f => f.CreateBinding(components));
         }

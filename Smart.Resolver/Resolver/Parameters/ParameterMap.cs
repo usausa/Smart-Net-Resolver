@@ -13,7 +13,7 @@ namespace Smart.Resolver.Parameters
 
         public IParameter GetParameter(string name)
         {
-            return parameters != null && parameters.TryGetValue(name, out var parameter) ? parameter : null;
+            return parameters is not null && parameters.TryGetValue(name, out var parameter) ? parameter : null;
         }
     }
 }

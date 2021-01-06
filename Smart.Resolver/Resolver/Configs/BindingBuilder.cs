@@ -14,17 +14,17 @@ namespace Smart.Resolver.Configs
     {
         private readonly Type targetType;
 
-        private Func<IComponentContainer, IProvider> providerFactory;
+        private Func<ComponentContainer, IProvider> providerFactory;
 
-        private Func<IComponentContainer, IScope> scopeFactory;
+        private Func<ComponentContainer, IScope> scopeFactory;
 
         private string metadataName;
 
         private Dictionary<string, object> metadataValues;
 
-        private Dictionary<string, Func<IComponentContainer, IParameter>> constructorArgumentFactories;
+        private Dictionary<string, Func<ComponentContainer, IParameter>> constructorArgumentFactories;
 
-        private Dictionary<string, Func<IComponentContainer, IParameter>> propertyValueFactories;
+        private Dictionary<string, Func<ComponentContainer, IParameter>> propertyValueFactories;
 
         public BindingBuilder(Type type)
         {
@@ -35,7 +35,7 @@ namespace Smart.Resolver.Configs
         // To
         // ------------------------------------------------------------
 
-        public IBindingInNamedWithSyntax ToProvider(Func<IComponentContainer, IProvider> factory)
+        public IBindingInNamedWithSyntax ToProvider(Func<ComponentContainer, IProvider> factory)
         {
             providerFactory = factory;
             return this;
@@ -71,7 +71,7 @@ namespace Smart.Resolver.Configs
         // In
         // ------------------------------------------------------------
 
-        public IBindingNamedWithSyntax InScope(Func<IComponentContainer, IScope> factory)
+        public IBindingNamedWithSyntax InScope(Func<ComponentContainer, IScope> factory)
         {
             scopeFactory = factory;
             return this;
@@ -120,11 +120,11 @@ namespace Smart.Resolver.Configs
             return this;
         }
 
-        public IBindingWithSyntax WithConstructorArgument(string name, Func<IComponentContainer, IParameter> factory)
+        public IBindingWithSyntax WithConstructorArgument(string name, Func<ComponentContainer, IParameter> factory)
         {
             if (constructorArgumentFactories is null)
             {
-                constructorArgumentFactories = new Dictionary<string, Func<IComponentContainer, IParameter>>();
+                constructorArgumentFactories = new Dictionary<string, Func<ComponentContainer, IParameter>>();
             }
 
             constructorArgumentFactories[name] = factory;
@@ -143,11 +143,11 @@ namespace Smart.Resolver.Configs
             return this;
         }
 
-        public IBindingWithSyntax WithPropertyValue(string name, Func<IComponentContainer, IParameter> factory)
+        public IBindingWithSyntax WithPropertyValue(string name, Func<ComponentContainer, IParameter> factory)
         {
             if (propertyValueFactories is null)
             {
-                propertyValueFactories = new Dictionary<string, Func<IComponentContainer, IParameter>>();
+                propertyValueFactories = new Dictionary<string, Func<ComponentContainer, IParameter>>();
             }
 
             propertyValueFactories[name] = factory;
@@ -170,14 +170,14 @@ namespace Smart.Resolver.Configs
         // Factory
         // ------------------------------------------------------------
 
-        Binding IBindingFactory.CreateBinding(IComponentContainer components)
+        Binding IBindingFactory.CreateBinding(ComponentContainer components)
         {
             return CreateBinding(components);
         }
 
-        protected virtual Binding CreateBinding(IComponentContainer components)
+        protected virtual Binding CreateBinding(ComponentContainer components)
         {
-            return new Binding(
+            return new(
                 targetType,
                 providerFactory?.Invoke(components),
                 scopeFactory?.Invoke(components),

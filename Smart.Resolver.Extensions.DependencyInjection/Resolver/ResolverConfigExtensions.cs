@@ -23,21 +23,21 @@ namespace Smart.Resolver
 
             foreach (var descriptor in descriptors)
             {
-                if (descriptor.ImplementationType != null)
+                if (descriptor.ImplementationType is not null)
                 {
                     config
                         .Bind(descriptor.ServiceType)
                         .To(descriptor.ImplementationType)
                         .ConfigureScope(descriptor.Lifetime);
                 }
-                else if (descriptor.ImplementationFactory != null)
+                else if (descriptor.ImplementationFactory is not null)
                 {
                     config
                         .Bind(descriptor.ServiceType)
                         .ToMethod(kernel => descriptor.ImplementationFactory(kernel.Get<IServiceProvider>()))
                         .ConfigureScope(descriptor.Lifetime);
                 }
-                else if (descriptor.ImplementationInstance != null)
+                else if (descriptor.ImplementationInstance is not null)
                 {
                     config
                         .Bind(descriptor.ServiceType)

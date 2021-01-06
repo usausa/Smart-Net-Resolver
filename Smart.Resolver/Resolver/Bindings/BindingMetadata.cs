@@ -23,7 +23,7 @@ namespace Smart.Resolver.Bindings
 
         public bool Has(string key)
         {
-            return (values != null) && values.ContainsKey(key);
+            return (values is not null) && values.ContainsKey(key);
         }
 
         public T Get<T>(string key)

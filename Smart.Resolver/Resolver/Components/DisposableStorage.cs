@@ -6,7 +6,7 @@ namespace Smart.Resolver.Components
 
     public sealed class DisposableStorage : IDisposable
     {
-        private readonly List<IDisposable> disposables = new List<IDisposable>();
+        private readonly List<IDisposable> disposables = new();
 
         public void Add(IDisposable disposable)
         {

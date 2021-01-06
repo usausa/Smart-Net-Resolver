@@ -4,7 +4,7 @@ namespace Smart.Resolver.Components
 
     internal sealed class ContainerSlot
     {
-        private readonly object sync = new object();
+        private readonly object sync = new();
 
         private object[] entries = new object[8];
 

@@ -7,8 +7,8 @@ namespace Smart.Resolver
 
     public interface IResolverConfig
     {
-        IComponentContainer CreateComponentContainer();
+        ComponentContainer CreateComponentContainer();
 
-        IEnumerable<Binding> CreateBindings(IComponentContainer components);
+        IEnumerable<Binding> CreateBindings(ComponentContainer components);
     }
 }

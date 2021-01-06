@@ -11,7 +11,7 @@ namespace Smart.Resolver.Builders
     {
         private static readonly Action<IResolver, object>[] EmptyActions = Array.Empty<Action<IResolver, object>>();
 
-        private static readonly HolderBuilder DefaultHolderBuilder = new HolderBuilder();
+        private static readonly HolderBuilder DefaultHolderBuilder = new();
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods", Justification = "Ignore")]
         public Func<IResolver, object> CreateFactory(ConstructorInfo ci, Func<IResolver, object>[] factories, Action<IResolver, object>[] actions)
@@ -27,7 +27,7 @@ namespace Smart.Resolver.Builders
             for (var i = 0; i < factories.Length; i++)
             {
                 var invokeMethod = factories[i].GetType().GetMethod("Invoke");
-                if ((invokeMethod == null) ||
+                if ((invokeMethod is null) ||
                     (invokeMethod.GetParameters().Length != 1) ||
                     (invokeMethod.GetParameters()[0].ParameterType != typeof(IResolver)))
                 {
@@ -54,7 +54,7 @@ namespace Smart.Resolver.Builders
                 for (var i = 0; i < actions.Length; i++)
                 {
                     var invokeMethod = actions[i].GetType().GetMethod("Invoke");
-                    if ((invokeMethod == null) ||
+                    if ((invokeMethod is null) ||
                         (invokeMethod.GetParameters().Length != 2) ||
                         (invokeMethod.GetParameters()[0].ParameterType != typeof(IResolver)))
                     {
@@ -122,7 +122,7 @@ namespace Smart.Resolver.Builders
 
         private sealed class HolderBuilder
         {
-            private readonly Dictionary<Tuple<int, int>, Type> cache = new Dictionary<Tuple<int, int>, Type>();
+            private readonly Dictionary<Tuple<int, int>, Type> cache = new();
 
             private AssemblyBuilder assemblyBuilder;
 
@@ -132,7 +132,7 @@ namespace Smart.Resolver.Builders
             {
                 get
                 {
-                    if (moduleBuilder == null)
+                    if (moduleBuilder is null)
                     {
                         assemblyBuilder = AssemblyBuilder.DefineDynamicAssembly(
                             new AssemblyName("EmitBuilderAssembly"),

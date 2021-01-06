@@ -34,13 +34,13 @@ namespace Smart.Resolver
             }
         }
 
-        private readonly ThreadsafeTypeHashArrayMap<FactoryEntry> factoriesCache = new ThreadsafeTypeHashArrayMap<FactoryEntry>(128);
+        private readonly ThreadsafeTypeHashArrayMap<FactoryEntry> factoriesCache = new(128);
 
-        private readonly TypeConstraintHashArray<FactoryEntry> factoriesCacheWithConstraint = new TypeConstraintHashArray<FactoryEntry>();
+        private readonly TypeConstraintHashArray<FactoryEntry> factoriesCacheWithConstraint = new();
 
-        private readonly ThreadsafeTypeHashArrayMap<Action<IResolver, object>[]> injectorsCache = new ThreadsafeTypeHashArrayMap<Action<IResolver, object>[]>();
+        private readonly ThreadsafeTypeHashArrayMap<Action<IResolver, object>[]> injectorsCache = new();
 
-        private readonly object sync = new object();
+        private readonly object sync = new();
 
         private readonly BindingTable table;
 
@@ -50,7 +50,7 @@ namespace Smart.Resolver
 
         private int disposed;
 
-        public IComponentContainer Components { get; }
+        public ComponentContainer Components { get; }
 
         public SmartResolver(IResolverConfig config)
         {
@@ -234,7 +234,7 @@ namespace Smart.Resolver
             lock (sync)
             {
                 var bindings = table.Get(type) ?? handlers.SelectMany(h => h.Handle(Components, table, type));
-                if (constraint != null)
+                if (constraint is not null)
                 {
                     bindings = bindings.Where(b => constraint.Match(b.Metadata));
                 }
@@ -287,7 +287,7 @@ namespace Smart.Resolver
             var binding = new Binding(type);
             return injectors
                 .Select(x => x.CreateInjector(type, binding))
-                .Where(x => x != null)
+                .Where(x => x is not null)
                 .ToArray();
         }
 

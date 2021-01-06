@@ -133,9 +133,9 @@ namespace Smart.Resolver
         public sealed class CustomScope : IScope
         {
             private static readonly ThreadLocal<Dictionary<CustomScope, object>> Cache =
-                new ThreadLocal<Dictionary<CustomScope, object>>(() => new Dictionary<CustomScope, object>());
+                new(() => new Dictionary<CustomScope, object>());
 
-            public IScope Copy(IComponentContainer components)
+            public IScope Copy(ComponentContainer components)
             {
                 return this;
             }

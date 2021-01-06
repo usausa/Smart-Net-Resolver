@@ -14,9 +14,9 @@ namespace Smart.Resolver
 
         private const int Factor = 3;
 
-        private static readonly Node EmptyNode = new Node(typeof(EmptyKey), null, default);
+        private static readonly Node EmptyNode = new(typeof(EmptyKey), null, default);
 
-        private readonly object sync = new object();
+        private readonly object sync = new();
 
         private Node[] nodes;
 
@@ -41,7 +41,7 @@ namespace Smart.Resolver
         private static int CalculateHash(Type type, IConstraint constraint)
         {
             var hash = type.GetHashCode();
-            if (constraint != null)
+            if (constraint is not null)
             {
                 hash ^= constraint.GetHashCode();
             }
@@ -58,7 +58,7 @@ namespace Smart.Resolver
                 length++;
                 node = node.Next;
             }
-            while (node != null);
+            while (node is not null);
 
             return length;
         }
@@ -105,7 +105,7 @@ namespace Smart.Resolver
 
         private static Node FindLastNode(Node node)
         {
-            while (node.Next != null)
+            while (node.Next is not null)
             {
                 node = node.Next;
             }
@@ -145,7 +145,7 @@ namespace Smart.Resolver
 
                     node = next;
                 }
-                while (node != null);
+                while (node is not null);
             }
         }
 
@@ -228,7 +228,7 @@ namespace Smart.Resolver
                 }
                 node = node.Next;
             }
-            while (node != null);
+            while (node is not null);
 
             value = default;
             return false;

@@ -13,7 +13,7 @@ namespace Smart.Resolver
     {
         public static SmartResolver ToResolver(this IResolverConfig config)
         {
-            return new SmartResolver(config);
+            return new(config);
         }
 
         public static ResolverConfig UseDelegateFactory<T>(this ResolverConfig config)

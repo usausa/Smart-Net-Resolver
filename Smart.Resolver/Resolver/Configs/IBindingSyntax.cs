@@ -9,7 +9,7 @@ namespace Smart.Resolver.Configs
 
     public interface IBindingToSyntax<in T>
     {
-        IBindingInNamedWithSyntax ToProvider(Func<IComponentContainer, IProvider> factory);
+        IBindingInNamedWithSyntax ToProvider(Func<ComponentContainer, IProvider> factory);
 
         IBindingInNamedWithSyntax ToSelf();
 
@@ -27,7 +27,7 @@ namespace Smart.Resolver.Configs
 
     public interface IBindingInSyntax
     {
-        IBindingNamedWithSyntax InScope(Func<IComponentContainer, IScope> factory);
+        IBindingNamedWithSyntax InScope(Func<ComponentContainer, IScope> factory);
 
         IBindingNamedWithSyntax InTransientScope();
 
@@ -45,13 +45,13 @@ namespace Smart.Resolver.Configs
     {
         IBindingWithSyntax WithMetadata(string key, object value);
 
-        IBindingWithSyntax WithConstructorArgument(string name, Func<IComponentContainer, IParameter> factory);
+        IBindingWithSyntax WithConstructorArgument(string name, Func<ComponentContainer, IParameter> factory);
 
         IBindingWithSyntax WithConstructorArgument(string name, object value);
 
         IBindingWithSyntax WithConstructorArgument(string name, Func<IResolver, object> factory);
 
-        IBindingWithSyntax WithPropertyValue(string name, Func<IComponentContainer, IParameter> factory);
+        IBindingWithSyntax WithPropertyValue(string name, Func<ComponentContainer, IParameter> factory);
 
         IBindingWithSyntax WithPropertyValue(string name, object value);
 

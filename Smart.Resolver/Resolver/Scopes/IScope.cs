@@ -6,7 +6,7 @@ namespace Smart.Resolver.Scopes
 
     public interface IScope
     {
-        IScope Copy(IComponentContainer components);
+        IScope Copy(ComponentContainer components);
 
         Func<IResolver, object> Create(Func<object> factory);
     }

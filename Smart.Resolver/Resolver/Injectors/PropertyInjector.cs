@@ -39,14 +39,14 @@ namespace Smart.Resolver.Injectors
             var setter = delegateFactory.CreateSetter(pi, true);
 
             var parameter = binding.PropertyValues.GetParameter(pi.Name);
-            if (parameter != null)
+            if (parameter is not null)
             {
                 return new InjectEntry(CreateParameterProvider(parameter), setter);
             }
 
             var propertyType = delegateFactory.GetExtendedPropertyType(pi);
             var constraint = ConstraintBuilder.Build(pi.GetCustomAttributes<ConstraintAttribute>());
-            if (constraint != null)
+            if (constraint is not null)
             {
                 return new InjectEntry(CreateConstraintProvider(propertyType, constraint), setter);
             }

@@ -168,7 +168,7 @@ namespace Smart.Resolver
                 this.typeMap = typeMap;
             }
 
-            public IEnumerable<Binding> Handle(IComponentContainer components, BindingTable table, Type type)
+            public IEnumerable<Binding> Handle(ComponentContainer components, BindingTable table, Type type)
             {
                 if (!typeMap.TryGetValue(type, out Type _))
                 {

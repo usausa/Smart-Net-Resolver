@@ -12,7 +12,7 @@ namespace Smart.Resolver.Scopes
         private Func<IResolver, object> objectFactory;
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods", Justification = "Ignore")]
-        public SingletonScope(IComponentContainer components)
+        public SingletonScope(ComponentContainer components)
         {
             components.Get<DisposableStorage>().Add(this);
         }
@@ -22,7 +22,7 @@ namespace Smart.Resolver.Scopes
             (value as IDisposable)?.Dispose();
         }
 
-        public IScope Copy(IComponentContainer components)
+        public IScope Copy(ComponentContainer components)
         {
             return new SingletonScope(components);
         }

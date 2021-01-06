@@ -22,7 +22,7 @@ namespace Smart.Resolver.Handlers
         }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods", Justification = "Ignore")]
-        public IEnumerable<Binding> Handle(IComponentContainer components, BindingTable table, Type type)
+        public IEnumerable<Binding> Handle(ComponentContainer components, BindingTable table, Type type)
         {
             if ((targetTypes.Count > 0) && !targetTypes.Contains(type))
             {

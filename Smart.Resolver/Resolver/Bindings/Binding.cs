@@ -8,9 +8,9 @@ namespace Smart.Resolver.Bindings
 
     public sealed class Binding
     {
-        private static readonly BindingMetadata EmptyBindingMetadata = new BindingMetadata();
+        private static readonly BindingMetadata EmptyBindingMetadata = new();
 
-        private static readonly ParameterMap EmptyPropertyMap = new ParameterMap(null);
+        private static readonly ParameterMap EmptyPropertyMap = new(null);
 
         public Type Type { get; }
 

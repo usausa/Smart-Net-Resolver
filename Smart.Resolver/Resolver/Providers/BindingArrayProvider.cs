@@ -17,7 +17,7 @@ namespace Smart.Resolver.Providers
 
         public Type TargetType { get; }
 
-        public BindingArrayProvider(Type type, Type elementType, IComponentContainer components, Binding[] bindings)
+        public BindingArrayProvider(Type type, Type elementType, ComponentContainer components, Binding[] bindings)
         {
             if (type is null)
             {

@@ -25,7 +25,7 @@ namespace Smart.Resolver.Providers
 
         public Type TargetType { get; }
 
-        public StandardProvider(Type type, IComponentContainer components)
+        public StandardProvider(Type type, ComponentContainer components)
         {
             if (type is null)
             {
@@ -64,7 +64,7 @@ namespace Smart.Resolver.Providers
 
                     // Constructor argument
                     var argument = binding.ConstructorArguments.GetParameter(pi.Name);
-                    if (argument != null)
+                    if (argument is not null)
                     {
                         argumentFactories.Add(k => argument.Resolve(k));
                         continue;
@@ -78,7 +78,7 @@ namespace Smart.Resolver.Providers
                     }
 
                     // Multiple
-                    if ((parameter.ElementType != null) &&
+                    if ((parameter.ElementType is not null) &&
                         kernel.TryResolveFactories(parameter.ElementType, parameter.Constraint, out var factories))
                     {
                         var arrayFactory = builder.CreateArrayFactory(parameter.ElementType, factories);
@@ -127,11 +127,11 @@ namespace Smart.Resolver.Providers
         {
             var targetInjectors = injectors
                 .Select(x => x.CreateInjector(TargetType, binding))
-                .Where(x => x != null);
+                .Where(x => x is not null);
             var targetProcessors = processors
                 .OrderByDescending(x => x.Order)
                 .Select(x => x.CreateProcessor(TargetType))
-                .Where(x => x != null);
+                .Where(x => x is not null);
             return targetInjectors.Concat(targetProcessors).ToArray();
         }
 
