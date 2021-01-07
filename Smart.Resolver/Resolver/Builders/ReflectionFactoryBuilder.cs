@@ -22,7 +22,7 @@ namespace Smart.Resolver.Builders
 
         private static Func<IResolver, object> BuildActivatorFactory(Type type)
         {
-            return r => Activator.CreateInstance(type);
+            return _ => Activator.CreateInstance(type);
         }
 
         private static Func<IResolver, object> BuildActivatorWithActionsFactory(Type type, Action<IResolver, object>[] actions)

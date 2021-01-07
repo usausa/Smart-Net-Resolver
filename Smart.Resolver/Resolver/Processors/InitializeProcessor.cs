@@ -25,7 +25,7 @@ namespace Smart.Resolver.Processors
                 return null;
             }
 
-            return (r, x) => ((IInitializable)x).Initialize();
+            return (_, x) => ((IInitializable)x).Initialize();
         }
     }
 }

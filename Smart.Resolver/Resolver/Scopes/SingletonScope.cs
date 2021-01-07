@@ -33,7 +33,7 @@ namespace Smart.Resolver.Scopes
             if (objectFactory is null)
             {
                 value = factory();
-                objectFactory = k => value;
+                objectFactory = _ => value;
             }
 
             return objectFactory;

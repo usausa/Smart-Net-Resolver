@@ -16,25 +16,21 @@ namespace Smart.Resolver
             config.UseProcessor<InitializeProcessor>();
             config.Bind<InitializableObject>().ToSelf();
 
-            using (var resolver = config.ToResolver())
-            {
-                var obj = resolver.Get<InitializableObject>();
+            using var resolver = config.ToResolver();
+            var obj = resolver.Get<InitializableObject>();
 
-                Assert.Equal(1, obj.InitializedCount);
-            }
+            Assert.Equal(1, obj.InitializedCount);
         }
 
         [Fact]
         public void ObjectIsNotInitializedOnInjection()
         {
             var config = new ResolverConfig();
-            using (var resolver = config.ToResolver())
-            {
-                var obj = new InitializableObject();
-                resolver.Inject(obj);
+            using var resolver = config.ToResolver();
+            var obj = new InitializableObject();
+            resolver.Inject(obj);
 
-                Assert.Equal(0, obj.InitializedCount);
-            }
+            Assert.Equal(0, obj.InitializedCount);
         }
 
         [Fact]
@@ -44,14 +40,12 @@ namespace Smart.Resolver
             config.UseProcessor<InitializeProcessor>();
             config.Bind<InitializableObject>().ToSelf().InSingletonScope();
 
-            using (var resolver = config.ToResolver())
-            {
-                var obj1 = resolver.Get<InitializableObject>();
-                var obj2 = resolver.Get<InitializableObject>();
+            using var resolver = config.ToResolver();
+            var obj1 = resolver.Get<InitializableObject>();
+            var obj2 = resolver.Get<InitializableObject>();
 
-                Assert.Same(obj1, obj2);
-                Assert.Equal(1, obj2.InitializedCount);
-            }
+            Assert.Same(obj1, obj2);
+            Assert.Equal(1, obj2.InitializedCount);
         }
 
         [Fact]
@@ -60,12 +54,10 @@ namespace Smart.Resolver
             var config = new ResolverConfig();
             config.Bind<InitializableObject>().ToSelf();
 
-            using (var resolver = config.ToResolver())
-            {
-                var obj = resolver.Get<InitializableObject>();
+            using var resolver = config.ToResolver();
+            var obj = resolver.Get<InitializableObject>();
 
-                Assert.Equal(0, obj.InitializedCount);
-            }
+            Assert.Equal(0, obj.InitializedCount);
         }
 
         [Fact]
@@ -75,12 +67,10 @@ namespace Smart.Resolver
             config.UseProcessor<CustomInitializeProcessor>();
             config.Bind<CustomInitializableObject>().ToSelf();
 
-            using (var resolver = config.ToResolver())
-            {
-                var obj = resolver.Get<CustomInitializableObject>();
+            using var resolver = config.ToResolver();
+            var obj = resolver.Get<CustomInitializableObject>();
 
-                Assert.True(obj.Initialized);
-            }
+            Assert.True(obj.Initialized);
         }
 
         public interface ICustomInitializable
@@ -101,7 +91,7 @@ namespace Smart.Resolver
                     return null;
                 }
 
-                return (r, x) => (x as ICustomInitializable)?.Initialize();
+                return (_, x) => (x as ICustomInitializable)?.Initialize();
             }
         }
 

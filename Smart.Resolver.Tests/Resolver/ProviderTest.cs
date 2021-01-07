@@ -18,12 +18,10 @@ namespace Smart.Resolver
             config.Bind<IService>().ToConstant(service);
             config.Bind<Controller>().ToSelf();
 
-            using (var resolver = config.ToResolver())
-            {
-                var controller = resolver.Get<Controller>();
+            using var resolver = config.ToResolver();
+            var controller = resolver.Get<Controller>();
 
-                Assert.Same(service, controller.Service);
-            }
+            Assert.Same(service, controller.Service);
         }
 
         [Fact]
@@ -31,15 +29,13 @@ namespace Smart.Resolver
         {
             var config = new ResolverConfig();
             var service = new Service();
-            config.Bind<IService>().ToMethod(k => service);
+            config.Bind<IService>().ToMethod(_ => service);
             config.Bind<Controller>().ToSelf();
 
-            using (var resolver = config.ToResolver())
-            {
-                var controller = resolver.Get<Controller>();
+            using var resolver = config.ToResolver();
+            var controller = resolver.Get<Controller>();
 
-                Assert.Same(service, controller.Service);
-            }
+            Assert.Same(service, controller.Service);
         }
 
         [Fact]
@@ -50,17 +46,15 @@ namespace Smart.Resolver
             config.Bind<SimpleObject>().ToSelf().InSingletonScope().Named("bar");
             config.Bind<ArrayInjectedObject>().ToSelf();
 
-            using (var resolver = config.ToResolver())
-            {
-                var obj = resolver.Get<ArrayInjectedObject>();
-                var foo = resolver.Get<SimpleObject>("foo");
-                var bar = resolver.Get<SimpleObject>("bar");
+            using var resolver = config.ToResolver();
+            var obj = resolver.Get<ArrayInjectedObject>();
+            var foo = resolver.Get<SimpleObject>("foo");
+            var bar = resolver.Get<SimpleObject>("bar");
 
-                Assert.Equal(2, obj.Objects.Length);
-                Assert.NotSame(foo, bar);
-                Assert.True(obj.Objects.Contains(foo, x => x));
-                Assert.True(obj.Objects.Contains(bar, x => x));
-            }
+            Assert.Equal(2, obj.Objects.Length);
+            Assert.NotSame(foo, bar);
+            Assert.True(obj.Objects.Contains(foo, x => x));
+            Assert.True(obj.Objects.Contains(bar, x => x));
         }
 
         [Fact]
@@ -71,17 +65,15 @@ namespace Smart.Resolver
             config.Bind<SimpleObject>().ToSelf().InSingletonScope().Named("bar");
             config.Bind<EnumerableInjectedObject>().ToSelf();
 
-            using (var resolver = config.ToResolver())
-            {
-                var obj = resolver.Get<EnumerableInjectedObject>();
-                var foo = resolver.Get<SimpleObject>("foo");
-                var bar = resolver.Get<SimpleObject>("bar");
+            using var resolver = config.ToResolver();
+            var obj = resolver.Get<EnumerableInjectedObject>();
+            var foo = resolver.Get<SimpleObject>("foo");
+            var bar = resolver.Get<SimpleObject>("bar");
 
-                Assert.Equal(2, obj.Objects.Count());
-                Assert.NotSame(foo, bar);
-                Assert.True(obj.Objects.Contains(foo, x => x));
-                Assert.True(obj.Objects.Contains(bar, x => x));
-            }
+            Assert.Equal(2, obj.Objects.Count());
+            Assert.NotSame(foo, bar);
+            Assert.True(obj.Objects.Contains(foo, x => x));
+            Assert.True(obj.Objects.Contains(bar, x => x));
         }
 
         [Fact]
@@ -92,17 +84,15 @@ namespace Smart.Resolver
             config.Bind<SimpleObject>().ToSelf().InSingletonScope().Named("bar");
             config.Bind<CollectionInjectedObject>().ToSelf();
 
-            using (var resolver = config.ToResolver())
-            {
-                var obj = resolver.Get<CollectionInjectedObject>();
-                var foo = resolver.Get<SimpleObject>("foo");
-                var bar = resolver.Get<SimpleObject>("bar");
+            using var resolver = config.ToResolver();
+            var obj = resolver.Get<CollectionInjectedObject>();
+            var foo = resolver.Get<SimpleObject>("foo");
+            var bar = resolver.Get<SimpleObject>("bar");
 
-                Assert.Equal(2, obj.Objects.Count);
-                Assert.NotSame(foo, bar);
-                Assert.True(obj.Objects.Contains(foo, x => x));
-                Assert.True(obj.Objects.Contains(bar, x => x));
-            }
+            Assert.Equal(2, obj.Objects.Count);
+            Assert.NotSame(foo, bar);
+            Assert.True(obj.Objects.Contains(foo, x => x));
+            Assert.True(obj.Objects.Contains(bar, x => x));
         }
 
         [Fact]
@@ -113,17 +103,15 @@ namespace Smart.Resolver
             config.Bind<SimpleObject>().ToSelf().InSingletonScope().Named("bar");
             config.Bind<ListInjectedObject>().ToSelf();
 
-            using (var resolver = config.ToResolver())
-            {
-                var obj = resolver.Get<ListInjectedObject>();
-                var foo = resolver.Get<SimpleObject>("foo");
-                var bar = resolver.Get<SimpleObject>("bar");
+            using var resolver = config.ToResolver();
+            var obj = resolver.Get<ListInjectedObject>();
+            var foo = resolver.Get<SimpleObject>("foo");
+            var bar = resolver.Get<SimpleObject>("bar");
 
-                Assert.Equal(2, obj.Objects.Count);
-                Assert.NotSame(foo, bar);
-                Assert.True(obj.Objects.Contains(foo, x => x));
-                Assert.True(obj.Objects.Contains(bar, x => x));
-            }
+            Assert.Equal(2, obj.Objects.Count);
+            Assert.NotSame(foo, bar);
+            Assert.True(obj.Objects.Contains(foo, x => x));
+            Assert.True(obj.Objects.Contains(bar, x => x));
         }
 
         [Fact]
@@ -132,12 +120,10 @@ namespace Smart.Resolver
             var config = new ResolverConfig().UseAutoBinding();
             config.Bind<IService>().To<Service>().InSingletonScope();
 
-            using (var resolver = config.ToResolver())
-            {
-                var obj = resolver.Get<MultiConstructorObject>();
+            using var resolver = config.ToResolver();
+            var obj = resolver.Get<MultiConstructorObject>();
 
-                Assert.Equal(2, obj.Arguments);
-            }
+            Assert.Equal(2, obj.Arguments);
         }
 
         [Fact]
@@ -145,12 +131,10 @@ namespace Smart.Resolver
         {
             var config = new ResolverConfig().UseAutoBinding();
 
-            using (var resolver = config.ToResolver())
-            {
-                var obj = resolver.Get<MultiConstructorObject>();
+            using var resolver = config.ToResolver();
+            var obj = resolver.Get<MultiConstructorObject>();
 
-                Assert.Equal(1, obj.Arguments);
-            }
+            Assert.Equal(1, obj.Arguments);
         }
 
         public class MultiConstructorObject

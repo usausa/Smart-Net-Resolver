@@ -18,12 +18,10 @@ namespace Smart.Resolver
         public void ObjectBindingCreatedBySelfMissingResolver()
         {
             var config = new ResolverConfig().UseAutoBinding();
-            using (var resolver = config.ToResolver())
-            {
-                var obj = resolver.Get<SimpleObject>();
+            using var resolver = config.ToResolver();
+            var obj = resolver.Get<SimpleObject>();
 
-                Assert.NotNull(obj);
-            }
+            Assert.NotNull(obj);
         }
 
         [Fact]
@@ -34,13 +32,11 @@ namespace Smart.Resolver
                 .Bind(typeof(IGenericService<>))
                 .To(typeof(GenericService<>));
 
-            using (var resolver = config.ToResolver())
-            {
-                var obj = resolver.Get(typeof(IGenericService<int>));
+            using var resolver = config.ToResolver();
+            var obj = resolver.Get(typeof(IGenericService<int>));
 
-                Assert.NotNull(obj);
-                Assert.Equal(typeof(GenericService<int>), obj.GetType());
-            }
+            Assert.NotNull(obj);
+            Assert.Equal(typeof(GenericService<int>), obj.GetType());
         }
 
         public interface IGenericService<out T>
@@ -62,18 +58,16 @@ namespace Smart.Resolver
             var config = new ResolverConfig().UseAssignableBinding();
             config.Bind(typeof(ExecuteService)).ToSelf().InSingletonScope();
 
-            using (var resolver = config.ToResolver())
-            {
-                var obj = resolver.Get<ExecuteService>();
-                var obj1 = resolver.Get<IExecuteService>();
-                var obj2 = resolver.Get<ExecuteServiceBase>();
+            using var resolver = config.ToResolver();
+            var obj = resolver.Get<ExecuteService>();
+            var obj1 = resolver.Get<IExecuteService>();
+            var obj2 = resolver.Get<ExecuteServiceBase>();
 
-                Assert.NotNull(obj);
-                Assert.NotNull(obj1);
-                Assert.NotNull(obj2);
-                Assert.Same(obj1, obj);
-                Assert.Same(obj2, obj);
-            }
+            Assert.NotNull(obj);
+            Assert.NotNull(obj1);
+            Assert.NotNull(obj2);
+            Assert.Same(obj1, obj);
+            Assert.Same(obj2, obj);
         }
 
         public interface IExecuteService
@@ -106,13 +100,11 @@ namespace Smart.Resolver
             config.Bind<IMultipleService>().To<MultipleService2>().InSingletonScope();
             config.Bind<IMultipleService>().To<MultipleService3>().InSingletonScope();
 
-            using (var resolver = config.ToResolver())
-            {
-                var objects = resolver.Get<IEnumerable<IMultipleService>>();
+            using var resolver = config.ToResolver();
+            var objects = resolver.Get<IEnumerable<IMultipleService>>();
 
-                Assert.NotNull(objects);
-                Assert.Equal(3, objects.Count());
-            }
+            Assert.NotNull(objects);
+            Assert.Equal(3, objects.Count());
         }
 
         public interface IMultipleService
@@ -151,12 +143,10 @@ namespace Smart.Resolver
             };
             config.UseMissingHandler(new CustomMissingHandler(typeMap));
 
-            using (var resolver = config.ToResolver())
-            {
-                var obj = resolver.Get<IService>();
+            using var resolver = config.ToResolver();
+            var obj = resolver.Get<IService>();
 
-                Assert.NotNull(obj);
-            }
+            Assert.NotNull(obj);
         }
 
         public sealed class CustomMissingHandler : IMissingHandler

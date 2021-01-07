@@ -59,12 +59,12 @@ namespace Smart.Resolver.Configs
 
         public IBindingInNamedWithSyntax ToMethod(Func<IResolver, T> factory)
         {
-            return ToProvider(c => new CallbackProvider(targetType, resolver => factory(resolver)));
+            return ToProvider(_ => new CallbackProvider(targetType, resolver => factory(resolver)));
         }
 
         public IBindingInNamedWithSyntax ToConstant(T value)
         {
-            return ToProvider(c => new ConstantProvider(value));
+            return ToProvider(_ => new ConstantProvider(value));
         }
 
         // ------------------------------------------------------------
@@ -91,7 +91,7 @@ namespace Smart.Resolver.Configs
 
         public IBindingNamedWithSyntax InContainerScope()
         {
-            InScope(c => new ContainerScope());
+            InScope(_ => new ContainerScope());
             return this;
         }
 
@@ -111,58 +111,46 @@ namespace Smart.Resolver.Configs
 
         public IBindingWithSyntax WithMetadata(string key, object value)
         {
-            if (metadataValues is null)
-            {
-                metadataValues = new Dictionary<string, object>();
-            }
-
+            metadataValues ??= new Dictionary<string, object>();
             metadataValues[key] = value;
             return this;
         }
 
         public IBindingWithSyntax WithConstructorArgument(string name, Func<ComponentContainer, IParameter> factory)
         {
-            if (constructorArgumentFactories is null)
-            {
-                constructorArgumentFactories = new Dictionary<string, Func<ComponentContainer, IParameter>>();
-            }
-
+            constructorArgumentFactories ??= new Dictionary<string, Func<ComponentContainer, IParameter>>();
             constructorArgumentFactories[name] = factory;
             return this;
         }
 
         public IBindingWithSyntax WithConstructorArgument(string name, object value)
         {
-            WithConstructorArgument(name, c => new ConstantParameter(value));
+            WithConstructorArgument(name, _ => new ConstantParameter(value));
             return this;
         }
 
         public IBindingWithSyntax WithConstructorArgument(string name, Func<IResolver, object> factory)
         {
-            WithConstructorArgument(name, c => new CallbackParameter(factory));
+            WithConstructorArgument(name, _ => new CallbackParameter(factory));
             return this;
         }
 
         public IBindingWithSyntax WithPropertyValue(string name, Func<ComponentContainer, IParameter> factory)
         {
-            if (propertyValueFactories is null)
-            {
-                propertyValueFactories = new Dictionary<string, Func<ComponentContainer, IParameter>>();
-            }
-
+            propertyValueFactories ??= new Dictionary<string, Func<ComponentContainer, IParameter>>();
             propertyValueFactories[name] = factory;
             return this;
         }
 
         public IBindingWithSyntax WithPropertyValue(string name, object value)
         {
-            WithPropertyValue(name, c => new ConstantParameter(value));
+            WithPropertyValue(name, _ => new ConstantParameter(value));
             return this;
         }
 
         public IBindingWithSyntax WithPropertyValue(string name, Func<IResolver, object> factory)
         {
-            WithPropertyValue(name, c => new CallbackParameter(factory));
+            WithPropertyValue(name, _ => new CallbackParameter(factory));
             return this;
         }
 

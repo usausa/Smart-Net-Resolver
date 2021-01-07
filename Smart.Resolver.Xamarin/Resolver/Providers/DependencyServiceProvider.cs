@@ -23,7 +23,7 @@ namespace Smart.Resolver.Providers
 
         private static Func<IResolver, object> CreateFactory(MethodInfo method)
         {
-            return r => method.Invoke(null, new object[] { Xamarin.Forms.DependencyFetchTarget.GlobalInstance });
+            return _ => method.Invoke(null, new object[] { Xamarin.Forms.DependencyFetchTarget.GlobalInstance });
         }
     }
 }

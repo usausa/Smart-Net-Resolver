@@ -13,12 +13,10 @@ namespace Smart.Resolver
             var service = new Service();
             config.Bind<Controller>().ToSelf().WithConstructorArgument("service", service);
 
-            using (var resolver = config.ToResolver())
-            {
-                var controller = resolver.Get<Controller>();
+            using var resolver = config.ToResolver();
+            var controller = resolver.Get<Controller>();
 
-                Assert.Same(service, controller.Service);
-            }
+            Assert.Same(service, controller.Service);
         }
 
         [Fact]
@@ -28,13 +26,11 @@ namespace Smart.Resolver
             config.Bind<IService>().To<Service>().InSingletonScope();
             config.Bind<Controller>().ToSelf().WithConstructorArgument("service", k => k.Get<IService>());
 
-            using (var resolver = config.ToResolver())
-            {
-                var controller = resolver.Get<Controller>();
-                var service = resolver.Get<IService>();
+            using var resolver = config.ToResolver();
+            var controller = resolver.Get<Controller>();
+            var service = resolver.Get<IService>();
 
-                Assert.Same(service, controller.Service);
-            }
+            Assert.Same(service, controller.Service);
         }
 
         [Fact]
@@ -45,12 +41,10 @@ namespace Smart.Resolver
             var injected = new SimpleObject();
             config.Bind<HasPropertyObject>().ToSelf().WithPropertyValue("Injected", injected);
 
-            using (var resolver = config.ToResolver())
-            {
-                var obj = resolver.Get<HasPropertyObject>();
+            using var resolver = config.ToResolver();
+            var obj = resolver.Get<HasPropertyObject>();
 
-                Assert.Same(injected, obj.Injected);
-            }
+            Assert.Same(injected, obj.Injected);
         }
 
         [Fact]
@@ -61,13 +55,11 @@ namespace Smart.Resolver
             config.Bind<SimpleObject>().ToSelf().InSingletonScope();
             config.Bind<HasPropertyObject>().ToSelf().WithPropertyValue("Injected", k => k.Get<SimpleObject>());
 
-            using (var resolver = config.ToResolver())
-            {
-                var obj = resolver.Get<HasPropertyObject>();
-                var injected = resolver.Get<SimpleObject>();
+            using var resolver = config.ToResolver();
+            var obj = resolver.Get<HasPropertyObject>();
+            var injected = resolver.Get<SimpleObject>();
 
-                Assert.Same(injected, obj.Injected);
-            }
+            Assert.Same(injected, obj.Injected);
         }
     }
 }

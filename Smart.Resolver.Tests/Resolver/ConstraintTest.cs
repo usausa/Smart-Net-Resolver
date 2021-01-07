@@ -19,15 +19,13 @@ namespace Smart.Resolver
             config.Bind<SimpleObject>().ToSelf().InSingletonScope().Named("bar");
             config.Bind<NameConstraintInjectedObject>().ToSelf();
 
-            using (var resolver = config.ToResolver())
-            {
-                var obj = resolver.Get<NameConstraintInjectedObject>();
-                var foo = resolver.Get<SimpleObject>("foo");
-                var bar = resolver.Get<SimpleObject>("bar");
+            using var resolver = config.ToResolver();
+            var obj = resolver.Get<NameConstraintInjectedObject>();
+            var foo = resolver.Get<SimpleObject>("foo");
+            var bar = resolver.Get<SimpleObject>("bar");
 
-                Assert.Same(obj.SimpleObject, foo);
-                Assert.NotSame(obj.SimpleObject, bar);
-            }
+            Assert.Same(obj.SimpleObject, foo);
+            Assert.NotSame(obj.SimpleObject, bar);
         }
 
         [Fact]
@@ -38,13 +36,11 @@ namespace Smart.Resolver
             config.Bind<SimpleObject>().ToSelf().InSingletonScope().WithMetadata("hoge", null);
             config.Bind<HasMetadataConstraintInjectedObject>().ToSelf();
 
-            using (var resolver = config.ToResolver())
-            {
-                var obj = resolver.Get<HasMetadataConstraintInjectedObject>();
-                var hoge = resolver.Get(typeof(SimpleObject), new HasMetadataConstraint("hoge"));
+            using var resolver = config.ToResolver();
+            var obj = resolver.Get<HasMetadataConstraintInjectedObject>();
+            var hoge = resolver.Get(typeof(SimpleObject), new HasMetadataConstraint("hoge"));
 
-                Assert.Same(obj.SimpleObject, hoge);
-            }
+            Assert.Same(obj.SimpleObject, hoge);
         }
 
         [Fact]
@@ -58,13 +54,11 @@ namespace Smart.Resolver
             config.Bind<SimpleObject>().ToSelf().InSingletonScope().Named("bar").WithMetadata("hoge", null);
             config.Bind<ChainConstraintInjectedObject>().ToSelf();
 
-            using (var resolver = config.ToResolver())
-            {
-                var obj = resolver.Get<ChainConstraintInjectedObject>();
-                var barHoge = resolver.Get(typeof(SimpleObject), new ChainConstraint(new NameConstraint("bar"), new HasMetadataConstraint("hoge")));
+            using var resolver = config.ToResolver();
+            var obj = resolver.Get<ChainConstraintInjectedObject>();
+            var barHoge = resolver.Get(typeof(SimpleObject), new ChainConstraint(new NameConstraint("bar"), new HasMetadataConstraint("hoge")));
 
-                Assert.Same(obj.SimpleObject, barHoge);
-            }
+            Assert.Same(obj.SimpleObject, barHoge);
         }
 
         public class HasMetadataConstraint : IConstraint

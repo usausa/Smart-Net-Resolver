@@ -14,12 +14,10 @@ namespace Smart.Resolver
             config.Bind<SimpleObject>().ToSelf();
             config.Bind<HasPropertyObject>().ToSelf();
 
-            using (var resolver = config.ToResolver())
-            {
-                var obj = resolver.Get<HasPropertyObject>();
+            using var resolver = config.ToResolver();
+            var obj = resolver.Get<HasPropertyObject>();
 
-                Assert.NotNull(obj.Injected);
-            }
+            Assert.NotNull(obj.Injected);
         }
 
         [Fact]
@@ -29,13 +27,11 @@ namespace Smart.Resolver
             config.UsePropertyInjector();
             config.Bind<SimpleObject>().ToSelf();
 
-            using (var resolver = config.ToResolver())
-            {
-                var obj = new HasPropertyObject();
-                resolver.Inject(obj);
+            using var resolver = config.ToResolver();
+            var obj = new HasPropertyObject();
+            resolver.Inject(obj);
 
-                Assert.NotNull(obj.Injected);
-            }
+            Assert.NotNull(obj.Injected);
         }
 
         [Fact]
@@ -45,12 +41,10 @@ namespace Smart.Resolver
             config.Bind<SimpleObject>().ToSelf();
             config.Bind<HasPropertyObject>().ToSelf();
 
-            using (var resolver = config.ToResolver())
-            {
-                var obj = resolver.Get<HasPropertyObject>();
+            using var resolver = config.ToResolver();
+            var obj = resolver.Get<HasPropertyObject>();
 
-                Assert.Null(obj.Injected);
-            }
+            Assert.Null(obj.Injected);
         }
 
         [Fact]
@@ -59,13 +53,11 @@ namespace Smart.Resolver
             var config = new ResolverConfig();
             config.Bind<SimpleObject>().ToSelf();
 
-            using (var resolver = config.ToResolver())
-            {
-                var obj = new HasPropertyObject();
-                resolver.Inject(obj);
+            using var resolver = config.ToResolver();
+            var obj = new HasPropertyObject();
+            resolver.Inject(obj);
 
-                Assert.Null(obj.Injected);
-            }
+            Assert.Null(obj.Injected);
         }
     }
 }

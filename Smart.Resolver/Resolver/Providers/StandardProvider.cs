@@ -89,7 +89,7 @@ namespace Smart.Resolver.Providers
                     // DefaultValue
                     if (pi.HasDefaultValue)
                     {
-                        argumentFactories.Add(k => pi.DefaultValue);
+                        argumentFactories.Add(_ => pi.DefaultValue);
                         continue;
                     }
 

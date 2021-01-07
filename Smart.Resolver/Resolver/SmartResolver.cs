@@ -40,6 +40,8 @@ namespace Smart.Resolver
 
         private readonly ThreadsafeTypeHashArrayMap<Action<IResolver, object>[]> injectorsCache = new();
 
+        private readonly Func<IResolver, object> nullFactory = _ => null;
+
         private readonly object sync = new();
 
         private readonly BindingTable table;
@@ -249,7 +251,7 @@ namespace Smart.Resolver
 
                 return new FactoryEntry(
                     factories.Length > 0,
-                    factories.Length > 0 ? factories[factories.Length - 1] : k => null,
+                    factories.Length > 0 ? factories[^1] : nullFactory,
                     factories);
             }
         }
@@ -327,10 +329,7 @@ namespace Smart.Resolver
             public void Dispose()
             {
                 Slot.Clear();
-                if (pool is null)
-                {
-                    pool = Slot;
-                }
+                pool ??= Slot;
             }
 
             // CanGet

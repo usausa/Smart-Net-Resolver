@@ -27,7 +27,7 @@ namespace Smart.Resolver.Processors
                 return null;
             }
 
-            return (r, x) => (((BindableObject)x).BindingContext as IInitializable)?.Initialize();
+            return (_, x) => (((BindableObject)x).BindingContext as IInitializable)?.Initialize();
         }
     }
 }
