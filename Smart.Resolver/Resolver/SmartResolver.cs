@@ -113,17 +113,13 @@ namespace Smart.Resolver
 
         // CanGet
 
-        public bool CanGet<T>() =>
-            FindFactoryEntry(typeof(T)).CanGet;
+        public bool CanGet<T>() => FindFactoryEntry(typeof(T)).CanGet;
 
-        public bool CanGet<T>(IConstraint constraint) =>
-            FindFactoryEntry(typeof(T), constraint).CanGet;
+        public bool CanGet<T>(IConstraint constraint) => FindFactoryEntry(typeof(T), constraint).CanGet;
 
-        public bool CanGet(Type type) =>
-            FindFactoryEntry(type).CanGet;
+        public bool CanGet(Type type) => FindFactoryEntry(type).CanGet;
 
-        public bool CanGet(Type type, IConstraint constraint) =>
-            FindFactoryEntry(type, constraint).CanGet;
+        public bool CanGet(Type type, IConstraint constraint) => FindFactoryEntry(type, constraint).CanGet;
 
         // TryGet
 
@@ -157,31 +153,23 @@ namespace Smart.Resolver
 
         // Get
 
-        public T Get<T>() =>
-            (T)FindFactoryEntry(typeof(T)).Single(this);
+        public T Get<T>() => (T)FindFactoryEntry(typeof(T)).Single(this);
 
-        public T Get<T>(IConstraint constraint) =>
-            (T)FindFactoryEntry(typeof(T), constraint).Single(this);
+        public T Get<T>(IConstraint constraint) => (T)FindFactoryEntry(typeof(T), constraint).Single(this);
 
-        public object Get(Type type) =>
-            FindFactoryEntry(type).Single(this);
+        public object Get(Type type) => FindFactoryEntry(type).Single(this);
 
-        public object Get(Type type, IConstraint constraint) =>
-            FindFactoryEntry(type, constraint).Single(this);
+        public object Get(Type type, IConstraint constraint) => FindFactoryEntry(type, constraint).Single(this);
 
         // GetAll
 
-        public IEnumerable<T> GetAll<T>() =>
-            FindFactoryEntry(typeof(T)).Multiple.Select(x => (T)x(this));
+        public IEnumerable<T> GetAll<T>() => FindFactoryEntry(typeof(T)).Multiple.Select(x => (T)x(this));
 
-        public IEnumerable<T> GetAll<T>(IConstraint constraint) =>
-            FindFactoryEntry(typeof(T), constraint).Multiple.Select(x => (T)x(this));
+        public IEnumerable<T> GetAll<T>(IConstraint constraint) => FindFactoryEntry(typeof(T), constraint).Multiple.Select(x => (T)x(this));
 
-        public IEnumerable<object> GetAll(Type type) =>
-            FindFactoryEntry(type).Multiple.Select(x => x(this));
+        public IEnumerable<object> GetAll(Type type) => FindFactoryEntry(type).Multiple.Select(x => x(this));
 
-        public IEnumerable<object> GetAll(Type type, IConstraint constraint) =>
-            FindFactoryEntry(type, constraint).Multiple.Select(x => x(this));
+        public IEnumerable<object> GetAll(Type type, IConstraint constraint) => FindFactoryEntry(type, constraint).Multiple.Select(x => x(this));
 
         // ------------------------------------------------------------
         // Binding
@@ -260,13 +248,9 @@ namespace Smart.Resolver
         // Inject
         // ------------------------------------------------------------
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Inject(object instance)
         {
-            if (instance is null)
-            {
-                throw new ArgumentNullException(nameof(instance));
-            }
-
             var actions = FindInjectors(instance.GetType());
             for (var i = 0; i < actions.Length; i++)
             {
@@ -274,6 +258,7 @@ namespace Smart.Resolver
             }
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private Action<IResolver, object>[] FindInjectors(Type type)
         {
             if (!injectorsCache.TryGetValue(type, out var actions))
@@ -297,10 +282,8 @@ namespace Smart.Resolver
         // Scope
         // ------------------------------------------------------------
 
-        public IResolver CreateChildResolver()
-        {
-            return new ChildResolver(this);
-        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public IResolver CreateChildResolver() => new ChildResolver(this);
 
         private sealed class ChildResolver : IResolver, IContainer
         {
@@ -334,17 +317,13 @@ namespace Smart.Resolver
 
             // CanGet
 
-            public bool CanGet<T>() =>
-                resolver.FindFactoryEntry(this, typeof(T)).CanGet;
+            public bool CanGet<T>() => resolver.FindFactoryEntry(this, typeof(T)).CanGet;
 
-            public bool CanGet<T>(IConstraint constraint) =>
-                resolver.FindFactoryEntry(this, typeof(T), constraint).CanGet;
+            public bool CanGet<T>(IConstraint constraint) => resolver.FindFactoryEntry(this, typeof(T), constraint).CanGet;
 
-            public bool CanGet(Type type) =>
-                resolver.FindFactoryEntry(this, type).CanGet;
+            public bool CanGet(Type type) => resolver.FindFactoryEntry(this, type).CanGet;
 
-            public bool CanGet(Type type, IConstraint constraint) =>
-                resolver.FindFactoryEntry(this, type, constraint).CanGet;
+            public bool CanGet(Type type, IConstraint constraint) => resolver.FindFactoryEntry(this, type, constraint).CanGet;
 
             // TryGet
 
@@ -378,39 +357,26 @@ namespace Smart.Resolver
 
             // Get
 
-            public T Get<T>() =>
-                (T)resolver.FindFactoryEntry(this, typeof(T)).Single(this);
+            public T Get<T>() => (T)resolver.FindFactoryEntry(this, typeof(T)).Single(this);
 
-            public T Get<T>(IConstraint constraint) =>
-                (T)resolver.FindFactoryEntry(this, typeof(T), constraint).Single(this);
+            public T Get<T>(IConstraint constraint) => (T)resolver.FindFactoryEntry(this, typeof(T), constraint).Single(this);
 
-            public object Get(Type type) =>
-                resolver.FindFactoryEntry(this, type).Single(this);
+            public object Get(Type type) => resolver.FindFactoryEntry(this, type).Single(this);
 
-            public object Get(Type type, IConstraint constraint) =>
-                resolver.FindFactoryEntry(this, type, constraint).Single(this);
+            public object Get(Type type, IConstraint constraint) => resolver.FindFactoryEntry(this, type, constraint).Single(this);
 
             // GetAll
 
-            public IEnumerable<T> GetAll<T>() =>
-                resolver.FindFactoryEntry(this, typeof(T)).Multiple.Select(x => (T)x(this));
+            public IEnumerable<T> GetAll<T>() => resolver.FindFactoryEntry(this, typeof(T)).Multiple.Select(x => (T)x(this));
 
-            public IEnumerable<T> GetAll<T>(IConstraint constraint) =>
-                resolver.FindFactoryEntry(this, typeof(T), constraint).Multiple.Select(x => (T)x(this));
+            public IEnumerable<T> GetAll<T>(IConstraint constraint) => resolver.FindFactoryEntry(this, typeof(T), constraint).Multiple.Select(x => (T)x(this));
 
-            public IEnumerable<object> GetAll(Type type) =>
-                resolver.FindFactoryEntry(this, type).Multiple.Select(x => x(this));
+            public IEnumerable<object> GetAll(Type type) => resolver.FindFactoryEntry(this, type).Multiple.Select(x => x(this));
 
-            public IEnumerable<object> GetAll(Type type, IConstraint constraint) =>
-                resolver.FindFactoryEntry(this, type, constraint).Multiple.Select(x => x(this));
+            public IEnumerable<object> GetAll(Type type, IConstraint constraint) => resolver.FindFactoryEntry(this, type, constraint).Multiple.Select(x => x(this));
 
             public void Inject(object instance)
             {
-                if (instance is null)
-                {
-                    throw new ArgumentNullException(nameof(instance));
-                }
-
                 var actions = resolver.FindInjectors(instance.GetType());
                 for (var i = 0; i < actions.Length; i++)
                 {
