@@ -248,6 +248,7 @@ namespace Smart.Resolver
         // Inject
         // ------------------------------------------------------------
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods", Justification = "Ignore")]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Inject(object instance)
         {
