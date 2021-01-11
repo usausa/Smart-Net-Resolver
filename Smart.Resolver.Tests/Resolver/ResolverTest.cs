@@ -1,4 +1,4 @@
-namespace Smart.Resolver
+﻿namespace Smart.Resolver
 {
     using System;
     using System.Collections.Generic;
@@ -160,7 +160,7 @@ namespace Smart.Resolver
 
             public IEnumerable<Binding> Handle(ComponentContainer components, BindingTable table, Type type)
             {
-                if (!typeMap.TryGetValue(type, out Type _))
+                if (!typeMap.TryGetValue(type, out _))
                 {
                     return Enumerable.Empty<Binding>();
                 }

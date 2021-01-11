@@ -1,4 +1,4 @@
-namespace Smart.Resolver.Handlers
+﻿namespace Smart.Resolver.Handlers
 {
     using System;
     using System.Collections.Generic;
@@ -18,7 +18,7 @@ namespace Smart.Resolver.Handlers
 
         public AssignableMissingHandler(IEnumerable<Type> types)
         {
-            this.targetTypes = new HashSet<Type>(types);
+            targetTypes = new HashSet<Type>(types);
         }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods", Justification = "Ignore")]
