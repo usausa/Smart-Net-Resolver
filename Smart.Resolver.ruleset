@@ -1,14 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <RuleSet Name="Smart.Resolver Rules" Description="Smart.Resolver Rules" ToolsVersion="14.0">
   <IncludeAll Action="Warning" />
-  <Rules AnalyzerId="Microsoft.Analyzers.ManagedCodeAnalysis" RuleNamespace="Microsoft.Rules.Managed">
-    <Rule Id="CA1004" Action="None" />
-    <Rule Id="CA1006" Action="None" />
-    <Rule Id="CA1020" Action="None" />
-    <Rule Id="CA1021" Action="None" />
-    <Rule Id="CA2210" Action="None" />
-    <Rule Id="CA2213" Action="None" />
-  </Rules>
   <Rules AnalyzerId="StyleCop.Analyzers" RuleNamespace="StyleCop.Analyzers">
     <Rule Id="SA1005" Action="Hidden" />
     <Rule Id="SA1101" Action="Hidden" />
@@ -35,11 +27,7 @@
     <Rule Id="SA1649" Action="Hidden" />
     <Rule Id="SA1652" Action="Hidden" />
   </Rules>
-  <Rules AnalyzerId="Microsoft.CodeQuality.Analyzers" RuleNamespace="Microsoft.CodeQuality.Analyzers">
+  <Rules AnalyzerId="Microsoft.CodeAnalysis.NetAnalyzers" RuleNamespace="Microsoft.CodeAnalysis.NetAnalyzers">
     <Rule Id="CA1034" Action="Hidden" />
-    <Rule Id="CA1720" Action="Hidden" />
-  </Rules>
-  <Rules AnalyzerId="Microsoft.NetCore.Analyzers" RuleNamespace="Microsoft.NetCore.Analyzers">
-    <Rule Id="CA1303" Action="Hidden" />
   </Rules>
 </RuleSet>

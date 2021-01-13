@@ -8,7 +8,7 @@
     using Microsoft.AspNetCore.Mvc.Filters;
 
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method)]
-    public class MetricsFilterAttribute : TypeFilterAttribute
+    public sealed class MetricsFilterAttribute : TypeFilterAttribute
     {
         public MetricsFilterAttribute()
             : base(typeof(MetricsActionFilter))

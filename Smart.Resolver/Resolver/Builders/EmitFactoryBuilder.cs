@@ -1,4 +1,4 @@
-namespace Smart.Resolver.Builders
+﻿namespace Smart.Resolver.Builders
 {
     using System;
     using System.Collections.Generic;
@@ -37,7 +37,7 @@ namespace Smart.Resolver.Builders
                 var field = holderType.GetField($"factory{i}");
 
                 ilGenerator.Emit(OpCodes.Ldarg_0);
-                ilGenerator.Emit(OpCodes.Ldfld, field);
+                ilGenerator.Emit(OpCodes.Ldfld, field!);
                 ilGenerator.Emit(OpCodes.Ldarg_1);
                 ilGenerator.Emit(OpCodes.Call, invokeMethod);
                 ilGenerator.EmitTypeConversion(ci.GetParameters()[i].ParameterType);
@@ -64,7 +64,7 @@ namespace Smart.Resolver.Builders
                     var field = holderType.GetField($"action{i}");
 
                     ilGenerator.Emit(OpCodes.Ldarg_0);
-                    ilGenerator.Emit(OpCodes.Ldfld, field);
+                    ilGenerator.Emit(OpCodes.Ldfld, field!);
                     ilGenerator.Emit(OpCodes.Ldarg_1);
                     ilGenerator.Emit(OpCodes.Ldloc_0);
                     ilGenerator.Emit(OpCodes.Callvirt, invokeMethod);
@@ -106,10 +106,10 @@ namespace Smart.Resolver.Builders
                 ilGenerator.EmitLdcI4(i);
 
                 ilGenerator.Emit(OpCodes.Ldarg_0);
-                ilGenerator.Emit(OpCodes.Ldfld, field);
+                ilGenerator.Emit(OpCodes.Ldfld, field!);
                 ilGenerator.Emit(OpCodes.Ldarg_1);
                 var invokeMethod = factories[i].GetType().GetMethod("Invoke", new[] { typeof(IResolver) });
-                ilGenerator.Emit(OpCodes.Call, invokeMethod);
+                ilGenerator.Emit(OpCodes.Call, invokeMethod!);
 
                 ilGenerator.Emit(OpCodes.Stelem_Ref);
             }
