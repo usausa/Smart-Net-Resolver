@@ -1,4 +1,4 @@
-﻿namespace Example.WebApplication.Controllers
+namespace Example.WebApplication.Controllers
 {
     using Microsoft.AspNetCore.Mvc;
 

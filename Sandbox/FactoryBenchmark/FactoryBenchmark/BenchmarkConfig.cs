@@ -1,4 +1,4 @@
-﻿namespace FactoryBenchmark
+namespace FactoryBenchmark
 {
     using BenchmarkDotNet.Configs;
     using BenchmarkDotNet.Diagnosers;

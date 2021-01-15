@@ -1,4 +1,4 @@
-﻿namespace Example.FormsApp.Services
+namespace Example.FormsApp.Services
 {
     using System;
 

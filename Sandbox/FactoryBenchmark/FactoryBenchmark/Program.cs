@@ -1,4 +1,4 @@
-﻿namespace FactoryBenchmark
+namespace FactoryBenchmark
 {
     using System.Reflection;
     using BenchmarkDotNet.Running;

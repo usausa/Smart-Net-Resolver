@@ -1,4 +1,4 @@
-﻿namespace TypedFactoryBenchmark
+namespace TypedFactoryBenchmark
 {
     using System;
 

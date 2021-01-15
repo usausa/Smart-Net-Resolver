@@ -18,7 +18,7 @@ namespace Smart.Resolver.Constraints
             return constraints.All(c => c.Match(metadata));
         }
 
-        public override bool Equals(object obj)
+        public override bool Equals(object? obj)
         {
             if (obj is ChainConstraint constraint &&
                 (constraints.Length == constraint.constraints.Length))

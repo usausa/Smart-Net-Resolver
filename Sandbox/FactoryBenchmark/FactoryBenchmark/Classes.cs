@@ -1,4 +1,4 @@
-﻿namespace FactoryBenchmark
+namespace FactoryBenchmark
 {
     public class Service1
     {

@@ -1,4 +1,4 @@
-﻿namespace Example.GenericHost
+namespace Example.GenericHost
 {
     public class Settings
     {

@@ -1,4 +1,4 @@
-﻿namespace Example.WebApplication.Services
+namespace Example.WebApplication.Services
 {
     using System.Threading;
 

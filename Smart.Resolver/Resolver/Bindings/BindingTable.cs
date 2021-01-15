@@ -15,7 +15,7 @@ namespace Smart.Resolver.Bindings
             this.table = table;
         }
 
-        public Binding[] Get(Type type)
+        public Binding[]? Get(Type type)
         {
             if (table.TryGetValue(type, out var bindings))
             {

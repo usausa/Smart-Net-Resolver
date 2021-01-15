@@ -19,7 +19,7 @@ namespace Smart.Resolver.Constraints
             return name == metadata.Name;
         }
 
-        public override bool Equals(object obj)
+        public override bool Equals(object? obj)
         {
             return obj is NameConstraint constraint && String.Equals(name, constraint.name, StringComparison.Ordinal);
         }
@@ -27,7 +27,7 @@ namespace Smart.Resolver.Constraints
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Globalization", "CA1307:SpecifyStringComparison", Justification = "Ignore")]
         public override int GetHashCode()
         {
-            return name?.GetHashCode() ?? 0;
+            return name.GetHashCode();
         }
     }
 }

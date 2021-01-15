@@ -6,16 +6,16 @@ namespace Smart.Resolver.Bindings
 
     public sealed class BindingMetadata
     {
-        private readonly IDictionary<string, object> values;
+        private readonly IDictionary<string, object?>? values;
 
-        public string Name { get; }
+        public string? Name { get; }
 
         public BindingMetadata()
             : this(null, null)
         {
         }
 
-        public BindingMetadata(string name, IDictionary<string, object> values)
+        public BindingMetadata(string? name, IDictionary<string, object?>? values)
         {
             Name = name;
             this.values = values;
@@ -26,14 +26,14 @@ namespace Smart.Resolver.Bindings
             return (values is not null) && values.ContainsKey(key);
         }
 
-        public T Get<T>(string key)
+        public T? Get<T>(string key)
         {
             return Get(key, default(T));
         }
 
-        public T Get<T>(string key, T defaultValue)
+        public T? Get<T>(string key, T? defaultValue)
         {
-            return values is null ? defaultValue : (T)values.GetOr(key, defaultValue);
+            return values is null ? defaultValue : (T?)values.GetOr(key, defaultValue);
         }
     }
 }

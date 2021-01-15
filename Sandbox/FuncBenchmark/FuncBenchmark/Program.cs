@@ -1,4 +1,4 @@
-﻿namespace FuncBenchmark
+namespace FuncBenchmark
 {
     using System;
 

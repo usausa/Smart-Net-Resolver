@@ -1,4 +1,4 @@
-﻿namespace Smart.Resolver.Handlers
+namespace Smart.Resolver.Handlers
 {
     using System;
     using System.Collections.Generic;

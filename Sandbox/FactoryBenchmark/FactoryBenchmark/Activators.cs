@@ -1,4 +1,4 @@
-﻿namespace FactoryBenchmark
+namespace FactoryBenchmark
 {
     public interface IActivator0 : IActivator
     {

@@ -1,4 +1,4 @@
-﻿namespace RequestKeyBenchmark
+namespace RequestKeyBenchmark
 {
     using System;
     using System.Collections.Generic;

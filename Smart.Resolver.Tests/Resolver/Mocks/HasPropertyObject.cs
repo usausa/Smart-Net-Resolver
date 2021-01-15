@@ -1,4 +1,4 @@
-﻿namespace Smart.Resolver.Mocks
+namespace Smart.Resolver.Mocks
 {
     using Smart.Resolver.Attributes;
 

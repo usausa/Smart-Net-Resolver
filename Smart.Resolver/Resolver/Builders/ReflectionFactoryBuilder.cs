@@ -11,8 +11,8 @@ namespace Smart.Resolver.Builders
             if (ci.GetParameters().Length == 0)
             {
                 return actions.Length == 0
-                    ? BuildActivatorFactory(ci.DeclaringType)
-                    : BuildActivatorWithActionsFactory(ci.DeclaringType, actions);
+                    ? BuildActivatorFactory(ci.DeclaringType!)
+                    : BuildActivatorWithActionsFactory(ci.DeclaringType!, actions);
             }
 
             return actions.Length == 0
@@ -22,14 +22,14 @@ namespace Smart.Resolver.Builders
 
         private static Func<IResolver, object> BuildActivatorFactory(Type type)
         {
-            return _ => Activator.CreateInstance(type);
+            return _ => Activator.CreateInstance(type)!;
         }
 
         private static Func<IResolver, object> BuildActivatorWithActionsFactory(Type type, Action<IResolver, object>[] actions)
         {
             return r =>
             {
-                var obj = Activator.CreateInstance(type);
+                var obj = Activator.CreateInstance(type)!;
 
                 for (var i = 0; i < actions.Length; i++)
                 {

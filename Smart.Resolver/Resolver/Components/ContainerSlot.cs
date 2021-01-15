@@ -6,7 +6,7 @@ namespace Smart.Resolver.Components
     {
         private readonly object sync = new();
 
-        private object[] entries = new object[8];
+        private object?[] entries = new object?[8];
 
         public object GetOrCreate(int index, Func<object> factory)
         {

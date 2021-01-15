@@ -1,4 +1,4 @@
-﻿namespace ScopeBenchmark
+namespace ScopeBenchmark
 {
     using System;
     using System.Collections.Generic;

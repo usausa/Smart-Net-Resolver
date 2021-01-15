@@ -1,4 +1,4 @@
-﻿namespace RequestKeyBenchmark
+namespace RequestKeyBenchmark
 {
     using BenchmarkDotNet.Configs;
     using BenchmarkDotNet.Diagnosers;

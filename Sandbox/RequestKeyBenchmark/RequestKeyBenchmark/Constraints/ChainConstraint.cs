@@ -1,4 +1,4 @@
-﻿namespace RequestKeyBenchmark.Constraints
+namespace RequestKeyBenchmark.Constraints
 {
     /// <summary>
     ///

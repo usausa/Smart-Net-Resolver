@@ -1,4 +1,4 @@
-﻿namespace Example.WebApplication.Infrastructure
+namespace Example.WebApplication.Infrastructure
 {
     using System;
 

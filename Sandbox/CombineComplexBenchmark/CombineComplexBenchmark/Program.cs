@@ -1,4 +1,4 @@
-﻿namespace CombineComplexBenchmark
+namespace CombineComplexBenchmark
 {
     using System;
     using System.Reflection;

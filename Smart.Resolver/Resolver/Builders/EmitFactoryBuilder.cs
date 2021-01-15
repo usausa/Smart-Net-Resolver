@@ -1,4 +1,4 @@
-﻿namespace Smart.Resolver.Builders
+namespace Smart.Resolver.Builders
 {
     using System;
     using System.Collections.Generic;
@@ -19,7 +19,7 @@
             var holder = DefaultHolderBuilder.CreateHolder(factories, actions);
             var holderType = holder?.GetType() ?? typeof(object);
 
-            var returnType = ci.DeclaringType.IsValueType ? typeof(object) : ci.DeclaringType;
+            var returnType = ci.DeclaringType!.IsValueType ? typeof(object) : ci.DeclaringType;
 
             var dynamicMethod = new DynamicMethod(string.Empty, returnType, new[] { holderType, typeof(IResolver) }, true);
             var ilGenerator = dynamicMethod.GetILGenerator();
@@ -124,9 +124,9 @@
         {
             private readonly Dictionary<Tuple<int, int>, Type> cache = new();
 
-            private AssemblyBuilder assemblyBuilder;
+            private AssemblyBuilder? assemblyBuilder;
 
-            private ModuleBuilder moduleBuilder;
+            private ModuleBuilder? moduleBuilder;
 
             private ModuleBuilder ModuleBuilder
             {
@@ -145,7 +145,7 @@
                 }
             }
 
-            public object CreateHolder(Func<IResolver, object>[] factories, Action<IResolver, object>[] actions)
+            public object? CreateHolder(Func<IResolver, object>[] factories, Action<IResolver, object>[] actions)
             {
                 if ((factories.Length == 0) && (actions.Length == 0))
                 {
@@ -153,7 +153,7 @@
                 }
 
                 var key = Tuple.Create(factories.Length, actions.Length);
-                Type type;
+                Type? type;
                 lock (cache)
                 {
                     if (!cache.TryGetValue(key, out type))
@@ -168,13 +168,13 @@
                 for (var i = 0; i < factories.Length; i++)
                 {
                     var field = type.GetField($"factory{i}");
-                    field.SetValue(holder, factories[i]);
+                    field!.SetValue(holder, factories[i]);
                 }
 
                 for (var i = 0; i < actions.Length; i++)
                 {
                     var field = type.GetField($"action{i}");
-                    field.SetValue(holder, actions[i]);
+                    field!.SetValue(holder, actions[i]);
                 }
 
                 return holder;
@@ -206,7 +206,7 @@
                 }
 
                 var typeInfo = typeBuilder.CreateTypeInfo();
-                return typeInfo.AsType();
+                return typeInfo!.AsType();
             }
         }
     }

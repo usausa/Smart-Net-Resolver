@@ -19,7 +19,7 @@ namespace Smart.Resolver.Injectors
             this.delegateFactory = delegateFactory;
         }
 
-        public Action<IResolver, object> CreateInjector(Type type, Binding binding)
+        public Action<IResolver, object>? CreateInjector(Type type, Binding binding)
         {
             var entries = type.GetRuntimeProperties()
                 .Where(p => p.IsInjectDefined())
@@ -36,7 +36,7 @@ namespace Smart.Resolver.Injectors
 
         private InjectEntry CreateInjectEntry(PropertyInfo pi, Binding binding)
         {
-            var setter = delegateFactory.CreateSetter(pi, true);
+            var setter = delegateFactory.CreateSetter(pi, true)!;
 
             var parameter = binding.PropertyValues.GetParameter(pi.Name);
             if (parameter is not null)
@@ -44,7 +44,7 @@ namespace Smart.Resolver.Injectors
                 return new InjectEntry(CreateParameterProvider(parameter), setter);
             }
 
-            var propertyType = delegateFactory.GetExtendedPropertyType(pi);
+            var propertyType = delegateFactory.GetExtendedPropertyType(pi)!;
             var constraint = ConstraintBuilder.Build(pi.GetCustomAttributes<ConstraintAttribute>());
             if (constraint is not null)
             {

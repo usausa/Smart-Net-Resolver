@@ -1,4 +1,4 @@
-﻿namespace NewBuilderWork
+namespace NewBuilderWork
 {
     using System;
     using Smart.Resolver.Builders;

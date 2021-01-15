@@ -1,4 +1,4 @@
-﻿namespace ComplexFactoryBenchmark
+namespace ComplexFactoryBenchmark
 {
     using System;
 

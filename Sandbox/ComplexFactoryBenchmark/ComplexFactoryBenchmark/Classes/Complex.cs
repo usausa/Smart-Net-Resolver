@@ -1,4 +1,4 @@
-﻿namespace ComplexFactoryBenchmark.Classes
+namespace ComplexFactoryBenchmark.Classes
 {
     public class Complex
     {

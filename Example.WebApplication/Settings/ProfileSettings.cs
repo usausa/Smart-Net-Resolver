@@ -1,4 +1,4 @@
-﻿namespace Example.WebApplication.Settings
+namespace Example.WebApplication.Settings
 {
     public class ProfileSettings
     {

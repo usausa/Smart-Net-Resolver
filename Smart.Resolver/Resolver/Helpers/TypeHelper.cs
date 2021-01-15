@@ -12,7 +12,7 @@ namespace Smart.Resolver.Helpers
         private static readonly Type ListType = typeof(IList<>);
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods", Justification = "Ignore")]
-        public static Type GetEnumerableElementType(Type type)
+        public static Type? GetEnumerableElementType(Type type)
         {
             // Array
             if (type.IsArray)

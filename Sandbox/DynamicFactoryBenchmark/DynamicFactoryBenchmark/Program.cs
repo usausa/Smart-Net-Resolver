@@ -1,4 +1,4 @@
-﻿namespace DynamicFactoryBenchmark
+namespace DynamicFactoryBenchmark
 {
     using System;
     using System.Reflection;
