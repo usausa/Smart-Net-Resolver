@@ -6,7 +6,7 @@ namespace Smart.Resolver.Builders
     public sealed class ReflectionFactoryBuilder : IFactoryBuilder
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods", Justification = "Ignore")]
-        public Func<IResolver, object> CreateFactory(ConstructorInfo ci, Func<IResolver, object>[] factories, Action<IResolver, object>[] actions)
+        public Func<IResolver, object> CreateFactory(ConstructorInfo ci, Func<IResolver, object?>[] factories, Action<IResolver, object>[] actions)
         {
             if (ci.GetParameters().Length == 0)
             {
@@ -40,11 +40,11 @@ namespace Smart.Resolver.Builders
             };
         }
 
-        private static Func<IResolver, object> BuildConstructorFactory(ConstructorInfo ci, Func<IResolver, object>[] factories)
+        private static Func<IResolver, object> BuildConstructorFactory(ConstructorInfo ci, Func<IResolver, object?>[] factories)
         {
             return r =>
             {
-                var args = new object[factories.Length];
+                var args = new object?[factories.Length];
                 for (var i = 0; i < factories.Length; i++)
                 {
                     args[i] = factories[i](r);
@@ -54,11 +54,11 @@ namespace Smart.Resolver.Builders
             };
         }
 
-        private static Func<IResolver, object> BuildConstructorWithActionsFactory(ConstructorInfo ci, Func<IResolver, object>[] factories, Action<IResolver, object>[] actions)
+        private static Func<IResolver, object> BuildConstructorWithActionsFactory(ConstructorInfo ci, Func<IResolver, object?>[] factories, Action<IResolver, object>[] actions)
         {
             return r =>
             {
-                var args = new object[factories.Length];
+                var args = new object?[factories.Length];
                 for (var i = 0; i < factories.Length; i++)
                 {
                     args[i] = factories[i](r);
@@ -75,7 +75,7 @@ namespace Smart.Resolver.Builders
             };
         }
 
-        public Func<IResolver, object> CreateArrayFactory(Type type, Func<IResolver, object>[] factories)
+        public Func<IResolver, object> CreateArrayFactory(Type type, Func<IResolver, object?>[] factories)
         {
             return r =>
             {

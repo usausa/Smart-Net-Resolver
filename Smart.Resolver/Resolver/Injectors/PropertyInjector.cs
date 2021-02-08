@@ -54,7 +54,7 @@ namespace Smart.Resolver.Injectors
             return new InjectEntry(CreateProvider(propertyType), setter);
         }
 
-        private static Func<IResolver, object> CreateParameterProvider(IParameter parameter)
+        private static Func<IResolver, object?> CreateParameterProvider(IParameter parameter)
         {
             return parameter.Resolve;
         }
@@ -72,11 +72,11 @@ namespace Smart.Resolver.Injectors
         [System.Diagnostics.CodeAnalysis.SuppressMessage("StyleCop.CSharp.MaintainabilityRules", "SA1401:FieldsMustBePrivate", Justification = "Performance")]
         private sealed class InjectEntry
         {
-            public readonly Func<IResolver, object> Provider;
+            public readonly Func<IResolver, object?> Provider;
 
-            public readonly Action<object, object> Setter;
+            public readonly Action<object, object?> Setter;
 
-            public InjectEntry(Func<IResolver, object> provider, Action<object, object> setter)
+            public InjectEntry(Func<IResolver, object?> provider, Action<object, object?> setter)
             {
                 Provider = provider;
                 Setter = setter;

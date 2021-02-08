@@ -132,13 +132,13 @@ namespace Smart.Resolver
             {
                 return _ =>
                 {
-                    if (Cache.Value.TryGetValue(this, out var value))
+                    if (Cache.Value!.TryGetValue(this, out var value))
                     {
                         return value;
                     }
 
                     value = factory();
-                    Cache.Value[this] = value;
+                    Cache.Value![this] = value;
 
                     return value;
                 };

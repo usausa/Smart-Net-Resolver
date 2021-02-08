@@ -1,8 +1,9 @@
 namespace Smart.Resolver.Configs
 {
     using System;
-    using Smart.ComponentModel;
+    using System.Diagnostics.CodeAnalysis;
 
+    using Smart.ComponentModel;
     using Smart.Resolver.Parameters;
     using Smart.Resolver.Providers;
     using Smart.Resolver.Scopes;
@@ -22,7 +23,7 @@ namespace Smart.Resolver.Configs
 
         IBindingInNamedWithSyntax ToMethod(Func<IResolver, T> factory);
 
-        IBindingInNamedWithSyntax ToConstant(T value);
+        IBindingInNamedWithSyntax ToConstant([DisallowNull] T value);
     }
 
     public interface IBindingInSyntax
@@ -43,19 +44,19 @@ namespace Smart.Resolver.Configs
 
     public interface IBindingWithSyntax
     {
-        IBindingWithSyntax WithMetadata(string key, object value);
+        IBindingWithSyntax WithMetadata(string key, object? value);
 
         IBindingWithSyntax WithConstructorArgument(string name, Func<ComponentContainer, IParameter> factory);
 
-        IBindingWithSyntax WithConstructorArgument(string name, object value);
+        IBindingWithSyntax WithConstructorArgument(string name, object? value);
 
-        IBindingWithSyntax WithConstructorArgument(string name, Func<IResolver, object> factory);
+        IBindingWithSyntax WithConstructorArgument(string name, Func<IResolver, object?> factory);
 
         IBindingWithSyntax WithPropertyValue(string name, Func<ComponentContainer, IParameter> factory);
 
-        IBindingWithSyntax WithPropertyValue(string name, object value);
+        IBindingWithSyntax WithPropertyValue(string name, object? value);
 
-        IBindingWithSyntax WithPropertyValue(string name, Func<IResolver, object> factory);
+        IBindingWithSyntax WithPropertyValue(string name, Func<IResolver, object?> factory);
     }
 
     public interface IBindingToInNamedWithSyntax<in T> : IBindingToSyntax<T>, IBindingInNamedWithSyntax

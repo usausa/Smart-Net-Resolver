@@ -2,6 +2,7 @@ namespace Smart.Resolver
 {
     using System;
     using System.Diagnostics;
+    using System.Diagnostics.CodeAnalysis;
     using System.Runtime.CompilerServices;
     using System.Threading;
 
@@ -14,7 +15,7 @@ namespace Smart.Resolver
 
         private const int Factor = 3;
 
-        private static readonly Node EmptyNode = new(typeof(EmptyKey), null, default);
+        private static readonly Node EmptyNode = new(typeof(EmptyKey), null!, default!);
 
         private readonly object sync = new();
 
@@ -40,25 +41,18 @@ namespace Smart.Resolver
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static int CalculateHash(Type type, IConstraint constraint)
         {
-            var hash = type.GetHashCode();
-            if (constraint is not null)
-            {
-                hash ^= constraint.GetHashCode();
-            }
-
-            return hash;
+            return type.GetHashCode() ^ constraint.GetHashCode();
         }
 
         private static int CalculateDepth(Node node)
         {
-            var length = 0;
-
-            do
+            var length = 1;
+            var next = node.Next;
+            while (next is not null)
             {
                 length++;
-                node = node.Next;
+                next = next.Next;
             }
-            while (node is not null);
 
             return length;
         }
@@ -215,7 +209,7 @@ namespace Smart.Resolver
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods", Justification = "Performance")]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool TryGetValue(Type type, IConstraint constraint, out T value)
+        public bool TryGetValue(Type type, IConstraint constraint, [MaybeNullWhen(false)] out T value)
         {
             var temp = nodes;
             var node = temp[CalculateHash(type, constraint) & (temp.Length - 1)];
@@ -277,7 +271,7 @@ namespace Smart.Resolver
 
             public readonly T Value;
 
-            public Node Next;
+            public Node? Next;
 
             public Node(Type type, IConstraint constraint, T value)
             {

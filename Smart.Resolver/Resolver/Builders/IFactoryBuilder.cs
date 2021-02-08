@@ -5,7 +5,7 @@ namespace Smart.Resolver.Builders
 
     public interface IFactoryBuilder
     {
-        Func<IResolver, object> CreateFactory(ConstructorInfo ci, Func<IResolver, object>[] factories, Action<IResolver, object>[] actions);
+        Func<IResolver, object> CreateFactory(ConstructorInfo ci, Func<IResolver, object?>[] factories, Action<IResolver, object>[] actions);
 
         Func<IResolver, object> CreateArrayFactory(Type type, Func<IResolver, object>[] factories);
     }

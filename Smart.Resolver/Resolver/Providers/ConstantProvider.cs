@@ -1,18 +1,19 @@
 namespace Smart.Resolver.Providers
 {
     using System;
-
+    using System.Diagnostics.CodeAnalysis;
     using Smart.Resolver.Bindings;
 
-    public sealed class ConstantProvider : IProvider
+    public sealed class ConstantProvider<T> : IProvider
     {
         private readonly object value;
 
-        public Type TargetType => value.GetType();
+        public Type TargetType { get; }
 
-        public ConstantProvider(object value)
+        public ConstantProvider([DisallowNull] T value)
         {
             this.value = value;
+            TargetType = typeof(T);
         }
 
         public Func<IResolver, object> CreateFactory(IKernel kernel, Binding binding)

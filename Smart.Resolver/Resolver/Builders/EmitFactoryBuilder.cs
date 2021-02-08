@@ -14,7 +14,7 @@ namespace Smart.Resolver.Builders
         private static readonly HolderBuilder DefaultHolderBuilder = new();
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods", Justification = "Ignore")]
-        public Func<IResolver, object> CreateFactory(ConstructorInfo ci, Func<IResolver, object>[] factories, Action<IResolver, object>[] actions)
+        public Func<IResolver, object> CreateFactory(ConstructorInfo ci, Func<IResolver, object?>[] factories, Action<IResolver, object>[] actions)
         {
             var holder = DefaultHolderBuilder.CreateHolder(factories, actions);
             var holderType = holder?.GetType() ?? typeof(object);
@@ -145,7 +145,7 @@ namespace Smart.Resolver.Builders
                 }
             }
 
-            public object? CreateHolder(Func<IResolver, object>[] factories, Action<IResolver, object>[] actions)
+            public object? CreateHolder(Func<IResolver, object?>[] factories, Action<IResolver, object>[] actions)
             {
                 if ((factories.Length == 0) && (actions.Length == 0))
                 {

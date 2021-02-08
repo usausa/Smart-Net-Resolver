@@ -2,7 +2,7 @@ namespace Smart.Resolver.Benchmark.Benchmarks
 {
     using System;
     using System.Collections.Generic;
-
+    using System.Diagnostics.CodeAnalysis;
     using BenchmarkDotNet.Attributes;
 
     using Microsoft.Extensions.DependencyInjection;
@@ -13,8 +13,10 @@ namespace Smart.Resolver.Benchmark.Benchmarks
     [Config(typeof(BenchmarkConfig))]
     public class SmartDefaultBenchmark
     {
+        [AllowNull]
         private SmartResolver resolver;
 
+        [AllowNull]
         private IServiceProvider provider;
 
         [GlobalSetup]
@@ -141,31 +143,31 @@ namespace Smart.Resolver.Benchmark.Benchmarks
         [Benchmark(OperationsPerInvoke = 5)]
         public void AspNet()
         {
-            var factory = (IServiceScopeFactory)provider.GetService(typeof(IServiceScopeFactory));
+            var factory = (IServiceScopeFactory)provider.GetService(typeof(IServiceScopeFactory))!;
             using (var scope = factory.CreateScope())
             {
                 scope.ServiceProvider.GetService(typeof(Controller));
             }
 
-            factory = (IServiceScopeFactory)provider.GetService(typeof(IServiceScopeFactory));
+            factory = (IServiceScopeFactory)provider.GetService(typeof(IServiceScopeFactory))!;
             using (var scope = factory.CreateScope())
             {
                 scope.ServiceProvider.GetService(typeof(Controller));
             }
 
-            factory = (IServiceScopeFactory)provider.GetService(typeof(IServiceScopeFactory));
+            factory = (IServiceScopeFactory)provider.GetService(typeof(IServiceScopeFactory))!;
             using (var scope = factory.CreateScope())
             {
                 scope.ServiceProvider.GetService(typeof(Controller));
             }
 
-            factory = (IServiceScopeFactory)provider.GetService(typeof(IServiceScopeFactory));
+            factory = (IServiceScopeFactory)provider.GetService(typeof(IServiceScopeFactory))!;
             using (var scope = factory.CreateScope())
             {
                 scope.ServiceProvider.GetService(typeof(Controller));
             }
 
-            factory = (IServiceScopeFactory)provider.GetService(typeof(IServiceScopeFactory));
+            factory = (IServiceScopeFactory)provider.GetService(typeof(IServiceScopeFactory))!;
             using (var scope = factory.CreateScope())
             {
                 scope.ServiceProvider.GetService(typeof(Controller));

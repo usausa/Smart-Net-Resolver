@@ -143,7 +143,7 @@ namespace Smart.Resolver
 
             public SimpleObject SimpleObject { get; }
 
-            public IService Service { get; }
+            public IService? Service { get; }
 
             public MultiConstructorObject(SimpleObject simpleObject)
             {

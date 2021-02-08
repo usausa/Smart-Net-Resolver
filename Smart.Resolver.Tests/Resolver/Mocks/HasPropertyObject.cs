@@ -5,6 +5,6 @@ namespace Smart.Resolver.Mocks
     public class HasPropertyObject
     {
         [Inject]
-        public SimpleObject Injected { get; set; }
+        public SimpleObject? Injected { get; set; }
     }
 }

@@ -56,14 +56,14 @@ namespace Smart.Resolver.Providers
             foreach (var constructor in constructors)
             {
                 var match = true;
-                var argumentFactories = new List<Func<IResolver, object>>(constructor.Parameters.Length);
+                var argumentFactories = new List<Func<IResolver, object?>>(constructor.Parameters.Length);
 
                 foreach (var parameter in constructor.Parameters)
                 {
                     var pi = parameter.Parameter;
 
                     // Constructor argument
-                    var argument = binding.ConstructorArguments.GetParameter(pi.Name);
+                    var argument = binding.ConstructorArguments.GetParameter(pi.Name!);
                     if (argument is not null)
                     {
                         argumentFactories.Add(k => argument.Resolve(k));
@@ -126,13 +126,11 @@ namespace Smart.Resolver.Providers
         private Action<IResolver, object>[] CreateActions(Binding binding)
         {
             var targetInjectors = injectors
-                .Select(x => x.CreateInjector(TargetType, binding))
-                .Where(x => x is not null);
+                .Select(x => x.CreateInjector(TargetType, binding));
             var targetProcessors = processors
                 .OrderByDescending(x => x.Order)
-                .Select(x => x.CreateProcessor(TargetType))
-                .Where(x => x is not null);
-            return targetInjectors.Concat(targetProcessors).ToArray();
+                .Select(x => x.CreateProcessor(TargetType));
+            return targetInjectors.Concat(targetProcessors).Where(x => x is not null).ToArray()!;
         }
 
         // ------------------------------------------------------------
@@ -158,9 +156,9 @@ namespace Smart.Resolver.Providers
         {
             public ParameterInfo Parameter { get; }
 
-            public Type ElementType { get; }
+            public Type? ElementType { get; }
 
-            public IConstraint Constraint { get; }
+            public IConstraint? Constraint { get; }
 
             public ParameterMetadata(ParameterInfo pi)
             {

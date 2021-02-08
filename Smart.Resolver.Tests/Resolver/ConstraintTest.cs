@@ -74,31 +74,6 @@ namespace Smart.Resolver
             {
                 return metadata.Has(Key);
             }
-
-            public bool Equals(IConstraint other)
-            {
-                return other is HasMetadataConstraint constraint && String.Equals(Key, constraint.Key, StringComparison.Ordinal);
-            }
-
-            public override bool Equals(object obj)
-            {
-                if (obj is null)
-                {
-                    return false;
-                }
-
-                if (ReferenceEquals(this, obj))
-                {
-                    return true;
-                }
-
-                return obj is NameConstraint constraint && Equals(constraint);
-            }
-
-            public override int GetHashCode()
-            {
-                return Key?.GetHashCode(StringComparison.Ordinal) ?? 0;
-            }
         }
 
         [AttributeUsage(AttributeTargets.Property | AttributeTargets.Parameter, AllowMultiple = true)]

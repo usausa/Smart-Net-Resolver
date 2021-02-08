@@ -1,7 +1,7 @@
 namespace Smart.Resolver.Benchmark.Benchmarks
 {
     using System.Collections.Generic;
-
+    using System.Diagnostics.CodeAnalysis;
     using BenchmarkDotNet.Attributes;
 
     using Smart.Reflection;
@@ -11,6 +11,7 @@ namespace Smart.Resolver.Benchmark.Benchmarks
     [Config(typeof(BenchmarkConfig))]
     public class SmartUseReflectionBenchmark
     {
+        [AllowNull]
         private SmartResolver resolver;
 
         [GlobalSetup]

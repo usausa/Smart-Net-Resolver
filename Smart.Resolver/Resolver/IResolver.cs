@@ -2,6 +2,7 @@ namespace Smart.Resolver
 {
     using System;
     using System.Collections.Generic;
+    using System.Diagnostics.CodeAnalysis;
 
     using Smart.Resolver.Constraints;
 
@@ -20,13 +21,13 @@ namespace Smart.Resolver
 
         // TryGet
 
-        bool TryGet<T>(out T obj);
+        bool TryGet<T>([MaybeNullWhen(false)] out T obj);
 
-        bool TryGet<T>(IConstraint constraint, out T obj);
+        bool TryGet<T>(IConstraint constraint, [MaybeNullWhen(false)] out T obj);
 
-        bool TryGet(Type type, out object obj);
+        bool TryGet(Type type, [MaybeNullWhen(false)] out object obj);
 
-        bool TryGet(Type type, IConstraint constraint, out object obj);
+        bool TryGet(Type type, IConstraint constraint, [MaybeNullWhen(false)] out object obj);
 
         // Get
 

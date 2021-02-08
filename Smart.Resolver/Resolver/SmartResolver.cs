@@ -2,6 +2,7 @@ namespace Smart.Resolver
 {
     using System;
     using System.Collections.Generic;
+    using System.Diagnostics.CodeAnalysis;
     using System.Linq;
     using System.Runtime.CompilerServices;
     using System.Threading;
@@ -40,7 +41,7 @@ namespace Smart.Resolver
 
         private readonly ThreadsafeTypeHashArrayMap<Action<IResolver, object>[]> injectorsCache = new();
 
-        private readonly Func<IResolver, object> nullFactory = _ => null;
+        private readonly Func<IResolver, object> nullFactory = _ => default!;
 
         private readonly object sync = new();
 
@@ -73,8 +74,8 @@ namespace Smart.Resolver
                 tableEntries.Add(group.Key, group.ToArray());
             }
 
-            tableEntries.Add(typeof(IResolver), new[] { new Binding(typeof(IResolver), new ConstantProvider(this), null, null, null, null) });
-            tableEntries.Add(typeof(SmartResolver), new[] { new Binding(typeof(SmartResolver), new ConstantProvider(this), null, null, null, null) });
+            tableEntries.Add(typeof(IResolver), new[] { new Binding(typeof(IResolver), new ConstantProvider<IResolver>(this), null, null, null, null) });
+            tableEntries.Add(typeof(SmartResolver), new[] { new Binding(typeof(SmartResolver), new ConstantProvider<SmartResolver>(this), null, null, null, null) });
 
             table = new BindingTable(tableEntries);
         }
@@ -93,14 +94,14 @@ namespace Smart.Resolver
         // ObjectFactory
         // ------------------------------------------------------------
 
-        bool IKernel.TryResolveFactory(Type type, IConstraint constraint, out Func<IResolver, object> factory)
+        bool IKernel.TryResolveFactory(Type type, IConstraint? constraint, [NotNullWhen(true)] out Func<IResolver, object> factory)
         {
             var entry = constraint is null ? FindFactoryEntry(type) : FindFactoryEntry(type, constraint);
             factory = entry.Single;
             return entry.CanGet;
         }
 
-        bool IKernel.TryResolveFactories(Type type, IConstraint constraint, out Func<IResolver, object>[] factories)
+        bool IKernel.TryResolveFactories(Type type, IConstraint? constraint, [NotNullWhen(true)] out Func<IResolver, object>[] factories)
         {
             var entry = constraint is null ? FindFactoryEntry(type) : FindFactoryEntry(type, constraint);
             factories = entry.Multiple;
@@ -123,32 +124,56 @@ namespace Smart.Resolver
 
         // TryGet
 
-        public bool TryGet<T>(out T obj)
+        public bool TryGet<T>([MaybeNullWhen(false)] out T obj)
         {
             var entry = FindFactoryEntry(typeof(T));
-            obj = entry.CanGet ? (T)entry.Single(this) : default;
-            return entry.CanGet;
+            if (entry.CanGet)
+            {
+                obj = (T)entry.Single(this);
+                return true;
+            }
+
+            obj = default;
+            return false;
         }
 
-        public bool TryGet<T>(IConstraint constraint, out T obj)
+        public bool TryGet<T>(IConstraint constraint, [MaybeNullWhen(false)] out T obj)
         {
             var entry = FindFactoryEntry(typeof(T), constraint);
-            obj = entry.CanGet ? (T)entry.Single(this) : default;
-            return entry.CanGet;
+            if (entry.CanGet)
+            {
+                obj = (T)entry.Single(this);
+                return true;
+            }
+
+            obj = default;
+            return false;
         }
 
-        public bool TryGet(Type type, out object obj)
+        public bool TryGet(Type type, [MaybeNullWhen(false)] out object obj)
         {
             var entry = FindFactoryEntry(type);
-            obj = entry.CanGet ? entry.Single(this) : default;
-            return entry.CanGet;
+            if (entry.CanGet)
+            {
+                obj = entry.Single(this);
+                return true;
+            }
+
+            obj = default;
+            return false;
         }
 
-        public bool TryGet(Type type, IConstraint constraint, out object obj)
+        public bool TryGet(Type type, IConstraint constraint, [MaybeNullWhen(false)] out object obj)
         {
             var entry = FindFactoryEntry(type, constraint);
-            obj = entry.CanGet ? entry.Single(this) : default;
-            return entry.CanGet;
+            if (entry.CanGet)
+            {
+                obj = entry.Single(this);
+                return true;
+            }
+
+            obj = default;
+            return false;
         }
 
         // Get
@@ -219,7 +244,7 @@ namespace Smart.Resolver
             return entry;
         }
 
-        private FactoryEntry CreateFactoryEntry(Type type, IConstraint constraint, IResolver resolver)
+        private FactoryEntry CreateFactoryEntry(Type type, IConstraint? constraint, IResolver resolver)
         {
             lock (sync)
             {
@@ -272,11 +297,11 @@ namespace Smart.Resolver
 
         private Action<IResolver, object>[] CreateInjectors(Type type)
         {
-            var binding = new Binding(type);
+            var binding = new Binding(type, null!);
             return injectors
                 .Select(x => x.CreateInjector(type, binding))
                 .Where(x => x is not null)
-                .ToArray();
+                .ToArray()!;
         }
 
         // ------------------------------------------------------------
@@ -289,7 +314,7 @@ namespace Smart.Resolver
         private sealed class ChildResolver : IResolver, IContainer
         {
             [ThreadStatic]
-            private static ContainerSlot pool;
+            private static ContainerSlot? pool;
 
             private readonly SmartResolver resolver;
 
@@ -328,32 +353,56 @@ namespace Smart.Resolver
 
             // TryGet
 
-            public bool TryGet<T>(out T obj)
+            public bool TryGet<T>([MaybeNullWhen(false)] out T obj)
             {
                 var entry = resolver.FindFactoryEntry(this, typeof(T));
-                obj = entry.CanGet ? (T)entry.Single(this) : default;
-                return entry.CanGet;
+                if (entry.CanGet)
+                {
+                    obj = (T)entry.Single(this);
+                    return true;
+                }
+
+                obj = default;
+                return false;
             }
 
-            public bool TryGet<T>(IConstraint constraint, out T obj)
+            public bool TryGet<T>(IConstraint constraint, [MaybeNullWhen(false)] out T obj)
             {
                 var entry = resolver.FindFactoryEntry(this, typeof(T), constraint);
-                obj = entry.CanGet ? (T)entry.Single(this) : default;
-                return entry.CanGet;
+                if (entry.CanGet)
+                {
+                    obj = (T)entry.Single(this);
+                    return true;
+                }
+
+                obj = default;
+                return false;
             }
 
-            public bool TryGet(Type type, out object obj)
+            public bool TryGet(Type type, [MaybeNullWhen(false)] out object obj)
             {
                 var entry = resolver.FindFactoryEntry(this, type);
-                obj = entry.CanGet ? entry.Single(this) : default;
-                return entry.CanGet;
+                if (entry.CanGet)
+                {
+                    obj = entry.Single(this);
+                    return true;
+                }
+
+                obj = default;
+                return false;
             }
 
-            public bool TryGet(Type type, IConstraint constraint, out object obj)
+            public bool TryGet(Type type, IConstraint constraint, [MaybeNullWhen(false)] out object obj)
             {
                 var entry = resolver.FindFactoryEntry(this, type, constraint);
-                obj = entry.CanGet ? entry.Single(this) : default;
-                return entry.CanGet;
+                if (entry.CanGet)
+                {
+                    obj = entry.Single(this);
+                    return true;
+                }
+
+                obj = default;
+                return false;
             }
 
             // Get

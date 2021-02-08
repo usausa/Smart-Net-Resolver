@@ -2,6 +2,7 @@ namespace Smart.Resolver.Configs
 {
     using System;
     using System.Collections.Generic;
+    using System.Diagnostics.CodeAnalysis;
     using System.Linq;
 
     using Smart.ComponentModel;
@@ -14,17 +15,18 @@ namespace Smart.Resolver.Configs
     {
         private readonly Type targetType;
 
+        [AllowNull]
         private Func<ComponentContainer, IProvider> providerFactory;
 
-        private Func<ComponentContainer, IScope> scopeFactory;
+        private Func<ComponentContainer, IScope>? scopeFactory;
 
-        private string metadataName;
+        private string? metadataName;
 
-        private Dictionary<string, object> metadataValues;
+        private Dictionary<string, object?>? metadataValues;
 
-        private Dictionary<string, Func<ComponentContainer, IParameter>> constructorArgumentFactories;
+        private Dictionary<string, Func<ComponentContainer, IParameter>>? constructorArgumentFactories;
 
-        private Dictionary<string, Func<ComponentContainer, IParameter>> propertyValueFactories;
+        private Dictionary<string, Func<ComponentContainer, IParameter>>? propertyValueFactories;
 
         public BindingBuilder(Type type)
         {
@@ -59,12 +61,12 @@ namespace Smart.Resolver.Configs
 
         public IBindingInNamedWithSyntax ToMethod(Func<IResolver, T> factory)
         {
-            return ToProvider(_ => new CallbackProvider(targetType, resolver => factory(resolver)));
+            return ToProvider(_ => new CallbackProvider<T>(factory));
         }
 
-        public IBindingInNamedWithSyntax ToConstant(T value)
+        public IBindingInNamedWithSyntax ToConstant([DisallowNull] T value)
         {
-            return ToProvider(_ => new ConstantProvider(value));
+            return ToProvider(_ => new ConstantProvider<T>(value));
         }
 
         // ------------------------------------------------------------
@@ -79,7 +81,7 @@ namespace Smart.Resolver.Configs
 
         public IBindingNamedWithSyntax InTransientScope()
         {
-            InScope(null);
+            scopeFactory = null;
             return this;
         }
 
@@ -109,27 +111,27 @@ namespace Smart.Resolver.Configs
         // With
         // ------------------------------------------------------------
 
-        public IBindingWithSyntax WithMetadata(string key, object value)
+        public IBindingWithSyntax WithMetadata(string key, object? value)
         {
-            metadataValues ??= new Dictionary<string, object>();
+            metadataValues ??= new();
             metadataValues[key] = value;
             return this;
         }
 
         public IBindingWithSyntax WithConstructorArgument(string name, Func<ComponentContainer, IParameter> factory)
         {
-            constructorArgumentFactories ??= new Dictionary<string, Func<ComponentContainer, IParameter>>();
+            constructorArgumentFactories ??= new();
             constructorArgumentFactories[name] = factory;
             return this;
         }
 
-        public IBindingWithSyntax WithConstructorArgument(string name, object value)
+        public IBindingWithSyntax WithConstructorArgument(string name, object? value)
         {
             WithConstructorArgument(name, _ => new ConstantParameter(value));
             return this;
         }
 
-        public IBindingWithSyntax WithConstructorArgument(string name, Func<IResolver, object> factory)
+        public IBindingWithSyntax WithConstructorArgument(string name, Func<IResolver, object?> factory)
         {
             WithConstructorArgument(name, _ => new CallbackParameter(factory));
             return this;
@@ -142,13 +144,13 @@ namespace Smart.Resolver.Configs
             return this;
         }
 
-        public IBindingWithSyntax WithPropertyValue(string name, object value)
+        public IBindingWithSyntax WithPropertyValue(string name, object? value)
         {
             WithPropertyValue(name, _ => new ConstantParameter(value));
             return this;
         }
 
-        public IBindingWithSyntax WithPropertyValue(string name, Func<IResolver, object> factory)
+        public IBindingWithSyntax WithPropertyValue(string name, Func<IResolver, object?> factory)
         {
             WithPropertyValue(name, _ => new CallbackParameter(factory));
             return this;
@@ -167,7 +169,7 @@ namespace Smart.Resolver.Configs
         {
             return new(
                 targetType,
-                providerFactory?.Invoke(components),
+                providerFactory.Invoke(components),
                 scopeFactory?.Invoke(components),
                 new BindingMetadata(metadataName, metadataValues),
                 new ParameterMap(constructorArgumentFactories?.ToDictionary(kv => kv.Key, kv => kv.Value(components))),

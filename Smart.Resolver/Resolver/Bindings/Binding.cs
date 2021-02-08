@@ -14,7 +14,7 @@ namespace Smart.Resolver.Bindings
 
         public Type Type { get; }
 
-        public IProvider? Provider { get; }
+        public IProvider Provider { get; }
 
         public IScope? Scope { get; }
 
@@ -24,17 +24,12 @@ namespace Smart.Resolver.Bindings
 
         public ParameterMap PropertyValues { get; }
 
-        public Binding(Type type)
-            : this(type, null, null, null, null, null)
-        {
-        }
-
         public Binding(Type type, IProvider provider)
             : this(type, provider, null, null, null, null)
         {
         }
 
-        public Binding(Type type, IProvider? provider, IScope? scope, BindingMetadata? metadata, ParameterMap? constructorArguments, ParameterMap? propertyValues)
+        public Binding(Type type, IProvider provider, IScope? scope, BindingMetadata? metadata, ParameterMap? constructorArguments, ParameterMap? propertyValues)
         {
             Type = type;
             Provider = provider;

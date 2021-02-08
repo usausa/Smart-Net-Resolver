@@ -1,6 +1,7 @@
 namespace Smart.Resolver
 {
     using System;
+    using System.Diagnostics.CodeAnalysis;
     using System.Runtime.CompilerServices;
 
     using Smart.Resolver.Constraints;
@@ -35,23 +36,23 @@ namespace Smart.Resolver
         // TryGet
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool TryGet<T>(this SmartResolver resolver, string name, out T obj)
+        public static bool TryGet<T>(this SmartResolver resolver, string name, [MaybeNullWhen(false)] out T obj)
         {
             return resolver.TryGet(new NameConstraint(name), out obj);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool TryGet(this SmartResolver resolver, Type type, string name, out object obj)
+        public static bool TryGet(this SmartResolver resolver, Type type, string name, [MaybeNullWhen(false)] out object obj)
         {
             return resolver.TryGet(type, new NameConstraint(name), out obj);
         }
 
-        public static bool TryGet<T>(this IResolver resolver, string name, out T obj)
+        public static bool TryGet<T>(this IResolver resolver, string name, [MaybeNullWhen(false)] out T obj)
         {
             return resolver.TryGet(new NameConstraint(name), out obj);
         }
 
-        public static bool TryGet(this IResolver resolver, Type type, string name, out object obj)
+        public static bool TryGet(this IResolver resolver, Type type, string name, [MaybeNullWhen(false)] out object obj)
         {
             return resolver.TryGet(type, new NameConstraint(name), out obj);
         }
