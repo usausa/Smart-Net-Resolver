@@ -2,6 +2,7 @@ namespace Smart.Resolver.Scopes
 {
     using System;
     using System.Diagnostics.CodeAnalysis;
+
     using Smart.ComponentModel;
     using Smart.Resolver.Components;
 
