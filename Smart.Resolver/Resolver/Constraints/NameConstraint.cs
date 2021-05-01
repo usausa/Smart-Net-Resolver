@@ -1,7 +1,5 @@
 namespace Smart.Resolver.Constraints
 {
-    using System;
-
     using Smart.Resolver.Bindings;
 
     public sealed class NameConstraint : IConstraint

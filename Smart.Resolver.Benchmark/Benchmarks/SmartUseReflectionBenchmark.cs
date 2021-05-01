@@ -2,6 +2,7 @@ namespace Smart.Resolver.Benchmark.Benchmarks
 {
     using System.Collections.Generic;
     using System.Diagnostics.CodeAnalysis;
+
     using BenchmarkDotNet.Attributes;
 
     using Smart.Reflection;

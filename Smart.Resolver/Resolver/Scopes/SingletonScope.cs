@@ -1,15 +1,13 @@
 namespace Smart.Resolver.Scopes
 {
     using System;
-    using System.Diagnostics.CodeAnalysis;
 
     using Smart.ComponentModel;
     using Smart.Resolver.Components;
 
     public sealed class SingletonScope : IScope, IDisposable
     {
-        [AllowNull]
-        private object value;
+        private object? value;
 
         private Func<IResolver, object>? objectFactory;
 

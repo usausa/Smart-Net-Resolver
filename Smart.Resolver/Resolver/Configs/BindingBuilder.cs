@@ -61,7 +61,12 @@ namespace Smart.Resolver.Configs
 
         public IBindingInNamedWithSyntax ToMethod(Func<IResolver, T> factory)
         {
-            return ToProvider(_ => new CallbackProvider<T>(factory));
+            var genericType = typeof(T);
+            var providerType = genericType.IsValueType
+                ? typeof(StructCallbackProvider<>).MakeGenericType(genericType)
+                : typeof(CallbackProvider<>).MakeGenericType(genericType);
+            var provider = (IProvider)Activator.CreateInstance(providerType, factory)!;
+            return ToProvider(_ => provider);
         }
 
         public IBindingInNamedWithSyntax ToConstant([DisallowNull] T value)
