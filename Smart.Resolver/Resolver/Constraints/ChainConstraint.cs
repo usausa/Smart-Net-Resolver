@@ -1,7 +1,5 @@
 namespace Smart.Resolver.Constraints
 {
-    using System.Linq;
-
     using Smart.Resolver.Bindings;
 
     public sealed class ChainConstraint : IConstraint
@@ -15,7 +13,15 @@ namespace Smart.Resolver.Constraints
 
         public bool Match(BindingMetadata metadata)
         {
-            return constraints.All(c => c.Match(metadata));
+            for (var i = 0; i < constraints.Length; i++)
+            {
+                if (!constraints[i].Match(metadata))
+                {
+                    return false;
+                }
+            }
+
+            return true;
         }
 
         public override bool Equals(object? obj)
