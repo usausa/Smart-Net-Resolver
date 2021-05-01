@@ -26,14 +26,14 @@ namespace Smart.Resolver.Bindings
             return (values is not null) && values.ContainsKey(key);
         }
 
-        public T? Get<T>(string key)
+        public T Get<T>(string key)
         {
-            return Get(key, default(T));
+            return Get<T>(key, default!);
         }
 
-        public T? Get<T>(string key, T? defaultValue)
+        public T Get<T>(string key, T defaultValue)
         {
-            return values is null ? defaultValue : (T?)values.GetOr(key, defaultValue);
+            return values is null ? defaultValue! : (T)values.GetOr(key, defaultValue)!;
         }
     }
 }
