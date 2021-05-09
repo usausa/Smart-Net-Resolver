@@ -13,9 +13,10 @@ namespace Smart.Resolver.Constraints
 
         public bool Match(BindingMetadata metadata)
         {
-            for (var i = 0; i < constraints.Length; i++)
+            var constraintsLocal = constraints;
+            for (var i = 0; i < constraintsLocal.Length; i++)
             {
-                if (!constraints[i].Match(metadata))
+                if (!constraintsLocal[i].Match(metadata))
                 {
                     return false;
                 }
@@ -26,18 +27,22 @@ namespace Smart.Resolver.Constraints
 
         public override bool Equals(object? obj)
         {
-            if (obj is ChainConstraint constraint &&
-                (constraints.Length == constraint.constraints.Length))
+            if (obj is ChainConstraint constraint)
             {
-                for (var i = 0; i < constraints.Length; i++)
+                var constraintsLocal = constraints;
+                var constraintsOther = constraint.constraints;
+                if (constraintsLocal.Length == constraintsOther.Length)
                 {
-                    if (!constraints[i].Equals(constraint.constraints[i]))
+                    for (var i = 0; i < constraintsLocal.Length; i++)
                     {
-                        return false;
+                        if (!constraintsLocal[i].Equals(constraintsOther[i]))
+                        {
+                            return false;
+                        }
                     }
-                }
 
-                return true;
+                    return true;
+                }
             }
 
             return false;
@@ -46,9 +51,10 @@ namespace Smart.Resolver.Constraints
         public override int GetHashCode()
         {
             var hash = 0;
-            for (var i = 0; i < constraints.Length; i++)
+            var constraintsLocal = constraints;
+            for (var i = 0; i < constraintsLocal.Length; i++)
             {
-                hash ^= constraints[i].GetHashCode();
+                hash ^= constraintsLocal[i].GetHashCode();
             }
 
             return hash;

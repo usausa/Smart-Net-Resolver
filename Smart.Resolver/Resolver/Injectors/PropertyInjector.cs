@@ -3,7 +3,7 @@ namespace Smart.Resolver.Injectors
     using System;
     using System.Linq;
     using System.Reflection;
-
+    using System.Runtime.CompilerServices;
     using Smart.Reflection;
     using Smart.Resolver.Attributes;
     using Smart.Resolver.Bindings;
@@ -69,17 +69,22 @@ namespace Smart.Resolver.Injectors
             return resolver => resolver.Get(propertyType);
         }
 
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("StyleCop.CSharp.MaintainabilityRules", "SA1401:FieldsMustBePrivate", Justification = "Performance")]
         private sealed class InjectEntry
         {
-            public readonly Func<IResolver, object?> Provider;
+            private readonly Func<IResolver, object?> provider;
 
-            public readonly Action<object, object?> Setter;
+            private readonly Action<object, object?> setter;
 
             public InjectEntry(Func<IResolver, object?> provider, Action<object, object?> setter)
             {
-                Provider = provider;
-                Setter = setter;
+                this.provider = provider;
+                this.setter = setter;
+            }
+
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            public void Inject(IResolver resolver, object instance)
+            {
+                setter(instance, provider(resolver));
             }
         }
 
@@ -94,10 +99,10 @@ namespace Smart.Resolver.Injectors
 
             public void Inject(IResolver resolver, object instance)
             {
-                for (var i = 0; i < entries.Length; i++)
+                var entriesLocal = entries;
+                for (var i = 0; i < entriesLocal.Length; i++)
                 {
-                    var entry = entries[i];
-                    entry.Setter(instance, entry.Provider(resolver));
+                    entriesLocal[i].Inject(resolver, instance);
                 }
             }
         }

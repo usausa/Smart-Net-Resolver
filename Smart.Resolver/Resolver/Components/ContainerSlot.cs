@@ -46,9 +46,9 @@ namespace Smart.Resolver.Components
         {
             lock (sync)
             {
-                for (var i = 0; i < entries.Length; i++)
+                foreach (var entry in entries)
                 {
-                    (entries[i] as IDisposable)?.Dispose();
+                    (entry as IDisposable)?.Dispose();
                 }
 
                 Array.Clear(entries, 0, entries.Length);

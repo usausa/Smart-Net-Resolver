@@ -9,6 +9,7 @@ namespace Smart.Resolver
 
     using Smart.Collections.Concurrent;
     using Smart.ComponentModel;
+    using Smart.Linq;
     using Smart.Resolver.Bindings;
     using Smart.Resolver.Components;
     using Smart.Resolver.Constraints;
@@ -300,8 +301,8 @@ namespace Smart.Resolver
             var binding = new Binding(type, null!);
             return injectors
                 .Select(x => x.CreateInjector(type, binding))
-                .Where(x => x is not null)
-                .ToArray()!;
+                .ExcludeNull()
+                .ToArray();
         }
 
         // ------------------------------------------------------------
