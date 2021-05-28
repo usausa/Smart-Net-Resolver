@@ -1,11 +1,11 @@
-@inject Microsoft.Extensions.Options.IOptions<Example.WebApplication.Settings.ProfileSettings> Profile
-@inject Example.WebApplication.Services.CharacterService CharacterService
+@inject Microsoft.Extensions.Options.IOptions<Example.WebApplication.Settings.ProfileSettings> profile
+@inject Example.WebApplication.Services.CharacterService characterService
 @{
     ViewData["Title"] = "View Injection";
 }
 
 <h2>Option</h2>
-<div><select asp-items="Profile.Value.Genders.Select(x => new SelectListItem { Text = x, Value = x })"></select></div>
+<div><select asp-items="profile.Value.Genders.Select(x => new SelectListItem { Text = x, Value = x })"></select></div>
 
 <h2>User Service</h2>
-<div>@CharacterService.QueryCharacterList().Count</div>
+<div>@characterService.QueryCharacterList().Count</div>

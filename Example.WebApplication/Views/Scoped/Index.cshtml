@@ -1,10 +1,10 @@
-﻿@inject Example.WebApplication.Services.ScopedObject ScopedObject
+@inject Example.WebApplication.Services.ScopedObject scopedObject
 @{
     ViewData["Title"] = "Scoped Lifetime";
 }
 
 <h2>Result</h2>
-@if (Model == ScopedObject)
+@if (Model == scopedObject)
 {
     <div>Scoped Lifetime object matched.</div>
 }
