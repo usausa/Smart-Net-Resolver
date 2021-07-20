@@ -17,7 +17,7 @@ namespace Smart.Resolver
     using Smart.Resolver.Injectors;
     using Smart.Resolver.Providers;
 
-    public sealed class SmartResolver : IResolver, IKernel
+    public sealed class SmartResolver : IResolver, IServiceProvider, IKernel
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("StyleCop.CSharp.MaintainabilityRules", "SA1401:FieldsMustBePrivate", Justification = "Performance")]
         private sealed class FactoryEntry
@@ -90,6 +90,12 @@ namespace Smart.Resolver
 
             Components.Dispose();
         }
+
+        // ------------------------------------------------------------
+        // IServiceProvider
+        // ------------------------------------------------------------
+
+        public object GetService(Type serviceType) => Get(serviceType);
 
         // ------------------------------------------------------------
         // ObjectFactory
