@@ -1,5 +1,7 @@
 namespace Smart.Resolver
 {
+    using System;
+
     using Smart.Resolver.Mocks;
 
     using Xunit;
@@ -24,6 +26,28 @@ namespace Smart.Resolver
 
             using var resolver = config.ToResolver();
             var result = resolver.CanGet<SmartResolver>();
+
+            Assert.True(result);
+        }
+
+        [Fact]
+        public void SelfResolvedAsServiceProvider()
+        {
+            var config = new ResolverConfig();
+
+            using var resolver = config.ToResolver();
+            var obj = resolver.Get<IServiceProvider>();
+
+            Assert.Same(resolver, obj);
+        }
+
+        [Fact]
+        public void SelfCanResolvedAsServiceProvider()
+        {
+            var config = new ResolverConfig();
+
+            using var resolver = config.ToResolver();
+            var result = resolver.CanGet<IServiceProvider>();
 
             Assert.True(result);
         }
