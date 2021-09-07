@@ -58,11 +58,6 @@ namespace Smart.Resolver
 
         public SmartResolver(IResolverConfig config)
         {
-            if (config is null)
-            {
-                throw new ArgumentNullException(nameof(config));
-            }
-
             Components = config.CreateComponentContainer();
 
             injectors = Components.GetAll<IInjector>().ToArray();
@@ -102,14 +97,14 @@ namespace Smart.Resolver
         // ObjectFactory
         // ------------------------------------------------------------
 
-        bool IKernel.TryResolveFactory(Type type, IConstraint? constraint, [NotNullWhen(true)] out Func<IResolver, object> factory)
+        bool IKernel.TryResolveFactory(Type type, IConstraint? constraint, out Func<IResolver, object> factory)
         {
             var entry = constraint is null ? FindFactoryEntry(type) : FindFactoryEntry(type, constraint);
             factory = entry.Single;
             return entry.CanGet;
         }
 
-        bool IKernel.TryResolveFactories(Type type, IConstraint? constraint, [NotNullWhen(true)] out Func<IResolver, object>[] factories)
+        bool IKernel.TryResolveFactories(Type type, IConstraint? constraint, out Func<IResolver, object>[] factories)
         {
             var entry = constraint is null ? FindFactoryEntry(type) : FindFactoryEntry(type, constraint);
             factories = entry.Multiple;

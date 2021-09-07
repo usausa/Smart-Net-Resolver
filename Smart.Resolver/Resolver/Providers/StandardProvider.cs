@@ -27,16 +27,6 @@ namespace Smart.Resolver.Providers
 
         public StandardProvider(Type type, ComponentContainer components)
         {
-            if (type is null)
-            {
-                throw new ArgumentNullException(nameof(type));
-            }
-
-            if (components is null)
-            {
-                throw new ArgumentNullException(nameof(components));
-            }
-
             TargetType = type;
             injectors = components.GetAll<IInjector>().ToArray();
             processors = components.GetAll<IProcessor>().ToArray();

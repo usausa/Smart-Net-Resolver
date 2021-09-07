@@ -2,7 +2,6 @@ namespace Smart.Resolver
 {
     using System;
     using System.Collections.Generic;
-    using System.Diagnostics.CodeAnalysis;
     using System.Linq;
 
     using Smart.ComponentModel;
@@ -42,14 +41,12 @@ namespace Smart.Resolver
 
         public interface IGenericService<out T>
         {
-            [return: MaybeNull]
             T Create();
         }
 
         public class GenericService<T> : IGenericService<T>
         {
-            [return: MaybeNull]
-            public T Create() => default;
+            public T Create() => default!;
         }
 
         [Fact]

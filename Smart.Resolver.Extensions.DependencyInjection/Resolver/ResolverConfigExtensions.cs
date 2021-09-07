@@ -11,16 +11,6 @@ namespace Smart.Resolver
     {
         public static void Populate(this ResolverConfig config, IEnumerable<ServiceDescriptor> descriptors)
         {
-            if (config is null)
-            {
-                throw new ArgumentNullException(nameof(config));
-            }
-
-            if (descriptors is null)
-            {
-                throw new ArgumentNullException(nameof(descriptors));
-            }
-
             foreach (var descriptor in descriptors)
             {
                 if (descriptor.ImplementationType is not null)

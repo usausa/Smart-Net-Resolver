@@ -3,6 +3,7 @@ namespace Smart.Resolver.Benchmark.Benchmarks
     using System;
     using System.Collections.Generic;
     using System.Diagnostics.CodeAnalysis;
+
     using BenchmarkDotNet.Attributes;
 
     using Microsoft.Extensions.DependencyInjection;

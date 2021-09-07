@@ -4,6 +4,7 @@ namespace Smart.Resolver.Injectors
     using System.Linq;
     using System.Reflection;
     using System.Runtime.CompilerServices;
+
     using Smart.Reflection;
     using Smart.Resolver.Attributes;
     using Smart.Resolver.Bindings;
@@ -44,7 +45,7 @@ namespace Smart.Resolver.Injectors
                 return new InjectEntry(CreateParameterProvider(parameter), setter);
             }
 
-            var propertyType = delegateFactory.GetExtendedPropertyType(pi)!;
+            var propertyType = delegateFactory.GetExtendedPropertyType(pi);
             var constraint = ConstraintBuilder.Build(pi.GetCustomAttributes<ConstraintAttribute>());
             if (constraint is not null)
             {

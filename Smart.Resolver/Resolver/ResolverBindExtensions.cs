@@ -15,21 +15,6 @@ namespace Smart.Resolver
             Type serviceType,
             Type implementationType)
         {
-            if (config is null)
-            {
-                throw new ArgumentNullException(nameof(config));
-            }
-
-            if (serviceType is null)
-            {
-                throw new ArgumentNullException(nameof(config));
-            }
-
-            if (implementationType is null)
-            {
-                throw new ArgumentNullException(nameof(config));
-            }
-
             config.Bind(serviceType).To(implementationType).InTransientScope();
             return config;
         }
@@ -40,26 +25,6 @@ namespace Smart.Resolver
             Type implementationType,
             Action<IBindingNamedWithSyntax> option)
         {
-            if (config is null)
-            {
-                throw new ArgumentNullException(nameof(config));
-            }
-
-            if (serviceType is null)
-            {
-                throw new ArgumentNullException(nameof(config));
-            }
-
-            if (implementationType is null)
-            {
-                throw new ArgumentNullException(nameof(config));
-            }
-
-            if (option is null)
-            {
-                throw new ArgumentNullException(nameof(config));
-            }
-
             var syntax = config.Bind(serviceType).To(implementationType);
             option(syntax);
             syntax.InTransientScope();
@@ -70,16 +35,6 @@ namespace Smart.Resolver
             this ResolverConfig config,
             Type serviceType)
         {
-            if (config is null)
-            {
-                throw new ArgumentNullException(nameof(config));
-            }
-
-            if (serviceType is null)
-            {
-                throw new ArgumentNullException(nameof(config));
-            }
-
             config.Bind(serviceType).ToSelf().InTransientScope();
             return config;
         }
@@ -89,21 +44,6 @@ namespace Smart.Resolver
             Type serviceType,
             Action<IBindingNamedWithSyntax> option)
         {
-            if (config is null)
-            {
-                throw new ArgumentNullException(nameof(config));
-            }
-
-            if (serviceType is null)
-            {
-                throw new ArgumentNullException(nameof(config));
-            }
-
-            if (option is null)
-            {
-                throw new ArgumentNullException(nameof(config));
-            }
-
             var syntax = config.Bind(serviceType).ToSelf();
             option(syntax);
             syntax.InTransientScope();
@@ -114,11 +54,6 @@ namespace Smart.Resolver
             where TService : class
             where TImplementation : class, TService
         {
-            if (config is null)
-            {
-                throw new ArgumentNullException(nameof(config));
-            }
-
             config.Bind<TService>().To<TImplementation>().InTransientScope();
             return config;
         }
@@ -129,16 +64,6 @@ namespace Smart.Resolver
             where TService : class
             where TImplementation : class, TService
         {
-            if (config is null)
-            {
-                throw new ArgumentNullException(nameof(config));
-            }
-
-            if (option is null)
-            {
-                throw new ArgumentNullException(nameof(config));
-            }
-
             var syntax = config.Bind<TService>().To<TImplementation>();
             option(syntax);
             syntax.InTransientScope();
@@ -148,11 +73,6 @@ namespace Smart.Resolver
         public static ResolverConfig BindTransient<TService>(this ResolverConfig config)
             where TService : class
         {
-            if (config is null)
-            {
-                throw new ArgumentNullException(nameof(config));
-            }
-
             config.Bind<TService>().ToSelf().InTransientScope();
             return config;
         }
@@ -162,16 +82,6 @@ namespace Smart.Resolver
             Action<IBindingNamedWithSyntax> option)
             where TService : class
         {
-            if (config is null)
-            {
-                throw new ArgumentNullException(nameof(config));
-            }
-
-            if (option is null)
-            {
-                throw new ArgumentNullException(nameof(config));
-            }
-
             var syntax = config.Bind<TService>().ToSelf();
             option(syntax);
             syntax.InTransientScope();
@@ -183,21 +93,6 @@ namespace Smart.Resolver
             Type serviceType,
             object value)
         {
-            if (config is null)
-            {
-                throw new ArgumentNullException(nameof(config));
-            }
-
-            if (serviceType is null)
-            {
-                throw new ArgumentNullException(nameof(config));
-            }
-
-            if (value is null)
-            {
-                throw new ArgumentNullException(nameof(config));
-            }
-
             config.Bind(serviceType).ToConstant(value).InTransientScope();
             return config;
         }
@@ -208,26 +103,6 @@ namespace Smart.Resolver
             object value,
             Action<IBindingNamedWithSyntax> option)
         {
-            if (config is null)
-            {
-                throw new ArgumentNullException(nameof(config));
-            }
-
-            if (serviceType is null)
-            {
-                throw new ArgumentNullException(nameof(config));
-            }
-
-            if (value is null)
-            {
-                throw new ArgumentNullException(nameof(config));
-            }
-
-            if (option is null)
-            {
-                throw new ArgumentNullException(nameof(config));
-            }
-
             var syntax = config.Bind(serviceType).ToConstant(value);
             option(syntax);
             syntax.InTransientScope();
@@ -239,16 +114,6 @@ namespace Smart.Resolver
             TService value)
             where TService : class
         {
-            if (config is null)
-            {
-                throw new ArgumentNullException(nameof(config));
-            }
-
-            if (value is null)
-            {
-                throw new ArgumentNullException(nameof(config));
-            }
-
             config.Bind<TService>().ToConstant(value).InTransientScope();
             return config;
         }
@@ -259,21 +124,6 @@ namespace Smart.Resolver
             Action<IBindingNamedWithSyntax> option)
             where TService : class
         {
-            if (config is null)
-            {
-                throw new ArgumentNullException(nameof(config));
-            }
-
-            if (value is null)
-            {
-                throw new ArgumentNullException(nameof(config));
-            }
-
-            if (option is null)
-            {
-                throw new ArgumentNullException(nameof(config));
-            }
-
             var syntax = config.Bind<TService>().ToConstant(value);
             option(syntax);
             syntax.InTransientScope();
@@ -286,16 +136,6 @@ namespace Smart.Resolver
             where TService : class
             where TImplementation : class, TService
         {
-            if (config is null)
-            {
-                throw new ArgumentNullException(nameof(config));
-            }
-
-            if (value is null)
-            {
-                throw new ArgumentNullException(nameof(config));
-            }
-
             config.Bind<TService>().ToConstant(value).InTransientScope();
             return config;
         }
@@ -307,21 +147,6 @@ namespace Smart.Resolver
             where TService : class
             where TImplementation : class, TService
         {
-            if (config is null)
-            {
-                throw new ArgumentNullException(nameof(config));
-            }
-
-            if (value is null)
-            {
-                throw new ArgumentNullException(nameof(config));
-            }
-
-            if (option is null)
-            {
-                throw new ArgumentNullException(nameof(config));
-            }
-
             var syntax = config.Bind<TService>().ToConstant(value);
             option(syntax);
             syntax.InTransientScope();
@@ -333,21 +158,6 @@ namespace Smart.Resolver
             Type serviceType,
             Func<IResolver, object> factory)
         {
-            if (config is null)
-            {
-                throw new ArgumentNullException(nameof(config));
-            }
-
-            if (serviceType is null)
-            {
-                throw new ArgumentNullException(nameof(config));
-            }
-
-            if (factory is null)
-            {
-                throw new ArgumentNullException(nameof(config));
-            }
-
             config.Bind(serviceType).ToMethod(factory).InTransientScope();
             return config;
         }
@@ -358,26 +168,6 @@ namespace Smart.Resolver
             Func<IResolver, object> factory,
             Action<IBindingNamedWithSyntax> option)
         {
-            if (config is null)
-            {
-                throw new ArgumentNullException(nameof(config));
-            }
-
-            if (serviceType is null)
-            {
-                throw new ArgumentNullException(nameof(config));
-            }
-
-            if (factory is null)
-            {
-                throw new ArgumentNullException(nameof(config));
-            }
-
-            if (option is null)
-            {
-                throw new ArgumentNullException(nameof(config));
-            }
-
             var syntax = config.Bind(serviceType).ToMethod(factory);
             option(syntax);
             syntax.InTransientScope();
@@ -389,16 +179,6 @@ namespace Smart.Resolver
             Func<IResolver, TService> factory)
             where TService : class
         {
-            if (config is null)
-            {
-                throw new ArgumentNullException(nameof(config));
-            }
-
-            if (factory is null)
-            {
-                throw new ArgumentNullException(nameof(config));
-            }
-
             config.Bind<TService>().ToMethod(factory).InTransientScope();
             return config;
         }
@@ -409,21 +189,6 @@ namespace Smart.Resolver
             Action<IBindingNamedWithSyntax> option)
             where TService : class
         {
-            if (config is null)
-            {
-                throw new ArgumentNullException(nameof(config));
-            }
-
-            if (factory is null)
-            {
-                throw new ArgumentNullException(nameof(config));
-            }
-
-            if (option is null)
-            {
-                throw new ArgumentNullException(nameof(config));
-            }
-
             var syntax = config.Bind<TService>().ToMethod(factory);
             option(syntax);
             syntax.InTransientScope();
@@ -436,16 +201,6 @@ namespace Smart.Resolver
             where TService : class
             where TImplementation : class, TService
         {
-            if (config is null)
-            {
-                throw new ArgumentNullException(nameof(config));
-            }
-
-            if (factory is null)
-            {
-                throw new ArgumentNullException(nameof(config));
-            }
-
             config.Bind<TService>().ToMethod(factory).InTransientScope();
             return config;
         }
@@ -457,21 +212,6 @@ namespace Smart.Resolver
             where TService : class
             where TImplementation : class, TService
         {
-            if (config is null)
-            {
-                throw new ArgumentNullException(nameof(config));
-            }
-
-            if (factory is null)
-            {
-                throw new ArgumentNullException(nameof(config));
-            }
-
-            if (option is null)
-            {
-                throw new ArgumentNullException(nameof(config));
-            }
-
             var syntax = config.Bind<TService>().ToMethod(factory);
             option(syntax);
             syntax.InTransientScope();
@@ -487,21 +227,6 @@ namespace Smart.Resolver
             Type serviceType,
             Type implementationType)
         {
-            if (config is null)
-            {
-                throw new ArgumentNullException(nameof(config));
-            }
-
-            if (serviceType is null)
-            {
-                throw new ArgumentNullException(nameof(config));
-            }
-
-            if (implementationType is null)
-            {
-                throw new ArgumentNullException(nameof(config));
-            }
-
             config.Bind(serviceType).To(implementationType).InSingletonScope();
             return config;
         }
@@ -512,26 +237,6 @@ namespace Smart.Resolver
             Type implementationType,
             Action<IBindingNamedWithSyntax> option)
         {
-            if (config is null)
-            {
-                throw new ArgumentNullException(nameof(config));
-            }
-
-            if (serviceType is null)
-            {
-                throw new ArgumentNullException(nameof(config));
-            }
-
-            if (implementationType is null)
-            {
-                throw new ArgumentNullException(nameof(config));
-            }
-
-            if (option is null)
-            {
-                throw new ArgumentNullException(nameof(config));
-            }
-
             var syntax = config.Bind(serviceType).To(implementationType);
             option(syntax);
             syntax.InSingletonScope();
@@ -542,16 +247,6 @@ namespace Smart.Resolver
             this ResolverConfig config,
             Type serviceType)
         {
-            if (config is null)
-            {
-                throw new ArgumentNullException(nameof(config));
-            }
-
-            if (serviceType is null)
-            {
-                throw new ArgumentNullException(nameof(config));
-            }
-
             config.Bind(serviceType).ToSelf().InSingletonScope();
             return config;
         }
@@ -561,21 +256,6 @@ namespace Smart.Resolver
             Type serviceType,
             Action<IBindingNamedWithSyntax> option)
         {
-            if (config is null)
-            {
-                throw new ArgumentNullException(nameof(config));
-            }
-
-            if (serviceType is null)
-            {
-                throw new ArgumentNullException(nameof(config));
-            }
-
-            if (option is null)
-            {
-                throw new ArgumentNullException(nameof(config));
-            }
-
             var syntax = config.Bind(serviceType).ToSelf();
             option(syntax);
             syntax.InSingletonScope();
@@ -586,11 +266,6 @@ namespace Smart.Resolver
             where TService : class
             where TImplementation : class, TService
         {
-            if (config is null)
-            {
-                throw new ArgumentNullException(nameof(config));
-            }
-
             config.Bind<TService>().To<TImplementation>().InSingletonScope();
             return config;
         }
@@ -601,16 +276,6 @@ namespace Smart.Resolver
             where TService : class
             where TImplementation : class, TService
         {
-            if (config is null)
-            {
-                throw new ArgumentNullException(nameof(config));
-            }
-
-            if (option is null)
-            {
-                throw new ArgumentNullException(nameof(config));
-            }
-
             var syntax = config.Bind<TService>().To<TImplementation>();
             option(syntax);
             syntax.InSingletonScope();
@@ -620,11 +285,6 @@ namespace Smart.Resolver
         public static ResolverConfig BindSingleton<TService>(this ResolverConfig config)
             where TService : class
         {
-            if (config is null)
-            {
-                throw new ArgumentNullException(nameof(config));
-            }
-
             config.Bind<TService>().ToSelf().InSingletonScope();
             return config;
         }
@@ -634,16 +294,6 @@ namespace Smart.Resolver
             Action<IBindingNamedWithSyntax> option)
             where TService : class
         {
-            if (config is null)
-            {
-                throw new ArgumentNullException(nameof(config));
-            }
-
-            if (option is null)
-            {
-                throw new ArgumentNullException(nameof(config));
-            }
-
             var syntax = config.Bind<TService>().ToSelf();
             option(syntax);
             syntax.InSingletonScope();
@@ -655,21 +305,6 @@ namespace Smart.Resolver
             Type serviceType,
             object value)
         {
-            if (config is null)
-            {
-                throw new ArgumentNullException(nameof(config));
-            }
-
-            if (serviceType is null)
-            {
-                throw new ArgumentNullException(nameof(config));
-            }
-
-            if (value is null)
-            {
-                throw new ArgumentNullException(nameof(config));
-            }
-
             config.Bind(serviceType).ToConstant(value).InSingletonScope();
             return config;
         }
@@ -680,26 +315,6 @@ namespace Smart.Resolver
             object value,
             Action<IBindingNamedWithSyntax> option)
         {
-            if (config is null)
-            {
-                throw new ArgumentNullException(nameof(config));
-            }
-
-            if (serviceType is null)
-            {
-                throw new ArgumentNullException(nameof(config));
-            }
-
-            if (value is null)
-            {
-                throw new ArgumentNullException(nameof(config));
-            }
-
-            if (option is null)
-            {
-                throw new ArgumentNullException(nameof(config));
-            }
-
             var syntax = config.Bind(serviceType).ToConstant(value);
             option(syntax);
             syntax.InSingletonScope();
@@ -711,16 +326,6 @@ namespace Smart.Resolver
             TService value)
             where TService : class
         {
-            if (config is null)
-            {
-                throw new ArgumentNullException(nameof(config));
-            }
-
-            if (value is null)
-            {
-                throw new ArgumentNullException(nameof(config));
-            }
-
             config.Bind<TService>().ToConstant(value).InSingletonScope();
             return config;
         }
@@ -731,21 +336,6 @@ namespace Smart.Resolver
             Action<IBindingNamedWithSyntax> option)
             where TService : class
         {
-            if (config is null)
-            {
-                throw new ArgumentNullException(nameof(config));
-            }
-
-            if (value is null)
-            {
-                throw new ArgumentNullException(nameof(config));
-            }
-
-            if (option is null)
-            {
-                throw new ArgumentNullException(nameof(config));
-            }
-
             var syntax = config.Bind<TService>().ToConstant(value);
             option(syntax);
             syntax.InSingletonScope();
@@ -758,16 +348,6 @@ namespace Smart.Resolver
             where TService : class
             where TImplementation : class, TService
         {
-            if (config is null)
-            {
-                throw new ArgumentNullException(nameof(config));
-            }
-
-            if (value is null)
-            {
-                throw new ArgumentNullException(nameof(config));
-            }
-
             config.Bind<TService>().ToConstant(value).InSingletonScope();
             return config;
         }
@@ -779,21 +359,6 @@ namespace Smart.Resolver
             where TService : class
             where TImplementation : class, TService
         {
-            if (config is null)
-            {
-                throw new ArgumentNullException(nameof(config));
-            }
-
-            if (value is null)
-            {
-                throw new ArgumentNullException(nameof(config));
-            }
-
-            if (option is null)
-            {
-                throw new ArgumentNullException(nameof(config));
-            }
-
             var syntax = config.Bind<TService>().ToConstant(value);
             option(syntax);
             syntax.InSingletonScope();
@@ -805,21 +370,6 @@ namespace Smart.Resolver
             Type serviceType,
             Func<IResolver, object> factory)
         {
-            if (config is null)
-            {
-                throw new ArgumentNullException(nameof(config));
-            }
-
-            if (serviceType is null)
-            {
-                throw new ArgumentNullException(nameof(config));
-            }
-
-            if (factory is null)
-            {
-                throw new ArgumentNullException(nameof(config));
-            }
-
             config.Bind(serviceType).ToMethod(factory).InSingletonScope();
             return config;
         }
@@ -830,26 +380,6 @@ namespace Smart.Resolver
             Func<IResolver, object> factory,
             Action<IBindingNamedWithSyntax> option)
         {
-            if (config is null)
-            {
-                throw new ArgumentNullException(nameof(config));
-            }
-
-            if (serviceType is null)
-            {
-                throw new ArgumentNullException(nameof(config));
-            }
-
-            if (factory is null)
-            {
-                throw new ArgumentNullException(nameof(config));
-            }
-
-            if (option is null)
-            {
-                throw new ArgumentNullException(nameof(config));
-            }
-
             var syntax = config.Bind(serviceType).ToMethod(factory);
             option(syntax);
             syntax.InSingletonScope();
@@ -861,16 +391,6 @@ namespace Smart.Resolver
             Func<IResolver, TService> factory)
             where TService : class
         {
-            if (config is null)
-            {
-                throw new ArgumentNullException(nameof(config));
-            }
-
-            if (factory is null)
-            {
-                throw new ArgumentNullException(nameof(config));
-            }
-
             config.Bind<TService>().ToMethod(factory).InSingletonScope();
             return config;
         }
@@ -881,21 +401,6 @@ namespace Smart.Resolver
             Action<IBindingNamedWithSyntax> option)
             where TService : class
         {
-            if (config is null)
-            {
-                throw new ArgumentNullException(nameof(config));
-            }
-
-            if (factory is null)
-            {
-                throw new ArgumentNullException(nameof(config));
-            }
-
-            if (option is null)
-            {
-                throw new ArgumentNullException(nameof(config));
-            }
-
             var syntax = config.Bind<TService>().ToMethod(factory);
             option(syntax);
             syntax.InSingletonScope();
@@ -908,16 +413,6 @@ namespace Smart.Resolver
             where TService : class
             where TImplementation : class, TService
         {
-            if (config is null)
-            {
-                throw new ArgumentNullException(nameof(config));
-            }
-
-            if (factory is null)
-            {
-                throw new ArgumentNullException(nameof(config));
-            }
-
             config.Bind<TService>().ToMethod(factory).InSingletonScope();
             return config;
         }
@@ -929,21 +424,6 @@ namespace Smart.Resolver
             where TService : class
             where TImplementation : class, TService
         {
-            if (config is null)
-            {
-                throw new ArgumentNullException(nameof(config));
-            }
-
-            if (factory is null)
-            {
-                throw new ArgumentNullException(nameof(config));
-            }
-
-            if (option is null)
-            {
-                throw new ArgumentNullException(nameof(config));
-            }
-
             var syntax = config.Bind<TService>().ToMethod(factory);
             option(syntax);
             syntax.InSingletonScope();
@@ -959,21 +439,6 @@ namespace Smart.Resolver
             Type serviceType,
             Type implementationType)
         {
-            if (config is null)
-            {
-                throw new ArgumentNullException(nameof(config));
-            }
-
-            if (serviceType is null)
-            {
-                throw new ArgumentNullException(nameof(config));
-            }
-
-            if (implementationType is null)
-            {
-                throw new ArgumentNullException(nameof(config));
-            }
-
             config.Bind(serviceType).To(implementationType).InContainerScope();
             return config;
         }
@@ -984,26 +449,6 @@ namespace Smart.Resolver
             Type implementationType,
             Action<IBindingNamedWithSyntax> option)
         {
-            if (config is null)
-            {
-                throw new ArgumentNullException(nameof(config));
-            }
-
-            if (serviceType is null)
-            {
-                throw new ArgumentNullException(nameof(config));
-            }
-
-            if (implementationType is null)
-            {
-                throw new ArgumentNullException(nameof(config));
-            }
-
-            if (option is null)
-            {
-                throw new ArgumentNullException(nameof(config));
-            }
-
             var syntax = config.Bind(serviceType).To(implementationType);
             option(syntax);
             syntax.InContainerScope();
@@ -1014,16 +459,6 @@ namespace Smart.Resolver
             this ResolverConfig config,
             Type serviceType)
         {
-            if (config is null)
-            {
-                throw new ArgumentNullException(nameof(config));
-            }
-
-            if (serviceType is null)
-            {
-                throw new ArgumentNullException(nameof(config));
-            }
-
             config.Bind(serviceType).ToSelf().InContainerScope();
             return config;
         }
@@ -1033,21 +468,6 @@ namespace Smart.Resolver
             Type serviceType,
             Action<IBindingNamedWithSyntax> option)
         {
-            if (config is null)
-            {
-                throw new ArgumentNullException(nameof(config));
-            }
-
-            if (serviceType is null)
-            {
-                throw new ArgumentNullException(nameof(config));
-            }
-
-            if (option is null)
-            {
-                throw new ArgumentNullException(nameof(config));
-            }
-
             var syntax = config.Bind(serviceType).ToSelf();
             option(syntax);
             syntax.InContainerScope();
@@ -1058,11 +478,6 @@ namespace Smart.Resolver
             where TService : class
             where TImplementation : class, TService
         {
-            if (config is null)
-            {
-                throw new ArgumentNullException(nameof(config));
-            }
-
             config.Bind<TService>().To<TImplementation>().InContainerScope();
             return config;
         }
@@ -1073,16 +488,6 @@ namespace Smart.Resolver
             where TService : class
             where TImplementation : class, TService
         {
-            if (config is null)
-            {
-                throw new ArgumentNullException(nameof(config));
-            }
-
-            if (option is null)
-            {
-                throw new ArgumentNullException(nameof(config));
-            }
-
             var syntax = config.Bind<TService>().To<TImplementation>();
             option(syntax);
             syntax.InContainerScope();
@@ -1092,11 +497,6 @@ namespace Smart.Resolver
         public static ResolverConfig BindContainer<TService>(this ResolverConfig config)
             where TService : class
         {
-            if (config is null)
-            {
-                throw new ArgumentNullException(nameof(config));
-            }
-
             config.Bind<TService>().ToSelf().InContainerScope();
             return config;
         }
@@ -1106,16 +506,6 @@ namespace Smart.Resolver
             Action<IBindingNamedWithSyntax> option)
             where TService : class
         {
-            if (config is null)
-            {
-                throw new ArgumentNullException(nameof(config));
-            }
-
-            if (option is null)
-            {
-                throw new ArgumentNullException(nameof(config));
-            }
-
             var syntax = config.Bind<TService>().ToSelf();
             option(syntax);
             syntax.InContainerScope();
@@ -1127,21 +517,6 @@ namespace Smart.Resolver
             Type serviceType,
             object value)
         {
-            if (config is null)
-            {
-                throw new ArgumentNullException(nameof(config));
-            }
-
-            if (serviceType is null)
-            {
-                throw new ArgumentNullException(nameof(config));
-            }
-
-            if (value is null)
-            {
-                throw new ArgumentNullException(nameof(config));
-            }
-
             config.Bind(serviceType).ToConstant(value).InContainerScope();
             return config;
         }
@@ -1152,26 +527,6 @@ namespace Smart.Resolver
             object value,
             Action<IBindingNamedWithSyntax> option)
         {
-            if (config is null)
-            {
-                throw new ArgumentNullException(nameof(config));
-            }
-
-            if (serviceType is null)
-            {
-                throw new ArgumentNullException(nameof(config));
-            }
-
-            if (value is null)
-            {
-                throw new ArgumentNullException(nameof(config));
-            }
-
-            if (option is null)
-            {
-                throw new ArgumentNullException(nameof(config));
-            }
-
             var syntax = config.Bind(serviceType).ToConstant(value);
             option(syntax);
             syntax.InContainerScope();
@@ -1183,16 +538,6 @@ namespace Smart.Resolver
             TService value)
             where TService : class
         {
-            if (config is null)
-            {
-                throw new ArgumentNullException(nameof(config));
-            }
-
-            if (value is null)
-            {
-                throw new ArgumentNullException(nameof(config));
-            }
-
             config.Bind<TService>().ToConstant(value).InContainerScope();
             return config;
         }
@@ -1203,21 +548,6 @@ namespace Smart.Resolver
             Action<IBindingNamedWithSyntax> option)
             where TService : class
         {
-            if (config is null)
-            {
-                throw new ArgumentNullException(nameof(config));
-            }
-
-            if (value is null)
-            {
-                throw new ArgumentNullException(nameof(config));
-            }
-
-            if (option is null)
-            {
-                throw new ArgumentNullException(nameof(config));
-            }
-
             var syntax = config.Bind<TService>().ToConstant(value);
             option(syntax);
             syntax.InContainerScope();
@@ -1230,16 +560,6 @@ namespace Smart.Resolver
             where TService : class
             where TImplementation : class, TService
         {
-            if (config is null)
-            {
-                throw new ArgumentNullException(nameof(config));
-            }
-
-            if (value is null)
-            {
-                throw new ArgumentNullException(nameof(config));
-            }
-
             config.Bind<TService>().ToConstant(value).InContainerScope();
             return config;
         }
@@ -1251,21 +571,6 @@ namespace Smart.Resolver
             where TService : class
             where TImplementation : class, TService
         {
-            if (config is null)
-            {
-                throw new ArgumentNullException(nameof(config));
-            }
-
-            if (value is null)
-            {
-                throw new ArgumentNullException(nameof(config));
-            }
-
-            if (option is null)
-            {
-                throw new ArgumentNullException(nameof(config));
-            }
-
             var syntax = config.Bind<TService>().ToConstant(value);
             option(syntax);
             syntax.InContainerScope();
@@ -1277,21 +582,6 @@ namespace Smart.Resolver
             Type serviceType,
             Func<IResolver, object> factory)
         {
-            if (config is null)
-            {
-                throw new ArgumentNullException(nameof(config));
-            }
-
-            if (serviceType is null)
-            {
-                throw new ArgumentNullException(nameof(config));
-            }
-
-            if (factory is null)
-            {
-                throw new ArgumentNullException(nameof(config));
-            }
-
             config.Bind(serviceType).ToMethod(factory).InContainerScope();
             return config;
         }
@@ -1302,26 +592,6 @@ namespace Smart.Resolver
             Func<IResolver, object> factory,
             Action<IBindingNamedWithSyntax> option)
         {
-            if (config is null)
-            {
-                throw new ArgumentNullException(nameof(config));
-            }
-
-            if (serviceType is null)
-            {
-                throw new ArgumentNullException(nameof(config));
-            }
-
-            if (factory is null)
-            {
-                throw new ArgumentNullException(nameof(config));
-            }
-
-            if (option is null)
-            {
-                throw new ArgumentNullException(nameof(config));
-            }
-
             var syntax = config.Bind(serviceType).ToMethod(factory);
             option(syntax);
             syntax.InContainerScope();
@@ -1333,16 +603,6 @@ namespace Smart.Resolver
             Func<IResolver, TService> factory)
             where TService : class
         {
-            if (config is null)
-            {
-                throw new ArgumentNullException(nameof(config));
-            }
-
-            if (factory is null)
-            {
-                throw new ArgumentNullException(nameof(config));
-            }
-
             config.Bind<TService>().ToMethod(factory).InContainerScope();
             return config;
         }
@@ -1353,21 +613,6 @@ namespace Smart.Resolver
             Action<IBindingNamedWithSyntax> option)
             where TService : class
         {
-            if (config is null)
-            {
-                throw new ArgumentNullException(nameof(config));
-            }
-
-            if (factory is null)
-            {
-                throw new ArgumentNullException(nameof(config));
-            }
-
-            if (option is null)
-            {
-                throw new ArgumentNullException(nameof(config));
-            }
-
             var syntax = config.Bind<TService>().ToMethod(factory);
             option(syntax);
             syntax.InContainerScope();
@@ -1380,16 +625,6 @@ namespace Smart.Resolver
             where TService : class
             where TImplementation : class, TService
         {
-            if (config is null)
-            {
-                throw new ArgumentNullException(nameof(config));
-            }
-
-            if (factory is null)
-            {
-                throw new ArgumentNullException(nameof(config));
-            }
-
             config.Bind<TService>().ToMethod(factory).InContainerScope();
             return config;
         }
@@ -1401,21 +636,6 @@ namespace Smart.Resolver
             where TService : class
             where TImplementation : class, TService
         {
-            if (config is null)
-            {
-                throw new ArgumentNullException(nameof(config));
-            }
-
-            if (factory is null)
-            {
-                throw new ArgumentNullException(nameof(config));
-            }
-
-            if (option is null)
-            {
-                throw new ArgumentNullException(nameof(config));
-            }
-
             var syntax = config.Bind<TService>().ToMethod(factory);
             option(syntax);
             syntax.InContainerScope();

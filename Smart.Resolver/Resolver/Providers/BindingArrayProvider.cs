@@ -19,26 +19,6 @@ namespace Smart.Resolver.Providers
 
         public BindingArrayProvider(Type type, Type elementType, ComponentContainer components, Binding[] bindings)
         {
-            if (type is null)
-            {
-                throw new ArgumentNullException(nameof(type));
-            }
-
-            if (elementType is null)
-            {
-                throw new ArgumentNullException(nameof(elementType));
-            }
-
-            if (components is null)
-            {
-                throw new ArgumentNullException(nameof(components));
-            }
-
-            if (bindings is null)
-            {
-                throw new ArgumentNullException(nameof(bindings));
-            }
-
             TargetType = type;
             this.elementType = elementType;
             builder = components.Get<IFactoryBuilder>();
