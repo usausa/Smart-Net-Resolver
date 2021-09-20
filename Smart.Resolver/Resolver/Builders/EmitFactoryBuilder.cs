@@ -67,7 +67,7 @@ namespace Smart.Resolver.Builders
                     ilGenerator.Emit(OpCodes.Ldfld, field!);
                     ilGenerator.Emit(OpCodes.Ldarg_1);
                     ilGenerator.Emit(OpCodes.Ldloc_0);
-                    ilGenerator.Emit(OpCodes.Callvirt, invokeMethod);
+                    ilGenerator.Emit(OpCodes.Call, invokeMethod);
                 }
 
                 ilGenerator.Emit(OpCodes.Ldloc_0);
