@@ -28,7 +28,6 @@ namespace Smart.Resolver
         {
             config.Populate(services);
 
-            config.Bind<IServiceProvider>().To<SmartServiceProvider>().InSingletonScope();
             config.Bind<IServiceScopeFactory>().To<SmartServiceScopeFactory>().InSingletonScope();
 
             config.UseOpenGenericBinding();
@@ -39,7 +38,7 @@ namespace Smart.Resolver
 
         public IServiceProvider CreateServiceProvider(ResolverConfig containerBuilder)
         {
-            return new SmartServiceProvider(containerBuilder.ToResolver());
+            return containerBuilder.ToResolver();
         }
     }
 }

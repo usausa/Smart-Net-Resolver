@@ -67,12 +67,12 @@ namespace Smart.Resolver
 
             foreach (var group in config.CreateBindings(Components).GroupBy(b => b.Type))
             {
-                tableEntries.Add(group.Key, group.ToArray());
+                tableEntries[group.Key] = group.ToArray();
             }
 
-            tableEntries.Add(typeof(IResolver), new[] { new Binding(typeof(IResolver), new ConstantProvider<IResolver>(this), null, null, null, null) });
-            tableEntries.Add(typeof(SmartResolver), new[] { new Binding(typeof(SmartResolver), new ConstantProvider<SmartResolver>(this), null, null, null, null) });
-            tableEntries.Add(typeof(IServiceProvider), new[] { new Binding(typeof(IServiceProvider), new ConstantProvider<IServiceProvider>(this), null, null, null, null) });
+            tableEntries[typeof(IResolver)] = new[] { new Binding(typeof(IResolver), new ConstantProvider<IResolver>(this), null, null, null, null) };
+            tableEntries[typeof(SmartResolver)] = new[] { new Binding(typeof(SmartResolver), new ConstantProvider<SmartResolver>(this), null, null, null, null) };
+            tableEntries[typeof(IServiceProvider)] = new[] { new Binding(typeof(IServiceProvider), new ConstantProvider<IServiceProvider>(this), null, null, null, null) };
 
             table = new BindingTable(tableEntries);
         }
