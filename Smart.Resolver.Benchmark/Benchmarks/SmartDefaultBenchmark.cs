@@ -56,7 +56,6 @@ namespace Smart.Resolver.Benchmark.Benchmarks
             config.Bind<IMultipleTransientService>().To<MultipleTransientService5>().InTransientScope();
 
             // ASP.NET Core simulation
-            config.Bind<IServiceProvider>().To<SmartServiceProvider>().InSingletonScope();
             config.Bind<IServiceScopeFactory>().To<SmartServiceScopeFactory>().InSingletonScope();
             config.Bind<Controller>().ToSelf().InTransientScope();
             config.Bind<ITransientService1>().To<TransientService1>().InTransientScope();
