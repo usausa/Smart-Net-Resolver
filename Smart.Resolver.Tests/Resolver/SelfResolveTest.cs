@@ -30,7 +30,6 @@ namespace Smart.Resolver
             Assert.Same(resolver, obj.Resolver);
         }
 
-
         [Fact]
         public void ResolveServiceProvider()
         {
