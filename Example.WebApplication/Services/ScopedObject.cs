@@ -11,12 +11,12 @@ namespace Example.WebApplication.Services
         public ScopedObject(ILogger<ScopedObject> logger)
         {
             this.logger = logger;
-            logger.LogInformation("Construct {0}", GetHashCode());
+            logger.LogInformation("Construct {Hash}", GetHashCode());
         }
 
         public void Dispose()
         {
-            logger.LogInformation("Dispose {0}", GetHashCode());
+            logger.LogInformation("Dispose {Hash}", GetHashCode());
         }
     }
 }

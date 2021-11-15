@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.28803.202
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NewDynamicFactoryBenchmark", "NewDynamicFactoryBenchmark\NewDynamicFactoryBenchmark.csproj", "{A0DC18E6-9370-4A6B-B85F-FD82F1B81723}"
 EndProject
