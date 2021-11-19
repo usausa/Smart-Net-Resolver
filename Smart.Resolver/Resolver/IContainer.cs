@@ -1,9 +1,8 @@
-namespace Smart.Resolver
-{
-    using Smart.Resolver.Components;
+namespace Smart.Resolver;
 
-    internal interface IContainer
-    {
-        ContainerSlot Slot { get; }
-    }
+using Smart.Resolver.Components;
+
+internal interface IContainer
+{
+    ContainerSlot Slot { get; }
 }

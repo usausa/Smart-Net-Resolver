@@ -1,24 +1,23 @@
-namespace NewBuilderWork
+namespace NewBuilderWork;
+
+using System;
+
+using Smart.Resolver.Builders;
+
+public interface IInitialize
 {
-    using System;
+    void Initialize();
+}
 
-    using Smart.Resolver.Builders;
-
-    public interface IInitialize
+public static class ActionBuilder
+{
+    public static Action<IResolver, object> Create1()
     {
-        void Initialize();
+        return (c, o) => ((IInitialize)o).Initialize();
     }
 
-    public static class ActionBuilder
+    public static Action<IResolver, object> Create2()
     {
-        public static Action<IResolver, object> Create1()
-        {
-            return (c, o) => ((IInitialize)o).Initialize();
-        }
-
-        public static Action<IResolver, object> Create2()
-        {
-            return (c, o) => System.Diagnostics.Debug.WriteLine("Called");
-        }
+        return (c, o) => System.Diagnostics.Debug.WriteLine("Called");
     }
 }

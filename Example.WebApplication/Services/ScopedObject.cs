@@ -1,22 +1,21 @@
-namespace Example.WebApplication.Services
+namespace Example.WebApplication.Services;
+
+using System;
+
+using Microsoft.Extensions.Logging;
+
+public sealed class ScopedObject : IDisposable
 {
-    using System;
+    private readonly ILogger<ScopedObject> logger;
 
-    using Microsoft.Extensions.Logging;
-
-    public sealed class ScopedObject : IDisposable
+    public ScopedObject(ILogger<ScopedObject> logger)
     {
-        private readonly ILogger<ScopedObject> logger;
+        this.logger = logger;
+        logger.LogInformation("Construct {Hash}", GetHashCode());
+    }
 
-        public ScopedObject(ILogger<ScopedObject> logger)
-        {
-            this.logger = logger;
-            logger.LogInformation("Construct {Hash}", GetHashCode());
-        }
-
-        public void Dispose()
-        {
-            logger.LogInformation("Dispose {Hash}", GetHashCode());
-        }
+    public void Dispose()
+    {
+        logger.LogInformation("Dispose {Hash}", GetHashCode());
     }
 }

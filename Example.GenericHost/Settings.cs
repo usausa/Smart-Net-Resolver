@@ -1,7 +1,6 @@
-namespace Example.GenericHost
+namespace Example.GenericHost;
+
+public class Settings
 {
-    public class Settings
-    {
-        public string? Data { get; set; }
-    }
+    public string? Data { get; set; }
 }

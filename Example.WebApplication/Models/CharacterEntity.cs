@@ -1,11 +1,10 @@
-namespace Example.WebApplication.Models
+namespace Example.WebApplication.Models;
+
+public class CharacterEntity
 {
-    public class CharacterEntity
-    {
-        public int Id { get; set; }
+    public int Id { get; set; }
 
-        public string? Name { get; set; }
+    public string? Name { get; set; }
 
-        public int Level { get; set; }
-    }
+    public int Level { get; set; }
 }

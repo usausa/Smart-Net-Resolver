@@ -1,306 +1,305 @@
-namespace Smart.Resolver
+namespace Smart.Resolver;
+
+using System;
+using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
+using System.Runtime.CompilerServices;
+using System.Threading;
+
+using Smart.Resolver.Constraints;
+
+[DebuggerDisplay("{" + nameof(Diagnostics) + "}")]
+internal class TypeConstraintHashArray<T>
 {
-    using System;
-    using System.Diagnostics;
-    using System.Diagnostics.CodeAnalysis;
-    using System.Runtime.CompilerServices;
-    using System.Threading;
+    private const int InitialSize = 64;
 
-    using Smart.Resolver.Constraints;
+    private const int Factor = 3;
 
-    [DebuggerDisplay("{" + nameof(Diagnostics) + "}")]
-    internal class TypeConstraintHashArray<T>
+    private static readonly Node EmptyNode = new(typeof(EmptyKey), null!, default!);
+
+    private readonly object sync = new();
+
+    private Node[] nodes;
+
+    private int depth;
+
+    private int count;
+
+    //--------------------------------------------------------------------------------
+    // Constructor
+    //--------------------------------------------------------------------------------
+
+    public TypeConstraintHashArray()
     {
-        private const int InitialSize = 64;
+        nodes = CreateInitialTable();
+    }
 
-        private const int Factor = 3;
+    //--------------------------------------------------------------------------------
+    // Private
+    //--------------------------------------------------------------------------------
 
-        private static readonly Node EmptyNode = new(typeof(EmptyKey), null!, default!);
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private static int CalculateHash(Type type, IConstraint constraint)
+    {
+        return type.GetHashCode() ^ constraint.GetHashCode();
+    }
 
-        private readonly object sync = new();
-
-        private Node[] nodes;
-
-        private int depth;
-
-        private int count;
-
-        //--------------------------------------------------------------------------------
-        // Constructor
-        //--------------------------------------------------------------------------------
-
-        public TypeConstraintHashArray()
+    private static int CalculateDepth(Node node)
+    {
+        var length = 1;
+        var next = node.Next;
+        while (next is not null)
         {
-            nodes = CreateInitialTable();
+            length++;
+            next = next.Next;
         }
 
-        //--------------------------------------------------------------------------------
-        // Private
-        //--------------------------------------------------------------------------------
+        return length;
+    }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static int CalculateHash(Type type, IConstraint constraint)
-        {
-            return type.GetHashCode() ^ constraint.GetHashCode();
-        }
+    private static int CalculateDepth(Node[] targetNodes)
+    {
+        var depth = 0;
 
-        private static int CalculateDepth(Node node)
+        for (var i = 0; i < targetNodes.Length; i++)
         {
-            var length = 1;
-            var next = node.Next;
-            while (next is not null)
+            var node = targetNodes[i];
+            if (node != EmptyNode)
             {
-                length++;
-                next = next.Next;
+                depth = Math.Max(CalculateDepth(node), depth);
+            }
+        }
+
+        return depth;
+    }
+
+    private static int CalculateSize(int requestSize)
+    {
+        uint size = 0;
+
+        for (var i = 1L; i < requestSize; i *= 2)
+        {
+            size = (size << 1) + 1;
+        }
+
+        return (int)(size + 1);
+    }
+
+    private static Node[] CreateInitialTable()
+    {
+        var newNodes = new Node[InitialSize];
+
+        for (var i = 0; i < newNodes.Length; i++)
+        {
+            newNodes[i] = EmptyNode;
+        }
+
+        return newNodes;
+    }
+
+    private static Node FindLastNode(Node node)
+    {
+        while (node.Next is not null)
+        {
+            node = node.Next;
+        }
+
+        return node;
+    }
+
+    private static void UpdateLink(ref Node node, Node addNode)
+    {
+        if (node == EmptyNode)
+        {
+            node = addNode;
+        }
+        else
+        {
+            var last = FindLastNode(node);
+            last.Next = addNode;
+        }
+    }
+
+    private static void RelocateNodes(Node[] nodes, Node[] oldNodes)
+    {
+        for (var i = 0; i < oldNodes.Length; i++)
+        {
+            var node = oldNodes[i];
+            if (node == EmptyNode)
+            {
+                continue;
             }
 
-            return length;
-        }
-
-        private static int CalculateDepth(Node[] targetNodes)
-        {
-            var depth = 0;
-
-            for (var i = 0; i < targetNodes.Length; i++)
+            do
             {
-                var node = targetNodes[i];
-                if (node != EmptyNode)
-                {
-                    depth = Math.Max(CalculateDepth(node), depth);
-                }
+                var next = node.Next;
+                node.Next = null;
+
+                UpdateLink(ref nodes[CalculateHash(node.Type, node.Constraint) & (nodes.Length - 1)], node);
+
+                node = next;
             }
-
-            return depth;
+            while (node is not null);
         }
+    }
 
-        private static int CalculateSize(int requestSize)
+    private void AddNode(Node node)
+    {
+        var requestSize = Math.Max(InitialSize, (count + 1) * Factor);
+        var size = CalculateSize(requestSize);
+        if (size > nodes.Length)
         {
-            uint size = 0;
-
-            for (var i = 1L; i < requestSize; i *= 2)
-            {
-                size = (size << 1) + 1;
-            }
-
-            return (int)(size + 1);
-        }
-
-        private static Node[] CreateInitialTable()
-        {
-            var newNodes = new Node[InitialSize];
-
+            var newNodes = new Node[size];
             for (var i = 0; i < newNodes.Length; i++)
             {
                 newNodes[i] = EmptyNode;
             }
 
-            return newNodes;
-        }
+            RelocateNodes(newNodes, nodes);
 
-        private static Node FindLastNode(Node node)
+            UpdateLink(ref newNodes[CalculateHash(node.Type, node.Constraint) & (newNodes.Length - 1)], node);
+
+            Interlocked.MemoryBarrier();
+
+            nodes = newNodes;
+            depth = CalculateDepth(newNodes);
+            count++;
+        }
+        else
         {
-            while (node.Next is not null)
-            {
-                node = node.Next;
-            }
+            Interlocked.MemoryBarrier();
 
-            return node;
+            var hash = CalculateHash(node.Type, node.Constraint);
+
+            UpdateLink(ref nodes[hash & (nodes.Length - 1)], node);
+
+            depth = Math.Max(CalculateDepth(nodes[hash & (nodes.Length - 1)]), depth);
+            count++;
         }
+    }
 
-        private static void UpdateLink(ref Node node, Node addNode)
-        {
-            if (node == EmptyNode)
-            {
-                node = addNode;
-            }
-            else
-            {
-                var last = FindLastNode(node);
-                last.Next = addNode;
-            }
-        }
+    //--------------------------------------------------------------------------------
+    // Public
+    //--------------------------------------------------------------------------------
 
-        private static void RelocateNodes(Node[] nodes, Node[] oldNodes)
-        {
-            for (var i = 0; i < oldNodes.Length; i++)
-            {
-                var node = oldNodes[i];
-                if (node == EmptyNode)
-                {
-                    continue;
-                }
-
-                do
-                {
-                    var next = node.Next;
-                    node.Next = null;
-
-                    UpdateLink(ref nodes[CalculateHash(node.Type, node.Constraint) & (nodes.Length - 1)], node);
-
-                    node = next;
-                }
-                while (node is not null);
-            }
-        }
-
-        private void AddNode(Node node)
-        {
-            var requestSize = Math.Max(InitialSize, (count + 1) * Factor);
-            var size = CalculateSize(requestSize);
-            if (size > nodes.Length)
-            {
-                var newNodes = new Node[size];
-                for (var i = 0; i < newNodes.Length; i++)
-                {
-                    newNodes[i] = EmptyNode;
-                }
-
-                RelocateNodes(newNodes, nodes);
-
-                UpdateLink(ref newNodes[CalculateHash(node.Type, node.Constraint) & (newNodes.Length - 1)], node);
-
-                Interlocked.MemoryBarrier();
-
-                nodes = newNodes;
-                depth = CalculateDepth(newNodes);
-                count++;
-            }
-            else
-            {
-                Interlocked.MemoryBarrier();
-
-                var hash = CalculateHash(node.Type, node.Constraint);
-
-                UpdateLink(ref nodes[hash & (nodes.Length - 1)], node);
-
-                depth = Math.Max(CalculateDepth(nodes[hash & (nodes.Length - 1)]), depth);
-                count++;
-            }
-        }
-
-        //--------------------------------------------------------------------------------
-        // Public
-        //--------------------------------------------------------------------------------
-
-        public DiagnosticsInfo Diagnostics
-        {
-            get
-            {
-                lock (sync)
-                {
-                    return new DiagnosticsInfo(nodes.Length, depth, count);
-                }
-            }
-        }
-
-        public void Clear()
+    public DiagnosticsInfo Diagnostics
+    {
+        get
         {
             lock (sync)
             {
-                var newNodes = CreateInitialTable();
-
-                Interlocked.MemoryBarrier();
-
-                nodes = newNodes;
-                depth = 0;
-                count = 0;
+                return new DiagnosticsInfo(nodes.Length, depth, count);
             }
         }
+    }
 
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods", Justification = "Performance")]
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool TryGetValue(Type type, IConstraint constraint, [MaybeNullWhen(false)] out T value)
+    public void Clear()
+    {
+        lock (sync)
         {
-            var temp = nodes;
-            var node = temp[CalculateHash(type, constraint) & (temp.Length - 1)];
-            do
+            var newNodes = CreateInitialTable();
+
+            Interlocked.MemoryBarrier();
+
+            nodes = newNodes;
+            depth = 0;
+            count = 0;
+        }
+    }
+
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods", Justification = "Performance")]
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public bool TryGetValue(Type type, IConstraint constraint, [MaybeNullWhen(false)] out T value)
+    {
+        var temp = nodes;
+        var node = temp[CalculateHash(type, constraint) & (temp.Length - 1)];
+        do
+        {
+            if ((node.Type == type) && node.Constraint.Equals(constraint))
             {
-                if ((node.Type == type) && node.Constraint.Equals(constraint))
-                {
-                    value = node.Value;
-                    return true;
-                }
-                node = node.Next;
+                value = node.Value;
+                return true;
             }
-            while (node is not null);
-
-            value = default;
-            return false;
+            node = node.Next;
         }
+        while (node is not null);
 
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods", Justification = "Performance")]
-        public T AddIfNotExist(Type type, IConstraint constraint, Func<Type, IConstraint, T> valueFactory)
+        value = default;
+        return false;
+    }
+
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods", Justification = "Performance")]
+    public T AddIfNotExist(Type type, IConstraint constraint, Func<Type, IConstraint, T> valueFactory)
+    {
+        lock (sync)
         {
-            lock (sync)
+            // Double checked locking
+            if (TryGetValue(type, constraint, out var currentValue))
             {
-                // Double checked locking
-                if (TryGetValue(type, constraint, out var currentValue))
-                {
-                    return currentValue;
-                }
-
-                var value = valueFactory(type, constraint);
-
-                // Check if added by recursive
-                if (TryGetValue(type, constraint, out currentValue))
-                {
-                    return currentValue;
-                }
-
-                AddNode(new Node(type, constraint, value));
-
-                return value;
+                return currentValue;
             }
-        }
 
-        //--------------------------------------------------------------------------------
-        // Inner
-        //--------------------------------------------------------------------------------
+            var value = valueFactory(type, constraint);
 
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1812:AvoidUninstantiatedInternalClasses", Justification = "Framework only")]
-        private sealed class EmptyKey
-        {
-        }
-
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("StyleCop.CSharp.MaintainabilityRules", "SA1401:FieldsMustBePrivate", Justification = "Performance")]
-        private sealed class Node
-        {
-            public readonly Type Type;
-
-            public readonly IConstraint Constraint;
-
-            public readonly T Value;
-
-            public Node? Next;
-
-            public Node(Type type, IConstraint constraint, T value)
+            // Check if added by recursive
+            if (TryGetValue(type, constraint, out currentValue))
             {
-                Type = type;
-                Constraint = constraint;
-                Value = value;
+                return currentValue;
             }
+
+            AddNode(new Node(type, constraint, value));
+
+            return value;
         }
+    }
 
-        //--------------------------------------------------------------------------------
-        // Diagnostics
-        //--------------------------------------------------------------------------------
+    //--------------------------------------------------------------------------------
+    // Inner
+    //--------------------------------------------------------------------------------
 
-        public sealed class DiagnosticsInfo
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1812:AvoidUninstantiatedInternalClasses", Justification = "Framework only")]
+    private sealed class EmptyKey
+    {
+    }
+
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("StyleCop.CSharp.MaintainabilityRules", "SA1401:FieldsMustBePrivate", Justification = "Performance")]
+    private sealed class Node
+    {
+        public readonly Type Type;
+
+        public readonly IConstraint Constraint;
+
+        public readonly T Value;
+
+        public Node? Next;
+
+        public Node(Type type, IConstraint constraint, T value)
         {
-            public int Width { get; }
-
-            public int Depth { get; }
-
-            public int Count { get; }
-
-            public DiagnosticsInfo(int width, int depth, int count)
-            {
-                Width = width;
-                Depth = depth;
-                Count = count;
-            }
-
-            public override string ToString() => $"Count={Count}, Width={Width}, Depth={Depth}";
+            Type = type;
+            Constraint = constraint;
+            Value = value;
         }
+    }
+
+    //--------------------------------------------------------------------------------
+    // Diagnostics
+    //--------------------------------------------------------------------------------
+
+    public sealed class DiagnosticsInfo
+    {
+        public int Width { get; }
+
+        public int Depth { get; }
+
+        public int Count { get; }
+
+        public DiagnosticsInfo(int width, int depth, int count)
+        {
+            Width = width;
+            Depth = depth;
+            Count = count;
+        }
+
+        public override string ToString() => $"Count={Count}, Width={Width}, Depth={Depth}";
     }
 }

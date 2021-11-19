@@ -1,26 +1,25 @@
-namespace Example.WebApplication.Controllers
+namespace Example.WebApplication.Controllers;
+
+using System.Collections.Generic;
+
+using Example.WebApplication.Models;
+using Example.WebApplication.Services;
+
+using Microsoft.AspNetCore.Mvc;
+
+[Route("api/[controller]")]
+public class ItemController : Controller
 {
-    using System.Collections.Generic;
+    private MasterService MasterService { get; }
 
-    using Example.WebApplication.Models;
-    using Example.WebApplication.Services;
-
-    using Microsoft.AspNetCore.Mvc;
-
-    [Route("api/[controller]")]
-    public class ItemController : Controller
+    public ItemController(MasterService masterService)
     {
-        private MasterService MasterService { get; }
+        MasterService = masterService;
+    }
 
-        public ItemController(MasterService masterService)
-        {
-            MasterService = masterService;
-        }
-
-        [HttpGet]
-        public IEnumerable<ItemEntity> Get()
-        {
-            return MasterService.QueryItemList();
-        }
+    [HttpGet]
+    public IEnumerable<ItemEntity> Get()
+    {
+        return MasterService.QueryItemList();
     }
 }

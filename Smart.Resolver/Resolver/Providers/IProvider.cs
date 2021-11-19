@@ -1,13 +1,12 @@
-namespace Smart.Resolver.Providers
+namespace Smart.Resolver.Providers;
+
+using System;
+
+using Smart.Resolver.Bindings;
+
+public interface IProvider
 {
-    using System;
+    Type TargetType { get; }
 
-    using Smart.Resolver.Bindings;
-
-    public interface IProvider
-    {
-        Type TargetType { get; }
-
-        Func<IResolver, object> CreateFactory(IKernel kernel, Binding binding);
-    }
+    Func<IResolver, object> CreateFactory(IKernel kernel, Binding binding);
 }

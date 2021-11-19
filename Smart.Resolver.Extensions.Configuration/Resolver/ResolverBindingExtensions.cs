@@ -1,18 +1,17 @@
-namespace Smart.Resolver
-{
-    using Microsoft.Extensions.Configuration;
+namespace Smart.Resolver;
 
-    public static class ResolverBindingExtensions
+using Microsoft.Extensions.Configuration;
+
+public static class ResolverBindingExtensions
+{
+    public static ResolverConfig BindConfig<TConfig>(
+        this ResolverConfig config,
+        IConfiguration configuration)
+        where TConfig : class, new()
     {
-        public static ResolverConfig BindConfig<TConfig>(
-            this ResolverConfig config,
-            IConfiguration configuration)
-            where TConfig : class, new()
-        {
-            var instance = new TConfig();
-            configuration.Bind(instance);
-            config.Bind<TConfig>().ToConstant(instance).InSingletonScope();
-            return config;
-        }
+        var instance = new TConfig();
+        configuration.Bind(instance);
+        config.Bind<TConfig>().ToConstant(instance).InSingletonScope();
+        return config;
     }
 }

@@ -1,11 +1,10 @@
-namespace RequestKeyBenchmark.Constraints
-{
-    using System;
+namespace RequestKeyBenchmark.Constraints;
 
-    /// <summary>
-    ///
-    /// </summary>
-    public interface IConstraint : IEquatable<IConstraint>
-    {
-    }
+using System;
+
+/// <summary>
+///
+/// </summary>
+public interface IConstraint : IEquatable<IConstraint>
+{
 }

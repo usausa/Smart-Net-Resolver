@@ -1,29 +1,28 @@
-namespace Smart.Resolver.Providers
+namespace Smart.Resolver.Providers;
+
+using System;
+using System.Reflection;
+
+using Smart.Resolver.Bindings;
+
+public sealed class DependencyServiceProvider : IProvider
 {
-    using System;
-    using System.Reflection;
+    public Type TargetType { get; }
 
-    using Smart.Resolver.Bindings;
-
-    public sealed class DependencyServiceProvider : IProvider
+    public DependencyServiceProvider(Type type)
     {
-        public Type TargetType { get; }
+        TargetType = type;
+    }
 
-        public DependencyServiceProvider(Type type)
-        {
-            TargetType = type;
-        }
+    public Func<IResolver, object> CreateFactory(IKernel kernel, Binding binding)
+    {
+        var method = typeof(Xamarin.Forms.DependencyService).GetMethod("Get");
+        var genericMethod = method.MakeGenericMethod(TargetType);
+        return CreateFactory(genericMethod);
+    }
 
-        public Func<IResolver, object> CreateFactory(IKernel kernel, Binding binding)
-        {
-            var method = typeof(Xamarin.Forms.DependencyService).GetMethod("Get");
-            var genericMethod = method.MakeGenericMethod(TargetType);
-            return CreateFactory(genericMethod);
-        }
-
-        private static Func<IResolver, object> CreateFactory(MethodInfo method)
-        {
-            return _ => method.Invoke(null, new object[] { Xamarin.Forms.DependencyFetchTarget.GlobalInstance });
-        }
+    private static Func<IResolver, object> CreateFactory(MethodInfo method)
+    {
+        return _ => method.Invoke(null, new object[] { Xamarin.Forms.DependencyFetchTarget.GlobalInstance });
     }
 }

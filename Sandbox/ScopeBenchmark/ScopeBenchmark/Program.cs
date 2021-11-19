@@ -1,254 +1,253 @@
-namespace ScopeBenchmark
+namespace ScopeBenchmark;
+
+using System;
+using System.Collections.Generic;
+using System.Threading;
+
+using BenchmarkDotNet.Attributes;
+using BenchmarkDotNet.Configs;
+using BenchmarkDotNet.Diagnosers;
+using BenchmarkDotNet.Exporters;
+using BenchmarkDotNet.Jobs;
+using BenchmarkDotNet.Running;
+
+public static class Program
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Threading;
-
-    using BenchmarkDotNet.Attributes;
-    using BenchmarkDotNet.Configs;
-    using BenchmarkDotNet.Diagnosers;
-    using BenchmarkDotNet.Exporters;
-    using BenchmarkDotNet.Jobs;
-    using BenchmarkDotNet.Running;
-
-    public static class Program
+    public static void Main(string[] args)
     {
-        public static void Main(string[] args)
+        BenchmarkRunner.Run<Benchmark>();
+    }
+}
+
+public class BenchmarkConfig : ManualConfig
+{
+    public BenchmarkConfig()
+    {
+        Add(MarkdownExporter.Default, MarkdownExporter.GitHub);
+        Add(MemoryDiagnoser.Default);
+        Add(Job.ShortRun);
+    }
+}
+
+// Resolver    : 10
+// Context     : 30
+// Child       : 50
+
+[Config(typeof(BenchmarkConfig))]
+public class Benchmark
+{
+    private static readonly Type RequestType = typeof(Data);
+
+    private Resolver resolver;
+
+    private ContextScopeResolver contextScopeResolver;
+
+    private ChildScopeResolver childScopeResolver;
+
+    [GlobalSetup]
+    public void Setup()
+    {
+        resolver = new Resolver();
+
+        var contextStorage = new ContextStorage();
+        contextScopeResolver = new ContextScopeResolver(new ContextSupportResolver(contextStorage), contextStorage);
+
+        childScopeResolver = new ChildScopeResolver(new ChildSupportResolver());
+    }
+
+    [Benchmark]
+    public object Resolver()
+    {
+        return resolver.GetInstance(RequestType);
+    }
+
+    [Benchmark]
+    public object ContextScopeResolver()
+    {
+        return contextScopeResolver.GetInstance(RequestType);
+    }
+
+    [Benchmark]
+    public object ChildScopeResolver()
+    {
+        return childScopeResolver.GetInstance(RequestType);
+    }
+}
+
+// Interface
+
+public interface ILifetimeSupport
+{
+    object GetOrCreate(Type type, Func<object> func);
+}
+
+public interface IChildResolver
+{
+    object GetInstance(ILifetimeSupport container, Type type);
+}
+
+public interface IResolver : ILifetimeSupport, IDisposable
+{
+    object GetInstance(Type type);
+}
+
+// Child scope
+
+public sealed class ChildSupportResolver : IChildResolver
+{
+    private readonly Dictionary<Type, object> dummy = new Dictionary<Type, object>();
+
+    private object Factory()
+    {
+        return new Data();
+    }
+
+    public object GetInstance(ILifetimeSupport container, Type type)
+    {
+        dummy.TryGetValue(type, out _);
+        return container.GetOrCreate(type, Factory);
+    }
+}
+
+public sealed class ChildScopeResolver : IResolver
+{
+    private readonly ChildSupportResolver provider;
+
+    private readonly Dictionary<Type, object> cache = new Dictionary<Type, object>();
+
+    public ChildScopeResolver(ChildSupportResolver provider)
+    {
+        this.provider = provider;
+    }
+
+    public void Dispose()
+    {
+    }
+
+    public object GetOrCreate(Type type, Func<object> func)
+    {
+        lock (cache)
         {
-            BenchmarkRunner.Run<Benchmark>();
+            if (!cache.TryGetValue(type, out var target))
+            {
+                target = func();
+                cache[type] = target;
+            }
+
+            return target;
         }
     }
 
-    public class BenchmarkConfig : ManualConfig
+    public object GetInstance(Type type)
     {
-        public BenchmarkConfig()
-        {
-            Add(MarkdownExporter.Default, MarkdownExporter.GitHub);
-            Add(MemoryDiagnoser.Default);
-            Add(Job.ShortRun);
-        }
+        return provider.GetInstance(this, type);
+    }
+}
+
+// Context scope
+
+public sealed class ContextStorage
+{
+    private readonly AsyncLocal<Dictionary<Type, object>> store = new AsyncLocal<Dictionary<Type, object>>();
+
+    public Dictionary<Type, object> Store
+    {
+        get => store.Value;
+        set => store.Value = value;
+    }
+}
+
+public sealed class ContextSupportResolver : IResolver
+{
+    private readonly ContextStorage storage;
+
+    public ContextSupportResolver(ContextStorage storage)
+    {
+        this.storage = storage;
     }
 
-    // Resolver    : 10
-    // Context     : 30
-    // Child       : 50
-
-    [Config(typeof(BenchmarkConfig))]
-    public class Benchmark
+    public void Dispose()
     {
-        private static readonly Type RequestType = typeof(Data);
-
-        private Resolver resolver;
-
-        private ContextScopeResolver contextScopeResolver;
-
-        private ChildScopeResolver childScopeResolver;
-
-        [GlobalSetup]
-        public void Setup()
-        {
-            resolver = new Resolver();
-
-            var contextStorage = new ContextStorage();
-            contextScopeResolver = new ContextScopeResolver(new ContextSupportResolver(contextStorage), contextStorage);
-
-            childScopeResolver = new ChildScopeResolver(new ChildSupportResolver());
-        }
-
-        [Benchmark]
-        public object Resolver()
-        {
-            return resolver.GetInstance(RequestType);
-        }
-
-        [Benchmark]
-        public object ContextScopeResolver()
-        {
-            return contextScopeResolver.GetInstance(RequestType);
-        }
-
-        [Benchmark]
-        public object ChildScopeResolver()
-        {
-            return childScopeResolver.GetInstance(RequestType);
-        }
     }
 
-    // Interface
-
-    public interface ILifetimeSupport
+    public object GetInstance(Type type)
     {
-        object GetOrCreate(Type type, Func<object> func);
-    }
-
-    public interface IChildResolver
-    {
-        object GetInstance(ILifetimeSupport container, Type type);
-    }
-
-    public interface IResolver : ILifetimeSupport, IDisposable
-    {
-        object GetInstance(Type type);
-    }
-
-    // Child scope
-
-    public sealed class ChildSupportResolver : IChildResolver
-    {
-        private readonly Dictionary<Type, object> dummy = new Dictionary<Type, object>();
-
-        private object Factory()
+        var cache = storage.Store;
+        if (cache is null)
         {
             return new Data();
         }
 
-        public object GetInstance(ILifetimeSupport container, Type type)
+        if (!cache.TryGetValue(type, out var value))
         {
-            dummy.TryGetValue(type, out _);
-            return container.GetOrCreate(type, Factory);
+            value = new Data();
+            cache[type] = value;
         }
+
+        return value;
     }
 
-    public sealed class ChildScopeResolver : IResolver
+    public object GetOrCreate(Type type, Func<object> func)
     {
-        private readonly ChildSupportResolver provider;
-
-        private readonly Dictionary<Type, object> cache = new Dictionary<Type, object>();
-
-        public ChildScopeResolver(ChildSupportResolver provider)
-        {
-            this.provider = provider;
-        }
-
-        public void Dispose()
-        {
-        }
-
-        public object GetOrCreate(Type type, Func<object> func)
-        {
-            lock (cache)
-            {
-                if (!cache.TryGetValue(type, out var target))
-                {
-                    target = func();
-                    cache[type] = target;
-                }
-
-                return target;
-            }
-        }
-
-        public object GetInstance(Type type)
-        {
-            return provider.GetInstance(this, type);
-        }
+        throw new NotSupportedException();
     }
 
-    // Context scope
+}
 
-    public sealed class ContextStorage
+
+public sealed class ContextScopeResolver : IResolver
+{
+    private readonly ContextSupportResolver resolver;
+
+    private readonly ContextStorage storage;
+
+    public ContextScopeResolver(ContextSupportResolver resolver, ContextStorage storage)
     {
-        private readonly AsyncLocal<Dictionary<Type, object>> store = new AsyncLocal<Dictionary<Type, object>>();
-
-        public Dictionary<Type, object> Store
-        {
-            get => store.Value;
-            set => store.Value = value;
-        }
+        this.resolver = resolver;
+        this.storage = storage;
+        storage.Store = new Dictionary<Type, object>();
     }
 
-    public sealed class ContextSupportResolver : IResolver
+    public void Dispose()
     {
-        private readonly ContextStorage storage;
-
-        public ContextSupportResolver(ContextStorage storage)
-        {
-            this.storage = storage;
-        }
-
-        public void Dispose()
-        {
-        }
-
-        public object GetInstance(Type type)
-        {
-            var cache = storage.Store;
-            if (cache is null)
-            {
-                return new Data();
-            }
-
-            if (!cache.TryGetValue(type, out var value))
-            {
-                value = new Data();
-                cache[type] = value;
-            }
-
-            return value;
-        }
-
-        public object GetOrCreate(Type type, Func<object> func)
-        {
-            throw new NotSupportedException();
-        }
-
+        storage.Store.Clear();
     }
 
-
-    public sealed class ContextScopeResolver : IResolver
+    public object GetInstance(Type type)
     {
-        private readonly ContextSupportResolver resolver;
-
-        private readonly ContextStorage storage;
-
-        public ContextScopeResolver(ContextSupportResolver resolver, ContextStorage storage)
-        {
-            this.resolver = resolver;
-            this.storage = storage;
-            storage.Store = new Dictionary<Type, object>();
-        }
-
-        public void Dispose()
-        {
-            storage.Store.Clear();
-        }
-
-        public object GetInstance(Type type)
-        {
-            return resolver.GetInstance(type);
-        }
-
-        public object GetOrCreate(Type type, Func<object> func)
-        {
-            throw new NotSupportedException();
-        }
+        return resolver.GetInstance(type);
     }
 
-    // Core
-
-    public sealed class Resolver : IResolver
+    public object GetOrCreate(Type type, Func<object> func)
     {
-        private readonly Dictionary<Type, object> dummy = new Dictionary<Type, object>();
-
-        public void Dispose()
-        {
-        }
-
-        public object GetInstance(Type type)
-        {
-            dummy.TryGetValue(type, out _);
-            return new Data();
-        }
-
-        public object GetOrCreate(Type type, Func<object> func)
-        {
-            throw new NotSupportedException();
-        }
+        throw new NotSupportedException();
     }
+}
 
-    // Data
+// Core
 
-    public class Data
+public sealed class Resolver : IResolver
+{
+    private readonly Dictionary<Type, object> dummy = new Dictionary<Type, object>();
+
+    public void Dispose()
     {
     }
+
+    public object GetInstance(Type type)
+    {
+        dummy.TryGetValue(type, out _);
+        return new Data();
+    }
+
+    public object GetOrCreate(Type type, Func<object> func)
+    {
+        throw new NotSupportedException();
+    }
+}
+
+// Data
+
+public class Data
+{
 }

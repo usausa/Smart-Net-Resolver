@@ -1,22 +1,21 @@
-namespace Smart.Resolver.Attributes
+namespace Smart.Resolver.Attributes;
+
+using System;
+
+using Smart.Resolver.Constraints;
+
+[AttributeUsage(AttributeTargets.Property | AttributeTargets.Parameter, AllowMultiple = true)]
+public sealed class NamedAttribute : ConstraintAttribute
 {
-    using System;
+    public string Name { get; }
 
-    using Smart.Resolver.Constraints;
-
-    [AttributeUsage(AttributeTargets.Property | AttributeTargets.Parameter, AllowMultiple = true)]
-    public sealed class NamedAttribute : ConstraintAttribute
+    public NamedAttribute(string name)
     {
-        public string Name { get; }
+        Name = name;
+    }
 
-        public NamedAttribute(string name)
-        {
-            Name = name;
-        }
-
-        public override IConstraint CreateConstraint()
-        {
-            return new NameConstraint(Name);
-        }
+    public override IConstraint CreateConstraint()
+    {
+        return new NameConstraint(Name);
     }
 }

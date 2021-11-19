@@ -1,6 +1,5 @@
-namespace Smart.Resolver.Builders
+namespace Smart.Resolver.Builders;
+
+public interface IResolver
 {
-    public interface IResolver
-    {
-    }
 }

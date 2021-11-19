@@ -1,63 +1,62 @@
-namespace Smart.Resolver.Constraints
+namespace Smart.Resolver.Constraints;
+
+using Smart.Resolver.Bindings;
+
+public sealed class ChainConstraint : IConstraint
 {
-    using Smart.Resolver.Bindings;
+    private readonly IConstraint[] constraints;
 
-    public sealed class ChainConstraint : IConstraint
+    public ChainConstraint(params IConstraint[] constraints)
     {
-        private readonly IConstraint[] constraints;
+        this.constraints = constraints;
+    }
 
-        public ChainConstraint(params IConstraint[] constraints)
+    public bool Match(BindingMetadata metadata)
+    {
+        var constraintsLocal = constraints;
+        for (var i = 0; i < constraintsLocal.Length; i++)
         {
-            this.constraints = constraints;
+            if (!constraintsLocal[i].Match(metadata))
+            {
+                return false;
+            }
         }
 
-        public bool Match(BindingMetadata metadata)
+        return true;
+    }
+
+    public override bool Equals(object? obj)
+    {
+        if (obj is ChainConstraint constraint)
         {
             var constraintsLocal = constraints;
-            for (var i = 0; i < constraintsLocal.Length; i++)
+            var constraintsOther = constraint.constraints;
+            if (constraintsLocal.Length == constraintsOther.Length)
             {
-                if (!constraintsLocal[i].Match(metadata))
+                for (var i = 0; i < constraintsLocal.Length; i++)
                 {
-                    return false;
-                }
-            }
-
-            return true;
-        }
-
-        public override bool Equals(object? obj)
-        {
-            if (obj is ChainConstraint constraint)
-            {
-                var constraintsLocal = constraints;
-                var constraintsOther = constraint.constraints;
-                if (constraintsLocal.Length == constraintsOther.Length)
-                {
-                    for (var i = 0; i < constraintsLocal.Length; i++)
+                    if (!constraintsLocal[i].Equals(constraintsOther[i]))
                     {
-                        if (!constraintsLocal[i].Equals(constraintsOther[i]))
-                        {
-                            return false;
-                        }
+                        return false;
                     }
-
-                    return true;
                 }
-            }
 
-            return false;
+                return true;
+            }
         }
 
-        public override int GetHashCode()
+        return false;
+    }
+
+    public override int GetHashCode()
+    {
+        var hash = 0;
+        var constraintsLocal = constraints;
+        for (var i = 0; i < constraintsLocal.Length; i++)
         {
-            var hash = 0;
-            var constraintsLocal = constraints;
-            for (var i = 0; i < constraintsLocal.Length; i++)
-            {
-                hash ^= constraintsLocal[i].GetHashCode();
-            }
-
-            return hash;
+            hash ^= constraintsLocal[i].GetHashCode();
         }
+
+        return hash;
     }
 }

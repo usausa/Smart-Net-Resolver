@@ -1,11 +1,10 @@
-namespace Smart.Resolver.Configs
+namespace Smart.Resolver.Configs;
+
+using System;
+
+public interface IBindingRoot
 {
-    using System;
+    IBindingToSyntax<T> Bind<T>();
 
-    public interface IBindingRoot
-    {
-        IBindingToSyntax<T> Bind<T>();
-
-        IBindingToSyntax<object> Bind(Type type);
-    }
+    IBindingToSyntax<object> Bind(Type type);
 }

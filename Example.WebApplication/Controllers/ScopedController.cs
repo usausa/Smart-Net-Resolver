@@ -1,29 +1,28 @@
-namespace Example.WebApplication.Controllers
+namespace Example.WebApplication.Controllers;
+
+using System;
+
+using Example.WebApplication.Services;
+
+using Microsoft.AspNetCore.Mvc;
+
+public class ScopedController : Controller
 {
-    using System;
+    private ScopedObject ScopedObject { get; }
 
-    using Example.WebApplication.Services;
-
-    using Microsoft.AspNetCore.Mvc;
-
-    public class ScopedController : Controller
+    public ScopedController(ScopedObject scopedObject)
     {
-        private ScopedObject ScopedObject { get; }
+        ScopedObject = scopedObject;
+    }
 
-        public ScopedController(ScopedObject scopedObject)
+    // ReSharper disable once ParameterOnlyUsedForPreconditionCheck.Global
+    public IActionResult Index([FromServices] ScopedObject scopedObject)
+    {
+        if (ScopedObject != scopedObject)
         {
-            ScopedObject = scopedObject;
+            throw new InvalidOperationException("Scoped object unmatch.");
         }
 
-        // ReSharper disable once ParameterOnlyUsedForPreconditionCheck.Global
-        public IActionResult Index([FromServices] ScopedObject scopedObject)
-        {
-            if (ScopedObject != scopedObject)
-            {
-                throw new InvalidOperationException("Scoped object unmatch.");
-            }
-
-            return View(ScopedObject);
-        }
+        return View(ScopedObject);
     }
 }

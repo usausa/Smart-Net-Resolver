@@ -1,12 +1,11 @@
-namespace Smart.Resolver.Builders
+namespace Smart.Resolver.Builders;
+
+using System;
+using System.Reflection;
+
+public interface IFactoryBuilder
 {
-    using System;
-    using System.Reflection;
+    Func<IResolver, object> CreateFactory(ConstructorInfo ci, Func<IResolver, object>[] factories, Action<IResolver, object>[] actions);
 
-    public interface IFactoryBuilder
-    {
-        Func<IResolver, object> CreateFactory(ConstructorInfo ci, Func<IResolver, object>[] factories, Action<IResolver, object>[] actions);
-
-        Func<IResolver, object> CreateArrayFactory(Type type, Func<IResolver, object>[] factories);
-    }
+    Func<IResolver, object> CreateArrayFactory(Type type, Func<IResolver, object>[] factories);
 }

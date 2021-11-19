@@ -1,6 +1,5 @@
-namespace Smart.Resolver.Mocks
+namespace Smart.Resolver.Mocks;
+
+public class SimpleObject
 {
-    public class SimpleObject
-    {
-    }
 }

@@ -1,44 +1,43 @@
-namespace Smart.Resolver
+namespace Smart.Resolver;
+
+using System;
+
+using Microsoft.Extensions.DependencyInjection;
+
+public sealed class SmartServiceProviderFactory : IServiceProviderFactory<ResolverConfig>
 {
-    using System;
+    private readonly ResolverConfig config;
 
-    using Microsoft.Extensions.DependencyInjection;
-
-    public sealed class SmartServiceProviderFactory : IServiceProviderFactory<ResolverConfig>
+    public SmartServiceProviderFactory()
+        : this(new ResolverConfig())
     {
-        private readonly ResolverConfig config;
+    }
 
-        public SmartServiceProviderFactory()
-            : this(new ResolverConfig())
-        {
-        }
+    public SmartServiceProviderFactory(ResolverConfig config)
+    {
+        this.config = config;
+    }
 
-        public SmartServiceProviderFactory(ResolverConfig config)
-        {
-            this.config = config;
-        }
+    public SmartServiceProviderFactory(Action<ResolverConfig> action)
+    {
+        config = new ResolverConfig();
+        action(config);
+    }
 
-        public SmartServiceProviderFactory(Action<ResolverConfig> action)
-        {
-            config = new ResolverConfig();
-            action(config);
-        }
+    public ResolverConfig CreateBuilder(IServiceCollection services)
+    {
+        config.Populate(services);
 
-        public ResolverConfig CreateBuilder(IServiceCollection services)
-        {
-            config.Populate(services);
+        config.Bind<IServiceScopeFactory>().To<SmartServiceScopeFactory>().InSingletonScope();
 
-            config.Bind<IServiceScopeFactory>().To<SmartServiceScopeFactory>().InSingletonScope();
+        config.UseOpenGenericBinding();
+        config.UseArrayBinding();
 
-            config.UseOpenGenericBinding();
-            config.UseArrayBinding();
+        return config;
+    }
 
-            return config;
-        }
-
-        public IServiceProvider CreateServiceProvider(ResolverConfig containerBuilder)
-        {
-            return containerBuilder.ToResolver();
-        }
+    public IServiceProvider CreateServiceProvider(ResolverConfig containerBuilder)
+    {
+        return containerBuilder.ToResolver();
     }
 }

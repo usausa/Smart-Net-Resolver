@@ -1,26 +1,25 @@
-namespace Example.WebApplication.Controllers
+namespace Example.WebApplication.Controllers;
+
+using System.Collections.Generic;
+
+using Example.WebApplication.Models;
+using Example.WebApplication.Services;
+
+using Microsoft.AspNetCore.Mvc;
+
+[Route("api/[controller]")]
+public class CharacterController : Controller
 {
-    using System.Collections.Generic;
+    private CharacterService CharacterService { get; }
 
-    using Example.WebApplication.Models;
-    using Example.WebApplication.Services;
-
-    using Microsoft.AspNetCore.Mvc;
-
-    [Route("api/[controller]")]
-    public class CharacterController : Controller
+    public CharacterController(CharacterService characterService)
     {
-        private CharacterService CharacterService { get; }
+        CharacterService = characterService;
+    }
 
-        public CharacterController(CharacterService characterService)
-        {
-            CharacterService = characterService;
-        }
-
-        [HttpGet]
-        public IEnumerable<CharacterEntity> Get()
-        {
-            return CharacterService.QueryCharacterList();
-        }
+    [HttpGet]
+    public IEnumerable<CharacterEntity> Get()
+    {
+        return CharacterService.QueryCharacterList();
     }
 }

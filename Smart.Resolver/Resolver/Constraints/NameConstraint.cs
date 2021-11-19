@@ -1,25 +1,24 @@
-namespace Smart.Resolver.Constraints
+namespace Smart.Resolver.Constraints;
+
+using Smart.Resolver.Bindings;
+
+public sealed class NameConstraint : IConstraint
 {
-    using Smart.Resolver.Bindings;
+    private readonly string name;
 
-    public sealed class NameConstraint : IConstraint
+    public NameConstraint(string name)
     {
-        private readonly string name;
-
-        public NameConstraint(string name)
-        {
-            this.name = name;
-        }
-
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods", Justification = "Ignore")]
-        public bool Match(BindingMetadata metadata) => name == metadata.Name;
-
-        public override bool Equals(object? obj)
-        {
-            return obj is NameConstraint constraint && name == constraint.name;
-        }
-
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Globalization", "CA1307:SpecifyStringComparison", Justification = "Ignore")]
-        public override int GetHashCode() => name.GetHashCode();
+        this.name = name;
     }
+
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods", Justification = "Ignore")]
+    public bool Match(BindingMetadata metadata) => name == metadata.Name;
+
+    public override bool Equals(object? obj)
+    {
+        return obj is NameConstraint constraint && name == constraint.name;
+    }
+
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Globalization", "CA1307:SpecifyStringComparison", Justification = "Ignore")]
+    public override int GetHashCode() => name.GetHashCode();
 }

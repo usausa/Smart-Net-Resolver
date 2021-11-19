@@ -1,26 +1,25 @@
-namespace Example.GenericHost
+namespace Example.GenericHost;
+
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
+
+public class SettingService
 {
-    using Microsoft.Extensions.Logging;
-    using Microsoft.Extensions.Options;
+    private ILogger<ExampleHostedService> Log { get; }
 
-    public class SettingService
+    private Settings Settings { get; }
+
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods", Justification = "Ignore")]
+    public SettingService(
+        ILogger<ExampleHostedService> log,
+        IOptions<Settings> settings)
     {
-        private ILogger<ExampleHostedService> Log { get; }
+        Log = log;
+        Settings = settings.Value;
+    }
 
-        private Settings Settings { get; }
-
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods", Justification = "Ignore")]
-        public SettingService(
-            ILogger<ExampleHostedService> log,
-            IOptions<Settings> settings)
-        {
-            Log = log;
-            Settings = settings.Value;
-        }
-
-        public void Write()
-        {
-            Log.LogInformation(Settings.Data);
-        }
+    public void Write()
+    {
+        Log.LogInformation(Settings.Data);
     }
 }

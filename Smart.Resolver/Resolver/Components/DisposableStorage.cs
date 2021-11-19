@@ -1,26 +1,25 @@
-namespace Smart.Resolver.Components
+namespace Smart.Resolver.Components;
+
+using System;
+
+using System.Collections.Generic;
+
+public sealed class DisposableStorage : IDisposable
 {
-    using System;
+    private readonly List<IDisposable> disposables = new();
 
-    using System.Collections.Generic;
-
-    public sealed class DisposableStorage : IDisposable
+    public void Add(IDisposable disposable)
     {
-        private readonly List<IDisposable> disposables = new();
+        disposables.Add(disposable);
+    }
 
-        public void Add(IDisposable disposable)
+    public void Dispose()
+    {
+        foreach (var disposable in disposables)
         {
-            disposables.Add(disposable);
+            disposable.Dispose();
         }
 
-        public void Dispose()
-        {
-            foreach (var disposable in disposables)
-            {
-                disposable.Dispose();
-            }
-
-            disposables.Clear();
-        }
+        disposables.Clear();
     }
 }

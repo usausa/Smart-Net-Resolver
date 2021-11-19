@@ -1,11 +1,10 @@
-namespace Smart.Resolver.Processors
+namespace Smart.Resolver.Processors;
+
+using System;
+
+public interface IProcessor
 {
-    using System;
+    int Order { get; }
 
-    public interface IProcessor
-    {
-        int Order { get; }
-
-        Action<IResolver, object>? CreateProcessor(Type type);
-    }
+    Action<IResolver, object>? CreateProcessor(Type type);
 }

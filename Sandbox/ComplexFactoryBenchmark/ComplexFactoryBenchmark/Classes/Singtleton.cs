@@ -1,38 +1,37 @@
-namespace ComplexFactoryBenchmark.Classes
+namespace ComplexFactoryBenchmark.Classes;
+
+public interface ISingleton1
 {
-    public interface ISingleton1
-    {
-        void DoSomething();
-    }
+    void DoSomething();
+}
 
-    public class Singleton1 : ISingleton1
+public class Singleton1 : ISingleton1
+{
+    public void DoSomething()
     {
-        public void DoSomething()
-        {
-        }
     }
+}
 
-    public interface ISingleton2
+public interface ISingleton2
+{
+    void DoSomething();
+}
+
+public class Singleton2 : ISingleton2
+{
+    public void DoSomething()
     {
-        void DoSomething();
     }
+}
 
-    public class Singleton2 : ISingleton2
-    {
-        public void DoSomething()
-        {
-        }
-    }
+public interface ISingleton3
+{
+    void DoSomething();
+}
 
-    public interface ISingleton3
+public class Singleton3 : ISingleton3
+{
+    public void DoSomething()
     {
-        void DoSomething();
-    }
-
-    public class Singleton3 : ISingleton3
-    {
-        public void DoSomething()
-        {
-        }
     }
 }

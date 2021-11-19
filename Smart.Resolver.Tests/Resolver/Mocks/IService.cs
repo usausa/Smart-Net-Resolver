@@ -1,7 +1,6 @@
-namespace Smart.Resolver.Mocks
+namespace Smart.Resolver.Mocks;
+
+public interface IService
 {
-    public interface IService
-    {
-        void Execute();
-    }
+    void Execute();
 }

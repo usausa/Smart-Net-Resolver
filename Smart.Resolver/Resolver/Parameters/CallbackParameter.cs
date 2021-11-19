@@ -1,19 +1,18 @@
-namespace Smart.Resolver.Parameters
+namespace Smart.Resolver.Parameters;
+
+using System;
+
+public sealed class CallbackParameter : IParameter
 {
-    using System;
+    private readonly Func<IResolver, object?> factory;
 
-    public sealed class CallbackParameter : IParameter
+    public CallbackParameter(Func<IResolver, object?> factory)
     {
-        private readonly Func<IResolver, object?> factory;
+        this.factory = factory;
+    }
 
-        public CallbackParameter(Func<IResolver, object?> factory)
-        {
-            this.factory = factory;
-        }
-
-        public object? Resolve(IResolver resolver)
-        {
-            return factory(resolver);
-        }
+    public object? Resolve(IResolver resolver)
+    {
+        return factory(resolver);
     }
 }

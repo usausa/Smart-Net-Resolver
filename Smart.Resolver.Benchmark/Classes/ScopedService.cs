@@ -1,14 +1,13 @@
-namespace Smart.Resolver.Benchmark.Classes
-{
-    public interface IScopedService
-    {
-        void DoSomething();
-    }
+namespace Smart.Resolver.Benchmark.Classes;
 
-    public class ScopedService : IScopedService
+public interface IScopedService
+{
+    void DoSomething();
+}
+
+public class ScopedService : IScopedService
+{
+    public void DoSomething()
     {
-        public void DoSomething()
-        {
-        }
     }
 }

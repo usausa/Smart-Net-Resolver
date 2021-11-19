@@ -1,24 +1,23 @@
-namespace Example.WebApplication.Services
+namespace Example.WebApplication.Services;
+
+using System.Collections.Generic;
+
+using Example.WebApplication.Models;
+
+using Smart.Data;
+using Smart.Data.Mapper;
+
+public class MasterService
 {
-    using System.Collections.Generic;
+    private IDbProvider Provider { get; }
 
-    using Example.WebApplication.Models;
-
-    using Smart.Data;
-    using Smart.Data.Mapper;
-
-    public class MasterService
+    public MasterService(IDbProvider provider)
     {
-        private IDbProvider Provider { get; }
+        Provider = provider;
+    }
 
-        public MasterService(IDbProvider provider)
-        {
-            Provider = provider;
-        }
-
-        public IList<ItemEntity> QueryItemList()
-        {
-            return Provider.Using(con => con.QueryList<ItemEntity>("SELECT * FROM Item ORDER BY Id"));
-        }
+    public IList<ItemEntity> QueryItemList()
+    {
+        return Provider.Using(con => con.QueryList<ItemEntity>("SELECT * FROM Item ORDER BY Id"));
     }
 }

@@ -1,184 +1,183 @@
-namespace Smart.Resolver.Configs
+namespace Smart.Resolver.Configs;
+
+using System;
+using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
+using System.Linq;
+
+using Smart.ComponentModel;
+using Smart.Resolver.Bindings;
+using Smart.Resolver.Parameters;
+using Smart.Resolver.Providers;
+using Smart.Resolver.Scopes;
+
+public class BindingBuilder<T> : IBindingFactory, IBindingToInNamedWithSyntax<T>
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Diagnostics.CodeAnalysis;
-    using System.Linq;
+    private readonly Type targetType;
 
-    using Smart.ComponentModel;
-    using Smart.Resolver.Bindings;
-    using Smart.Resolver.Parameters;
-    using Smart.Resolver.Providers;
-    using Smart.Resolver.Scopes;
+    [AllowNull]
+    private Func<ComponentContainer, IProvider> providerFactory;
 
-    public class BindingBuilder<T> : IBindingFactory, IBindingToInNamedWithSyntax<T>
+    private Func<ComponentContainer, IScope>? scopeFactory;
+
+    private string? metadataName;
+
+    private Dictionary<string, object?>? metadataValues;
+
+    private Dictionary<string, Func<ComponentContainer, IParameter>>? constructorArgumentFactories;
+
+    private Dictionary<string, Func<ComponentContainer, IParameter>>? propertyValueFactories;
+
+    public BindingBuilder(Type type)
     {
-        private readonly Type targetType;
+        targetType = type;
+    }
 
-        [AllowNull]
-        private Func<ComponentContainer, IProvider> providerFactory;
+    // ------------------------------------------------------------
+    // To
+    // ------------------------------------------------------------
 
-        private Func<ComponentContainer, IScope>? scopeFactory;
+    public IBindingInNamedWithSyntax ToProvider(Func<ComponentContainer, IProvider> factory)
+    {
+        providerFactory = factory;
+        return this;
+    }
 
-        private string? metadataName;
+    public IBindingInNamedWithSyntax ToSelf()
+    {
+        return ToProvider(c => new StandardProvider(targetType, c));
+    }
 
-        private Dictionary<string, object?>? metadataValues;
+    public IBindingInNamedWithSyntax To<TImplementation>()
+        where TImplementation : T
+    {
+        return ToProvider(c => new StandardProvider(typeof(TImplementation), c));
+    }
 
-        private Dictionary<string, Func<ComponentContainer, IParameter>>? constructorArgumentFactories;
+    public IBindingInNamedWithSyntax To(Type implementationType)
+    {
+        return ToProvider(c => new StandardProvider(implementationType, c));
+    }
 
-        private Dictionary<string, Func<ComponentContainer, IParameter>>? propertyValueFactories;
+    public IBindingInNamedWithSyntax ToMethod(Func<IResolver, T> factory)
+    {
+        var genericType = typeof(T);
+        var providerType = genericType.IsValueType
+            ? typeof(StructCallbackProvider<>).MakeGenericType(genericType)
+            : typeof(CallbackProvider<>).MakeGenericType(genericType);
+        var provider = (IProvider)Activator.CreateInstance(providerType, factory)!;
+        return ToProvider(_ => provider);
+    }
 
-        public BindingBuilder(Type type)
-        {
-            targetType = type;
-        }
+    public IBindingInNamedWithSyntax ToConstant([DisallowNull] T value)
+    {
+        return ToProvider(_ => new ConstantProvider<T>(value));
+    }
 
-        // ------------------------------------------------------------
-        // To
-        // ------------------------------------------------------------
+    // ------------------------------------------------------------
+    // In
+    // ------------------------------------------------------------
 
-        public IBindingInNamedWithSyntax ToProvider(Func<ComponentContainer, IProvider> factory)
-        {
-            providerFactory = factory;
-            return this;
-        }
+    public IBindingNamedWithSyntax InScope(Func<ComponentContainer, IScope> factory)
+    {
+        scopeFactory = factory;
+        return this;
+    }
 
-        public IBindingInNamedWithSyntax ToSelf()
-        {
-            return ToProvider(c => new StandardProvider(targetType, c));
-        }
+    public IBindingNamedWithSyntax InTransientScope()
+    {
+        scopeFactory = null;
+        return this;
+    }
 
-        public IBindingInNamedWithSyntax To<TImplementation>()
-            where TImplementation : T
-        {
-            return ToProvider(c => new StandardProvider(typeof(TImplementation), c));
-        }
+    public IBindingNamedWithSyntax InSingletonScope()
+    {
+        InScope(c => new SingletonScope(c));
+        return this;
+    }
 
-        public IBindingInNamedWithSyntax To(Type implementationType)
-        {
-            return ToProvider(c => new StandardProvider(implementationType, c));
-        }
+    public IBindingNamedWithSyntax InContainerScope()
+    {
+        InScope(_ => new ContainerScope());
+        return this;
+    }
 
-        public IBindingInNamedWithSyntax ToMethod(Func<IResolver, T> factory)
-        {
-            var genericType = typeof(T);
-            var providerType = genericType.IsValueType
-                ? typeof(StructCallbackProvider<>).MakeGenericType(genericType)
-                : typeof(CallbackProvider<>).MakeGenericType(genericType);
-            var provider = (IProvider)Activator.CreateInstance(providerType, factory)!;
-            return ToProvider(_ => provider);
-        }
+    // ------------------------------------------------------------
+    // Named
+    // ------------------------------------------------------------
 
-        public IBindingInNamedWithSyntax ToConstant([DisallowNull] T value)
-        {
-            return ToProvider(_ => new ConstantProvider<T>(value));
-        }
+    public IBindingWithSyntax Named(string name)
+    {
+        metadataName = name;
+        return this;
+    }
 
-        // ------------------------------------------------------------
-        // In
-        // ------------------------------------------------------------
+    // ------------------------------------------------------------
+    // With
+    // ------------------------------------------------------------
 
-        public IBindingNamedWithSyntax InScope(Func<ComponentContainer, IScope> factory)
-        {
-            scopeFactory = factory;
-            return this;
-        }
+    public IBindingWithSyntax WithMetadata(string key, object? value)
+    {
+        metadataValues ??= new();
+        metadataValues[key] = value;
+        return this;
+    }
 
-        public IBindingNamedWithSyntax InTransientScope()
-        {
-            scopeFactory = null;
-            return this;
-        }
+    public IBindingWithSyntax WithConstructorArgument(string name, Func<ComponentContainer, IParameter> factory)
+    {
+        constructorArgumentFactories ??= new();
+        constructorArgumentFactories[name] = factory;
+        return this;
+    }
 
-        public IBindingNamedWithSyntax InSingletonScope()
-        {
-            InScope(c => new SingletonScope(c));
-            return this;
-        }
+    public IBindingWithSyntax WithConstructorArgument(string name, object? value)
+    {
+        WithConstructorArgument(name, _ => new ConstantParameter(value));
+        return this;
+    }
 
-        public IBindingNamedWithSyntax InContainerScope()
-        {
-            InScope(_ => new ContainerScope());
-            return this;
-        }
+    public IBindingWithSyntax WithConstructorArgument(string name, Func<IResolver, object?> factory)
+    {
+        WithConstructorArgument(name, _ => new CallbackParameter(factory));
+        return this;
+    }
 
-        // ------------------------------------------------------------
-        // Named
-        // ------------------------------------------------------------
+    public IBindingWithSyntax WithPropertyValue(string name, Func<ComponentContainer, IParameter> factory)
+    {
+        propertyValueFactories ??= new Dictionary<string, Func<ComponentContainer, IParameter>>();
+        propertyValueFactories[name] = factory;
+        return this;
+    }
 
-        public IBindingWithSyntax Named(string name)
-        {
-            metadataName = name;
-            return this;
-        }
+    public IBindingWithSyntax WithPropertyValue(string name, object? value)
+    {
+        WithPropertyValue(name, _ => new ConstantParameter(value));
+        return this;
+    }
 
-        // ------------------------------------------------------------
-        // With
-        // ------------------------------------------------------------
+    public IBindingWithSyntax WithPropertyValue(string name, Func<IResolver, object?> factory)
+    {
+        WithPropertyValue(name, _ => new CallbackParameter(factory));
+        return this;
+    }
 
-        public IBindingWithSyntax WithMetadata(string key, object? value)
-        {
-            metadataValues ??= new();
-            metadataValues[key] = value;
-            return this;
-        }
+    // ------------------------------------------------------------
+    // Factory
+    // ------------------------------------------------------------
 
-        public IBindingWithSyntax WithConstructorArgument(string name, Func<ComponentContainer, IParameter> factory)
-        {
-            constructorArgumentFactories ??= new();
-            constructorArgumentFactories[name] = factory;
-            return this;
-        }
+    Binding IBindingFactory.CreateBinding(ComponentContainer components)
+    {
+        return CreateBinding(components);
+    }
 
-        public IBindingWithSyntax WithConstructorArgument(string name, object? value)
-        {
-            WithConstructorArgument(name, _ => new ConstantParameter(value));
-            return this;
-        }
-
-        public IBindingWithSyntax WithConstructorArgument(string name, Func<IResolver, object?> factory)
-        {
-            WithConstructorArgument(name, _ => new CallbackParameter(factory));
-            return this;
-        }
-
-        public IBindingWithSyntax WithPropertyValue(string name, Func<ComponentContainer, IParameter> factory)
-        {
-            propertyValueFactories ??= new Dictionary<string, Func<ComponentContainer, IParameter>>();
-            propertyValueFactories[name] = factory;
-            return this;
-        }
-
-        public IBindingWithSyntax WithPropertyValue(string name, object? value)
-        {
-            WithPropertyValue(name, _ => new ConstantParameter(value));
-            return this;
-        }
-
-        public IBindingWithSyntax WithPropertyValue(string name, Func<IResolver, object?> factory)
-        {
-            WithPropertyValue(name, _ => new CallbackParameter(factory));
-            return this;
-        }
-
-        // ------------------------------------------------------------
-        // Factory
-        // ------------------------------------------------------------
-
-        Binding IBindingFactory.CreateBinding(ComponentContainer components)
-        {
-            return CreateBinding(components);
-        }
-
-        protected virtual Binding CreateBinding(ComponentContainer components)
-        {
-            return new(
-                targetType,
-                providerFactory.Invoke(components),
-                scopeFactory?.Invoke(components),
-                new BindingMetadata(metadataName, metadataValues),
-                new ParameterMap(constructorArgumentFactories?.ToDictionary(kv => kv.Key, kv => kv.Value(components))),
-                new ParameterMap(propertyValueFactories?.ToDictionary(kv => kv.Key, kv => kv.Value(components))));
-        }
+    protected virtual Binding CreateBinding(ComponentContainer components)
+    {
+        return new(
+            targetType,
+            providerFactory.Invoke(components),
+            scopeFactory?.Invoke(components),
+            new BindingMetadata(metadataName, metadataValues),
+            new ParameterMap(constructorArgumentFactories?.ToDictionary(kv => kv.Key, kv => kv.Value(components))),
+            new ParameterMap(propertyValueFactories?.ToDictionary(kv => kv.Key, kv => kv.Value(components))));
     }
 }

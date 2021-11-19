@@ -1,16 +1,15 @@
-namespace Example.WebApplication.Services
+namespace Example.WebApplication.Services;
+
+using System.Threading;
+
+public class MetricsManager
 {
-    using System.Threading;
+    private int counter;
 
-    public class MetricsManager
+    public int Counter => counter;
+
+    public void Increment()
     {
-        private int counter;
-
-        public int Counter => counter;
-
-        public void Increment()
-        {
-            Interlocked.Add(ref counter, 1);
-        }
+        Interlocked.Add(ref counter, 1);
     }
 }

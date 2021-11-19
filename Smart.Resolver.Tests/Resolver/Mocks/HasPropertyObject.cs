@@ -1,10 +1,9 @@
-namespace Smart.Resolver.Mocks
-{
-    using Smart.Resolver.Attributes;
+namespace Smart.Resolver.Mocks;
 
-    public class HasPropertyObject
-    {
-        [Inject]
-        public SimpleObject? Injected { get; set; }
-    }
+using Smart.Resolver.Attributes;
+
+public class HasPropertyObject
+{
+    [Inject]
+    public SimpleObject? Injected { get; set; }
 }

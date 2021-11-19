@@ -1,15 +1,14 @@
-namespace Smart.Resolver.Benchmark.Classes
+namespace Smart.Resolver.Benchmark.Classes;
+
+using System.Diagnostics.CodeAnalysis;
+
+public interface IGenericObject<T>
 {
-    using System.Diagnostics.CodeAnalysis;
+    T Value { get; set; }
+}
 
-    public interface IGenericObject<T>
-    {
-        T Value { get; set; }
-    }
-
-    public class GenericObject<T> : IGenericObject<T>
-    {
-        [AllowNull]
-        public T Value { get; set; }
-    }
+public class GenericObject<T> : IGenericObject<T>
+{
+    [AllowNull]
+    public T Value { get; set; }
 }

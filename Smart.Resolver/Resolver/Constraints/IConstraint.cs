@@ -1,9 +1,8 @@
-namespace Smart.Resolver.Constraints
-{
-    using Smart.Resolver.Bindings;
+namespace Smart.Resolver.Constraints;
 
-    public interface IConstraint
-    {
-        bool Match(BindingMetadata metadata);
-    }
+using Smart.Resolver.Bindings;
+
+public interface IConstraint
+{
+    bool Match(BindingMetadata metadata);
 }

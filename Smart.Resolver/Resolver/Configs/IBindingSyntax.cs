@@ -1,73 +1,72 @@
-namespace Smart.Resolver.Configs
+namespace Smart.Resolver.Configs;
+
+using System;
+using System.Diagnostics.CodeAnalysis;
+
+using Smart.ComponentModel;
+using Smart.Resolver.Parameters;
+using Smart.Resolver.Providers;
+using Smart.Resolver.Scopes;
+
+public interface IBindingToSyntax<in T>
 {
-    using System;
-    using System.Diagnostics.CodeAnalysis;
+    IBindingInNamedWithSyntax ToProvider(Func<ComponentContainer, IProvider> factory);
 
-    using Smart.ComponentModel;
-    using Smart.Resolver.Parameters;
-    using Smart.Resolver.Providers;
-    using Smart.Resolver.Scopes;
+    IBindingInNamedWithSyntax ToSelf();
 
-    public interface IBindingToSyntax<in T>
-    {
-        IBindingInNamedWithSyntax ToProvider(Func<ComponentContainer, IProvider> factory);
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1716:IdentifiersShouldNotMatchKeywords", Justification = "Ignore")]
+    IBindingInNamedWithSyntax To<TImplementation>()
+        where TImplementation : T;
 
-        IBindingInNamedWithSyntax ToSelf();
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1716:IdentifiersShouldNotMatchKeywords", Justification = "Ignore")]
+    IBindingInNamedWithSyntax To(Type implementationType);
 
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1716:IdentifiersShouldNotMatchKeywords", Justification = "Ignore")]
-        IBindingInNamedWithSyntax To<TImplementation>()
-            where TImplementation : T;
+    IBindingInNamedWithSyntax ToMethod(Func<IResolver, T> factory);
 
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1716:IdentifiersShouldNotMatchKeywords", Justification = "Ignore")]
-        IBindingInNamedWithSyntax To(Type implementationType);
+    IBindingInNamedWithSyntax ToConstant([DisallowNull] T value);
+}
 
-        IBindingInNamedWithSyntax ToMethod(Func<IResolver, T> factory);
+public interface IBindingInSyntax
+{
+    IBindingNamedWithSyntax InScope(Func<ComponentContainer, IScope> factory);
 
-        IBindingInNamedWithSyntax ToConstant([DisallowNull] T value);
-    }
+    IBindingNamedWithSyntax InTransientScope();
 
-    public interface IBindingInSyntax
-    {
-        IBindingNamedWithSyntax InScope(Func<ComponentContainer, IScope> factory);
+    IBindingNamedWithSyntax InSingletonScope();
 
-        IBindingNamedWithSyntax InTransientScope();
+    IBindingNamedWithSyntax InContainerScope();
+}
 
-        IBindingNamedWithSyntax InSingletonScope();
+public interface IBindingNamedSyntax
+{
+    IBindingWithSyntax Named(string name);
+}
 
-        IBindingNamedWithSyntax InContainerScope();
-    }
+public interface IBindingWithSyntax
+{
+    IBindingWithSyntax WithMetadata(string key, object? value);
 
-    public interface IBindingNamedSyntax
-    {
-        IBindingWithSyntax Named(string name);
-    }
+    IBindingWithSyntax WithConstructorArgument(string name, Func<ComponentContainer, IParameter> factory);
 
-    public interface IBindingWithSyntax
-    {
-        IBindingWithSyntax WithMetadata(string key, object? value);
+    IBindingWithSyntax WithConstructorArgument(string name, object? value);
 
-        IBindingWithSyntax WithConstructorArgument(string name, Func<ComponentContainer, IParameter> factory);
+    IBindingWithSyntax WithConstructorArgument(string name, Func<IResolver, object?> factory);
 
-        IBindingWithSyntax WithConstructorArgument(string name, object? value);
+    IBindingWithSyntax WithPropertyValue(string name, Func<ComponentContainer, IParameter> factory);
 
-        IBindingWithSyntax WithConstructorArgument(string name, Func<IResolver, object?> factory);
+    IBindingWithSyntax WithPropertyValue(string name, object? value);
 
-        IBindingWithSyntax WithPropertyValue(string name, Func<ComponentContainer, IParameter> factory);
+    IBindingWithSyntax WithPropertyValue(string name, Func<IResolver, object?> factory);
+}
 
-        IBindingWithSyntax WithPropertyValue(string name, object? value);
+public interface IBindingToInNamedWithSyntax<in T> : IBindingToSyntax<T>, IBindingInNamedWithSyntax
+{
+}
 
-        IBindingWithSyntax WithPropertyValue(string name, Func<IResolver, object?> factory);
-    }
+public interface IBindingInNamedWithSyntax : IBindingInSyntax, IBindingNamedWithSyntax
+{
+}
 
-    public interface IBindingToInNamedWithSyntax<in T> : IBindingToSyntax<T>, IBindingInNamedWithSyntax
-    {
-    }
-
-    public interface IBindingInNamedWithSyntax : IBindingInSyntax, IBindingNamedWithSyntax
-    {
-    }
-
-    public interface IBindingNamedWithSyntax : IBindingNamedSyntax, IBindingWithSyntax
-    {
-    }
+public interface IBindingNamedWithSyntax : IBindingNamedSyntax, IBindingWithSyntax
+{
 }

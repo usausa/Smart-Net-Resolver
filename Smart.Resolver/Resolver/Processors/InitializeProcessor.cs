@@ -1,31 +1,30 @@
-namespace Smart.Resolver.Processors
+namespace Smart.Resolver.Processors;
+
+using System;
+
+public sealed class InitializeProcessor : IProcessor
 {
-    using System;
+    private static readonly Type InitializableType = typeof(IInitializable);
 
-    public sealed class InitializeProcessor : IProcessor
+    public int Order { get; }
+
+    public InitializeProcessor()
+        : this(Int32.MinValue)
     {
-        private static readonly Type InitializableType = typeof(IInitializable);
+    }
 
-        public int Order { get; }
+    public InitializeProcessor(int order)
+    {
+        Order = order;
+    }
 
-        public InitializeProcessor()
-            : this(Int32.MinValue)
+    public Action<IResolver, object>? CreateProcessor(Type type)
+    {
+        if (!InitializableType.IsAssignableFrom(type))
         {
+            return null;
         }
 
-        public InitializeProcessor(int order)
-        {
-            Order = order;
-        }
-
-        public Action<IResolver, object>? CreateProcessor(Type type)
-        {
-            if (!InitializableType.IsAssignableFrom(type))
-            {
-                return null;
-            }
-
-            return (_, x) => ((IInitializable)x).Initialize();
-        }
+        return (_, x) => ((IInitializable)x).Initialize();
     }
 }

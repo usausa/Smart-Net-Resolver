@@ -1,92 +1,91 @@
-namespace Smart.Resolver.Builders
-{
-    using System;
-    using System.Reflection;
+namespace Smart.Resolver.Builders;
 
-    public sealed class ReflectionFactoryBuilder : IFactoryBuilder
+using System;
+using System.Reflection;
+
+public sealed class ReflectionFactoryBuilder : IFactoryBuilder
+{
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods", Justification = "Ignore")]
+    public Func<IResolver, object> CreateFactory(ConstructorInfo ci, Func<IResolver, object?>[] factories, Action<IResolver, object>[] actions)
     {
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods", Justification = "Ignore")]
-        public Func<IResolver, object> CreateFactory(ConstructorInfo ci, Func<IResolver, object?>[] factories, Action<IResolver, object>[] actions)
+        if (ci.GetParameters().Length == 0)
         {
-            if (ci.GetParameters().Length == 0)
+            return actions.Length == 0
+                ? BuildActivatorFactory(ci.DeclaringType!)
+                : BuildActivatorWithActionsFactory(ci.DeclaringType!, actions);
+        }
+
+        return actions.Length == 0
+            ? BuildConstructorFactory(ci, factories)
+            : BuildConstructorWithActionsFactory(ci, factories, actions);
+    }
+
+    private static Func<IResolver, object> BuildActivatorFactory(Type type)
+    {
+        return _ => Activator.CreateInstance(type)!;
+    }
+
+    private static Func<IResolver, object> BuildActivatorWithActionsFactory(Type type, Action<IResolver, object>[] actions)
+    {
+        return r =>
+        {
+            var obj = Activator.CreateInstance(type)!;
+
+            for (var i = 0; i < actions.Length; i++)
             {
-                return actions.Length == 0
-                    ? BuildActivatorFactory(ci.DeclaringType!)
-                    : BuildActivatorWithActionsFactory(ci.DeclaringType!, actions);
+                actions[i](r, obj);
             }
 
-            return actions.Length == 0
-                ? BuildConstructorFactory(ci, factories)
-                : BuildConstructorWithActionsFactory(ci, factories, actions);
-        }
+            return obj;
+        };
+    }
 
-        private static Func<IResolver, object> BuildActivatorFactory(Type type)
+    private static Func<IResolver, object> BuildConstructorFactory(ConstructorInfo ci, Func<IResolver, object?>[] factories)
+    {
+        return r =>
         {
-            return _ => Activator.CreateInstance(type)!;
-        }
-
-        private static Func<IResolver, object> BuildActivatorWithActionsFactory(Type type, Action<IResolver, object>[] actions)
-        {
-            return r =>
+            var args = new object?[factories.Length];
+            for (var i = 0; i < factories.Length; i++)
             {
-                var obj = Activator.CreateInstance(type)!;
+                args[i] = factories[i](r);
+            }
 
-                for (var i = 0; i < actions.Length; i++)
-                {
-                    actions[i](r, obj);
-                }
+            return ci.Invoke(args);
+        };
+    }
 
-                return obj;
-            };
-        }
-
-        private static Func<IResolver, object> BuildConstructorFactory(ConstructorInfo ci, Func<IResolver, object?>[] factories)
+    private static Func<IResolver, object> BuildConstructorWithActionsFactory(ConstructorInfo ci, Func<IResolver, object?>[] factories, Action<IResolver, object>[] actions)
+    {
+        return r =>
         {
-            return r =>
+            var args = new object?[factories.Length];
+            for (var i = 0; i < factories.Length; i++)
             {
-                var args = new object?[factories.Length];
-                for (var i = 0; i < factories.Length; i++)
-                {
-                    args[i] = factories[i](r);
-                }
+                args[i] = factories[i](r);
+            }
 
-                return ci.Invoke(args);
-            };
-        }
+            var obj = ci.Invoke(args);
 
-        private static Func<IResolver, object> BuildConstructorWithActionsFactory(ConstructorInfo ci, Func<IResolver, object?>[] factories, Action<IResolver, object>[] actions)
+            for (var i = 0; i < actions.Length; i++)
+            {
+                actions[i](r, obj);
+            }
+
+            return obj;
+        };
+    }
+
+    public Func<IResolver, object> CreateArrayFactory(Type type, Func<IResolver, object?>[] factories)
+    {
+        return r =>
         {
-            return r =>
+            var array = Array.CreateInstance(type, factories.Length);
+            for (var i = 0; i < factories.Length; i++)
             {
-                var args = new object?[factories.Length];
-                for (var i = 0; i < factories.Length; i++)
-                {
-                    args[i] = factories[i](r);
-                }
+                array.SetValue(factories[i](r), i);
+            }
 
-                var obj = ci.Invoke(args);
-
-                for (var i = 0; i < actions.Length; i++)
-                {
-                    actions[i](r, obj);
-                }
-
-                return obj;
-            };
-        }
-
-        public Func<IResolver, object> CreateArrayFactory(Type type, Func<IResolver, object?>[] factories)
-        {
-            return r =>
-            {
-                var array = Array.CreateInstance(type, factories.Length);
-                for (var i = 0; i < factories.Length; i++)
-                {
-                    array.SetValue(factories[i](r), i);
-                }
-
-                return array;
-            };
-        }
+            return array;
+        };
     }
 }

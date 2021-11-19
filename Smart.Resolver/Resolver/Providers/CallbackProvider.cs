@@ -1,44 +1,43 @@
-namespace Smart.Resolver.Providers
+namespace Smart.Resolver.Providers;
+
+using System;
+
+using Smart.Resolver.Bindings;
+
+public sealed class CallbackProvider<T> : IProvider
+    where T : class
 {
-    using System;
+    private readonly Func<IResolver, T> factory;
 
-    using Smart.Resolver.Bindings;
+    public Type TargetType { get; }
 
-    public sealed class CallbackProvider<T> : IProvider
-        where T : class
+    public CallbackProvider(Func<IResolver, T> factory)
     {
-        private readonly Func<IResolver, T> factory;
-
-        public Type TargetType { get; }
-
-        public CallbackProvider(Func<IResolver, T> factory)
-        {
-            this.factory = factory;
-            TargetType = typeof(T);
-        }
-
-        public Func<IResolver, object> CreateFactory(IKernel kernel, Binding binding)
-        {
-            return factory;
-        }
+        this.factory = factory;
+        TargetType = typeof(T);
     }
 
-    public sealed class StructCallbackProvider<T> : IProvider
-        where T : struct
+    public Func<IResolver, object> CreateFactory(IKernel kernel, Binding binding)
     {
-        private readonly Func<IResolver, T> factory;
+        return factory;
+    }
+}
 
-        public Type TargetType { get; }
+public sealed class StructCallbackProvider<T> : IProvider
+    where T : struct
+{
+    private readonly Func<IResolver, T> factory;
 
-        public StructCallbackProvider(Func<IResolver, T> factory)
-        {
-            this.factory = factory;
-            TargetType = typeof(T);
-        }
+    public Type TargetType { get; }
 
-        public Func<IResolver, object> CreateFactory(IKernel kernel, Binding binding)
-        {
-            return r => factory(r);
-        }
+    public StructCallbackProvider(Func<IResolver, T> factory)
+    {
+        this.factory = factory;
+        TargetType = typeof(T);
+    }
+
+    public Func<IResolver, object> CreateFactory(IKernel kernel, Binding binding)
+    {
+        return r => factory(r);
     }
 }

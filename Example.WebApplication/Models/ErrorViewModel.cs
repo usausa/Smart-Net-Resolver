@@ -1,11 +1,10 @@
-namespace Example.WebApplication.Models
+namespace Example.WebApplication.Models;
+
+using System;
+
+public class ErrorViewModel
 {
-    using System;
+    public string? RequestId { get; set; }
 
-    public class ErrorViewModel
-    {
-        public string? RequestId { get; set; }
-
-        public bool ShowRequestId => !String.IsNullOrEmpty(RequestId);
-    }
+    public bool ShowRequestId => !String.IsNullOrEmpty(RequestId);
 }

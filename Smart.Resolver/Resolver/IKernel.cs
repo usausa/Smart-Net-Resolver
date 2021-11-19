@@ -1,13 +1,12 @@
-namespace Smart.Resolver
+namespace Smart.Resolver;
+
+using System;
+
+using Smart.Resolver.Constraints;
+
+public interface IKernel
 {
-    using System;
+    bool TryResolveFactory(Type type, IConstraint? constraint, out Func<IResolver, object> factory);
 
-    using Smart.Resolver.Constraints;
-
-    public interface IKernel
-    {
-        bool TryResolveFactory(Type type, IConstraint? constraint, out Func<IResolver, object> factory);
-
-        bool TryResolveFactories(Type type, IConstraint? constraint, out Func<IResolver, object>[] factories);
-    }
+    bool TryResolveFactories(Type type, IConstraint? constraint, out Func<IResolver, object>[] factories);
 }

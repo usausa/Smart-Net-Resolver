@@ -1,39 +1,38 @@
-namespace Smart.Resolver
+namespace Smart.Resolver;
+
+using System;
+
+using Microsoft.Extensions.DependencyInjection;
+
+internal sealed class SmartServiceScope : IServiceScope
 {
-    using System;
+    private readonly IResolver childResolver;
 
-    using Microsoft.Extensions.DependencyInjection;
+    public IServiceProvider ServiceProvider { get; }
 
-    internal sealed class SmartServiceScope : IServiceScope
+    public SmartServiceScope(SmartResolver resolver)
     {
-        private readonly IResolver childResolver;
+        childResolver = resolver.CreateChildResolver();
+        ServiceProvider = new SmartChildServiceProvider(childResolver);
+    }
 
-        public IServiceProvider ServiceProvider { get; }
+    public void Dispose()
+    {
+        childResolver.Dispose();
+    }
 
-        public SmartServiceScope(SmartResolver resolver)
+    private sealed class SmartChildServiceProvider : IServiceProvider
+    {
+        private readonly IResolver resolver;
+
+        public SmartChildServiceProvider(IResolver resolver)
         {
-            childResolver = resolver.CreateChildResolver();
-            ServiceProvider = new SmartChildServiceProvider(childResolver);
+            this.resolver = resolver;
         }
 
-        public void Dispose()
+        public object GetService(Type serviceType)
         {
-            childResolver.Dispose();
-        }
-
-        private sealed class SmartChildServiceProvider : IServiceProvider
-        {
-            private readonly IResolver resolver;
-
-            public SmartChildServiceProvider(IResolver resolver)
-            {
-                this.resolver = resolver;
-            }
-
-            public object GetService(Type serviceType)
-            {
-                return resolver.Get(serviceType);
-            }
+            return resolver.Get(serviceType);
         }
     }
 }

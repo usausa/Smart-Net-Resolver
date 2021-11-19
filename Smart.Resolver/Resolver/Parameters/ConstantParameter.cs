@@ -1,17 +1,16 @@
-namespace Smart.Resolver.Parameters
+namespace Smart.Resolver.Parameters;
+
+public sealed class ConstantParameter : IParameter
 {
-    public sealed class ConstantParameter : IParameter
+    private readonly object? value;
+
+    public ConstantParameter(object? value)
     {
-        private readonly object? value;
+        this.value = value;
+    }
 
-        public ConstantParameter(object? value)
-        {
-            this.value = value;
-        }
-
-        public object? Resolve(IResolver resolver)
-        {
-            return value;
-        }
+    public object? Resolve(IResolver resolver)
+    {
+        return value;
     }
 }

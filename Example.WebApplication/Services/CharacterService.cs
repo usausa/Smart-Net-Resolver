@@ -1,24 +1,23 @@
-namespace Example.WebApplication.Services
+namespace Example.WebApplication.Services;
+
+using System.Collections.Generic;
+
+using Example.WebApplication.Models;
+
+using Smart.Data;
+using Smart.Data.Mapper;
+
+public class CharacterService
 {
-    using System.Collections.Generic;
+    private IDbProvider Provider { get; }
 
-    using Example.WebApplication.Models;
-
-    using Smart.Data;
-    using Smart.Data.Mapper;
-
-    public class CharacterService
+    public CharacterService(IDbProvider provider)
     {
-        private IDbProvider Provider { get; }
+        Provider = provider;
+    }
 
-        public CharacterService(IDbProvider provider)
-        {
-            Provider = provider;
-        }
-
-        public IList<CharacterEntity> QueryCharacterList()
-        {
-            return Provider.Using(con => con.QueryList<CharacterEntity>("SELECT * FROM Character ORDER BY Id"));
-        }
+    public IList<CharacterEntity> QueryCharacterList()
+    {
+        return Provider.Using(con => con.QueryList<CharacterEntity>("SELECT * FROM Character ORDER BY Id"));
     }
 }

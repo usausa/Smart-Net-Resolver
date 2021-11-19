@@ -1,33 +1,32 @@
-namespace Smart.Resolver.Processors
+namespace Smart.Resolver.Processors;
+
+using System;
+
+using Xamarin.Forms;
+
+public sealed class BindingContextInjectProcessor : IProcessor
 {
-    using System;
+    private static readonly Type BindableObjectType = typeof(BindableObject);
 
-    using Xamarin.Forms;
+    public int Order { get; }
 
-    public sealed class BindingContextInjectProcessor : IProcessor
+    public BindingContextInjectProcessor()
+        : this(0)
     {
-        private static readonly Type BindableObjectType = typeof(BindableObject);
+    }
 
-        public int Order { get; }
+    public BindingContextInjectProcessor(int order)
+    {
+        Order = order;
+    }
 
-        public BindingContextInjectProcessor()
-            : this(0)
+    public Action<IResolver, object>? CreateProcessor(Type type)
+    {
+        if (!BindableObjectType.IsAssignableFrom(type))
         {
+            return null;
         }
 
-        public BindingContextInjectProcessor(int order)
-        {
-            Order = order;
-        }
-
-        public Action<IResolver, object>? CreateProcessor(Type type)
-        {
-            if (!BindableObjectType.IsAssignableFrom(type))
-            {
-                return null;
-            }
-
-            return (r, x) => r.Inject(((BindableObject)x).BindingContext);
-        }
+        return (r, x) => r.Inject(((BindableObject)x).BindingContext);
     }
 }

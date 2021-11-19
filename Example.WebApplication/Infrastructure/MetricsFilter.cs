@@ -1,37 +1,36 @@
-namespace Example.WebApplication.Infrastructure
+namespace Example.WebApplication.Infrastructure;
+
+using System;
+
+using Example.WebApplication.Services;
+
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Filters;
+
+[AttributeUsage(AttributeTargets.Class | AttributeTargets.Method)]
+public sealed class MetricsFilterAttribute : TypeFilterAttribute
 {
-    using System;
-
-    using Example.WebApplication.Services;
-
-    using Microsoft.AspNetCore.Mvc;
-    using Microsoft.AspNetCore.Mvc.Filters;
-
-    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method)]
-    public sealed class MetricsFilterAttribute : TypeFilterAttribute
+    public MetricsFilterAttribute()
+        : base(typeof(MetricsActionFilter))
     {
-        public MetricsFilterAttribute()
-            : base(typeof(MetricsActionFilter))
+    }
+
+    private class MetricsActionFilter : IActionFilter
+    {
+        private readonly MetricsManager metricsManager;
+
+        public MetricsActionFilter(MetricsManager metricsManager)
         {
+            this.metricsManager = metricsManager;
         }
 
-        private class MetricsActionFilter : IActionFilter
+        public void OnActionExecuting(ActionExecutingContext context)
         {
-            private readonly MetricsManager metricsManager;
+            metricsManager.Increment();
+        }
 
-            public MetricsActionFilter(MetricsManager metricsManager)
-            {
-                this.metricsManager = metricsManager;
-            }
-
-            public void OnActionExecuting(ActionExecutingContext context)
-            {
-                metricsManager.Increment();
-            }
-
-            public void OnActionExecuted(ActionExecutedContext context)
-            {
-            }
+        public void OnActionExecuted(ActionExecutedContext context)
+        {
         }
     }
 }

@@ -1,17 +1,16 @@
-namespace FactoryBenchmark
-{
-    using BenchmarkDotNet.Configs;
-    using BenchmarkDotNet.Diagnosers;
-    using BenchmarkDotNet.Exporters;
-    using BenchmarkDotNet.Jobs;
+namespace FactoryBenchmark;
 
-    public class BenchmarkConfig : ManualConfig
+using BenchmarkDotNet.Configs;
+using BenchmarkDotNet.Diagnosers;
+using BenchmarkDotNet.Exporters;
+using BenchmarkDotNet.Jobs;
+
+public class BenchmarkConfig : ManualConfig
+{
+    public BenchmarkConfig()
     {
-        public BenchmarkConfig()
-        {
-            Add(MarkdownExporter.Default, MarkdownExporter.GitHub);
-            Add(MemoryDiagnoser.Default);
-            Add(Job.ShortRun);
-        }
+        Add(MarkdownExporter.Default, MarkdownExporter.GitHub);
+        Add(MemoryDiagnoser.Default);
+        Add(Job.ShortRun);
     }
 }

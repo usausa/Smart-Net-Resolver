@@ -1,7 +1,6 @@
-namespace Smart.Resolver.Parameters
+namespace Smart.Resolver.Parameters;
+
+public interface IParameter
 {
-    public interface IParameter
-    {
-        object? Resolve(IResolver resolver);
-    }
+    object? Resolve(IResolver resolver);
 }

@@ -1,12 +1,11 @@
-namespace Smart.Resolver.Mocks
-{
-    public class Service : IService
-    {
-        public bool Executed { get; private set; }
+namespace Smart.Resolver.Mocks;
 
-        public void Execute()
-        {
-            Executed = true;
-        }
+public class Service : IService
+{
+    public bool Executed { get; private set; }
+
+    public void Execute()
+    {
+        Executed = true;
     }
 }

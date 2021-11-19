@@ -1,11 +1,10 @@
-namespace Smart.Resolver.Injectors
+namespace Smart.Resolver.Injectors;
+
+using System;
+
+using Smart.Resolver.Bindings;
+
+public interface IInjector
 {
-    using System;
-
-    using Smart.Resolver.Bindings;
-
-    public interface IInjector
-    {
-        Action<IResolver, object>? CreateInjector(Type type, Binding binding);
-    }
+    Action<IResolver, object>? CreateInjector(Type type, Binding binding);
 }

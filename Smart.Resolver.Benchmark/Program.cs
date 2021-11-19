@@ -1,12 +1,11 @@
-namespace Smart.Resolver.Benchmark
-{
-    using BenchmarkDotNet.Running;
+namespace Smart.Resolver.Benchmark;
 
-    public static class Program
+using BenchmarkDotNet.Running;
+
+public static class Program
+{
+    public static void Main(string[] args)
     {
-        public static void Main(string[] args)
-        {
-            BenchmarkSwitcher.FromAssembly(typeof(Program).Assembly).Run(args);
-        }
+        BenchmarkSwitcher.FromAssembly(typeof(Program).Assembly).Run(args);
     }
 }

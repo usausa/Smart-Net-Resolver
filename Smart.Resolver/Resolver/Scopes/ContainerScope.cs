@@ -1,36 +1,35 @@
-namespace Smart.Resolver.Scopes
+namespace Smart.Resolver.Scopes;
+
+using System;
+
+using Smart.ComponentModel;
+using Smart.Resolver.Components;
+
+public sealed class ContainerScope : IScope
 {
-    using System;
+    private readonly int index;
 
-    using Smart.ComponentModel;
-    using Smart.Resolver.Components;
-
-    public sealed class ContainerScope : IScope
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods", Justification = "Ignore")]
+    public ContainerScope()
     {
-        private readonly int index;
+        index = ContainerIndexManager.Acquire();
+    }
 
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods", Justification = "Ignore")]
-        public ContainerScope()
-        {
-            index = ContainerIndexManager.Acquire();
-        }
+    public IScope Copy(ComponentContainer components)
+    {
+        return new ContainerScope();
+    }
 
-        public IScope Copy(ComponentContainer components)
+    public Func<IResolver, object> Create(Func<object> factory)
+    {
+        return resolver =>
         {
-            return new ContainerScope();
-        }
-
-        public Func<IResolver, object> Create(Func<object> factory)
-        {
-            return resolver =>
+            if (resolver is IContainer container)
             {
-                if (resolver is IContainer container)
-                {
-                    return container.Slot.GetOrCreate(index, factory);
-                }
+                return container.Slot.GetOrCreate(index, factory);
+            }
 
-                return factory();
-            };
-        }
+            return factory();
+        };
     }
 }

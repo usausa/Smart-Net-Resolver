@@ -1,38 +1,37 @@
-namespace Smart.Resolver.Bindings
+namespace Smart.Resolver.Bindings;
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+
+public sealed class BindingTable
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
+    private static readonly Binding[] EmptyBindings = Array.Empty<Binding>();
 
-    public sealed class BindingTable
+    private readonly Dictionary<Type, Binding[]> table;
+
+    public BindingTable(Dictionary<Type, Binding[]> table)
     {
-        private static readonly Binding[] EmptyBindings = Array.Empty<Binding>();
+        this.table = table;
+    }
 
-        private readonly Dictionary<Type, Binding[]> table;
-
-        public BindingTable(Dictionary<Type, Binding[]> table)
+    public Binding[]? Get(Type type)
+    {
+        if (table.TryGetValue(type, out var bindings))
         {
-            this.table = table;
+            return bindings;
         }
 
-        public Binding[]? Get(Type type)
-        {
-            if (table.TryGetValue(type, out var bindings))
-            {
-                return bindings;
-            }
+        return null;
+    }
 
-            return null;
-        }
+    public Binding[] FindBindings(Type type)
+    {
+        return table.TryGetValue(type, out var bindings) ? bindings : EmptyBindings;
+    }
 
-        public Binding[] FindBindings(Type type)
-        {
-            return table.TryGetValue(type, out var bindings) ? bindings : EmptyBindings;
-        }
-
-        public IEnumerable<Binding> EnumBindings()
-        {
-            return table.SelectMany(x => x.Value);
-        }
+    public IEnumerable<Binding> EnumBindings()
+    {
+        return table.SelectMany(x => x.Value);
     }
 }

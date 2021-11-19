@@ -1,56 +1,55 @@
-namespace Smart.Resolver
+namespace Smart.Resolver;
+
+using System;
+using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
+
+using Smart.Resolver.Constraints;
+
+[System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1716:IdentifiersShouldNotMatchKeywords", Justification = "Ignore")]
+public interface IResolver : IDisposable
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Diagnostics.CodeAnalysis;
+    // CanGet
 
-    using Smart.Resolver.Constraints;
+    bool CanGet<T>();
 
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1716:IdentifiersShouldNotMatchKeywords", Justification = "Ignore")]
-    public interface IResolver : IDisposable
-    {
-        // CanGet
+    bool CanGet<T>(IConstraint constraint);
 
-        bool CanGet<T>();
+    bool CanGet(Type type);
 
-        bool CanGet<T>(IConstraint constraint);
+    bool CanGet(Type type, IConstraint constraint);
 
-        bool CanGet(Type type);
+    // TryGet
 
-        bool CanGet(Type type, IConstraint constraint);
+    bool TryGet<T>([MaybeNullWhen(false)] out T obj);
 
-        // TryGet
+    bool TryGet<T>(IConstraint constraint, [MaybeNullWhen(false)] out T obj);
 
-        bool TryGet<T>([MaybeNullWhen(false)] out T obj);
+    bool TryGet(Type type, [MaybeNullWhen(false)] out object obj);
 
-        bool TryGet<T>(IConstraint constraint, [MaybeNullWhen(false)] out T obj);
+    bool TryGet(Type type, IConstraint constraint, [MaybeNullWhen(false)] out object obj);
 
-        bool TryGet(Type type, [MaybeNullWhen(false)] out object obj);
+    // Get
 
-        bool TryGet(Type type, IConstraint constraint, [MaybeNullWhen(false)] out object obj);
+    T Get<T>();
 
-        // Get
+    T Get<T>(IConstraint constraint);
 
-        T Get<T>();
+    object Get(Type type);
 
-        T Get<T>(IConstraint constraint);
+    object Get(Type type, IConstraint constraint);
 
-        object Get(Type type);
+    // GetAll
 
-        object Get(Type type, IConstraint constraint);
+    IEnumerable<T> GetAll<T>();
 
-        // GetAll
+    IEnumerable<T> GetAll<T>(IConstraint constraint);
 
-        IEnumerable<T> GetAll<T>();
+    IEnumerable<object> GetAll(Type type);
 
-        IEnumerable<T> GetAll<T>(IConstraint constraint);
+    IEnumerable<object> GetAll(Type type, IConstraint constraint);
 
-        IEnumerable<object> GetAll(Type type);
+    // Inject
 
-        IEnumerable<object> GetAll(Type type, IConstraint constraint);
-
-        // Inject
-
-        void Inject(object instance);
-    }
+    void Inject(object instance);
 }

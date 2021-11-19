@@ -1,44 +1,43 @@
-namespace Example.GenericHost
+namespace Example.GenericHost;
+
+using System;
+using System.Threading;
+using System.Threading.Tasks;
+
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
+
+public sealed class ExampleHostedService : IHostedService, IDisposable
 {
-    using System;
-    using System.Threading;
-    using System.Threading.Tasks;
+    private ILogger<ExampleHostedService> Log { get; }
 
-    using Microsoft.Extensions.Hosting;
-    using Microsoft.Extensions.Logging;
+    private SettingService SettingService { get; }
 
-    public sealed class ExampleHostedService : IHostedService, IDisposable
+    public ExampleHostedService(
+        ILogger<ExampleHostedService> log,
+        SettingService settingService)
     {
-        private ILogger<ExampleHostedService> Log { get; }
+        Log = log;
+        SettingService = settingService;
+    }
 
-        private SettingService SettingService { get; }
+    public void Dispose()
+    {
+    }
 
-        public ExampleHostedService(
-            ILogger<ExampleHostedService> log,
-            SettingService settingService)
-        {
-            Log = log;
-            SettingService = settingService;
-        }
+    public Task StartAsync(CancellationToken cancellationToken)
+    {
+        Log.LogInformation("StartAsync");
 
-        public void Dispose()
-        {
-        }
+        SettingService.Write();
 
-        public Task StartAsync(CancellationToken cancellationToken)
-        {
-            Log.LogInformation("StartAsync");
+        return Task.CompletedTask;
+    }
 
-            SettingService.Write();
+    public Task StopAsync(CancellationToken cancellationToken)
+    {
+        Log.LogInformation("StopAsync");
 
-            return Task.CompletedTask;
-        }
-
-        public Task StopAsync(CancellationToken cancellationToken)
-        {
-            Log.LogInformation("StopAsync");
-
-            return Task.CompletedTask;
-        }
+        return Task.CompletedTask;
     }
 }

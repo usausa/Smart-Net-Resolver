@@ -1,19 +1,18 @@
-namespace Smart.Resolver
+namespace Smart.Resolver;
+
+using Microsoft.Extensions.DependencyInjection;
+
+public sealed class SmartServiceScopeFactory : IServiceScopeFactory
 {
-    using Microsoft.Extensions.DependencyInjection;
+    private readonly SmartResolver resolver;
 
-    public sealed class SmartServiceScopeFactory : IServiceScopeFactory
+    public SmartServiceScopeFactory(SmartResolver resolver)
     {
-        private readonly SmartResolver resolver;
+        this.resolver = resolver;
+    }
 
-        public SmartServiceScopeFactory(SmartResolver resolver)
-        {
-            this.resolver = resolver;
-        }
-
-        public IServiceScope CreateScope()
-        {
-            return new SmartServiceScope(resolver);
-        }
+    public IServiceScope CreateScope()
+    {
+        return new SmartServiceScope(resolver);
     }
 }

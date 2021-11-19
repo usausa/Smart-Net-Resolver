@@ -1,11 +1,10 @@
-namespace Smart.Resolver.Attributes
+namespace Smart.Resolver.Attributes;
+
+using System;
+
+using Smart.Resolver.Constraints;
+
+public abstract class ConstraintAttribute : Attribute
 {
-    using System;
-
-    using Smart.Resolver.Constraints;
-
-    public abstract class ConstraintAttribute : Attribute
-    {
-        public abstract IConstraint CreateConstraint();
-    }
+    public abstract IConstraint CreateConstraint();
 }
