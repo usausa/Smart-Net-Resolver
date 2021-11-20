@@ -15,7 +15,6 @@ public class ScopedController : Controller
         ScopedObject = scopedObject;
     }
 
-    // ReSharper disable once ParameterOnlyUsedForPreconditionCheck.Global
     public IActionResult Index([FromServices] ScopedObject scopedObject)
     {
         if (ScopedObject != scopedObject)
