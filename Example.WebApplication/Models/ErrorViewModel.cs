@@ -1,10 +1,11 @@
 namespace Example.WebApplication.Models;
 
-using System;
+using System.Diagnostics.CodeAnalysis;
 
 public class ErrorViewModel
 {
-    public string? RequestId { get; set; }
+    [AllowNull]
+    public string RequestId { get; set; }
 
     public bool ShowRequestId => !String.IsNullOrEmpty(RequestId);
 }

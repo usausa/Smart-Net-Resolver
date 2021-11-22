@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <RuleSet Name="Smart.Resolver Rules" Description="Smart.Resolver Rules" ToolsVersion="16.0">
   <IncludeAll Action="Warning" />
   <Rules AnalyzerId="StyleCop.Analyzers" RuleNamespace="StyleCop.Analyzers">
@@ -14,6 +14,7 @@
     <Rule Id="SA1512" Action="Hidden" />
     <Rule Id="SA1513" Action="Hidden" />
     <Rule Id="SA1515" Action="Hidden" />
+    <Rule Id="SA1516" Action="Hidden" />
     <Rule Id="SA1519" Action="Hidden" />
     <Rule Id="SA1600" Action="Hidden" />
     <Rule Id="SA1606" Action="Hidden" />
@@ -32,6 +33,5 @@
     <Rule Id="CA1034" Action="Hidden" />
     <Rule Id="CA1062" Action="Hidden" />
     <Rule Id="CA1848" Action="Hidden" />
-    <Rule Id="CA2254" Action="Hidden" />
   </Rules>
 </RuleSet>
