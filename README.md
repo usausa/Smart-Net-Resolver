@@ -411,25 +411,25 @@ config.Bind<Parent>().ToSelf();
 ## Benchmark (for reference purpose only)
 
 ``` ini
-BenchmarkDotNet=v0.12.1, OS=Windows 10.0.19042
+BenchmarkDotNet=v0.13.1, OS=Windows 10.0.22000
 AMD Ryzen 9 5900X, 1 CPU, 24 logical and 12 physical cores
-.NET Core SDK=5.0.101
-  [Host]    : .NET Core 5.0.1 (CoreCLR 5.0.120.57516, CoreFX 5.0.120.57516), X64 RyuJIT
-  MediumRun : .NET Core 5.0.1 (CoreCLR 5.0.120.57516, CoreFX 5.0.120.57516), X64 RyuJIT
+.NET SDK=6.0.100
+  [Host]    : .NET 6.0.0 (6.0.21.52210), X64 RyuJIT
+  MediumRun : .NET 6.0.0 (6.0.21.52210), X64 RyuJIT
 
 Job=MediumRun  IterationCount=15  LaunchCount=2  
 WarmupCount=10  
 ```
-|            Method |       Mean |     Error |    StdDev |     Median |        Min | Allocated |
-|------------------ |-----------:|----------:|----------:|-----------:|-----------:|----------:|
-|         Singleton |   3.895 ns | 0.0105 ns | 0.0153 ns |   3.893 ns |   3.865 ns |         - |
-|         Transient |  16.482 ns | 0.0389 ns | 0.0571 ns |  16.471 ns |  16.378 ns |      24 B |
-|          Combined |  21.625 ns | 0.2003 ns | 0.2998 ns |  21.602 ns |  21.021 ns |      24 B |
-|           Complex |  41.882 ns | 0.2201 ns | 0.3013 ns |  41.863 ns |  41.361 ns |     136 B |
-|          Generics |   4.847 ns | 0.0169 ns | 0.0242 ns |   4.844 ns |   4.799 ns |      24 B |
-| MultipleSingleton |   3.043 ns | 0.0308 ns | 0.0432 ns |   3.067 ns |   2.991 ns |         - |
-| MultipleTransient |  91.884 ns | 0.5413 ns | 0.7934 ns |  91.724 ns |  90.466 ns |     184 B |
-|            AspNet | 124.819 ns | 0.8491 ns | 1.2178 ns | 125.113 ns | 122.766 ns |     256 B |
+|            Method |       Mean |     Error |    StdDev |        Min |        Max |        P90 |  Gen 0 | Allocated |
+|------------------ |-----------:|----------:|----------:|-----------:|-----------:|-----------:|-------:|----------:|
+|         Singleton |   3.761 ns | 0.0094 ns | 0.0141 ns |   3.737 ns |   3.790 ns |   3.779 ns |      - |         - |
+|         Transient |  14.403 ns | 0.3476 ns | 0.5203 ns |  13.689 ns |  15.019 ns |  14.963 ns | 0.0014 |      24 B |
+|          Combined |  21.941 ns | 0.0738 ns | 0.1104 ns |  21.775 ns |  22.146 ns |  22.067 ns | 0.0014 |      24 B |
+|           Complex |  41.287 ns | 0.1050 ns | 0.1505 ns |  40.991 ns |  41.654 ns |  41.494 ns | 0.0081 |     136 B |
+|          Generics |   4.711 ns | 0.0160 ns | 0.0240 ns |   4.652 ns |   4.750 ns |   4.740 ns | 0.0014 |      24 B |
+| MultipleSingleton |   3.027 ns | 0.0629 ns | 0.0942 ns |   2.961 ns |   3.348 ns |   3.162 ns |      - |         - |
+| MultipleTransient |  91.283 ns | 0.4349 ns | 0.6510 ns |  90.189 ns |  92.718 ns |  92.079 ns | 0.0110 |     184 B |
+|            AspNet | 123.689 ns | 0.2811 ns | 0.4120 ns | 123.085 ns | 124.561 ns | 124.212 ns | 0.0153 |     256 B |
 
 ## Unsupported
 
