@@ -1,21 +1,23 @@
 ``` ini
 
-BenchmarkDotNet=v0.11.5, OS=Windows 10.0.17763.253 (1809/October2018Update/Redstone5)
-Intel Core i7-4771 CPU 3.50GHz (Haswell), 1 CPU, 8 logical and 4 physical cores
-.NET Core SDK=3.0.100-preview4-011223
-  [Host]   : .NET Core 2.2.0 (CoreCLR 4.6.27110.04, CoreFX 4.6.27110.04), 64bit RyuJIT
-  ShortRun : .NET Core 2.2.0 (CoreCLR 4.6.27110.04, CoreFX 4.6.27110.04), 64bit RyuJIT
+BenchmarkDotNet=v0.13.1, OS=Windows 10.0.22000
+AMD Ryzen 9 5900X, 1 CPU, 24 logical and 12 physical cores
+.NET SDK=6.0.100
+  [Host]   : .NET 6.0.0 (6.0.21.52210), X64 RyuJIT
+  ShortRun : .NET 6.0.0 (6.0.21.52210), X64 RyuJIT
 
 Job=ShortRun  IterationCount=3  LaunchCount=1  
 WarmupCount=3  
 
 ```
-|          Method |      Mean |     Error |    StdDev |  Gen 0 | Gen 1 | Gen 2 | Allocated |
-|---------------- |----------:|----------:|----------:|-------:|------:|------:|----------:|
-| TypedActivator0 |  49.16 ns |  6.103 ns | 0.3345 ns | 0.0057 |     - |     - |      24 B |
-|      Activator0 |  41.92 ns |  7.193 ns | 0.3943 ns | 0.0057 |     - |     - |      24 B |
-|      Activator1 | 590.41 ns | 37.000 ns | 2.0281 ns | 0.1040 |     - |     - |     440 B |
-|      Activator2 | 695.11 ns | 74.867 ns | 4.1037 ns | 0.1116 |     - |     - |     472 B |
-|    Constructor0 | 102.05 ns | 17.121 ns | 0.9385 ns | 0.0056 |     - |     - |      24 B |
-|    Constructor1 | 191.41 ns | 33.878 ns | 1.8570 ns | 0.0265 |     - |     - |     112 B |
-|    Constructor2 | 245.79 ns | 45.945 ns | 2.5184 ns | 0.0305 |     - |     - |     128 B |
+|          Method |       Mean |      Error |    StdDev |        Min |        Max |        P90 |  Gen 0 | Allocated |
+|---------------- |-----------:|-----------:|----------:|-----------:|-----------:|-----------:|-------:|----------:|
+| FuncActivator0A |   7.382 ns |  0.6400 ns | 0.0351 ns |   7.347 ns |   7.417 ns |   7.410 ns | 0.0014 |      24 B |
+| FuncActivator0B |   7.907 ns |  2.3712 ns | 0.1300 ns |   7.793 ns |   8.049 ns |   8.015 ns | 0.0014 |      24 B |
+| TypedActivator0 |   7.166 ns |  2.5455 ns | 0.1395 ns |   7.069 ns |   7.326 ns |   7.282 ns | 0.0014 |      24 B |
+|      Activator0 |   6.070 ns |  2.0752 ns | 0.1138 ns |   5.987 ns |   6.200 ns |   6.165 ns | 0.0014 |      24 B |
+|      Activator1 | 238.626 ns |  2.7008 ns | 0.1480 ns | 238.475 ns | 238.771 ns | 238.743 ns | 0.0238 |     400 B |
+|      Activator2 | 271.752 ns | 12.1087 ns | 0.6637 ns | 271.173 ns | 272.477 ns | 272.302 ns | 0.0253 |     424 B |
+|    Constructor0 |  42.455 ns | 21.6440 ns | 1.1864 ns |  41.764 ns |  43.825 ns |  43.415 ns | 0.0014 |      24 B |
+|    Constructor1 |  68.994 ns |  2.5409 ns | 0.1393 ns |  68.868 ns |  69.143 ns |  69.109 ns | 0.0048 |      80 B |
+|    Constructor2 |  90.266 ns |  1.9737 ns | 0.1082 ns |  90.179 ns |  90.387 ns |  90.356 ns | 0.0052 |      88 B |
