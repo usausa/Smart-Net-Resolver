@@ -3,21 +3,23 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.31912.275
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CombineComplexBenchmark", "CombineComplexBenchmark\CombineComplexBenchmark.csproj", "{545A6EC3-E1FB-4317-B471-71013A7A6E28}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CombineComplexBenchmark", "CombineComplexBenchmark\CombineComplexBenchmark.csproj", "{545A6EC3-E1FB-4317-B471-71013A7A6E28}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ComplexFactoryBenchmark", "ComplexFactoryBenchmark\ComplexFactoryBenchmark.csproj", "{FA95E5B3-47B7-4176-A7F5-6676DDE8A812}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ComplexFactoryBenchmark", "ComplexFactoryBenchmark\ComplexFactoryBenchmark.csproj", "{FA95E5B3-47B7-4176-A7F5-6676DDE8A812}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FactoryBenchmark", "FactoryBenchmark\FactoryBenchmark.csproj", "{CB14226B-5E1C-4B00-9321-A2BF2EF7A851}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FactoryBenchmark", "FactoryBenchmark\FactoryBenchmark.csproj", "{CB14226B-5E1C-4B00-9321-A2BF2EF7A851}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FuncBenchmark", "FuncBenchmark\FuncBenchmark.csproj", "{24D2D78A-19EC-4E31-80DA-2E6A1351B984}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FuncBenchmark", "FuncBenchmark\FuncBenchmark.csproj", "{24D2D78A-19EC-4E31-80DA-2E6A1351B984}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ReflectionNewBenchmark", "ReflectionNewBenchmark\ReflectionNewBenchmark.csproj", "{37C26695-7989-478E-8CD5-73BA8C136B4E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ReflectionNewBenchmark", "ReflectionNewBenchmark\ReflectionNewBenchmark.csproj", "{37C26695-7989-478E-8CD5-73BA8C136B4E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ScopeBenchmark", "ScopeBenchmark\ScopeBenchmark.csproj", "{9506D094-1124-4662-835A-E055B8F16085}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ScopeBenchmark", "ScopeBenchmark\ScopeBenchmark.csproj", "{9506D094-1124-4662-835A-E055B8F16085}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TypedFactoryBenchmark", "TypedFactoryBenchmark\TypedFactoryBenchmark.csproj", "{E46C394E-7882-47A3-83BB-7D2D776C4535}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TypedFactoryBenchmark", "TypedFactoryBenchmark\TypedFactoryBenchmark.csproj", "{E46C394E-7882-47A3-83BB-7D2D776C4535}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TypedFuncCacheBenchmark", "TypedFuncCacheBenchmark\TypedFuncCacheBenchmark.csproj", "{17AC927F-557C-4086-B263-295B283C5E13}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TypedFuncCacheBenchmark", "TypedFuncCacheBenchmark\TypedFuncCacheBenchmark.csproj", "{17AC927F-557C-4086-B263-295B283C5E13}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BuilderBenchmark", "BuilderBenchmark\BuilderBenchmark.csproj", "{6BA65ECB-E904-4973-8224-4ACEAB6C2098}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -57,6 +59,10 @@ Global
 		{17AC927F-557C-4086-B263-295B283C5E13}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{17AC927F-557C-4086-B263-295B283C5E13}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{17AC927F-557C-4086-B263-295B283C5E13}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6BA65ECB-E904-4973-8224-4ACEAB6C2098}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6BA65ECB-E904-4973-8224-4ACEAB6C2098}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6BA65ECB-E904-4973-8224-4ACEAB6C2098}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6BA65ECB-E904-4973-8224-4ACEAB6C2098}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
