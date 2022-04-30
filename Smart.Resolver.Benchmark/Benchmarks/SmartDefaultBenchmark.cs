@@ -1,9 +1,5 @@
 namespace Smart.Resolver.Benchmark.Benchmarks;
 
-using System;
-using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
-
 using BenchmarkDotNet.Attributes;
 
 using Microsoft.Extensions.DependencyInjection;
@@ -14,11 +10,9 @@ using Smart.Resolver.Benchmark.Classes;
 [Config(typeof(BenchmarkConfig))]
 public class SmartDefaultBenchmark
 {
-    [AllowNull]
-    private SmartResolver resolver;
+    private SmartResolver resolver = default!;
 
-    [AllowNull]
-    private IServiceProvider provider;
+    private IServiceProvider provider = default!;
 
     [GlobalSetup]
     public void Setup()

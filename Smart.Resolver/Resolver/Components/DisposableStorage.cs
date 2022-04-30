@@ -1,9 +1,5 @@
 namespace Smart.Resolver.Components;
 
-using System;
-
-using System.Collections.Generic;
-
 public sealed class DisposableStorage : IDisposable
 {
     private readonly List<IDisposable> disposables = new();

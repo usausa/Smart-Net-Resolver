@@ -1,7 +1,5 @@
 namespace Smart.Resolver;
 
-using System;
-
 using Smart.Resolver.Mocks;
 using Smart.Resolver.Processors;
 
@@ -91,7 +89,7 @@ public class ProcessorTest
                 return null;
             }
 
-            return (_, x) => (x as ICustomInitializable)?.Initialize();
+            return static (_, x) => (x as ICustomInitializable)?.Initialize();
         }
     }
 

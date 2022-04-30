@@ -1,8 +1,5 @@
 namespace Smart.Resolver.Helpers;
 
-using System;
-using System.Collections.Generic;
-
 public static class TypeHelper
 {
     private static readonly Type EnumerableType = typeof(IEnumerable<>);

@@ -1,7 +1,5 @@
 namespace Smart.Resolver;
 
-using System;
-using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 
 using Smart.Resolver.Constraints;

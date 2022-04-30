@@ -1,8 +1,5 @@
 namespace Smart.Resolver.Providers;
 
-using System;
-using System.Linq;
-
 using Smart.ComponentModel;
 using Smart.Resolver.Bindings;
 using Smart.Resolver.Builders;

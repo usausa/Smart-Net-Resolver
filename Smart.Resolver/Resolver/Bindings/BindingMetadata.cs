@@ -1,7 +1,5 @@
 namespace Smart.Resolver.Bindings;
 
-using System.Collections.Generic;
-
 using Smart.Collections.Generic;
 
 public sealed class BindingMetadata

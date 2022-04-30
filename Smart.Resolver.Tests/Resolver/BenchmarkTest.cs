@@ -1,6 +1,5 @@
 namespace Smart.Resolver;
 
-using System;
 using System.Diagnostics;
 
 using Smart.Resolver.Mocks;

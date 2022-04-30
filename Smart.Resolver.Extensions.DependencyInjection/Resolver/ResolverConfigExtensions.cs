@@ -1,8 +1,5 @@
 namespace Smart.Resolver;
 
-using System;
-using System.Collections.Generic;
-
 using Microsoft.Extensions.DependencyInjection;
 
 using Smart.Resolver.Configs;

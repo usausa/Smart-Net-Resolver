@@ -1,6 +1,5 @@
 namespace Smart.Resolver.Attributes;
 
-using System;
 using System.Reflection;
 
 [AttributeUsage(AttributeTargets.Constructor | AttributeTargets.Property)]

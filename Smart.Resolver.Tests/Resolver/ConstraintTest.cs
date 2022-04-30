@@ -1,7 +1,5 @@
 namespace Smart.Resolver;
 
-using System;
-
 using Smart.Resolver.Attributes;
 using Smart.Resolver.Bindings;
 using Smart.Resolver.Constraints;

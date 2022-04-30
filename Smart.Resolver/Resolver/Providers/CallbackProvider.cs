@@ -1,7 +1,5 @@
 namespace Smart.Resolver.Providers;
 
-using System;
-
 using Smart.Resolver.Bindings;
 
 public sealed class CallbackProvider<T> : IProvider

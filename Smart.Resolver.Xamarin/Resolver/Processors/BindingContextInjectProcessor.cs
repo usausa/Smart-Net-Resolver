@@ -1,7 +1,5 @@
 namespace Smart.Resolver.Processors;
 
-using System;
-
 using Xamarin.Forms;
 
 public sealed class BindingContextInjectProcessor : IProcessor

@@ -1,9 +1,6 @@
 namespace Smart.Resolver.Configs;
 
-using System;
-using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-using System.Linq;
 
 using Smart.ComponentModel;
 using Smart.Resolver.Bindings;
@@ -15,8 +12,7 @@ public class BindingBuilder<T> : IBindingFactory, IBindingToInNamedWithSyntax<T>
 {
     private readonly Type targetType;
 
-    [AllowNull]
-    private Func<ComponentContainer, IProvider> providerFactory;
+    private Func<ComponentContainer, IProvider> providerFactory = default!;
 
     private Func<ComponentContainer, IScope>? scopeFactory;
 

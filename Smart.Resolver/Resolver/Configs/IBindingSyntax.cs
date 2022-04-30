@@ -1,6 +1,5 @@
 namespace Smart.Resolver.Configs;
 
-using System;
 using System.Diagnostics.CodeAnalysis;
 
 using Smart.ComponentModel;

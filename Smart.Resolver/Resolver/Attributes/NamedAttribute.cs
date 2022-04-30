@@ -1,7 +1,5 @@
 namespace Smart.Resolver.Attributes;
 
-using System;
-
 using Smart.Resolver.Constraints;
 
 [AttributeUsage(AttributeTargets.Property | AttributeTargets.Parameter, AllowMultiple = true)]

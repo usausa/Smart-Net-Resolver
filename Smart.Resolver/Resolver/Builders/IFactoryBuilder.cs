@@ -1,6 +1,5 @@
 namespace Smart.Resolver.Builders;
 
-using System;
 using System.Reflection;
 
 public interface IFactoryBuilder

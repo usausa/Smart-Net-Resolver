@@ -1,7 +1,5 @@
 namespace Smart.Resolver;
 
-using System;
-
 using Microsoft.Extensions.DependencyInjection;
 
 public sealed class SmartServiceProviderFactory : IServiceProviderFactory<ResolverConfig>

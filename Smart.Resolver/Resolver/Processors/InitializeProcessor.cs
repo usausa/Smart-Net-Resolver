@@ -1,7 +1,5 @@
 namespace Smart.Resolver.Processors;
 
-using System;
-
 public sealed class InitializeProcessor : IProcessor
 {
     private static readonly Type InitializableType = typeof(IInitializable);
@@ -25,6 +23,6 @@ public sealed class InitializeProcessor : IProcessor
             return null;
         }
 
-        return (_, x) => ((IInitializable)x).Initialize();
+        return static (_, x) => ((IInitializable)x).Initialize();
     }
 }

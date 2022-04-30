@@ -1,7 +1,5 @@
 namespace Smart.Resolver.Parameters;
 
-using System;
-
 public sealed class CallbackParameter : IParameter
 {
     private readonly Func<IResolver, object?> factory;

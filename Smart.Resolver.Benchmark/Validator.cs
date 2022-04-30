@@ -1,9 +1,5 @@
 namespace Smart.Resolver.Benchmark;
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-
 using Smart.Resolver.Benchmark.Classes;
 
 public static class Validator

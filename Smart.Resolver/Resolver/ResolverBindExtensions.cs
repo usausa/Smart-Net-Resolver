@@ -1,7 +1,5 @@
 namespace Smart.Resolver;
 
-using System;
-
 using Smart.Resolver.Configs;
 
 public static class ResolverBindExtensions

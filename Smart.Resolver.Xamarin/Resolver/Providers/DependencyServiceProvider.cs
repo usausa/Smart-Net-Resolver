@@ -1,6 +1,5 @@
 namespace Smart.Resolver.Providers;
 
-using System;
 using System.Reflection;
 
 using Smart.Resolver.Bindings;

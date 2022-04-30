@@ -1,9 +1,5 @@
 namespace Smart.Resolver;
 
-using System;
-using System.Collections.Generic;
-using System.Threading;
-
 using Smart.ComponentModel;
 using Smart.Resolver.Mocks;
 using Smart.Resolver.Scopes;

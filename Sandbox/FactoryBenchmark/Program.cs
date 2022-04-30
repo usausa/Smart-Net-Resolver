@@ -1,6 +1,5 @@
 namespace FactoryBenchmark;
 
-using System;
 using System.Runtime.CompilerServices;
 
 using BenchmarkDotNet.Attributes;

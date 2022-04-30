@@ -1,7 +1,5 @@
 namespace Smart.Resolver.Components;
 
-using System;
-
 internal sealed class ContainerSlot
 {
     private readonly object sync = new();

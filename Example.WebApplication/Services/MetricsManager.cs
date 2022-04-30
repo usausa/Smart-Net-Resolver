@@ -1,7 +1,5 @@
 namespace Example.WebApplication.Services;
 
-using System.Threading;
-
 public class MetricsManager
 {
     private int counter;

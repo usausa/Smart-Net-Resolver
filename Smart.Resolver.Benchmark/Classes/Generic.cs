@@ -9,6 +9,5 @@ public interface IGenericObject<T>
 
 public class GenericObject<T> : IGenericObject<T>
 {
-    [AllowNull]
-    public T Value { get; set; }
+    public T Value { get; set; } = default!;
 }

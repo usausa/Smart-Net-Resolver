@@ -1,6 +1,5 @@
 namespace Smart.Resolver.Providers;
 
-using System;
 using System.Diagnostics.CodeAnalysis;
 
 using Smart.Resolver.Bindings;

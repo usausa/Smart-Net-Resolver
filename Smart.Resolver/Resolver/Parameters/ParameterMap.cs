@@ -1,7 +1,5 @@
 namespace Smart.Resolver.Parameters;
 
-using System.Collections.Generic;
-
 public sealed class ParameterMap
 {
     private readonly IDictionary<string, IParameter>? parameters;

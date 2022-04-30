@@ -1,6 +1,5 @@
 namespace ReflectionNewBenchmark;
 
-using System;
 using System.Reflection;
 
 using BenchmarkDotNet.Attributes;

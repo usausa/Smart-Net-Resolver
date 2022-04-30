@@ -1,7 +1,5 @@
 namespace Example.WebApplication.Controllers;
 
-using System.Collections.Generic;
-
 using Example.WebApplication.Models;
 using Example.WebApplication.Services;
 

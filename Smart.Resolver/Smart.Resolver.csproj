@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFrameworks>net6.0;net5.0;netcoreapp3.1;netstandard2.1</TargetFrameworks>
@@ -8,9 +8,9 @@
 
   <PropertyGroup>
     <PackageId>Usa.Smart.Resolver</PackageId>
-    <Title>Smart.Resolver .NET</Title>
-    <Description>Smart container library for .NET</Description>
-    <Summary>Smart container library for .NET</Summary>
+    <Title>Smart.Resolver</Title>
+    <Description>Smart container library</Description>
+    <Summary>Smart container library</Summary>
     <PackageTags>smart ioc di dependencyinjection</PackageTags>
   </PropertyGroup>
 

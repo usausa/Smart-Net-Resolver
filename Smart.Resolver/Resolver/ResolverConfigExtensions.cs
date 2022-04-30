@@ -1,8 +1,5 @@
 namespace Smart.Resolver;
 
-using System;
-using System.Collections.Generic;
-
 using Smart.Reflection;
 using Smart.Resolver.Builders;
 using Smart.Resolver.Handlers;

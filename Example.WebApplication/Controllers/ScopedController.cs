@@ -1,7 +1,5 @@
 namespace Example.WebApplication.Controllers;
 
-using System;
-
 using Example.WebApplication.Services;
 
 using Microsoft.AspNetCore.Mvc;

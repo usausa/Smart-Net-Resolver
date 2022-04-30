@@ -1,8 +1,5 @@
 namespace Smart.Resolver.Constraints;
 
-using System.Collections.Generic;
-using System.Linq;
-
 using Smart.Resolver.Attributes;
 
 public static class ConstraintBuilder

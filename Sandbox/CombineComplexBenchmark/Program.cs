@@ -1,7 +1,5 @@
 namespace CombineComplexBenchmark;
 
-using System;
-
 using BenchmarkDotNet.Attributes;
 using BenchmarkDotNet.Columns;
 using BenchmarkDotNet.Configs;

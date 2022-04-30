@@ -1,9 +1,5 @@
 namespace ScopeBenchmark;
 
-using System;
-using System.Collections.Generic;
-using System.Threading;
-
 using BenchmarkDotNet.Attributes;
 using BenchmarkDotNet.Columns;
 using BenchmarkDotNet.Configs;

@@ -1,9 +1,5 @@
 namespace Smart.Resolver.Bindings;
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-
 public sealed class BindingTable
 {
     private static readonly Binding[] EmptyBindings = Array.Empty<Binding>();

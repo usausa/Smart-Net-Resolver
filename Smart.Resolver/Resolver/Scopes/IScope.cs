@@ -1,7 +1,5 @@
 namespace Smart.Resolver.Scopes;
 
-using System;
-
 using Smart.ComponentModel;
 
 public interface IScope

@@ -1,7 +1,5 @@
 namespace Smart.Resolver;
 
-using System;
-
 using Xunit;
 
 public class SelfResolveTest
