@@ -13,7 +13,7 @@ using Smart.Resolver.Handlers;
 using Smart.Resolver.Injectors;
 using Smart.Resolver.Providers;
 
-public sealed class SmartResolver : IResolver, IServiceProvider, IKernel
+public sealed class SmartResolver : IResolver, IKernel
 {
     [System.Diagnostics.CodeAnalysis.SuppressMessage("StyleCop.CSharp.MaintainabilityRules", "SA1401:FieldsMustBePrivate", Justification = "Performance")]
     private sealed class FactoryEntry
@@ -87,6 +87,7 @@ public sealed class SmartResolver : IResolver, IServiceProvider, IKernel
     // IServiceProvider
     // ------------------------------------------------------------
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public object GetService(Type serviceType) => Get(serviceType);
 
     // ------------------------------------------------------------
@@ -432,6 +433,11 @@ public sealed class SmartResolver : IResolver, IServiceProvider, IKernel
                 actions[i](this, instance);
             }
         }
+
+        // IServiceProvider
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public object GetService(Type serviceType) => Get(serviceType);
     }
 
     // ------------------------------------------------------------

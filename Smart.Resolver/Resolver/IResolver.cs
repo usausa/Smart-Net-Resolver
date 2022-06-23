@@ -5,7 +5,7 @@ using System.Diagnostics.CodeAnalysis;
 using Smart.Resolver.Constraints;
 
 [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1716:IdentifiersShouldNotMatchKeywords", Justification = "Ignore")]
-public interface IResolver : IDisposable
+public interface IResolver : IServiceProvider, IDisposable
 {
     // CanGet
 
