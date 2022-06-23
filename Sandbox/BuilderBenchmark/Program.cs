@@ -163,7 +163,6 @@ public class Benchmark
 
 public sealed class Builder
 {
-    // TODO
 }
 
 public interface IResolver
