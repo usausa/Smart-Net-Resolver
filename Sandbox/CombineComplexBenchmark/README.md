@@ -1,20 +1,20 @@
 ``` ini
 
-BenchmarkDotNet=v0.13.1, OS=Windows 10.0.22000
+BenchmarkDotNet=v0.13.2, OS=Windows 11 (10.0.22621.755)
 AMD Ryzen 9 5900X, 1 CPU, 24 logical and 12 physical cores
-.NET SDK=6.0.100
-  [Host]   : .NET 6.0.0 (6.0.21.52210), X64 RyuJIT
-  ShortRun : .NET 6.0.0 (6.0.21.52210), X64 RyuJIT
+.NET SDK=7.0.100
+  [Host]   : .NET 7.0.0 (7.0.22.51805), X64 RyuJIT AVX2
+  ShortRun : .NET 7.0.0 (7.0.22.51805), X64 RyuJIT AVX2
 
 Job=ShortRun  IterationCount=3  LaunchCount=1  
 WarmupCount=3  
 
 ```
-|          Method |      Mean |     Error |    StdDev |       Min |       Max |       P90 |   Gen 0 | Allocated |
-|---------------- |----------:|----------:|----------:|----------:|----------:|----------:|--------:|----------:|
-| CreateSingleton |  8.376 μs | 1.2802 μs | 0.0702 μs |  8.332 μs |  8.457 μs |  8.434 μs |       - |         - |
-| CreateTransient | 13.298 μs | 1.0211 μs | 0.0560 μs | 13.252 μs | 13.360 μs | 13.345 μs |  4.3030 |  72,000 B |
-|   CreateCombine | 28.173 μs | 0.7504 μs | 0.0411 μs | 28.129 μs | 28.211 μs | 28.205 μs |  8.6060 | 144,000 B |
-|   CreateComplex | 67.771 μs | 3.7486 μs | 0.2055 μs | 67.575 μs | 67.985 μs | 67.938 μs | 21.4844 | 360,000 B |
-|  CreateCombine2 | 24.992 μs | 1.1296 μs | 0.0619 μs | 24.921 μs | 25.034 μs | 25.031 μs |  8.6060 | 144,000 B |
-|  CreateComplex2 | 51.917 μs | 6.5058 μs | 0.3566 μs | 51.635 μs | 52.318 μs | 52.214 μs | 21.4844 | 360,000 B |
+|          Method |      Mean |      Error |    StdDev |       Min |       Max |       P90 |    Gen0 | Allocated |
+|---------------- |----------:|-----------:|----------:|----------:|----------:|----------:|--------:|----------:|
+| CreateSingleton |  8.507 μs |  0.2924 μs | 0.0160 μs |  8.492 μs |  8.524 μs |  8.520 μs |       - |         - |
+| CreateTransient | 12.996 μs |  2.5586 μs | 0.1402 μs | 12.841 μs | 13.114 μs | 13.098 μs |  4.3030 |   72000 B |
+|   CreateCombine | 24.841 μs |  3.1113 μs | 0.1705 μs | 24.644 μs | 24.939 μs | 24.939 μs |  8.6060 |  144000 B |
+|   CreateComplex | 65.072 μs | 10.6493 μs | 0.5837 μs | 64.408 μs | 65.506 μs | 65.465 μs | 21.4844 |  360000 B |
+|  CreateCombine2 | 23.391 μs |  0.6690 μs | 0.0367 μs | 23.349 μs | 23.419 μs | 23.416 μs |  8.6060 |  144000 B |
+|  CreateComplex2 | 52.366 μs |  6.4120 μs | 0.3515 μs | 52.045 μs | 52.741 μs | 52.656 μs | 21.4844 |  360000 B |

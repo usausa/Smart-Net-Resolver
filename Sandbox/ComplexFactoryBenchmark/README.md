@@ -1,16 +1,16 @@
 ``` ini
 
-BenchmarkDotNet=v0.13.1, OS=Windows 10.0.22000
+BenchmarkDotNet=v0.13.2, OS=Windows 11 (10.0.22621.755)
 AMD Ryzen 9 5900X, 1 CPU, 24 logical and 12 physical cores
-.NET SDK=6.0.100
-  [Host]   : .NET 6.0.0 (6.0.21.52210), X64 RyuJIT
-  ShortRun : .NET 6.0.0 (6.0.21.52210), X64 RyuJIT
+.NET SDK=7.0.100
+  [Host]   : .NET 7.0.0 (7.0.22.51805), X64 RyuJIT AVX2
+  ShortRun : .NET 7.0.0 (7.0.22.51805), X64 RyuJIT AVX2
 
 Job=ShortRun  IterationCount=3  LaunchCount=1  
 WarmupCount=3  
 
 ```
-|       Method |     Mean |    Error |   StdDev |      Min |      Max |      P90 |  Gen 0 | Allocated |
-|------------- |---------:|---------:|---------:|---------:|---------:|---------:|-------:|----------:|
-|      Complex | 96.46 ns | 3.899 ns | 0.214 ns | 96.32 ns | 96.70 ns | 96.63 ns | 0.0081 |     136 B |
-| TypedComplex | 70.38 ns | 6.911 ns | 0.379 ns | 70.08 ns | 70.81 ns | 70.70 ns | 0.0081 |     136 B |
+|       Method |     Mean |     Error |   StdDev |      Min |      Max |      P90 |   Gen0 | Allocated |
+|------------- |---------:|----------:|---------:|---------:|---------:|---------:|-------:|----------:|
+|      Complex | 79.22 ns |  5.699 ns | 0.312 ns | 79.02 ns | 79.58 ns | 79.47 ns | 0.0081 |     136 B |
+| TypedComplex | 70.20 ns | 12.272 ns | 0.673 ns | 69.43 ns | 70.67 ns | 70.63 ns | 0.0081 |     136 B |

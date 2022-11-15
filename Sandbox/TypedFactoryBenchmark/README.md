@@ -1,16 +1,16 @@
 ``` ini
 
-BenchmarkDotNet=v0.13.1, OS=Windows 10.0.22000
+BenchmarkDotNet=v0.13.2, OS=Windows 11 (10.0.22621.755)
 AMD Ryzen 9 5900X, 1 CPU, 24 logical and 12 physical cores
-.NET SDK=6.0.100
-  [Host]   : .NET 6.0.0 (6.0.21.52210), X64 RyuJIT
-  ShortRun : .NET 6.0.0 (6.0.21.52210), X64 RyuJIT
+.NET SDK=7.0.100
+  [Host]   : .NET 7.0.0 (7.0.22.51805), X64 RyuJIT AVX2
+  ShortRun : .NET 7.0.0 (7.0.22.51805), X64 RyuJIT AVX2
 
 Job=ShortRun  IterationCount=3  LaunchCount=1  
 WarmupCount=3  
 
 ```
-|                    Method |     Mean |    Error |   StdDev |      Min |      Max |      P90 |  Gen 0 | Allocated |
-|-------------------------- |---------:|---------:|---------:|---------:|---------:|---------:|-------:|----------:|
-|      TransientComplexFunc | 47.03 ns | 5.723 ns | 0.314 ns | 46.69 ns | 47.31 ns | 47.26 ns | 0.0167 |     280 B |
-| TransientComplexTypedFunc | 72.39 ns | 3.621 ns | 0.198 ns | 72.27 ns | 72.62 ns | 72.56 ns | 0.0167 |     280 B |
+|                    Method |     Mean |     Error |   StdDev |      Min |      Max |      P90 |   Gen0 | Allocated |
+|-------------------------- |---------:|----------:|---------:|---------:|---------:|---------:|-------:|----------:|
+|      TransientComplexFunc | 45.36 ns |  8.882 ns | 0.487 ns | 44.85 ns | 45.82 ns | 45.74 ns | 0.0167 |     280 B |
+| TransientComplexTypedFunc | 74.52 ns | 36.669 ns | 2.010 ns | 72.80 ns | 76.73 ns | 76.19 ns | 0.0167 |     280 B |
