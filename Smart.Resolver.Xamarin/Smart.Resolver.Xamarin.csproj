@@ -15,8 +15,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Usa.Smart.Core" Version="2.1.0" />
-    <PackageReference Include="Xamarin.Forms" Version="5.0.0.2478">
+    <PackageReference Include="Usa.Smart.Core" Version="2.2.0" />
+    <PackageReference Include="Xamarin.Forms" Version="5.0.0.2515">
       <NoWarn>NU1701</NoWarn>
     </PackageReference>
   </ItemGroup>

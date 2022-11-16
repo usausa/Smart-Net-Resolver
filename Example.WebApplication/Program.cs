@@ -82,7 +82,7 @@ app.MapControllerRoute(
     pattern: "{controller=Home}/{action=Index}/{id?}");
 
 // Data initialize
-DatabaseInitializer.SetupMasterDatabase(connectionStringMaster);
-DatabaseInitializer.SetupCharacterDatabase(connectionStringCharacter);
+DatabaseInitializer.SetupMasterDatabase(connectionStringMaster!);
+DatabaseInitializer.SetupCharacterDatabase(connectionStringCharacter!);
 
 app.Run();
