@@ -150,18 +150,8 @@ public sealed class EmitFactoryBuilder : IFactoryBuilder
                 return null;
             }
 
-            var key = Tuple.Create(factories.Length, actions.Length);
-            Type? type;
-            lock (cache)
-            {
-                if (!cache.TryGetValue(key, out type))
-                {
-                    type = CreateType(factories.Length, actions.Length);
-                    cache[key] = type;
-                }
-            }
-
-            var holder = Activator.CreateInstance(type)!;
+            var type = ResolveFactoryType(factories, actions);
+            var holder = Activator.CreateInstance(type);
 
             for (var i = 0; i < factories.Length; i++)
             {
@@ -176,6 +166,21 @@ public sealed class EmitFactoryBuilder : IFactoryBuilder
             }
 
             return holder;
+        }
+
+        private Type ResolveFactoryType(Func<IResolver, object?>[] factories, Action<IResolver, object>[] actions)
+        {
+            var key = Tuple.Create(factories.Length, actions.Length);
+            lock (cache)
+            {
+                if (!cache.TryGetValue(key, out var type))
+                {
+                    type = CreateType(factories.Length, actions.Length);
+                    cache[key] = type;
+                }
+
+                return type;
+            }
         }
 
         private Type CreateType(int factoryCount, int actionCount)
@@ -204,7 +209,7 @@ public sealed class EmitFactoryBuilder : IFactoryBuilder
             }
 
             var typeInfo = typeBuilder.CreateTypeInfo();
-            return typeInfo!.AsType();
+            return typeInfo.AsType();
         }
     }
 }
