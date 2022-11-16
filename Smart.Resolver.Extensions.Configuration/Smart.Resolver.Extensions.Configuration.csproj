@@ -6,6 +6,10 @@
     <RootNamespace>Smart</RootNamespace>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(TargetFramework)' == 'netcoreapp3.1'">
+    <SuppressTfmSupportBuildWarnings>true</SuppressTfmSupportBuildWarnings>
+  </PropertyGroup>
+
   <PropertyGroup>
     <PackageId>Usa.Smart.Resolver.Extensions.Configuration</PackageId>
     <Title>Smart.Resolver.Extensions.Configuration</Title>
