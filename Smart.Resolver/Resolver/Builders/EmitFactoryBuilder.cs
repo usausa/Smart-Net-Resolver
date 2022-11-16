@@ -209,7 +209,8 @@ public sealed class EmitFactoryBuilder : IFactoryBuilder
             }
 
             var typeInfo = typeBuilder.CreateTypeInfo();
-            return typeInfo.AsType();
+            // ReSharper disable once RedundantSuppressNullableWarningExpression <= net6.0
+            return typeInfo!.AsType();
         }
     }
 }
