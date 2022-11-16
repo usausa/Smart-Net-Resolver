@@ -161,7 +161,7 @@ public sealed class EmitFactoryBuilder : IFactoryBuilder
                 }
             }
 
-            var holder = Activator.CreateInstance(type);
+            var holder = Activator.CreateInstance(type)!;
 
             for (var i = 0; i < factories.Length; i++)
             {
