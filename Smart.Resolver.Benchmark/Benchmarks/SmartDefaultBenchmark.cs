@@ -59,40 +59,40 @@ public class SmartDefaultBenchmark
 
         resolver = config.ToResolver();
 
-        Validator.Validate(t => resolver.Get(t));
+        Validator.Validate(resolver.Get);
 
         provider = resolver.Get<IServiceProvider>();
     }
 
-    //[Benchmark(OperationsPerInvoke = 5)]
-    //public void Singleton()
-    //{
-    //    resolver.Get(typeof(ISingleton1));
-    //    resolver.Get(typeof(ISingleton2));
-    //    resolver.Get(typeof(ISingleton3));
-    //    resolver.Get(typeof(ISingleton4));
-    //    resolver.Get(typeof(ISingleton5));
-    //}
+    [Benchmark(OperationsPerInvoke = 5)]
+    public void Singleton()
+    {
+        resolver.Get(typeof(ISingleton1));
+        resolver.Get(typeof(ISingleton2));
+        resolver.Get(typeof(ISingleton3));
+        resolver.Get(typeof(ISingleton4));
+        resolver.Get(typeof(ISingleton5));
+    }
 
-    //[Benchmark(OperationsPerInvoke = 5)]
-    //public void Transient()
-    //{
-    //    resolver.Get(typeof(ITransient1));
-    //    resolver.Get(typeof(ITransient2));
-    //    resolver.Get(typeof(ITransient3));
-    //    resolver.Get(typeof(ITransient4));
-    //    resolver.Get(typeof(ITransient5));
-    //}
+    [Benchmark(OperationsPerInvoke = 5)]
+    public void Transient()
+    {
+        resolver.Get(typeof(ITransient1));
+        resolver.Get(typeof(ITransient2));
+        resolver.Get(typeof(ITransient3));
+        resolver.Get(typeof(ITransient4));
+        resolver.Get(typeof(ITransient5));
+    }
 
-    //[Benchmark(OperationsPerInvoke = 5)]
-    //public void Combined()
-    //{
-    //    resolver.Get(typeof(Combined1));
-    //    resolver.Get(typeof(Combined2));
-    //    resolver.Get(typeof(Combined3));
-    //    resolver.Get(typeof(Combined4));
-    //    resolver.Get(typeof(Combined5));
-    //}
+    [Benchmark(OperationsPerInvoke = 5)]
+    public void Combined()
+    {
+        resolver.Get(typeof(Combined1));
+        resolver.Get(typeof(Combined2));
+        resolver.Get(typeof(Combined3));
+        resolver.Get(typeof(Combined4));
+        resolver.Get(typeof(Combined5));
+    }
 
     [Benchmark(OperationsPerInvoke = 5)]
     public void Complex()
