@@ -7,7 +7,7 @@ using System.Runtime.CompilerServices;
 using Smart.Resolver.Constraints;
 
 [DebuggerDisplay("{" + nameof(Diagnostics) + "}")]
-internal class TypeConstraintHashArray<T>
+internal sealed class TypeConstraintHashArray<T>
 {
     private const int InitialSize = 64;
 

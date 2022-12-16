@@ -13,7 +13,7 @@ public sealed class MetricsFilterAttribute : TypeFilterAttribute
     {
     }
 
-    private class MetricsActionFilter : IActionFilter
+    private sealed class MetricsActionFilter : IActionFilter
     {
         private readonly MetricsManager metricsManager;
 

@@ -1,4 +1,3 @@
-#pragma warning disable CA1812
 using Example.WebApplication;
 using Example.WebApplication.Services;
 using Example.WebApplication.Settings;
@@ -7,6 +6,8 @@ using Microsoft.Data.Sqlite;
 
 using Smart.Data;
 using Smart.Resolver;
+
+#pragma warning disable CA1852
 
 // Configure builder
 var builder = WebApplication.CreateBuilder(args);
