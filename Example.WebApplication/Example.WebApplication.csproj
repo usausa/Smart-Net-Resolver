@@ -10,10 +10,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.Data.Sqlite" Version="7.0.0" />
+    <PackageReference Include="Microsoft.Data.Sqlite" Version="7.0.8" />
     <PackageReference Include="Usa.Smart.Core" Version="2.2.0" />
     <PackageReference Include="Usa.Smart.Data" Version="2.3.0" />
-    <PackageReference Include="Usa.Smart.Data.Mapper" Version="2.2.0" />
+    <PackageReference Include="Usa.Smart.Data.Mapper" Version="2.3.3" />
   </ItemGroup>
 
   <ItemGroup>
