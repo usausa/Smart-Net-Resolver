@@ -6,7 +6,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Deterministic>true</Deterministic>
     <NoWarn>$(NoWarn),1573,1591,1712</NoWarn>
-    <MSBuildWarningsAsMessages>SA0001</MSBuildWarningsAsMessages>
+    <MSBuildWarningsAsMessages>AD0001;SA0001</MSBuildWarningsAsMessages>
     <WarningsAsErrors>nullable</WarningsAsErrors>
   </PropertyGroup>
 

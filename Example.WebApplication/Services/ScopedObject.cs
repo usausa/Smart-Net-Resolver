@@ -2,6 +2,7 @@ namespace Example.WebApplication.Services;
 
 using Microsoft.Extensions.Logging;
 
+#pragma warning disable CA1848
 public sealed class ScopedObject : IDisposable
 {
     private readonly ILogger<ScopedObject> logger;
@@ -17,3 +18,4 @@ public sealed class ScopedObject : IDisposable
         logger.LogInformation("Dispose {Hash}", GetHashCode());
     }
 }
+#pragma warning restore CA1848
