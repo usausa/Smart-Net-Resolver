@@ -4,7 +4,7 @@ using System.Reflection;
 
 public sealed class ReflectionFactoryBuilder : IFactoryBuilder
 {
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods", Justification = "Ignore")]
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1062:ValidateArgumentsOfPublicMethods", Justification = "Ignore")]
     public Func<IResolver, object> CreateFactory(ConstructorInfo ci, Func<IResolver, object?>[] factories, Action<IResolver, object>[] actions)
     {
         if (ci.GetParameters().Length == 0)

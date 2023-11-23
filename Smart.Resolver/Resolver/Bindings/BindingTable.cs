@@ -11,23 +11,9 @@ public sealed class BindingTable
         this.table = table;
     }
 
-    public Binding[]? Get(Type type)
-    {
-        if (table.TryGetValue(type, out var bindings))
-        {
-            return bindings;
-        }
+    public Binding[]? Get(Type type) => table.GetValueOrDefault(type);
 
-        return null;
-    }
+    public Binding[] FindBindings(Type type) => table.GetValueOrDefault(type, EmptyBindings);
 
-    public Binding[] FindBindings(Type type)
-    {
-        return table.TryGetValue(type, out var bindings) ? bindings : EmptyBindings;
-    }
-
-    public IEnumerable<Binding> EnumBindings()
-    {
-        return table.SelectMany(x => x.Value);
-    }
+    public IEnumerable<Binding> EnumBindings() => table.SelectMany(static x => x.Value);
 }

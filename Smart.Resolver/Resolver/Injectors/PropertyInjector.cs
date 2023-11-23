@@ -21,7 +21,7 @@ public sealed class PropertyInjector : IInjector
     public Action<IResolver, object>? CreateInjector(Type type, Binding binding)
     {
         var entries = type.GetRuntimeProperties()
-            .Where(p => p.IsInjectDefined())
+            .Where(static p => p.IsInjectDefined())
             .Select(x => CreateInjectEntry(x, binding))
             .ToArray();
         if (entries.Length == 0)

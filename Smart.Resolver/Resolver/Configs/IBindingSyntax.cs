@@ -13,11 +13,11 @@ public interface IBindingToSyntax<in T>
 
     IBindingInNamedWithSyntax ToSelf();
 
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1716:IdentifiersShouldNotMatchKeywords", Justification = "Ignore")]
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Naming", "CA1716:IdentifiersShouldNotMatchKeywords", Justification = "Ignore")]
     IBindingInNamedWithSyntax To<TImplementation>()
         where TImplementation : T;
 
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1716:IdentifiersShouldNotMatchKeywords", Justification = "Ignore")]
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Naming", "CA1716:IdentifiersShouldNotMatchKeywords", Justification = "Ignore")]
     IBindingInNamedWithSyntax To(Type implementationType);
 
     IBindingInNamedWithSyntax ToMethod(Func<IResolver, T> factory);

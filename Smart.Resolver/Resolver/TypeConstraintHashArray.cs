@@ -205,7 +205,7 @@ internal sealed class TypeConstraintHashArray<T>
         }
     }
 
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods", Justification = "Performance")]
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1062:ValidateArgumentsOfPublicMethods", Justification = "Performance")]
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool TryGetValue(Type type, IConstraint constraint, [MaybeNullWhen(false)] out T value)
     {
@@ -226,7 +226,7 @@ internal sealed class TypeConstraintHashArray<T>
         return false;
     }
 
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods", Justification = "Performance")]
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1062:ValidateArgumentsOfPublicMethods", Justification = "Performance")]
     public T AddIfNotExist(Type type, IConstraint constraint, Func<Type, IConstraint, T> valueFactory)
     {
         lock (sync)
@@ -255,7 +255,7 @@ internal sealed class TypeConstraintHashArray<T>
     // Inner
     //--------------------------------------------------------------------------------
 
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1812:AvoidUninstantiatedInternalClasses", Justification = "Framework only")]
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Performance", "CA1812:AvoidUninstantiatedInternalClasses", Justification = "Framework only")]
     private sealed class EmptyKey
     {
     }

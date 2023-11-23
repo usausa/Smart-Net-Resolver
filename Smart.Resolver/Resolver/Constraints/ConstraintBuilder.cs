@@ -7,7 +7,7 @@ public static class ConstraintBuilder
     public static IConstraint? Build(IEnumerable<ConstraintAttribute> attributes)
     {
         var constraints = attributes
-            .Select(a => a.CreateConstraint())
+            .Select(static a => a.CreateConstraint())
             .ToArray();
 
         if (constraints.Length == 0)

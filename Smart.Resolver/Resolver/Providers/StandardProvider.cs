@@ -30,7 +30,7 @@ public sealed class StandardProvider : IProvider
         builder = components.Get<IFactoryBuilder>();
     }
 
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods", Justification = "Ignore")]
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1062:ValidateArgumentsOfPublicMethods", Justification = "Ignore")]
     public Func<IResolver, object> CreateFactory(IKernel kernel, Binding binding)
     {
         var constructors = CreateConstructorMetadata();
@@ -53,7 +53,7 @@ public sealed class StandardProvider : IProvider
                 var argument = binding.ConstructorArguments.GetParameter(pi.Name!);
                 if (argument is not null)
                 {
-                    argumentFactories.Add(k => argument.Resolve(k));
+                    argumentFactories.Add(argument.Resolve);
                     continue;
                 }
 
@@ -102,10 +102,10 @@ public sealed class StandardProvider : IProvider
     private ConstructorMetadata[] CreateConstructorMetadata()
     {
         return TargetType.GetConstructors()
-            .Where(c => !c.IsStatic)
-            .OrderByDescending(c => c.IsInjectDefined() ? 1 : 0)
-            .ThenByDescending(c => c.GetParameters().Length)
-            .ThenByDescending(c => c.GetParameters().Count(p => p.HasDefaultValue))
+            .Where(static c => !c.IsStatic)
+            .OrderByDescending(static c => c.IsInjectDefined() ? 1 : 0)
+            .ThenByDescending(static c => c.GetParameters().Length)
+            .ThenByDescending(static c => c.GetParameters().Count(static p => p.HasDefaultValue))
             .Select(c => new ConstructorMetadata(c))
             .ToArray();
     }
@@ -115,9 +115,9 @@ public sealed class StandardProvider : IProvider
         var targetInjectors = injectors
             .Select(x => x.CreateInjector(TargetType, binding));
         var targetProcessors = processors
-            .OrderByDescending(x => x.Order)
+            .OrderByDescending(static x => x.Order)
             .Select(x => x.CreateProcessor(TargetType));
-        return targetInjectors.Concat(targetProcessors).Where(x => x is not null).ToArray()!;
+        return targetInjectors.Concat(targetProcessors).Where(static x => x is not null).ToArray()!;
     }
 
     // ------------------------------------------------------------
@@ -134,7 +134,7 @@ public sealed class StandardProvider : IProvider
         {
             Constructor = ci;
             Parameters = ci.GetParameters()
-                .Select(x => new ParameterMetadata(x))
+                .Select(static x => new ParameterMetadata(x))
                 .ToArray();
         }
     }

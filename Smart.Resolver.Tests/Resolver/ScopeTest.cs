@@ -80,7 +80,7 @@ public class ScopeTest
     public void ObjectInCustomScope()
     {
         var config = new ResolverConfig();
-        config.Bind<SimpleObject>().ToSelf().InScope(_ => new CustomScope());
+        config.Bind<SimpleObject>().ToSelf().InScope(static _ => new CustomScope());
 
         using var resolver = config.ToResolver();
         var obj1 = resolver.Get<SimpleObject>();
@@ -117,7 +117,7 @@ public class ScopeTest
     public sealed class CustomScope : IScope
     {
         private static readonly ThreadLocal<Dictionary<CustomScope, object>> Cache =
-            new(() => new Dictionary<CustomScope, object>());
+            new(static () => new Dictionary<CustomScope, object>());
 
         public IScope Copy(ComponentContainer components)
         {

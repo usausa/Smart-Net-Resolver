@@ -24,7 +24,7 @@ public class ParameterTest
     {
         var config = new ResolverConfig();
         config.Bind<IService>().To<Service>().InSingletonScope();
-        config.Bind<Controller>().ToSelf().WithConstructorArgument("service", k => k.Get<IService>());
+        config.Bind<Controller>().ToSelf().WithConstructorArgument("service", static k => k.Get<IService>());
 
         using var resolver = config.ToResolver();
         var controller = resolver.Get<Controller>();
@@ -53,7 +53,7 @@ public class ParameterTest
         var config = new ResolverConfig();
         config.UsePropertyInjector();
         config.Bind<SimpleObject>().ToSelf().InSingletonScope();
-        config.Bind<HasPropertyObject>().ToSelf().WithPropertyValue("Injected", k => k.Get<SimpleObject>());
+        config.Bind<HasPropertyObject>().ToSelf().WithPropertyValue("Injected", static k => k.Get<SimpleObject>());
 
         using var resolver = config.ToResolver();
         var obj = resolver.Get<HasPropertyObject>();

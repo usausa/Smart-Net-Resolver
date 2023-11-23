@@ -5,7 +5,7 @@ using System.Runtime.CompilerServices;
 
 using Smart.Resolver.Constraints;
 
-[System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods", Justification = "Ignore")]
+[System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1062:ValidateArgumentsOfPublicMethods", Justification = "Ignore")]
 public static class SmartResolverExtensions
 {
     // CanGet

@@ -20,8 +20,8 @@ public class ArrayMissingHandler : IMissingHandler
         this.ignoreElementTypes = new HashSet<Type>(ignoreElementTypes);
     }
 
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods", Justification = "Ignore")]
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Reliability", "CA2000:DisposeObjectsBeforeLosingScope", Justification = "Factory")]
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1062:ValidateArgumentsOfPublicMethods", Justification = "Ignore")]
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Reliability", "CA2000:DisposeObjectsBeforeLosingScope", Justification = "Factory")]
     public IEnumerable<Binding> Handle(ComponentContainer components, BindingTable table, Type type)
     {
         var elementType = TypeHelper.GetEnumerableElementType(type);
@@ -38,7 +38,7 @@ public class ArrayMissingHandler : IMissingHandler
         var bindings = table.FindBindings(elementType);
 
         // hack for singleton
-        var useSingleton = bindings.Length > 0 && bindings.All(b => b.Scope is SingletonScope);
+        var useSingleton = bindings.Length > 0 && bindings.All(static b => b.Scope is SingletonScope);
         return new[]
         {
             new Binding(

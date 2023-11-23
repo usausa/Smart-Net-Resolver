@@ -47,7 +47,7 @@ public class BindingBuilder<T> : IBindingFactory, IBindingToInNamedWithSyntax<T>
     public IBindingInNamedWithSyntax To<TImplementation>()
         where TImplementation : T
     {
-        return ToProvider(c => new StandardProvider(typeof(TImplementation), c));
+        return ToProvider(static c => new StandardProvider(typeof(TImplementation), c));
     }
 
     public IBindingInNamedWithSyntax To(Type implementationType)
@@ -88,13 +88,13 @@ public class BindingBuilder<T> : IBindingFactory, IBindingToInNamedWithSyntax<T>
 
     public IBindingNamedWithSyntax InSingletonScope()
     {
-        InScope(c => new SingletonScope(c));
+        InScope(static c => new SingletonScope(c));
         return this;
     }
 
     public IBindingNamedWithSyntax InContainerScope()
     {
-        InScope(_ => new ContainerScope());
+        InScope(static _ => new ContainerScope());
         return this;
     }
 
@@ -173,7 +173,7 @@ public class BindingBuilder<T> : IBindingFactory, IBindingToInNamedWithSyntax<T>
             providerFactory.Invoke(components),
             scopeFactory?.Invoke(components),
             new BindingMetadata(metadataName, metadataValues),
-            new ParameterMap(constructorArgumentFactories?.ToDictionary(kv => kv.Key, kv => kv.Value(components))),
-            new ParameterMap(propertyValueFactories?.ToDictionary(kv => kv.Key, kv => kv.Value(components))));
+            new ParameterMap(constructorArgumentFactories?.ToDictionary(static kv => kv.Key, kv => kv.Value(components))),
+            new ParameterMap(propertyValueFactories?.ToDictionary(static kv => kv.Key, kv => kv.Value(components))));
     }
 }

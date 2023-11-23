@@ -61,7 +61,7 @@ public sealed class SmartResolver : IResolver, IKernel
 
         var tableEntries = new Dictionary<Type, Binding[]>();
 
-        foreach (var group in config.CreateBindings(Components).GroupBy(b => b.Type))
+        foreach (var group in config.CreateBindings(Components).GroupBy(static b => b.Type))
         {
             tableEntries[group.Key] = group.ToArray();
         }
@@ -273,7 +273,7 @@ public sealed class SmartResolver : IResolver, IKernel
     // Inject
     // ------------------------------------------------------------
 
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods", Justification = "Ignore")]
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1062:ValidateArgumentsOfPublicMethods", Justification = "Ignore")]
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void Inject(object instance)
     {

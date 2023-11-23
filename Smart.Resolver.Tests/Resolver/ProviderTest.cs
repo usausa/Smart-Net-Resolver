@@ -50,8 +50,8 @@ public class ProviderTest
 
         Assert.Equal(2, obj.Objects.Length);
         Assert.NotSame(foo, bar);
-        Assert.True(obj.Objects.Contains(foo, x => x));
-        Assert.True(obj.Objects.Contains(bar, x => x));
+        Assert.True(obj.Objects.Contains(foo, static x => x));
+        Assert.True(obj.Objects.Contains(bar, static x => x));
     }
 
     [Fact]
@@ -69,8 +69,8 @@ public class ProviderTest
 
         Assert.Equal(2, obj.Objects.Count());
         Assert.NotSame(foo, bar);
-        Assert.True(obj.Objects.Contains(foo, x => x));
-        Assert.True(obj.Objects.Contains(bar, x => x));
+        Assert.True(obj.Objects.Contains(foo, static x => x));
+        Assert.True(obj.Objects.Contains(bar, static x => x));
     }
 
     [Fact]
@@ -88,8 +88,8 @@ public class ProviderTest
 
         Assert.Equal(2, obj.Objects.Count);
         Assert.NotSame(foo, bar);
-        Assert.True(obj.Objects.Contains(foo, x => x));
-        Assert.True(obj.Objects.Contains(bar, x => x));
+        Assert.True(obj.Objects.Contains(foo, static x => x));
+        Assert.True(obj.Objects.Contains(bar, static x => x));
     }
 
     [Fact]
@@ -107,8 +107,8 @@ public class ProviderTest
 
         Assert.Equal(2, obj.Objects.Count);
         Assert.NotSame(foo, bar);
-        Assert.True(obj.Objects.Contains(foo, x => x));
-        Assert.True(obj.Objects.Contains(bar, x => x));
+        Assert.True(obj.Objects.Contains(foo, static x => x));
+        Assert.True(obj.Objects.Contains(bar, static x => x));
     }
 
     [Fact]
@@ -156,6 +156,7 @@ public class ProviderTest
         }
     }
 
+#pragma warning disable CA1819
     public class ArrayInjectedObject
     {
         public SimpleObject[] Objects { get; }
@@ -165,6 +166,7 @@ public class ProviderTest
             Objects = objects;
         }
     }
+#pragma warning restore CA1819
 
     public class EnumerableInjectedObject
     {
