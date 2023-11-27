@@ -14,11 +14,6 @@
     <PackageTags>smart ioc di dependencyinjection</PackageTags>
   </PropertyGroup>
 
-  <ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.1'">
-    <PackageReference Include="System.Reflection.Emit" Version="4.7.0" />
-    <PackageReference Include="System.Reflection.Emit.Lightweight" Version="4.7.0" />
-  </ItemGroup>
-
   <ItemGroup>
     <PackageReference Include="Usa.Smart.Core" Version="2.3.0" />
   </ItemGroup>
