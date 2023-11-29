@@ -14,7 +14,6 @@
     <PackageId>Usa.Smart.Resolver.Extensions.DependencyInjection</PackageId>
     <Title>Smart.Resolver.Extensions.DependencyInjection</Title>
     <Description>Smart container library depenency injection extensions</Description>
-    <Summary>Smart container library depenency injection extensions</Summary>
     <PackageTags>smart ioc di dependencyinjection aspnet aspnetcore</PackageTags>
   </PropertyGroup>
 

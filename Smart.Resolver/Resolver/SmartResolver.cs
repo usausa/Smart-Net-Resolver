@@ -15,7 +15,7 @@ using Smart.Resolver.Providers;
 
 public sealed class SmartResolver : IResolver, IKernel
 {
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("StyleCop.CSharp.MaintainabilityRules", "SA1401:FieldsMustBePrivate", Justification = "Performance")]
+#pragma warning disable SA1401
     private sealed class FactoryEntry
     {
         public readonly bool CanGet;
@@ -31,6 +31,7 @@ public sealed class SmartResolver : IResolver, IKernel
             Multiple = multiple;
         }
     }
+#pragma warning restore SA1401
 
     private readonly ThreadsafeTypeHashArrayMap<FactoryEntry> factoriesCache = new(128);
 
@@ -63,12 +64,12 @@ public sealed class SmartResolver : IResolver, IKernel
 
         foreach (var group in config.CreateBindings(Components).GroupBy(static b => b.Type))
         {
-            tableEntries[group.Key] = group.ToArray();
+            tableEntries[group.Key] = [.. group];
         }
 
-        tableEntries[typeof(IResolver)] = new[] { new Binding(typeof(IResolver), new ConstantProvider<IResolver>(this), null, null, null, null) };
-        tableEntries[typeof(SmartResolver)] = new[] { new Binding(typeof(SmartResolver), new ConstantProvider<SmartResolver>(this), null, null, null, null) };
-        tableEntries[typeof(IServiceProvider)] = new[] { new Binding(typeof(IServiceProvider), new ConstantProvider<IServiceProvider>(this), null, null, null, null) };
+        tableEntries[typeof(IResolver)] = [new Binding(typeof(IResolver), new ConstantProvider<IResolver>(this), null, null, null, null)];
+        tableEntries[typeof(SmartResolver)] = [new Binding(typeof(SmartResolver), new ConstantProvider<SmartResolver>(this), null, null, null, null)];
+        tableEntries[typeof(IServiceProvider)] = [new Binding(typeof(IServiceProvider), new ConstantProvider<IServiceProvider>(this), null, null, null, null)];
 
         table = new BindingTable(tableEntries);
     }
@@ -273,7 +274,6 @@ public sealed class SmartResolver : IResolver, IKernel
     // Inject
     // ------------------------------------------------------------
 
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1062:ValidateArgumentsOfPublicMethods", Justification = "Ignore")]
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void Inject(object instance)
     {

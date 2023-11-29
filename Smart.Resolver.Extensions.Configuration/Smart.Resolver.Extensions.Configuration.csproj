@@ -14,7 +14,6 @@
     <PackageId>Usa.Smart.Resolver.Extensions.Configuration</PackageId>
     <Title>Smart.Resolver.Extensions.Configuration</Title>
     <Description>Smart container library configuration extensions</Description>
-    <Summary>Smart container library configuration extensions</Summary>
     <PackageTags>smart ioc di configuration aspnet aspnetcore</PackageTags>
   </PropertyGroup>
 

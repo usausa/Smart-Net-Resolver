@@ -11,7 +11,7 @@ public class ResolverConfig : IResolverConfig, IBindingRoot
 {
     public ComponentConfig Components { get; } = new();
 
-    private readonly List<IBindingFactory> bindingFactories = new();
+    private readonly List<IBindingFactory> bindingFactories = [];
 
     public ResolverConfig()
     {

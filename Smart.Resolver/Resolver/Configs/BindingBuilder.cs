@@ -114,14 +114,14 @@ public class BindingBuilder<T> : IBindingFactory, IBindingToInNamedWithSyntax<T>
 
     public IBindingWithSyntax WithMetadata(string key, object? value)
     {
-        metadataValues ??= new();
+        metadataValues ??= [];
         metadataValues[key] = value;
         return this;
     }
 
     public IBindingWithSyntax WithConstructorArgument(string name, Func<ComponentContainer, IParameter> factory)
     {
-        constructorArgumentFactories ??= new();
+        constructorArgumentFactories ??= [];
         constructorArgumentFactories[name] = factory;
         return this;
     }
@@ -140,7 +140,7 @@ public class BindingBuilder<T> : IBindingFactory, IBindingToInNamedWithSyntax<T>
 
     public IBindingWithSyntax WithPropertyValue(string name, Func<ComponentContainer, IParameter> factory)
     {
-        propertyValueFactories ??= new Dictionary<string, Func<ComponentContainer, IParameter>>();
+        propertyValueFactories ??= [];
         propertyValueFactories[name] = factory;
         return this;
     }

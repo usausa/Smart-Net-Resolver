@@ -10,7 +10,6 @@
     <PackageId>Usa.Smart.Resolver</PackageId>
     <Title>Smart.Resolver</Title>
     <Description>Smart container library</Description>
-    <Summary>Smart container library</Summary>
     <PackageTags>smart ioc di dependencyinjection</PackageTags>
   </PropertyGroup>
 

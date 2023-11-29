@@ -7,7 +7,7 @@ using Smart.Reflection.Emit;
 
 public sealed class EmitFactoryBuilder : IFactoryBuilder
 {
-    private static readonly Action<IResolver, object>[] EmptyActions = Array.Empty<Action<IResolver, object>>();
+    private static readonly Action<IResolver, object>[] EmptyActions = [];
 
     private static readonly HolderBuilder DefaultHolderBuilder = new();
 
@@ -19,7 +19,7 @@ public sealed class EmitFactoryBuilder : IFactoryBuilder
 
         var returnType = ci.DeclaringType!.IsValueType ? typeof(object) : ci.DeclaringType;
 
-        var dynamicMethod = new DynamicMethod(string.Empty, returnType, new[] { holderType, typeof(IResolver) }, true);
+        var dynamicMethod = new DynamicMethod(string.Empty, returnType, [holderType, typeof(IResolver)], true);
         var ilGenerator = dynamicMethod.GetILGenerator();
 
         for (var i = 0; i < factories.Length; i++)
@@ -90,7 +90,7 @@ public sealed class EmitFactoryBuilder : IFactoryBuilder
 
         var arrayType = type.MakeArrayType();
 
-        var dynamicMethod = new DynamicMethod(string.Empty, arrayType, new[] { holderType, typeof(IResolver) }, true);
+        var dynamicMethod = new DynamicMethod(string.Empty, arrayType, [holderType, typeof(IResolver)], true);
         var ilGenerator = dynamicMethod.GetILGenerator();
 
         ilGenerator.EmitLdcI4(factories.Length);
@@ -106,7 +106,7 @@ public sealed class EmitFactoryBuilder : IFactoryBuilder
             ilGenerator.Emit(OpCodes.Ldarg_0);
             ilGenerator.Emit(OpCodes.Ldfld, field!);
             ilGenerator.Emit(OpCodes.Ldarg_1);
-            var invokeMethod = factories[i].GetType().GetMethod("Invoke", new[] { typeof(IResolver) });
+            var invokeMethod = factories[i].GetType().GetMethod("Invoke", [typeof(IResolver)]);
             ilGenerator.Emit(OpCodes.Call, invokeMethod!);
 
             ilGenerator.Emit(OpCodes.Stelem_Ref);
@@ -120,7 +120,7 @@ public sealed class EmitFactoryBuilder : IFactoryBuilder
 
     private sealed class HolderBuilder
     {
-        private readonly Dictionary<Tuple<int, int>, Type> cache = new();
+        private readonly Dictionary<Tuple<int, int>, Type> cache = [];
 
         private AssemblyBuilder? assemblyBuilder;
 

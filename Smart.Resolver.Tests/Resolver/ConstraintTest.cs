@@ -114,7 +114,7 @@ public class ConstraintTest
     {
         public SimpleObject SimpleObject { get; }
 
-        public ChainConstraintInjectedObject([Named("bar")] [HasMetadata("hoge")] SimpleObject simpleObject)
+        public ChainConstraintInjectedObject([Named("bar")][HasMetadata("hoge")] SimpleObject simpleObject)
         {
             SimpleObject = simpleObject;
         }

@@ -2,7 +2,7 @@ namespace Smart.Resolver.Bindings;
 
 public sealed class BindingTable
 {
-    private static readonly Binding[] EmptyBindings = Array.Empty<Binding>();
+    private static readonly Binding[] EmptyBindings = [];
 
     private readonly Dictionary<Type, Binding[]> table;
 
