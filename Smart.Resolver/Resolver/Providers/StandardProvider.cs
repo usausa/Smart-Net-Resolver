@@ -87,7 +87,7 @@ public sealed class StandardProvider : IProvider
             if (match)
             {
                 var actions = CreateActions(binding);
-                return builder.CreateFactory(constructor.Constructor, [.. argumentFactories], actions);
+                return builder.CreateFactory(constructor.Constructor, argumentFactories.ToArray(), actions);
             }
         }
 

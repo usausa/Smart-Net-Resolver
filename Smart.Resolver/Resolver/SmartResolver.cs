@@ -64,7 +64,7 @@ public sealed class SmartResolver : IResolver, IKernel
 
         foreach (var group in config.CreateBindings(Components).GroupBy(static b => b.Type))
         {
-            tableEntries[group.Key] = [.. group];
+            tableEntries[group.Key] = group.ToArray();
         }
 
         tableEntries[typeof(IResolver)] = [new Binding(typeof(IResolver), new ConstantProvider<IResolver>(this), null, null, null, null)];
