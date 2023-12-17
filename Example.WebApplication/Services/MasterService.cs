@@ -5,7 +5,7 @@ using Example.WebApplication.Models;
 using Smart.Data;
 using Smart.Data.Mapper;
 
-public class MasterService
+public sealed class MasterService
 {
     private IDbProvider Provider { get; }
 

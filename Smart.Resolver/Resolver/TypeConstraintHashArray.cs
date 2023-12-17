@@ -205,7 +205,6 @@ internal sealed class TypeConstraintHashArray<T>
         }
     }
 
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1062:ValidateArgumentsOfPublicMethods", Justification = "Performance")]
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool TryGetValue(Type type, IConstraint constraint, [MaybeNullWhen(false)] out T value)
     {
@@ -226,12 +225,11 @@ internal sealed class TypeConstraintHashArray<T>
         return false;
     }
 
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1062:ValidateArgumentsOfPublicMethods", Justification = "Performance")]
     public T AddIfNotExist(Type type, IConstraint constraint, Func<Type, IConstraint, T> valueFactory)
     {
         lock (sync)
         {
-            // Double checked locking
+            // Double-checked locking
             if (TryGetValue(type, constraint, out var currentValue))
             {
                 return currentValue;
@@ -255,12 +253,13 @@ internal sealed class TypeConstraintHashArray<T>
     // Inner
     //--------------------------------------------------------------------------------
 
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Performance", "CA1812:AvoidUninstantiatedInternalClasses", Justification = "Framework only")]
+#pragma warning disable CA1812
     private sealed class EmptyKey
     {
     }
+#pragma warning restore CA1812
 
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("StyleCop.CSharp.MaintainabilityRules", "SA1401:FieldsMustBePrivate", Justification = "Performance")]
+#pragma warning disable SA1401
     private sealed class Node
     {
         public readonly Type Type;
@@ -278,6 +277,7 @@ internal sealed class TypeConstraintHashArray<T>
             Value = value;
         }
     }
+#pragma warning restore SA1401
 
     //--------------------------------------------------------------------------------
     // Diagnostics

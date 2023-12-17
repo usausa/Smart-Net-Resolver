@@ -3,9 +3,7 @@ namespace Smart.Resolver;
 using Smart.Resolver.Mocks;
 using Smart.Resolver.Processors;
 
-using Xunit;
-
-public class ProcessorTest
+public sealed class ProcessorTest
 {
     [Fact]
     public void ObjectIsInitializedOnCreation()
@@ -93,7 +91,7 @@ public class ProcessorTest
         }
     }
 
-    public class CustomInitializableObject : ICustomInitializable
+    public sealed class CustomInitializableObject : ICustomInitializable
     {
         public bool Initialized { get; private set; }
 

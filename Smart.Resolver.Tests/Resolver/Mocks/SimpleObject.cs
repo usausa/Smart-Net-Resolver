@@ -1,5 +1,5 @@
 namespace Smart.Resolver.Mocks;
 
-public class SimpleObject
+public sealed class SimpleObject
 {
 }

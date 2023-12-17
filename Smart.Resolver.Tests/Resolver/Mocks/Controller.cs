@@ -1,6 +1,6 @@
 namespace Smart.Resolver.Mocks;
 
-public class Controller
+public sealed class Controller
 {
     public IService Service { get; }
 

@@ -7,7 +7,7 @@ using Smart.Resolver.Builders;
 using Smart.Resolver.Components;
 using Smart.Resolver.Configs;
 
-public class ResolverConfig : IResolverConfig, IBindingRoot
+public sealed class ResolverConfig : IResolverConfig, IBindingRoot
 {
     public ComponentConfig Components { get; } = new();
 
@@ -33,20 +33,10 @@ public class ResolverConfig : IResolverConfig, IBindingRoot
 
     ComponentContainer IResolverConfig.CreateComponentContainer()
     {
-        return CreateComponentContainer();
-    }
-
-    protected virtual ComponentContainer CreateComponentContainer()
-    {
         return Components.ToContainer();
     }
 
     IEnumerable<Binding> IResolverConfig.CreateBindings(ComponentContainer components)
-    {
-        return CreateBindings(components);
-    }
-
-    protected virtual IEnumerable<Binding> CreateBindings(ComponentContainer components)
     {
         return bindingFactories.Select(f => f.CreateBinding(components));
     }

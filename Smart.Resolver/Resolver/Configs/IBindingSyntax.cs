@@ -7,23 +7,23 @@ using Smart.Resolver.Parameters;
 using Smart.Resolver.Providers;
 using Smart.Resolver.Scopes;
 
+#pragma warning disable CA1716
 public interface IBindingToSyntax<in T>
 {
     IBindingInNamedWithSyntax ToProvider(Func<ComponentContainer, IProvider> factory);
 
     IBindingInNamedWithSyntax ToSelf();
 
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Naming", "CA1716:IdentifiersShouldNotMatchKeywords", Justification = "Ignore")]
     IBindingInNamedWithSyntax To<TImplementation>()
         where TImplementation : T;
 
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Naming", "CA1716:IdentifiersShouldNotMatchKeywords", Justification = "Ignore")]
     IBindingInNamedWithSyntax To(Type implementationType);
 
     IBindingInNamedWithSyntax ToMethod(Func<IResolver, T> factory);
 
     IBindingInNamedWithSyntax ToConstant([DisallowNull] T value);
 }
+#pragma warning restore CA1716
 
 public interface IBindingInSyntax
 {

@@ -4,9 +4,7 @@ using System.Diagnostics;
 
 using Smart.Resolver.Mocks;
 
-using Xunit;
-
-public class BenchmarkTest
+public sealed class BenchmarkTest
 {
     [Fact(Skip = "Benchmark")]
     public void BenchmarkScenarioForWebControllerAndService()

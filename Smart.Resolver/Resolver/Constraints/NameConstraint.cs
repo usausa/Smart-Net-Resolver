@@ -11,7 +11,6 @@ public sealed class NameConstraint : IConstraint
         this.name = name;
     }
 
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1062:ValidateArgumentsOfPublicMethods", Justification = "Ignore")]
     public bool Match(BindingMetadata metadata) => name == metadata.Name;
 
     public override bool Equals(object? obj)
@@ -19,6 +18,5 @@ public sealed class NameConstraint : IConstraint
         return obj is NameConstraint constraint && name == constraint.name;
     }
 
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Globalization", "CA1307:SpecifyStringComparison", Justification = "Ignore")]
-    public override int GetHashCode() => name.GetHashCode();
+    public override int GetHashCode() => name.GetHashCode(StringComparison.Ordinal);
 }

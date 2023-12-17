@@ -1,8 +1,6 @@
 namespace Smart.Resolver;
 
-using Xunit;
-
-public class SelfResolveTest
+public sealed class SelfResolveTest
 {
     [Fact]
     public void ResolveResolverInterface()
@@ -40,7 +38,7 @@ public class SelfResolveTest
         Assert.Same(resolver, obj.Provider);
     }
 
-    public class ResolverInterfaceReferenceObject
+    public sealed class ResolverInterfaceReferenceObject
     {
         public IResolver Resolver { get; }
 
@@ -50,7 +48,7 @@ public class SelfResolveTest
         }
     }
 
-    public class ResolverReferenceObject
+    public sealed class ResolverReferenceObject
     {
         public SmartResolver Resolver { get; }
 
@@ -60,7 +58,7 @@ public class SelfResolveTest
         }
     }
 
-    public class ResolverServiceProviderObject
+    public sealed class ResolverServiceProviderObject
     {
         public IServiceProvider Provider { get; }
 

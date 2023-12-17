@@ -17,7 +17,6 @@ public sealed class AssignableMissingHandler : IMissingHandler
         targetTypes = new HashSet<Type>(types);
     }
 
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1062:ValidateArgumentsOfPublicMethods", Justification = "Ignore")]
     public IEnumerable<Binding> Handle(ComponentContainer components, BindingTable table, Type type)
     {
         if ((targetTypes.Count > 0) && !targetTypes.Contains(type))

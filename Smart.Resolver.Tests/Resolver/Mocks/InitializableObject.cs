@@ -1,6 +1,6 @@
 namespace Smart.Resolver.Mocks;
 
-public class InitializableObject : IInitializable
+public sealed class InitializableObject : IInitializable
 {
     public int InitializedCount { get; private set; }
 

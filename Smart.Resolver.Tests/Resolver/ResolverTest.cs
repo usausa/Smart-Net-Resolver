@@ -6,9 +6,7 @@ using Smart.Resolver.Handlers;
 using Smart.Resolver.Mocks;
 using Smart.Resolver.Providers;
 
-using Xunit;
-
-public class ResolverTest
+public sealed class ResolverTest
 {
     [Fact]
     public void ObjectBindingCreatedBySelfMissingResolver()
@@ -40,7 +38,7 @@ public class ResolverTest
         T Create();
     }
 
-    public class GenericService<T> : IGenericService<T>
+    public sealed class GenericService<T> : IGenericService<T>
     {
         public T Create() => default!;
     }
@@ -78,7 +76,7 @@ public class ResolverTest
         protected abstract void OnExecute();
     }
 
-    public class ExecuteService : ExecuteServiceBase
+    public sealed class ExecuteService : ExecuteServiceBase
     {
         protected override void OnExecute()
         {
@@ -105,21 +103,21 @@ public class ResolverTest
         void Execute();
     }
 
-    public class MultipleService1 : IMultipleService
+    public sealed class MultipleService1 : IMultipleService
     {
         public void Execute()
         {
         }
     }
 
-    public class MultipleService2 : IMultipleService
+    public sealed class MultipleService2 : IMultipleService
     {
         public void Execute()
         {
         }
     }
 
-    public class MultipleService3 : IMultipleService
+    public sealed class MultipleService3 : IMultipleService
     {
         public void Execute()
         {

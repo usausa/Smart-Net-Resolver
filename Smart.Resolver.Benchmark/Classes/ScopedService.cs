@@ -5,7 +5,7 @@ public interface IScopedService
     void DoSomething();
 }
 
-public class ScopedService : IScopedService
+public sealed class ScopedService : IScopedService
 {
     public void DoSomething()
     {

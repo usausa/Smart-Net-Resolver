@@ -1,6 +1,6 @@
 namespace Example.WebApplication.Models;
 
-public class ItemEntity
+public sealed class ItemEntity
 {
     public int Id { get; set; }
 

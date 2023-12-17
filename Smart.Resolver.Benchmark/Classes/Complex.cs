@@ -1,6 +1,6 @@
 namespace Smart.Resolver.Benchmark.Classes;
 
-public class Complex
+public sealed class Complex
 {
     public ISingleton1 Singleton1 { get; }
 

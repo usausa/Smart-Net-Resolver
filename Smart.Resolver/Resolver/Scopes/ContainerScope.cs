@@ -7,7 +7,6 @@ public sealed class ContainerScope : IScope
 {
     private readonly int index;
 
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1062:ValidateArgumentsOfPublicMethods", Justification = "Ignore")]
     public ContainerScope()
     {
         index = ContainerIndexManager.Acquire();

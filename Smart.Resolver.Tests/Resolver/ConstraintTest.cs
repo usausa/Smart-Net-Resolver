@@ -5,9 +5,7 @@ using Smart.Resolver.Bindings;
 using Smart.Resolver.Constraints;
 using Smart.Resolver.Mocks;
 
-using Xunit;
-
-public class ConstraintTest
+public sealed class ConstraintTest
 {
     [Fact]
     public void ObjectIsSelectedByNameConstraint()
@@ -59,7 +57,7 @@ public class ConstraintTest
         Assert.Same(obj.SimpleObject, barHoge);
     }
 
-    public class HasMetadataConstraint : IConstraint
+    public sealed class HasMetadataConstraint : IConstraint
     {
         public string Key { get; }
 
@@ -90,7 +88,7 @@ public class ConstraintTest
         }
     }
 
-    public class NameConstraintInjectedObject
+    public sealed class NameConstraintInjectedObject
     {
         public SimpleObject SimpleObject { get; }
 
@@ -100,7 +98,7 @@ public class ConstraintTest
         }
     }
 
-    public class HasMetadataConstraintInjectedObject
+    public sealed class HasMetadataConstraintInjectedObject
     {
         public SimpleObject SimpleObject { get; }
 
@@ -110,7 +108,7 @@ public class ConstraintTest
         }
     }
 
-    public class ChainConstraintInjectedObject
+    public sealed class ChainConstraintInjectedObject
     {
         public SimpleObject SimpleObject { get; }
 

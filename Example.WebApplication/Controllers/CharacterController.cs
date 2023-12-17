@@ -6,7 +6,7 @@ using Example.WebApplication.Services;
 using Microsoft.AspNetCore.Mvc;
 
 [Route("api/[controller]")]
-public class CharacterController : Controller
+public sealed class CharacterController : Controller
 {
     private CharacterService CharacterService { get; }
 

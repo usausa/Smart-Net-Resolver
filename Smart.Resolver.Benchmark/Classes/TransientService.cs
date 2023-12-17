@@ -5,7 +5,7 @@ public interface ITransientService1
     void DoSomething();
 }
 
-public class TransientService1 : ITransientService1
+public sealed class TransientService1 : ITransientService1
 {
     public IScopedService ScopedService { get; }
 
@@ -24,7 +24,7 @@ public interface ITransientService2
     void DoSomething();
 }
 
-public class TransientService2 : ITransientService2
+public sealed class TransientService2 : ITransientService2
 {
     public IScopedService ScopedService { get; }
 
@@ -43,7 +43,7 @@ public interface ITransientService3
     void DoSomething();
 }
 
-public class TransientService3 : ITransientService3
+public sealed class TransientService3 : ITransientService3
 {
     public IScopedService ScopedService { get; }
 

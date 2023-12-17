@@ -1,6 +1,6 @@
 namespace Smart.Resolver.Benchmark.Classes;
 
-public class Combined1
+public sealed class Combined1
 {
     public ISingleton1 Singleton { get; }
 
@@ -10,7 +10,7 @@ public class Combined1
     }
 }
 
-public class Combined2
+public sealed class Combined2
 {
     public ISingleton2 Singleton { get; }
 
@@ -20,7 +20,7 @@ public class Combined2
     }
 }
 
-public class Combined3
+public sealed class Combined3
 {
     public ISingleton3 Singleton { get; }
 
@@ -30,7 +30,7 @@ public class Combined3
     }
 }
 
-public class Combined4
+public sealed class Combined4
 {
     public ISingleton4 Singleton { get; }
 
@@ -40,7 +40,7 @@ public class Combined4
     }
 }
 
-public class Combined5
+public sealed class Combined5
 {
     public ISingleton5 Singleton { get; }
 

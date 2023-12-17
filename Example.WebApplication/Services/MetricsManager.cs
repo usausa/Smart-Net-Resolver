@@ -1,6 +1,6 @@
 namespace Example.WebApplication.Services;
 
-public class MetricsManager
+public sealed class MetricsManager
 {
     private int counter;
 

@@ -4,7 +4,7 @@ using Example.WebApplication.Services;
 
 using Microsoft.AspNetCore.Mvc;
 
-public class ScopedController : Controller
+public sealed class ScopedController : Controller
 {
     private ScopedObject ScopedObject { get; }
 

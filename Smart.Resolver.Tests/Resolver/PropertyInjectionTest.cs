@@ -2,9 +2,7 @@ namespace Smart.Resolver;
 
 using Smart.Resolver.Mocks;
 
-using Xunit;
-
-public class PropertyInjectionTest
+public sealed class PropertyInjectionTest
 {
     [Fact]
     public void ObjectIsInjectedOnCreationWhenPropertyInjectorEnabled()

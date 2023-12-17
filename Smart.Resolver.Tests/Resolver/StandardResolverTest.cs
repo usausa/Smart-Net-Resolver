@@ -2,9 +2,7 @@ namespace Smart.Resolver;
 
 using Smart.Resolver.Mocks;
 
-using Xunit;
-
-public class StandardResolverTest
+public sealed class StandardResolverTest
 {
     [Fact]
     public void SelfResolved()

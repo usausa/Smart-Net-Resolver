@@ -2,7 +2,7 @@ namespace Smart.Resolver.Mocks;
 
 using Smart.Resolver.Attributes;
 
-public class HasPropertyObject
+public sealed class HasPropertyObject
 {
     [Inject]
     public SimpleObject? Injected { get; set; }

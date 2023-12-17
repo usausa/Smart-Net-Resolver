@@ -3,9 +3,7 @@ namespace Smart.Resolver;
 using Smart.Collections.Generic;
 using Smart.Resolver.Mocks;
 
-using Xunit;
-
-public class ProviderTest
+public sealed class ProviderTest
 {
     [Fact]
     public void ObjectCreatedByConstantProvider()
@@ -134,7 +132,7 @@ public class ProviderTest
         Assert.Equal(1, obj.Arguments);
     }
 
-    public class MultiConstructorObject
+    public sealed class MultiConstructorObject
     {
         public int Arguments { get; }
 
@@ -157,7 +155,7 @@ public class ProviderTest
     }
 
 #pragma warning disable CA1819
-    public class ArrayInjectedObject
+    public sealed class ArrayInjectedObject
     {
         public SimpleObject[] Objects { get; }
 
@@ -168,7 +166,7 @@ public class ProviderTest
     }
 #pragma warning restore CA1819
 
-    public class EnumerableInjectedObject
+    public sealed class EnumerableInjectedObject
     {
         public IEnumerable<SimpleObject> Objects { get; }
 
@@ -178,7 +176,7 @@ public class ProviderTest
         }
     }
 
-    public class CollectionInjectedObject
+    public sealed class CollectionInjectedObject
     {
         public ICollection<SimpleObject> Objects { get; }
 
@@ -188,7 +186,7 @@ public class ProviderTest
         }
     }
 
-    public class ListInjectedObject
+    public sealed class ListInjectedObject
     {
         public IList<SimpleObject> Objects { get; }
 

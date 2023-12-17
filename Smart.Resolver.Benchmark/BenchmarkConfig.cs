@@ -8,7 +8,7 @@ using BenchmarkDotNet.Exporters;
 using BenchmarkDotNet.Exporters.Csv;
 using BenchmarkDotNet.Jobs;
 
-public class BenchmarkConfig : ManualConfig
+public sealed class BenchmarkConfig : ManualConfig
 {
     public BenchmarkConfig()
     {

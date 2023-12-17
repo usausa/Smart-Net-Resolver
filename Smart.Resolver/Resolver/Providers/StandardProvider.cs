@@ -30,7 +30,6 @@ public sealed class StandardProvider : IProvider
         builder = components.Get<IFactoryBuilder>();
     }
 
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1062:ValidateArgumentsOfPublicMethods", Justification = "Ignore")]
     public Func<IResolver, object> CreateFactory(IKernel kernel, Binding binding)
     {
         var constructors = CreateConstructorMetadata();

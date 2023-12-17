@@ -1,6 +1,6 @@
 namespace Smart.Resolver.Benchmark.Classes;
 
-public class Controller
+public sealed class Controller
 {
     public ITransientService1 TransientService1 { get; }
 

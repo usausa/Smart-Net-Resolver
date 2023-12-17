@@ -5,7 +5,7 @@ using Example.WebApplication.Models;
 using Smart.Data;
 using Smart.Data.Mapper;
 
-public class CharacterService
+public sealed class CharacterService
 {
     private IDbProvider Provider { get; }
 

@@ -6,7 +6,7 @@ using Example.WebApplication.Services;
 using Microsoft.AspNetCore.Mvc;
 
 [Route("api/[controller]")]
-public class ItemController : Controller
+public sealed class ItemController : Controller
 {
     private MasterService MasterService { get; }
 

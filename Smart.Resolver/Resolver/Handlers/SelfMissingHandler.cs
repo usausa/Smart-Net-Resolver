@@ -18,7 +18,6 @@ public sealed class SelfMissingHandler : IMissingHandler
         this.ignoreTypes = new HashSet<Type>(ignoreTypes);
     }
 
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1062:ValidateArgumentsOfPublicMethods", Justification = "Ignore")]
     public IEnumerable<Binding> Handle(ComponentContainer components, BindingTable table, Type type)
     {
         if (type.IsInterface || type.IsAbstract || type.IsValueType || type.ContainsGenericParameters ||

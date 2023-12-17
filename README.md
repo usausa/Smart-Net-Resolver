@@ -24,11 +24,11 @@ public interface IService
 {
 }
 
-public class Service : IService
+public sealed class Service : IService
 {
 }
 
-public class Controller
+public sealed class Controller
 {
     private IService Service { get; }
 
@@ -149,11 +149,11 @@ Prepared by standard.
 Naming constraint for lookup binding.
 
 ```csharp
-public class Child
+public sealed class Child
 {
 }
 
-public class Parent
+public sealed class Parent
 {
     pulbic Child Child { get; }
 
@@ -184,7 +184,7 @@ Debug.Assert(parent.Child != bar);
 Mark of property injection target or select constructor.
 
 ```csharp
-public class HasPropertyObject
+public sealed class HasPropertyObject
 {
     [Inject]
     public Target Target { get; set; }
@@ -196,7 +196,7 @@ public class HasPropertyObject
 Set constructor argument or property value.
 
 ```csharp
-public class Sceduler
+public sealed class Sceduler
 {
     public Sceduler(ITimer timer, int timeout)
     {
@@ -283,7 +283,7 @@ public static class Program
 ```
 
 ```csharp
-public class Startup
+public sealed class Startup
 {
 ...
     public void ConfigureServices(IServiceCollection services)
@@ -393,7 +393,7 @@ public sealed class HasMetadataAttribute : ConstraintAttribute
 }
 
 // Usage
-public class Parent
+public sealed class Parent
 {
     pulbic Child Child { get; }
 

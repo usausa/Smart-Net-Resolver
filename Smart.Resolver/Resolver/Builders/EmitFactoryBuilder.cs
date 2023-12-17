@@ -11,7 +11,6 @@ public sealed class EmitFactoryBuilder : IFactoryBuilder
 
     private static readonly HolderBuilder DefaultHolderBuilder = new();
 
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1062:ValidateArgumentsOfPublicMethods", Justification = "Ignore")]
     public Func<IResolver, object> CreateFactory(ConstructorInfo ci, Func<IResolver, object?>[] factories, Action<IResolver, object>[] actions)
     {
         var holder = DefaultHolderBuilder.CreateHolder(factories, actions);
@@ -82,7 +81,6 @@ public sealed class EmitFactoryBuilder : IFactoryBuilder
         return (Func<IResolver, object>)dynamicMethod.CreateDelegate(funcType, holder);
     }
 
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1062:ValidateArgumentsOfPublicMethods", Justification = "Ignore")]
     public Func<IResolver, object> CreateArrayFactory(Type type, Func<IResolver, object>[] factories)
     {
         var holder = DefaultHolderBuilder.CreateHolder(factories, EmptyActions);

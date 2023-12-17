@@ -6,7 +6,7 @@ using Smart.Resolver.Helpers;
 using Smart.Resolver.Providers;
 using Smart.Resolver.Scopes;
 
-public class ArrayMissingHandler : IMissingHandler
+public sealed class ArrayMissingHandler : IMissingHandler
 {
     private readonly HashSet<Type> ignoreElementTypes;
 
@@ -20,8 +20,6 @@ public class ArrayMissingHandler : IMissingHandler
         this.ignoreElementTypes = new HashSet<Type>(ignoreElementTypes);
     }
 
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1062:ValidateArgumentsOfPublicMethods", Justification = "Ignore")]
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Reliability", "CA2000:DisposeObjectsBeforeLosingScope", Justification = "Factory")]
     public IEnumerable<Binding> Handle(ComponentContainer components, BindingTable table, Type type)
     {
         var elementType = TypeHelper.GetEnumerableElementType(type);
@@ -39,6 +37,7 @@ public class ArrayMissingHandler : IMissingHandler
 
         // hack for singleton
         var useSingleton = bindings.Length > 0 && bindings.All(static b => b.Scope is SingletonScope);
+#pragma warning disable CA2000
         return new[]
         {
             new Binding(
@@ -49,5 +48,6 @@ public class ArrayMissingHandler : IMissingHandler
                 null,
                 null)
         };
+#pragma warning restore CA2000
     }
 }

@@ -4,9 +4,7 @@ using Smart.ComponentModel;
 using Smart.Resolver.Mocks;
 using Smart.Resolver.Scopes;
 
-using Xunit;
-
-public class ScopeTest
+public sealed class ScopeTest
 {
     [Fact]
     public void ObjectInTransientScopeAreNotSame()

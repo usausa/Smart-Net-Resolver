@@ -8,7 +8,7 @@ using Smart.Resolver.Parameters;
 using Smart.Resolver.Providers;
 using Smart.Resolver.Scopes;
 
-public class BindingBuilder<T> : IBindingFactory, IBindingToInNamedWithSyntax<T>
+public sealed class BindingBuilder<T> : IBindingFactory, IBindingToInNamedWithSyntax<T>
 {
     private readonly Type targetType;
 
@@ -162,11 +162,6 @@ public class BindingBuilder<T> : IBindingFactory, IBindingToInNamedWithSyntax<T>
     // ------------------------------------------------------------
 
     Binding IBindingFactory.CreateBinding(ComponentContainer components)
-    {
-        return CreateBinding(components);
-    }
-
-    protected virtual Binding CreateBinding(ComponentContainer components)
     {
         return new(
             targetType,

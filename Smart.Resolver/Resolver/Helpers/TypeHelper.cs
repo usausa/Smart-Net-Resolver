@@ -8,7 +8,6 @@ public static class TypeHelper
 
     private static readonly Type ListType = typeof(IList<>);
 
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1062:ValidateArgumentsOfPublicMethods", Justification = "Ignore")]
     public static Type? GetEnumerableElementType(Type type)
     {
         // Array

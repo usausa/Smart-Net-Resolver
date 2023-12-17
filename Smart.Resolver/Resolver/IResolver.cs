@@ -4,7 +4,7 @@ using System.Diagnostics.CodeAnalysis;
 
 using Smart.Resolver.Constraints;
 
-[System.Diagnostics.CodeAnalysis.SuppressMessage("Naming", "CA1716:IdentifiersShouldNotMatchKeywords", Justification = "Ignore")]
+#pragma warning disable CA1716
 public interface IResolver : IServiceProvider, IDisposable
 {
     // CanGet
@@ -51,3 +51,4 @@ public interface IResolver : IServiceProvider, IDisposable
 
     void Inject(object instance);
 }
+#pragma warning restore CA1716

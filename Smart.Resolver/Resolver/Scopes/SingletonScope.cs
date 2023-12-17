@@ -9,7 +9,6 @@ public sealed class SingletonScope : IScope, IDisposable
 
     private Func<IResolver, object>? objectFactory;
 
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1062:ValidateArgumentsOfPublicMethods", Justification = "Ignore")]
     public SingletonScope(ComponentContainer components)
     {
         components.Get<DisposableStorage>().Add(this);
@@ -25,7 +24,6 @@ public sealed class SingletonScope : IScope, IDisposable
         return new SingletonScope(components);
     }
 
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1062:ValidateArgumentsOfPublicMethods", Justification = "Ignore")]
     public Func<IResolver, object> Create(Func<object> factory)
     {
         if (objectFactory is null)

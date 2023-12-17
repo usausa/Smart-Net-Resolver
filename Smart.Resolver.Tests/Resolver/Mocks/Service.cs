@@ -1,6 +1,6 @@
 namespace Smart.Resolver.Mocks;
 
-public class Service : IService
+public sealed class Service : IService
 {
     public bool Executed { get; private set; }
 
