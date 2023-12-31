@@ -2,12 +2,6 @@ namespace Smart.Resolver.Helpers;
 
 public static class TypeHelper
 {
-    private static readonly Type EnumerableType = typeof(IEnumerable<>);
-
-    private static readonly Type CollectionType = typeof(ICollection<>);
-
-    private static readonly Type ListType = typeof(IList<>);
-
     public static Type? GetEnumerableElementType(Type type)
     {
         // Array
@@ -20,7 +14,9 @@ public static class TypeHelper
         if (type.IsGenericType)
         {
             var genericType = type.GetGenericTypeDefinition();
-            if ((genericType == EnumerableType) || (genericType == CollectionType) || (genericType == ListType))
+            if ((genericType == typeof(IEnumerable<>)) ||
+                (genericType == typeof(ICollection<>)) ||
+                (genericType == typeof(IList<>)))
             {
                 return type.GenericTypeArguments[0];
             }

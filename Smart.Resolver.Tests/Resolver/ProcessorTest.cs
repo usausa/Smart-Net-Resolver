@@ -76,13 +76,11 @@ public sealed class ProcessorTest
 
     public sealed class CustomInitializeProcessor : IProcessor
     {
-        private static readonly Type CustomInitializableType = typeof(ICustomInitializable);
-
         public int Order => 1;
 
         public Action<IResolver, object>? CreateProcessor(Type type)
         {
-            if (!CustomInitializableType.IsAssignableFrom(type))
+            if (!typeof(ICustomInitializable).IsAssignableFrom(type))
             {
                 return null;
             }

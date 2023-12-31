@@ -2,8 +2,6 @@ namespace Smart.Resolver.Processors;
 
 public sealed class InitializeProcessor : IProcessor
 {
-    private static readonly Type InitializableType = typeof(IInitializable);
-
     public int Order { get; }
 
     public InitializeProcessor()
@@ -18,7 +16,7 @@ public sealed class InitializeProcessor : IProcessor
 
     public Action<IResolver, object>? CreateProcessor(Type type)
     {
-        if (!InitializableType.IsAssignableFrom(type))
+        if (!typeof(IInitializable).IsAssignableFrom(type))
         {
             return null;
         }

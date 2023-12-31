@@ -9,15 +9,13 @@ public sealed class InjectAttribute : Attribute
 
 public static class InjectAttributeExtensions
 {
-    private static readonly Type InjectType = typeof(InjectAttribute);
-
     public static bool IsInjectDefined(this ConstructorInfo ci)
     {
-        return ci.IsDefined(InjectType);
+        return ci.IsDefined(typeof(InjectAttribute));
     }
 
     public static bool IsInjectDefined(this PropertyInfo pi)
     {
-        return pi.IsDefined(InjectType);
+        return pi.IsDefined(typeof(InjectAttribute));
     }
 }
