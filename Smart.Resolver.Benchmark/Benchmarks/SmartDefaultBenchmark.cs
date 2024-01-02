@@ -8,7 +8,7 @@ using Smart.Resolver;
 using Smart.Resolver.Benchmark.Classes;
 
 [Config(typeof(BenchmarkConfig))]
-public sealed class SmartDefaultBenchmark
+public class SmartDefaultBenchmark
 {
     private SmartResolver resolver = default!;
 

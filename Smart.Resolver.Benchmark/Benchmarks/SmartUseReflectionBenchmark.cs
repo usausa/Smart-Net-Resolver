@@ -7,7 +7,7 @@ using Smart.Resolver;
 using Smart.Resolver.Benchmark.Classes;
 
 [Config(typeof(BenchmarkConfig))]
-public sealed class SmartUseReflectionBenchmark
+public class SmartUseReflectionBenchmark
 {
     private SmartResolver resolver = default!;
 
