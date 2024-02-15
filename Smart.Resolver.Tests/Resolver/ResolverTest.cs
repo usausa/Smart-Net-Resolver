@@ -153,7 +153,7 @@ public sealed class ResolverTest
         {
             if (!typeMap.TryGetValue(type, out _))
             {
-                return Enumerable.Empty<Binding>();
+                return [];
             }
 
             return new[]

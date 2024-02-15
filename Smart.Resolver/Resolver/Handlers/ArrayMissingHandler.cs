@@ -25,12 +25,12 @@ public sealed class ArrayMissingHandler : IMissingHandler
         var elementType = TypeHelper.GetEnumerableElementType(type);
         if (elementType is null)
         {
-            return Enumerable.Empty<Binding>();
+            return [];
         }
 
         if (ignoreElementTypes.Contains(elementType))
         {
-            return Enumerable.Empty<Binding>();
+            return [];
         }
 
         var bindings = table.FindBindings(elementType);

@@ -21,7 +21,7 @@ public sealed class AssignableMissingHandler : IMissingHandler
     {
         if ((targetTypes.Count > 0) && !targetTypes.Contains(type))
         {
-            return Enumerable.Empty<Binding>();
+            return [];
         }
 
         return table.EnumBindings().Where(x => type.IsAssignableFrom(x.Provider.TargetType));

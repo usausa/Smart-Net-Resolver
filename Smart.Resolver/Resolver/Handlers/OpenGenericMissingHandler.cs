@@ -22,7 +22,7 @@ public sealed class OpenGenericMissingHandler : IMissingHandler
     {
         if (!type.IsGenericType || ignoreTypes.Contains(type))
         {
-            return Enumerable.Empty<Binding>();
+            return [];
         }
 
         return table.FindBindings(type.GetGenericTypeDefinition())

@@ -115,7 +115,7 @@ public sealed class ScopeTest
     public sealed class CustomScope : IScope
     {
         private static readonly ThreadLocal<Dictionary<CustomScope, object>> Cache =
-            new(static () => new Dictionary<CustomScope, object>());
+            new(static () => []);
 
         public IScope Copy(ComponentContainer components)
         {

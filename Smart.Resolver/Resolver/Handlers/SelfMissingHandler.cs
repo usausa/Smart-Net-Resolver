@@ -23,7 +23,7 @@ public sealed class SelfMissingHandler : IMissingHandler
         if (type.IsInterface || type.IsAbstract || type.IsValueType || type.ContainsGenericParameters ||
             ignoreTypes.Contains(type))
         {
-            return Enumerable.Empty<Binding>();
+            return [];
         }
 
         return new[]
