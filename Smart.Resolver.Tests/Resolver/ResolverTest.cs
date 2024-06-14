@@ -156,10 +156,7 @@ public sealed class ResolverTest
                 return [];
             }
 
-            return new[]
-            {
-                new Binding(type, new StandardProvider(typeof(Service), components))
-            };
+            return [new Binding(type, new StandardProvider(typeof(Service), components))];
         }
     }
 }

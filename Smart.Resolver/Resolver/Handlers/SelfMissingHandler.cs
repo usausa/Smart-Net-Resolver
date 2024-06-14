@@ -9,7 +9,7 @@ public sealed class SelfMissingHandler : IMissingHandler
     private readonly HashSet<Type> ignoreTypes;
 
     public SelfMissingHandler()
-        : this(new[] { typeof(string), typeof(Delegate) })
+        : this([typeof(string), typeof(Delegate)])
     {
     }
 
@@ -26,9 +26,9 @@ public sealed class SelfMissingHandler : IMissingHandler
             return [];
         }
 
-        return new[]
-        {
+        return
+        [
             new Binding(type, new StandardProvider(type, components))
-        };
+        ];
     }
 }

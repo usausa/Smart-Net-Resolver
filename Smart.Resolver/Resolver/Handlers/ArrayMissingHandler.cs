@@ -38,8 +38,8 @@ public sealed class ArrayMissingHandler : IMissingHandler
         // hack for singleton
         var useSingleton = bindings.Length > 0 && bindings.All(static b => b.Scope is SingletonScope);
 #pragma warning disable CA2000
-        return new[]
-        {
+        return
+        [
             new Binding(
                 type,
                 new BindingArrayProvider(type, elementType, components, bindings),
@@ -47,7 +47,7 @@ public sealed class ArrayMissingHandler : IMissingHandler
                 null,
                 null,
                 null)
-        };
+        ];
 #pragma warning restore CA2000
     }
 }
