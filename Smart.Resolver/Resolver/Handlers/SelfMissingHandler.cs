@@ -15,7 +15,9 @@ public sealed class SelfMissingHandler : IMissingHandler
 
     public SelfMissingHandler(IEnumerable<Type> ignoreTypes)
     {
+#pragma warning disable IDE0055
         this.ignoreTypes = [..ignoreTypes];
+#pragma warning restore IDE0055
     }
 
     public IEnumerable<Binding> Handle(ComponentContainer components, BindingTable table, Type type)

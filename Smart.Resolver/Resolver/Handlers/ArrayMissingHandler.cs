@@ -17,7 +17,9 @@ public sealed class ArrayMissingHandler : IMissingHandler
 
     public ArrayMissingHandler(IEnumerable<Type> ignoreElementTypes)
     {
+#pragma warning disable IDE0055
         this.ignoreElementTypes = [..ignoreElementTypes];
+#pragma warning restore IDE0055
     }
 
     public IEnumerable<Binding> Handle(ComponentContainer components, BindingTable table, Type type)

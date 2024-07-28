@@ -14,7 +14,9 @@ public sealed class AssignableMissingHandler : IMissingHandler
 
     public AssignableMissingHandler(IEnumerable<Type> types)
     {
+#pragma warning disable IDE0055
         targetTypes = [..types];
+#pragma warning restore IDE0055
     }
 
     public IEnumerable<Binding> Handle(ComponentContainer components, BindingTable table, Type type)
