@@ -17,7 +17,7 @@ public sealed class ArrayMissingHandler : IMissingHandler
 
     public ArrayMissingHandler(IEnumerable<Type> ignoreElementTypes)
     {
-        this.ignoreElementTypes = new HashSet<Type>(ignoreElementTypes);
+        this.ignoreElementTypes = [..ignoreElementTypes];
     }
 
     public IEnumerable<Binding> Handle(ComponentContainer components, BindingTable table, Type type)

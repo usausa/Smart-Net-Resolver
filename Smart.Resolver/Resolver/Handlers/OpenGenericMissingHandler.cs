@@ -15,7 +15,7 @@ public sealed class OpenGenericMissingHandler : IMissingHandler
 
     public OpenGenericMissingHandler(IEnumerable<Type> ignoreTypes)
     {
-        this.ignoreTypes = new HashSet<Type>(ignoreTypes);
+        this.ignoreTypes = [..ignoreTypes];
     }
 
     public IEnumerable<Binding> Handle(ComponentContainer components, BindingTable table, Type type)

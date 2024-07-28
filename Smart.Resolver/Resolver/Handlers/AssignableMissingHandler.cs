@@ -14,7 +14,7 @@ public sealed class AssignableMissingHandler : IMissingHandler
 
     public AssignableMissingHandler(IEnumerable<Type> types)
     {
-        targetTypes = new HashSet<Type>(types);
+        targetTypes = [..types];
     }
 
     public IEnumerable<Binding> Handle(ComponentContainer components, BindingTable table, Type type)
