@@ -36,6 +36,6 @@ public sealed class SmartServiceProviderFactory : IServiceProviderFactory<Resolv
 
     public IServiceProvider CreateServiceProvider(ResolverConfig containerBuilder)
     {
-        return containerBuilder.ToResolver();
+        return new SmartServiceProvider(containerBuilder.ToResolver());
     }
 }

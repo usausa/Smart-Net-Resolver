@@ -10,14 +10,12 @@ public static class Program
 {
     public static void Main()
     {
-        // TODO 4. BindSingleton等の拡張
-        // TODO 4. IConstraint変更
-        // TODO 3. Populate
+        // TODO 1. IConstraint変更
+        // TODO 2. Populate
+        // TODO 3. BindSingleton等の拡張
+        var services = new ServiceCollection();
         //services.AddKeyedSingleton<IService, Service1>(nameof(Service1));
         //services.AddKeyedSingleton<IService, Service2>(nameof(Service2));
-        // TODO 1. test basic
-        var services = new ServiceCollection();
-        //services.AddSingleton<IService, Service1>();
 
         var serviceProviderFactory = new SmartServiceProviderFactory();
         var config = serviceProviderFactory.CreateBuilder(services);
@@ -27,22 +25,11 @@ public static class Program
 
         var resolver = serviceProviderFactory.CreateServiceProvider(config);
 
-        var service = resolver.GetRequiredService<IService>();
+        var service1 = resolver.GetRequiredKeyedService<IService>(nameof(Service1));
+        var service2 = resolver.GetRequiredKeyedService<IService>(nameof(Service2));
 
-        service.Execute();
-
-        // TODO 2. Implement keyed
-
-        //var provider = services.BuildServiceProvider();
-
-        //var service1 = provider.GetRequiredKeyedService<IService>(nameof(Service1));
-        //var service2 = provider.GetRequiredKeyedService<IService>(nameof(Service2));
-
-        //service1.Execute();
-        //service2.Execute();
-
-        // IKeyedServiceProviderを実装しているか
-        // public sealed class ServiceProvider : IServiceProvider, IKeyedServiceProvider, IDisposable, IAsyncDisposable
+        service1.Execute();
+        service2.Execute();
     }
 }
 
