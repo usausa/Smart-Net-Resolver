@@ -4,7 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 internal sealed class SmartServiceScope : IServiceScope
 {
-    private readonly IResolver childResolver;
+    private readonly SmartChildResolver childResolver;
 
     public IServiceProvider ServiceProvider { get; }
 
@@ -17,20 +17,5 @@ internal sealed class SmartServiceScope : IServiceScope
     public void Dispose()
     {
         childResolver.Dispose();
-    }
-
-    private sealed class SmartChildServiceProvider : IServiceProvider
-    {
-        private readonly IResolver resolver;
-
-        public SmartChildServiceProvider(IResolver resolver)
-        {
-            this.resolver = resolver;
-        }
-
-        public object GetService(Type serviceType)
-        {
-            return resolver.Get(serviceType);
-        }
     }
 }

@@ -7,7 +7,6 @@ using Smart.Collections.Concurrent;
 using Smart.ComponentModel;
 using Smart.Linq;
 using Smart.Resolver.Bindings;
-using Smart.Resolver.Components;
 using Smart.Resolver.Constraints;
 using Smart.Resolver.Handlers;
 using Smart.Resolver.Injectors;
@@ -15,24 +14,6 @@ using Smart.Resolver.Providers;
 
 public sealed class SmartResolver : IResolver, IKernel
 {
-#pragma warning disable SA1401
-    private sealed class FactoryEntry
-    {
-        public readonly bool CanGet;
-
-        public readonly Func<IResolver, object> Single;
-
-        public readonly Func<IResolver, object>[] Multiple;
-
-        public FactoryEntry(bool canGet, Func<IResolver, object> single, Func<IResolver, object>[] multiple)
-        {
-            CanGet = canGet;
-            Single = single;
-            Multiple = multiple;
-        }
-    }
-#pragma warning restore SA1401
-
     private readonly ThreadsafeTypeHashArrayMap<FactoryEntry> factoriesCache = new(128);
 
     private readonly TypeConstraintHashArray<FactoryEntry> factoriesCacheWithConstraint = new();
@@ -202,7 +183,7 @@ public sealed class SmartResolver : IResolver, IKernel
     // ------------------------------------------------------------
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private FactoryEntry FindFactoryEntry(Type type)
+    internal FactoryEntry FindFactoryEntry(Type type)
     {
         if (!factoriesCache.TryGetValue(type, out var entry))
         {
@@ -213,7 +194,7 @@ public sealed class SmartResolver : IResolver, IKernel
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private FactoryEntry FindFactoryEntry(Type type, IConstraint constraint)
+    internal FactoryEntry FindFactoryEntry(Type type, IConstraint constraint)
     {
         if (!factoriesCacheWithConstraint.TryGetValue(type, constraint, out var entry))
         {
@@ -224,7 +205,7 @@ public sealed class SmartResolver : IResolver, IKernel
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private FactoryEntry FindFactoryEntry(IResolver resolver, Type type)
+    internal FactoryEntry FindFactoryEntry(IResolver resolver, Type type)
     {
         if (!factoriesCache.TryGetValue(type, out var entry))
         {
@@ -235,7 +216,7 @@ public sealed class SmartResolver : IResolver, IKernel
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private FactoryEntry FindFactoryEntry(IResolver resolver, Type type, IConstraint constraint)
+    internal FactoryEntry FindFactoryEntry(IResolver resolver, Type type, IConstraint constraint)
     {
         if (!factoriesCacheWithConstraint.TryGetValue(type, constraint, out var entry))
         {
@@ -285,7 +266,7 @@ public sealed class SmartResolver : IResolver, IKernel
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private Action<IResolver, object>[] FindInjectors(Type type)
+    internal Action<IResolver, object>[] FindInjectors(Type type)
     {
         if (!injectorsCache.TryGetValue(type, out var actions))
         {
@@ -309,136 +290,7 @@ public sealed class SmartResolver : IResolver, IKernel
     // ------------------------------------------------------------
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public IResolver CreateChildResolver() => new ChildResolver(this);
-
-    private sealed class ChildResolver : IResolver, IContainer
-    {
-        [ThreadStatic]
-        private static ContainerSlot? pool;
-
-        private readonly SmartResolver resolver;
-
-        public ContainerSlot Slot { get; }
-
-        public ChildResolver(SmartResolver resolver)
-        {
-            this.resolver = resolver;
-
-            if (pool is null)
-            {
-                Slot = new ContainerSlot();
-            }
-            else
-            {
-                Slot = pool;
-                pool = null;
-            }
-        }
-
-        public void Dispose()
-        {
-            Slot.Clear();
-            pool ??= Slot;
-        }
-
-        // CanGet
-
-        public bool CanGet<T>() => resolver.FindFactoryEntry(this, typeof(T)).CanGet;
-
-        public bool CanGet<T>(IConstraint constraint) => resolver.FindFactoryEntry(this, typeof(T), constraint).CanGet;
-
-        public bool CanGet(Type type) => resolver.FindFactoryEntry(this, type).CanGet;
-
-        public bool CanGet(Type type, IConstraint constraint) => resolver.FindFactoryEntry(this, type, constraint).CanGet;
-
-        // TryGet
-
-        public bool TryGet<T>([MaybeNullWhen(false)] out T obj)
-        {
-            var entry = resolver.FindFactoryEntry(this, typeof(T));
-            if (entry.CanGet)
-            {
-                obj = (T)entry.Single(this);
-                return true;
-            }
-
-            obj = default;
-            return false;
-        }
-
-        public bool TryGet<T>(IConstraint constraint, [MaybeNullWhen(false)] out T obj)
-        {
-            var entry = resolver.FindFactoryEntry(this, typeof(T), constraint);
-            if (entry.CanGet)
-            {
-                obj = (T)entry.Single(this);
-                return true;
-            }
-
-            obj = default;
-            return false;
-        }
-
-        public bool TryGet(Type type, [MaybeNullWhen(false)] out object obj)
-        {
-            var entry = resolver.FindFactoryEntry(this, type);
-            if (entry.CanGet)
-            {
-                obj = entry.Single(this);
-                return true;
-            }
-
-            obj = default;
-            return false;
-        }
-
-        public bool TryGet(Type type, IConstraint constraint, [MaybeNullWhen(false)] out object obj)
-        {
-            var entry = resolver.FindFactoryEntry(this, type, constraint);
-            if (entry.CanGet)
-            {
-                obj = entry.Single(this);
-                return true;
-            }
-
-            obj = default;
-            return false;
-        }
-
-        // Get
-
-        public T Get<T>() => (T)resolver.FindFactoryEntry(this, typeof(T)).Single(this);
-
-        public T Get<T>(IConstraint constraint) => (T)resolver.FindFactoryEntry(this, typeof(T), constraint).Single(this);
-
-        public object Get(Type type) => resolver.FindFactoryEntry(this, type).Single(this);
-
-        public object Get(Type type, IConstraint constraint) => resolver.FindFactoryEntry(this, type, constraint).Single(this);
-
-        // GetAll
-
-        public IEnumerable<T> GetAll<T>() => resolver.FindFactoryEntry(this, typeof(T)).Multiple.Select(x => (T)x(this));
-
-        public IEnumerable<T> GetAll<T>(IConstraint constraint) => resolver.FindFactoryEntry(this, typeof(T), constraint).Multiple.Select(x => (T)x(this));
-
-        public IEnumerable<object> GetAll(Type type) => resolver.FindFactoryEntry(this, type).Multiple.Select(x => x(this));
-
-        public IEnumerable<object> GetAll(Type type, IConstraint constraint) => resolver.FindFactoryEntry(this, type, constraint).Multiple.Select(x => x(this));
-
-        public void Inject(object instance)
-        {
-            var actions = resolver.FindInjectors(instance.GetType());
-            for (var i = 0; i < actions.Length; i++)
-            {
-                actions[i](this, instance);
-            }
-        }
-
-        // IServiceProvider
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public object GetService(Type serviceType) => Get(serviceType);
-    }
+    public SmartChildResolver CreateChildResolver() => new(this);
 
     // ------------------------------------------------------------
     // Diagnostics
