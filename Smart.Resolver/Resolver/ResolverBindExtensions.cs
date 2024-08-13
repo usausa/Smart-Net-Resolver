@@ -4,6 +4,8 @@ using Smart.Resolver.Configs;
 
 public static class ResolverBindExtensions
 {
+    // TODO add keyed
+
     // ------------------------------------------------------------
     // Transient
     // ------------------------------------------------------------

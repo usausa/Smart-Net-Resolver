@@ -10,17 +10,31 @@ public static class ResolverConfigExtensions
     {
         foreach (var descriptor in descriptors)
         {
+            // TODO fix
+            var name = (string)descriptor.ServiceKey!;
             if (descriptor.KeyedImplementationType is not null)
             {
-                // TODO
+                config
+                    .Bind(descriptor.ServiceType)
+                    .To(descriptor.KeyedImplementationType)
+                    .ConfigureScope(descriptor.Lifetime)
+                    .Named(name);
             }
             else if (descriptor.KeyedImplementationFactory is not null)
             {
-                // TODO
+                config
+                    .Bind(descriptor.ServiceType)
+                    .ToMethod(kernel => descriptor.KeyedImplementationFactory(kernel.Get<IServiceProvider>(), name))
+                    .ConfigureScope(descriptor.Lifetime)
+                    .Named(name);
             }
             else if (descriptor.KeyedImplementationInstance is not null)
             {
-                // TODO
+                config
+                    .Bind(descriptor.ServiceType)
+                    .ToConstant(descriptor.KeyedImplementationInstance)
+                    .ConfigureScope(descriptor.Lifetime)
+                    .Named(name);
             }
             else if (descriptor.ImplementationType is not null)
             {
@@ -46,19 +60,13 @@ public static class ResolverConfigExtensions
         }
     }
 
-    private static void ConfigureScope(this IBindingInSyntax syntax, ServiceLifetime lifetime)
+    private static IBindingNamedWithSyntax ConfigureScope(this IBindingInSyntax syntax, ServiceLifetime lifetime)
     {
-        switch (lifetime)
+        return lifetime switch
         {
-            case ServiceLifetime.Singleton:
-                syntax.InSingletonScope();
-                break;
-            case ServiceLifetime.Transient:
-                syntax.InTransientScope();
-                break;
-            case ServiceLifetime.Scoped:
-                syntax.InContainerScope();
-                break;
-        }
+            ServiceLifetime.Transient => syntax.InTransientScope(),
+            ServiceLifetime.Scoped => syntax.InContainerScope(),
+            _ => syntax.InSingletonScope()
+        };
     }
 }
