@@ -10,7 +10,19 @@ public static class ResolverConfigExtensions
     {
         foreach (var descriptor in descriptors)
         {
-            if (descriptor.ImplementationType is not null)
+            if (descriptor.KeyedImplementationType is not null)
+            {
+                // TODO
+            }
+            else if (descriptor.KeyedImplementationFactory is not null)
+            {
+                // TODO
+            }
+            else if (descriptor.KeyedImplementationInstance is not null)
+            {
+                // TODO
+            }
+            else if (descriptor.ImplementationType is not null)
             {
                 config
                     .Bind(descriptor.ServiceType)
