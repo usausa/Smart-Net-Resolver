@@ -4,11 +4,12 @@ using System.Diagnostics.CodeAnalysis;
 
 using Smart.ComponentModel;
 using Smart.Resolver.Bindings;
+using Smart.Resolver.Constraints;
 using Smart.Resolver.Parameters;
 using Smart.Resolver.Providers;
 using Smart.Resolver.Scopes;
 
-public sealed class BindingBuilder<T> : IBindingFactory, IBindingToInNamedWithSyntax<T>
+public sealed class BindingBuilder<T> : IBindingFactory, IBindingToInConstraintWithSyntax<T>
 {
     private readonly Type targetType;
 
@@ -16,9 +17,9 @@ public sealed class BindingBuilder<T> : IBindingFactory, IBindingToInNamedWithSy
 
     private Func<ComponentContainer, IScope>? scopeFactory;
 
-    private string? metadataName;
-
     private Dictionary<string, object?>? metadataValues;
+
+    private IConstraint? bindingConstraint;
 
     private Dictionary<string, Func<ComponentContainer, IParameter>>? constructorArgumentFactories;
 
@@ -33,29 +34,29 @@ public sealed class BindingBuilder<T> : IBindingFactory, IBindingToInNamedWithSy
     // To
     // ------------------------------------------------------------
 
-    public IBindingInNamedWithSyntax ToProvider(Func<ComponentContainer, IProvider> factory)
+    public IBindingInConstraintWithSyntax ToProvider(Func<ComponentContainer, IProvider> factory)
     {
         providerFactory = factory;
         return this;
     }
 
-    public IBindingInNamedWithSyntax ToSelf()
+    public IBindingInConstraintWithSyntax ToSelf()
     {
         return ToProvider(c => new StandardProvider(targetType, c));
     }
 
-    public IBindingInNamedWithSyntax To<TImplementation>()
+    public IBindingInConstraintWithSyntax To<TImplementation>()
         where TImplementation : T
     {
         return ToProvider(static c => new StandardProvider(typeof(TImplementation), c));
     }
 
-    public IBindingInNamedWithSyntax To(Type implementationType)
+    public IBindingInConstraintWithSyntax To(Type implementationType)
     {
         return ToProvider(c => new StandardProvider(implementationType, c));
     }
 
-    public IBindingInNamedWithSyntax ToMethod(Func<IResolver, T> factory)
+    public IBindingInConstraintWithSyntax ToMethod(Func<IResolver, T> factory)
     {
         var genericType = typeof(T);
         var providerType = genericType.IsValueType
@@ -65,7 +66,7 @@ public sealed class BindingBuilder<T> : IBindingFactory, IBindingToInNamedWithSy
         return ToProvider(_ => provider);
     }
 
-    public IBindingInNamedWithSyntax ToConstant([DisallowNull] T value)
+    public IBindingInConstraintWithSyntax ToConstant([DisallowNull] T value)
     {
         return ToProvider(_ => new ConstantProvider<T>(value));
     }
@@ -74,37 +75,37 @@ public sealed class BindingBuilder<T> : IBindingFactory, IBindingToInNamedWithSy
     // In
     // ------------------------------------------------------------
 
-    public IBindingNamedWithSyntax InScope(Func<ComponentContainer, IScope> factory)
+    public IBindingConstraintWithSyntax InScope(Func<ComponentContainer, IScope> factory)
     {
         scopeFactory = factory;
         return this;
     }
 
-    public IBindingNamedWithSyntax InTransientScope()
+    public IBindingConstraintWithSyntax InTransientScope()
     {
         scopeFactory = null;
         return this;
     }
 
-    public IBindingNamedWithSyntax InSingletonScope()
+    public IBindingConstraintWithSyntax InSingletonScope()
     {
         InScope(static c => new SingletonScope(c));
         return this;
     }
 
-    public IBindingNamedWithSyntax InContainerScope()
+    public IBindingConstraintWithSyntax InContainerScope()
     {
         InScope(static _ => new ContainerScope());
         return this;
     }
 
     // ------------------------------------------------------------
-    // Named
+    // Constraint
     // ------------------------------------------------------------
 
-    public IBindingWithSyntax Named(string name)
+    public IBindingWithSyntax Constraint(IConstraint constraint)
     {
-        metadataName = name;
+        bindingConstraint = constraint;
         return this;
     }
 
@@ -167,7 +168,8 @@ public sealed class BindingBuilder<T> : IBindingFactory, IBindingToInNamedWithSy
             targetType,
             providerFactory.Invoke(components),
             scopeFactory?.Invoke(components),
-            new BindingMetadata(metadataName, metadataValues),
+            bindingConstraint,
+            new BindingMetadata(metadataValues),
             new ParameterMap(constructorArgumentFactories?.ToDictionary(static kv => kv.Key, kv => kv.Value(components))),
             new ParameterMap(propertyValueFactories?.ToDictionary(static kv => kv.Key, kv => kv.Value(components))));
     }

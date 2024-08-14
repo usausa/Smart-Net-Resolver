@@ -10,23 +10,21 @@ public static class ResolverConfigExtensions
     {
         foreach (var descriptor in descriptors)
         {
-            // TODO fix
-            var name = (string)descriptor.ServiceKey!;
             if (descriptor.KeyedImplementationType is not null)
             {
                 config
                     .Bind(descriptor.ServiceType)
                     .To(descriptor.KeyedImplementationType)
                     .ConfigureScope(descriptor.Lifetime)
-                    .Named(name);
+                    .Named(descriptor.ServiceKey!);
             }
             else if (descriptor.KeyedImplementationFactory is not null)
             {
                 config
                     .Bind(descriptor.ServiceType)
-                    .ToMethod(kernel => descriptor.KeyedImplementationFactory(kernel.Get<IServiceProvider>(), name))
+                    .ToMethod(kernel => descriptor.KeyedImplementationFactory(kernel.Get<IServiceProvider>(), descriptor.ServiceKey))
                     .ConfigureScope(descriptor.Lifetime)
-                    .Named(name);
+                    .Named(descriptor.ServiceKey!);
             }
             else if (descriptor.KeyedImplementationInstance is not null)
             {
@@ -34,7 +32,7 @@ public static class ResolverConfigExtensions
                     .Bind(descriptor.ServiceType)
                     .ToConstant(descriptor.KeyedImplementationInstance)
                     .ConfigureScope(descriptor.Lifetime)
-                    .Named(name);
+                    .Named(descriptor.ServiceKey!);
             }
             else if (descriptor.ImplementationType is not null)
             {
@@ -60,7 +58,7 @@ public static class ResolverConfigExtensions
         }
     }
 
-    private static IBindingNamedWithSyntax ConfigureScope(this IBindingInSyntax syntax, ServiceLifetime lifetime)
+    private static IBindingConstraintWithSyntax ConfigureScope(this IBindingInSyntax syntax, ServiceLifetime lifetime)
     {
         return lifetime switch
         {

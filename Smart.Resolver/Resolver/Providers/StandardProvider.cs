@@ -12,6 +12,7 @@ using Smart.Resolver.Helpers;
 using Smart.Resolver.Injectors;
 using Smart.Resolver.Processors;
 
+// TODO constraint
 public sealed class StandardProvider : IProvider
 {
     private readonly IInjector[] injectors;
@@ -150,7 +151,8 @@ public sealed class StandardProvider : IProvider
         {
             Parameter = pi;
             ElementType = TypeHelper.GetEnumerableElementType(pi.ParameterType);
-            Constraint = ConstraintBuilder.Build(pi.GetCustomAttributes<ConstraintAttribute>());
+            // TODO Constraint+
+            Constraint = null; //ConstraintBuilder.Build(pi.GetCustomAttributes<ConstraintAttribute>());
         }
     }
 }

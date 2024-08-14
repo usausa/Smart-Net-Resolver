@@ -29,9 +29,24 @@ public sealed class SingletonScope : IScope, IDisposable
         if (objectFactory is null)
         {
             value = factory();
-            objectFactory = _ => value;
+            var holder = new SingletonHolder(factory);
+            objectFactory = holder.Resolve;
         }
 
         return objectFactory;
+    }
+
+    private sealed class SingletonHolder
+    {
+        private readonly object value;
+
+        public SingletonHolder(object value)
+        {
+            this.value = value;
+        }
+
+#pragma warning disable IDE0060
+        public object Resolve(IResolver resolver) => value;
+#pragma warning restore IDE0060
     }
 }

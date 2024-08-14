@@ -52,7 +52,7 @@ public sealed class ConstraintTest
 
         using var resolver = config.ToResolver();
         var obj = resolver.Get<ChainConstraintInjectedObject>();
-        var barHoge = resolver.Get(typeof(SimpleObject), new ChainConstraint(new NameConstraint("bar"), new HasMetadataConstraint("hoge")));
+        var barHoge = resolver.Get(typeof(SimpleObject), new ChainConstraint(new KeyConstraint("bar"), new HasMetadataConstraint("hoge")));
 
         Assert.Same(obj.SimpleObject, barHoge);
     }
@@ -92,7 +92,7 @@ public sealed class ConstraintTest
     {
         public SimpleObject SimpleObject { get; }
 
-        public NameConstraintInjectedObject([Named("foo")] SimpleObject simpleObject)
+        public NameConstraintInjectedObject([Keyed("foo")] SimpleObject simpleObject)
         {
             SimpleObject = simpleObject;
         }
@@ -112,7 +112,7 @@ public sealed class ConstraintTest
     {
         public SimpleObject SimpleObject { get; }
 
-        public ChainConstraintInjectedObject([Named("bar")][HasMetadata("hoge")] SimpleObject simpleObject)
+        public ChainConstraintInjectedObject([Keyed("bar")][HasMetadata("hoge")] SimpleObject simpleObject)
         {
             SimpleObject = simpleObject;
         }

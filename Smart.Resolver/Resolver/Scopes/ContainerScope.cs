@@ -19,7 +19,23 @@ public sealed class ContainerScope : IScope
 
     public Func<IResolver, object> Create(Func<object> factory)
     {
-        return resolver =>
+        var adaptor = new ContainerAdaptor(index, factory);
+        return adaptor.Resolve;
+    }
+
+    private sealed class ContainerAdaptor
+    {
+        private readonly int index;
+
+        private readonly Func<object> factory;
+
+        public ContainerAdaptor(int index, Func<object> factory)
+        {
+            this.index = index;
+            this.factory = factory;
+        }
+
+        public object Resolve(IResolver resolver)
         {
             if (resolver is IContainer container)
             {
@@ -27,6 +43,6 @@ public sealed class ContainerScope : IScope
             }
 
             return factory();
-        };
+        }
     }
 }

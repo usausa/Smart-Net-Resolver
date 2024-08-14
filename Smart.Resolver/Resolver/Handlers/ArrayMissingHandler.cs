@@ -48,6 +48,7 @@ public sealed class ArrayMissingHandler : IMissingHandler
                 useSingleton ? new SingletonScope(components) : null,
                 null,
                 null,
+                null,
                 null)
         ];
 #pragma warning restore CA2000

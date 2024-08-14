@@ -7,7 +7,6 @@ using Smart.Collections.Concurrent;
 using Smart.ComponentModel;
 using Smart.Linq;
 using Smart.Resolver.Bindings;
-using Smart.Resolver.Constraints;
 using Smart.Resolver.Handlers;
 using Smart.Resolver.Injectors;
 using Smart.Resolver.Providers;
@@ -48,9 +47,9 @@ public sealed class SmartResolver : IResolver, IKernel
             tableEntries[group.Key] = group.ToArray();
         }
 
-        tableEntries[typeof(IResolver)] = [new Binding(typeof(IResolver), new ConstantProvider<IResolver>(this), null, null, null, null)];
-        tableEntries[typeof(SmartResolver)] = [new Binding(typeof(SmartResolver), new ConstantProvider<SmartResolver>(this), null, null, null, null)];
-        tableEntries[typeof(IServiceProvider)] = [new Binding(typeof(IServiceProvider), new ConstantProvider<IServiceProvider>(this), null, null, null, null)];
+        tableEntries[typeof(IResolver)] = [new Binding(typeof(IResolver), new ConstantProvider<IResolver>(this), null, null, null, null, null)];
+        tableEntries[typeof(SmartResolver)] = [new Binding(typeof(SmartResolver), new ConstantProvider<SmartResolver>(this), null, null, null, null, null)];
+        tableEntries[typeof(IServiceProvider)] = [new Binding(typeof(IServiceProvider), new ConstantProvider<IServiceProvider>(this), null, null, null, null, null)];
 
         table = new BindingTable(tableEntries);
     }
@@ -76,16 +75,16 @@ public sealed class SmartResolver : IResolver, IKernel
     // ObjectFactory
     // ------------------------------------------------------------
 
-    bool IKernel.TryResolveFactory(Type type, IConstraint? constraint, out Func<IResolver, object> factory)
+    bool IKernel.TryResolveFactory(Type type, object? parameter, out Func<IResolver, object> factory)
     {
-        var entry = constraint is null ? FindFactoryEntry(type) : FindFactoryEntry(type, constraint);
+        var entry = parameter is null ? FindFactoryEntry(type) : FindFactoryEntry(type, parameter);
         factory = entry.Single;
         return entry.CanGet;
     }
 
-    bool IKernel.TryResolveFactories(Type type, IConstraint? constraint, out Func<IResolver, object>[] factories)
+    bool IKernel.TryResolveFactories(Type type, object? parameter, out Func<IResolver, object>[] factories)
     {
-        var entry = constraint is null ? FindFactoryEntry(type) : FindFactoryEntry(type, constraint);
+        var entry = parameter is null ? FindFactoryEntry(type) : FindFactoryEntry(type, parameter);
         factories = entry.Multiple;
         return entry.CanGet;
     }
@@ -96,16 +95,22 @@ public sealed class SmartResolver : IResolver, IKernel
 
     // CanGet
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool CanGet<T>() => FindFactoryEntry(typeof(T)).CanGet;
 
-    public bool CanGet<T>(IConstraint constraint) => FindFactoryEntry(typeof(T), constraint).CanGet;
+    // TODO constraint cache ?、重複しないかの確認、stringとSBで？
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public bool CanGet<T>(object? parameter) => FindFactoryEntry(typeof(T), parameter).CanGet;
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool CanGet(Type type) => FindFactoryEntry(type).CanGet;
 
-    public bool CanGet(Type type, IConstraint constraint) => FindFactoryEntry(type, constraint).CanGet;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public bool CanGet(Type type, object? parameter) => FindFactoryEntry(type, parameter).CanGet;
 
     // TryGet
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool TryGet<T>([MaybeNullWhen(false)] out T obj)
     {
         var entry = FindFactoryEntry(typeof(T));
@@ -119,9 +124,10 @@ public sealed class SmartResolver : IResolver, IKernel
         return false;
     }
 
-    public bool TryGet<T>(IConstraint constraint, [MaybeNullWhen(false)] out T obj)
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public bool TryGet<T>(object? parameter, [MaybeNullWhen(false)] out T obj)
     {
-        var entry = FindFactoryEntry(typeof(T), constraint);
+        var entry = FindFactoryEntry(typeof(T), parameter);
         if (entry.CanGet)
         {
             obj = (T)entry.Single(this);
@@ -132,6 +138,7 @@ public sealed class SmartResolver : IResolver, IKernel
         return false;
     }
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool TryGet(Type type, [MaybeNullWhen(false)] out object obj)
     {
         var entry = FindFactoryEntry(type);
@@ -145,9 +152,10 @@ public sealed class SmartResolver : IResolver, IKernel
         return false;
     }
 
-    public bool TryGet(Type type, IConstraint constraint, [MaybeNullWhen(false)] out object obj)
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public bool TryGet(Type type, object? parameter, [MaybeNullWhen(false)] out object obj)
     {
-        var entry = FindFactoryEntry(type, constraint);
+        var entry = FindFactoryEntry(type, parameter);
         if (entry.CanGet)
         {
             obj = entry.Single(this);
@@ -160,23 +168,30 @@ public sealed class SmartResolver : IResolver, IKernel
 
     // Get
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public T Get<T>() => (T)FindFactoryEntry(typeof(T)).Single(this);
 
-    public T Get<T>(IConstraint constraint) => (T)FindFactoryEntry(typeof(T), constraint).Single(this);
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public T Get<T>(object? parameter) => (T)FindFactoryEntry(typeof(T), parameter).Single(this);
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public object Get(Type type) => FindFactoryEntry(type).Single(this);
 
-    public object Get(Type type, IConstraint constraint) => FindFactoryEntry(type, constraint).Single(this);
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public object Get(Type type, object? parameter) => FindFactoryEntry(type, parameter).Single(this);
 
     // GetAll
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public IEnumerable<T> GetAll<T>() => FindFactoryEntry(typeof(T)).Multiple.Select(x => (T)x(this));
 
-    public IEnumerable<T> GetAll<T>(IConstraint constraint) => FindFactoryEntry(typeof(T), constraint).Multiple.Select(x => (T)x(this));
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public IEnumerable<T> GetAll<T>(object? parameter) => FindFactoryEntry(typeof(T), parameter).Multiple.Select(x => (T)x(this));
 
     public IEnumerable<object> GetAll(Type type) => FindFactoryEntry(type).Multiple.Select(x => x(this));
 
-    public IEnumerable<object> GetAll(Type type, IConstraint constraint) => FindFactoryEntry(type, constraint).Multiple.Select(x => x(this));
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public IEnumerable<object> GetAll(Type type, object? parameter) => FindFactoryEntry(type, parameter).Multiple.Select(x => x(this));
 
     // ------------------------------------------------------------
     // Binding
@@ -187,18 +202,18 @@ public sealed class SmartResolver : IResolver, IKernel
     {
         if (!factoriesCache.TryGetValue(type, out var entry))
         {
-            entry = factoriesCache.AddIfNotExist(type, t => CreateFactoryEntry(t, null, this));
+            entry = factoriesCache.AddIfNotExist(type, t => CreateFactoryEntry(t, false, null, this));
         }
 
         return entry;
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    internal FactoryEntry FindFactoryEntry(Type type, IConstraint constraint)
+    internal FactoryEntry FindFactoryEntry(Type type, object? parameter)
     {
-        if (!factoriesCacheWithConstraint.TryGetValue(type, constraint, out var entry))
+        if (!factoriesCacheWithConstraint.TryGetValue(type, parameter, out var entry))
         {
-            entry = factoriesCacheWithConstraint.AddIfNotExist(type, constraint, (t, c) => CreateFactoryEntry(t, c, this));
+            entry = factoriesCacheWithConstraint.AddIfNotExist(type, parameter, (t, p) => CreateFactoryEntry(t, true, p, this));
         }
 
         return entry;
@@ -209,33 +224,31 @@ public sealed class SmartResolver : IResolver, IKernel
     {
         if (!factoriesCache.TryGetValue(type, out var entry))
         {
-            entry = factoriesCache.AddIfNotExist(type, t => CreateFactoryEntry(t, null, resolver));
+            entry = factoriesCache.AddIfNotExist(type, t => CreateFactoryEntry(t, false, null, resolver));
         }
 
         return entry;
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    internal FactoryEntry FindFactoryEntry(IResolver resolver, Type type, IConstraint constraint)
+    internal FactoryEntry FindFactoryEntry(IResolver resolver, Type type, object? parameter)
     {
-        if (!factoriesCacheWithConstraint.TryGetValue(type, constraint, out var entry))
+        if (!factoriesCacheWithConstraint.TryGetValue(type, parameter, out var entry))
         {
-            entry = factoriesCacheWithConstraint.AddIfNotExist(type, constraint, (t, c) => CreateFactoryEntry(t, c, resolver));
+            entry = factoriesCacheWithConstraint.AddIfNotExist(type, parameter, (t, p) => CreateFactoryEntry(t, true, p, resolver));
         }
 
         return entry;
     }
 
-    private FactoryEntry CreateFactoryEntry(Type type, IConstraint? constraint, IResolver resolver)
+    private FactoryEntry CreateFactoryEntry(Type type, bool useConstraint, object? parameter, IResolver resolver)
     {
         lock (sync)
         {
             var bindings = table.Get(type) ?? handlers.SelectMany(h => h.Handle(Components, table, type));
-            if (constraint is not null)
-            {
-                bindings = bindings.Where(b => constraint.Match(b.Metadata));
-            }
-
+            bindings = useConstraint
+                ? bindings.Where(b => b.Constraint is not null && b.Constraint.Match(b.Metadata, parameter))
+                : bindings.Where(b => b.Constraint is null);
             var factories = bindings
                 .Select(b =>
                 {
@@ -254,6 +267,8 @@ public sealed class SmartResolver : IResolver, IKernel
     // ------------------------------------------------------------
     // Inject
     // ------------------------------------------------------------
+
+    // TODO Re Check Keyed
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void Inject(object instance)

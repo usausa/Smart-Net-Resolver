@@ -32,6 +32,7 @@ public sealed class OpenGenericMissingHandler : IMissingHandler
                 type,
                 new StandardProvider(b.Provider.TargetType.MakeGenericType(type.GenericTypeArguments), components),
                 b.Scope?.Copy(components),
+                b.Constraint,
                 b.Metadata,
                 b.ConstructorArguments,
                 b.PropertyValues));

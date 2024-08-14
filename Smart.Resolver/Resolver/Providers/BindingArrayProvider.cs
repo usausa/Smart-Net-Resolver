@@ -4,6 +4,7 @@ using Smart.ComponentModel;
 using Smart.Resolver.Bindings;
 using Smart.Resolver.Builders;
 
+// TODO constraint version ?
 internal sealed class BindingArrayProvider : IProvider
 {
     private readonly Type elementType;

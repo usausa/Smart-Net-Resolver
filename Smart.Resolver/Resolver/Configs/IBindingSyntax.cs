@@ -3,6 +3,7 @@ namespace Smart.Resolver.Configs;
 using System.Diagnostics.CodeAnalysis;
 
 using Smart.ComponentModel;
+using Smart.Resolver.Constraints;
 using Smart.Resolver.Parameters;
 using Smart.Resolver.Providers;
 using Smart.Resolver.Scopes;
@@ -10,35 +11,35 @@ using Smart.Resolver.Scopes;
 #pragma warning disable CA1716
 public interface IBindingToSyntax<in T>
 {
-    IBindingInNamedWithSyntax ToProvider(Func<ComponentContainer, IProvider> factory);
+    IBindingInConstraintWithSyntax ToProvider(Func<ComponentContainer, IProvider> factory);
 
-    IBindingInNamedWithSyntax ToSelf();
+    IBindingInConstraintWithSyntax ToSelf();
 
-    IBindingInNamedWithSyntax To<TImplementation>()
+    IBindingInConstraintWithSyntax To<TImplementation>()
         where TImplementation : T;
 
-    IBindingInNamedWithSyntax To(Type implementationType);
+    IBindingInConstraintWithSyntax To(Type implementationType);
 
-    IBindingInNamedWithSyntax ToMethod(Func<IResolver, T> factory);
+    IBindingInConstraintWithSyntax ToMethod(Func<IResolver, T> factory);
 
-    IBindingInNamedWithSyntax ToConstant([DisallowNull] T value);
+    IBindingInConstraintWithSyntax ToConstant([DisallowNull] T value);
 }
 #pragma warning restore CA1716
 
 public interface IBindingInSyntax
 {
-    IBindingNamedWithSyntax InScope(Func<ComponentContainer, IScope> factory);
+    IBindingConstraintWithSyntax InScope(Func<ComponentContainer, IScope> factory);
 
-    IBindingNamedWithSyntax InTransientScope();
+    IBindingConstraintWithSyntax InTransientScope();
 
-    IBindingNamedWithSyntax InSingletonScope();
+    IBindingConstraintWithSyntax InSingletonScope();
 
-    IBindingNamedWithSyntax InContainerScope();
+    IBindingConstraintWithSyntax InContainerScope();
 }
 
-public interface IBindingNamedSyntax
+public interface IBindingConstraintSyntax
 {
-    IBindingWithSyntax Named(string name);
+    IBindingWithSyntax Constraint(IConstraint constraint);
 }
 
 public interface IBindingWithSyntax
@@ -58,14 +59,14 @@ public interface IBindingWithSyntax
     IBindingWithSyntax WithPropertyValue(string name, Func<IResolver, object?> factory);
 }
 
-public interface IBindingToInNamedWithSyntax<in T> : IBindingToSyntax<T>, IBindingInNamedWithSyntax
+public interface IBindingConstraintWithSyntax : IBindingConstraintSyntax, IBindingWithSyntax
 {
 }
 
-public interface IBindingInNamedWithSyntax : IBindingInSyntax, IBindingNamedWithSyntax
+public interface IBindingInConstraintWithSyntax : IBindingInSyntax, IBindingConstraintWithSyntax
 {
 }
 
-public interface IBindingNamedWithSyntax : IBindingNamedSyntax, IBindingWithSyntax
+public interface IBindingToInConstraintWithSyntax<in T> : IBindingToSyntax<T>, IBindingInConstraintWithSyntax
 {
 }

@@ -6,7 +6,6 @@ using System.Runtime.CompilerServices;
 using Smart.Reflection;
 using Smart.Resolver.Attributes;
 using Smart.Resolver.Bindings;
-using Smart.Resolver.Constraints;
 using Smart.Resolver.Parameters;
 
 public sealed class PropertyInjector : IInjector
@@ -43,11 +42,12 @@ public sealed class PropertyInjector : IInjector
             return new InjectEntry(CreateParameterProvider(parameter), setter);
         }
 
+        // TODO key and compatibility
         var propertyType = delegateFactory.GetExtendedPropertyType(pi);
-        var constraint = ConstraintBuilder.Build(pi.GetCustomAttributes<ConstraintAttribute>());
-        if (constraint is not null)
+        var keyed = pi.GetCustomAttribute<KeyedAttribute>();
+        if (keyed is not null)
         {
-            return new InjectEntry(CreateConstraintProvider(propertyType, constraint), setter);
+            return new InjectEntry(CreateConstraintProvider(propertyType, keyed), setter);
         }
 
         return new InjectEntry(CreateProvider(propertyType), setter);
@@ -58,9 +58,9 @@ public sealed class PropertyInjector : IInjector
         return parameter.Resolve;
     }
 
-    private static Func<IResolver, object> CreateConstraintProvider(Type propertyType, IConstraint constraint)
+    private static Func<IResolver, object> CreateConstraintProvider(Type propertyType, object? parameter)
     {
-        return resolver => resolver.Get(propertyType, constraint);
+        return resolver => resolver.Get(propertyType, parameter);
     }
 
     private static Func<IResolver, object> CreateProvider(Type propertyType)

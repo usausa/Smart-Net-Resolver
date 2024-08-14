@@ -2,8 +2,6 @@ namespace Smart.Resolver;
 
 using System.Diagnostics.CodeAnalysis;
 
-using Smart.Resolver.Constraints;
-
 #pragma warning disable CA1716
 public interface IResolver : IServiceProvider, IDisposable
 {
@@ -11,41 +9,41 @@ public interface IResolver : IServiceProvider, IDisposable
 
     bool CanGet<T>();
 
-    bool CanGet<T>(IConstraint constraint);
+    bool CanGet<T>(object? parameter);
 
     bool CanGet(Type type);
 
-    bool CanGet(Type type, IConstraint constraint);
+    bool CanGet(Type type, object? parameter);
 
     // TryGet
 
     bool TryGet<T>([MaybeNullWhen(false)] out T obj);
 
-    bool TryGet<T>(IConstraint constraint, [MaybeNullWhen(false)] out T obj);
+    bool TryGet<T>(object? parameter, [MaybeNullWhen(false)] out T obj);
 
     bool TryGet(Type type, [MaybeNullWhen(false)] out object obj);
 
-    bool TryGet(Type type, IConstraint constraint, [MaybeNullWhen(false)] out object obj);
+    bool TryGet(Type type, object? parameter, [MaybeNullWhen(false)] out object obj);
 
     // Get
 
     T Get<T>();
 
-    T Get<T>(IConstraint constraint);
+    T Get<T>(object? parameter);
 
     object Get(Type type);
 
-    object Get(Type type, IConstraint constraint);
+    object Get(Type type, object? parameter);
 
     // GetAll
 
     IEnumerable<T> GetAll<T>();
 
-    IEnumerable<T> GetAll<T>(IConstraint constraint);
+    IEnumerable<T> GetAll<T>(object? parameter);
 
     IEnumerable<object> GetAll(Type type);
 
-    IEnumerable<object> GetAll(Type type, IConstraint constraint);
+    IEnumerable<object> GetAll(Type type, object? parameter);
 
     // Inject
 

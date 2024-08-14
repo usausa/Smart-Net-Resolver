@@ -2,6 +2,7 @@ namespace Smart.Resolver.Providers;
 
 using Smart.Resolver.Bindings;
 
+// TODO constraint version ?
 public sealed class CallbackProvider<T> : IProvider
     where T : class
 {

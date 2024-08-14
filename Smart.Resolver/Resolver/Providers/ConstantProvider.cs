@@ -4,6 +4,7 @@ using System.Diagnostics.CodeAnalysis;
 
 using Smart.Resolver.Bindings;
 
+// TODO constraint version ?
 public sealed class ConstantProvider<T> : IProvider
 {
     private readonly object value;

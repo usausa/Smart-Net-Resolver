@@ -4,8 +4,6 @@ using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
 
-using Smart.Resolver.Constraints;
-
 [DebuggerDisplay("{" + nameof(Diagnostics) + "}")]
 internal sealed class TypeConstraintHashArray<T>
 {
@@ -37,9 +35,9 @@ internal sealed class TypeConstraintHashArray<T>
     //--------------------------------------------------------------------------------
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private static int CalculateHash(Type type, IConstraint constraint)
+    private static int CalculateHash(Type type, object? parameter)
     {
-        return type.GetHashCode() ^ constraint.GetHashCode();
+        return type.GetHashCode() ^ (parameter?.GetHashCode() ?? 0);
     }
 
     private static int CalculateDepth(Node node)
@@ -133,7 +131,7 @@ internal sealed class TypeConstraintHashArray<T>
                 var next = node.Next;
                 node.Next = null;
 
-                UpdateLink(ref nodes[CalculateHash(node.Type, node.Constraint) & (nodes.Length - 1)], node);
+                UpdateLink(ref nodes[CalculateHash(node.Type, node.Parameter) & (nodes.Length - 1)], node);
 
                 node = next;
             }
@@ -155,7 +153,7 @@ internal sealed class TypeConstraintHashArray<T>
 
             RelocateNodes(newNodes, nodes);
 
-            UpdateLink(ref newNodes[CalculateHash(node.Type, node.Constraint) & (newNodes.Length - 1)], node);
+            UpdateLink(ref newNodes[CalculateHash(node.Type, node.Parameter) & (newNodes.Length - 1)], node);
 
             Interlocked.MemoryBarrier();
 
@@ -167,7 +165,7 @@ internal sealed class TypeConstraintHashArray<T>
         {
             Interlocked.MemoryBarrier();
 
-            var hash = CalculateHash(node.Type, node.Constraint);
+            var hash = CalculateHash(node.Type, node.Parameter);
 
             UpdateLink(ref nodes[hash & (nodes.Length - 1)], node);
 
@@ -206,13 +204,13 @@ internal sealed class TypeConstraintHashArray<T>
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public bool TryGetValue(Type type, IConstraint constraint, [MaybeNullWhen(false)] out T value)
+    public bool TryGetValue(Type type, object? parameter, [MaybeNullWhen(false)] out T value)
     {
         var temp = nodes;
-        var node = temp[CalculateHash(type, constraint) & (temp.Length - 1)];
+        var node = temp[CalculateHash(type, parameter) & (temp.Length - 1)];
         do
         {
-            if ((node.Type == type) && node.Constraint.Equals(constraint))
+            if ((node.Type == type) && (node.Parameter == parameter))
             {
                 value = node.Value;
                 return true;
@@ -225,25 +223,25 @@ internal sealed class TypeConstraintHashArray<T>
         return false;
     }
 
-    public T AddIfNotExist(Type type, IConstraint constraint, Func<Type, IConstraint, T> valueFactory)
+    public T AddIfNotExist(Type type, object? parameter, Func<Type, object?, T> valueFactory)
     {
         lock (sync)
         {
             // Double-checked locking
-            if (TryGetValue(type, constraint, out var currentValue))
+            if (TryGetValue(type, parameter, out var currentValue))
             {
                 return currentValue;
             }
 
-            var value = valueFactory(type, constraint);
+            var value = valueFactory(type, parameter);
 
             // Check if added by recursive
-            if (TryGetValue(type, constraint, out currentValue))
+            if (TryGetValue(type, parameter, out currentValue))
             {
                 return currentValue;
             }
 
-            AddNode(new Node(type, constraint, value));
+            AddNode(new Node(type, parameter, value));
 
             return value;
         }
@@ -264,16 +262,16 @@ internal sealed class TypeConstraintHashArray<T>
     {
         public readonly Type Type;
 
-        public readonly IConstraint Constraint;
+        public readonly object? Parameter;
 
         public readonly T Value;
 
         public Node? Next;
 
-        public Node(Type type, IConstraint constraint, T value)
+        public Node(Type type, object? parameter, T value)
         {
             Type = type;
-            Constraint = constraint;
+            Parameter = parameter;
             Value = value;
         }
     }

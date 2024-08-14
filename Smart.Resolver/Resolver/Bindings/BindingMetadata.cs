@@ -4,18 +4,15 @@ using Smart.Collections.Generic;
 
 public sealed class BindingMetadata
 {
-    private readonly IDictionary<string, object?>? values;
-
-    public string? Name { get; }
+    private readonly Dictionary<string, object?>? values;
 
     public BindingMetadata()
-        : this(null, null)
+        : this(null)
     {
     }
 
-    public BindingMetadata(string? name, IDictionary<string, object?>? values)
+    public BindingMetadata(Dictionary<string, object?>? values)
     {
-        Name = name;
         this.values = values;
     }
 

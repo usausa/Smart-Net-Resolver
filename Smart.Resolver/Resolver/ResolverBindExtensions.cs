@@ -23,7 +23,7 @@ public static class ResolverBindExtensions
         this ResolverConfig config,
         Type serviceType,
         Type implementationType,
-        Action<IBindingNamedWithSyntax> option)
+        Action<IBindingConstraintWithSyntax> option)
     {
         var syntax = config.Bind(serviceType).To(implementationType);
         option(syntax);
@@ -42,7 +42,7 @@ public static class ResolverBindExtensions
     public static ResolverConfig BindTransient(
         this ResolverConfig config,
         Type serviceType,
-        Action<IBindingNamedWithSyntax> option)
+        Action<IBindingConstraintWithSyntax> option)
     {
         var syntax = config.Bind(serviceType).ToSelf();
         option(syntax);
@@ -60,7 +60,7 @@ public static class ResolverBindExtensions
 
     public static ResolverConfig BindTransient<TService, TImplementation>(
         this ResolverConfig config,
-        Action<IBindingNamedWithSyntax> option)
+        Action<IBindingConstraintWithSyntax> option)
         where TService : class
         where TImplementation : class, TService
     {
@@ -79,7 +79,7 @@ public static class ResolverBindExtensions
 
     public static ResolverConfig BindTransient<TService>(
         this ResolverConfig config,
-        Action<IBindingNamedWithSyntax> option)
+        Action<IBindingConstraintWithSyntax> option)
         where TService : class
     {
         var syntax = config.Bind<TService>().ToSelf();
@@ -101,7 +101,7 @@ public static class ResolverBindExtensions
         this ResolverConfig config,
         Type serviceType,
         object value,
-        Action<IBindingNamedWithSyntax> option)
+        Action<IBindingConstraintWithSyntax> option)
     {
         var syntax = config.Bind(serviceType).ToConstant(value);
         option(syntax);
@@ -121,7 +121,7 @@ public static class ResolverBindExtensions
     public static ResolverConfig BindTransient<TService>(
         this ResolverConfig config,
         TService value,
-        Action<IBindingNamedWithSyntax> option)
+        Action<IBindingConstraintWithSyntax> option)
         where TService : class
     {
         var syntax = config.Bind<TService>().ToConstant(value);
@@ -143,7 +143,7 @@ public static class ResolverBindExtensions
     public static ResolverConfig BindTransient<TService, TImplementation>(
         this ResolverConfig config,
         TImplementation value,
-        Action<IBindingNamedWithSyntax> option)
+        Action<IBindingConstraintWithSyntax> option)
         where TService : class
         where TImplementation : class, TService
     {
@@ -166,7 +166,7 @@ public static class ResolverBindExtensions
         this ResolverConfig config,
         Type serviceType,
         Func<IResolver, object> factory,
-        Action<IBindingNamedWithSyntax> option)
+        Action<IBindingConstraintWithSyntax> option)
     {
         var syntax = config.Bind(serviceType).ToMethod(factory);
         option(syntax);
@@ -186,7 +186,7 @@ public static class ResolverBindExtensions
     public static ResolverConfig BindTransient<TService>(
         this ResolverConfig config,
         Func<IResolver, TService> factory,
-        Action<IBindingNamedWithSyntax> option)
+        Action<IBindingConstraintWithSyntax> option)
         where TService : class
     {
         var syntax = config.Bind<TService>().ToMethod(factory);
@@ -208,7 +208,7 @@ public static class ResolverBindExtensions
     public static ResolverConfig BindTransient<TService, TImplementation>(
         this ResolverConfig config,
         Func<IResolver, TImplementation> factory,
-        Action<IBindingNamedWithSyntax> option)
+        Action<IBindingConstraintWithSyntax> option)
         where TService : class
         where TImplementation : class, TService
     {
@@ -235,7 +235,7 @@ public static class ResolverBindExtensions
         this ResolverConfig config,
         Type serviceType,
         Type implementationType,
-        Action<IBindingNamedWithSyntax> option)
+        Action<IBindingConstraintWithSyntax> option)
     {
         var syntax = config.Bind(serviceType).To(implementationType);
         option(syntax);
@@ -254,7 +254,7 @@ public static class ResolverBindExtensions
     public static ResolverConfig BindSingleton(
         this ResolverConfig config,
         Type serviceType,
-        Action<IBindingNamedWithSyntax> option)
+        Action<IBindingConstraintWithSyntax> option)
     {
         var syntax = config.Bind(serviceType).ToSelf();
         option(syntax);
@@ -272,7 +272,7 @@ public static class ResolverBindExtensions
 
     public static ResolverConfig BindSingleton<TService, TImplementation>(
         this ResolverConfig config,
-        Action<IBindingNamedWithSyntax> option)
+        Action<IBindingConstraintWithSyntax> option)
         where TService : class
         where TImplementation : class, TService
     {
@@ -291,7 +291,7 @@ public static class ResolverBindExtensions
 
     public static ResolverConfig BindSingleton<TService>(
         this ResolverConfig config,
-        Action<IBindingNamedWithSyntax> option)
+        Action<IBindingConstraintWithSyntax> option)
         where TService : class
     {
         var syntax = config.Bind<TService>().ToSelf();
@@ -313,7 +313,7 @@ public static class ResolverBindExtensions
         this ResolverConfig config,
         Type serviceType,
         object value,
-        Action<IBindingNamedWithSyntax> option)
+        Action<IBindingConstraintWithSyntax> option)
     {
         var syntax = config.Bind(serviceType).ToConstant(value);
         option(syntax);
@@ -333,7 +333,7 @@ public static class ResolverBindExtensions
     public static ResolverConfig BindSingleton<TService>(
         this ResolverConfig config,
         TService value,
-        Action<IBindingNamedWithSyntax> option)
+        Action<IBindingConstraintWithSyntax> option)
         where TService : class
     {
         var syntax = config.Bind<TService>().ToConstant(value);
@@ -355,7 +355,7 @@ public static class ResolverBindExtensions
     public static ResolverConfig BindSingleton<TService, TImplementation>(
         this ResolverConfig config,
         TImplementation value,
-        Action<IBindingNamedWithSyntax> option)
+        Action<IBindingConstraintWithSyntax> option)
         where TService : class
         where TImplementation : class, TService
     {
@@ -378,7 +378,7 @@ public static class ResolverBindExtensions
         this ResolverConfig config,
         Type serviceType,
         Func<IResolver, object> factory,
-        Action<IBindingNamedWithSyntax> option)
+        Action<IBindingConstraintWithSyntax> option)
     {
         var syntax = config.Bind(serviceType).ToMethod(factory);
         option(syntax);
@@ -398,7 +398,7 @@ public static class ResolverBindExtensions
     public static ResolverConfig BindSingleton<TService>(
         this ResolverConfig config,
         Func<IResolver, TService> factory,
-        Action<IBindingNamedWithSyntax> option)
+        Action<IBindingConstraintWithSyntax> option)
         where TService : class
     {
         var syntax = config.Bind<TService>().ToMethod(factory);
@@ -420,7 +420,7 @@ public static class ResolverBindExtensions
     public static ResolverConfig BindSingleton<TService, TImplementation>(
         this ResolverConfig config,
         Func<IResolver, TImplementation> factory,
-        Action<IBindingNamedWithSyntax> option)
+        Action<IBindingConstraintWithSyntax> option)
         where TService : class
         where TImplementation : class, TService
     {
@@ -447,7 +447,7 @@ public static class ResolverBindExtensions
         this ResolverConfig config,
         Type serviceType,
         Type implementationType,
-        Action<IBindingNamedWithSyntax> option)
+        Action<IBindingConstraintWithSyntax> option)
     {
         var syntax = config.Bind(serviceType).To(implementationType);
         option(syntax);
@@ -466,7 +466,7 @@ public static class ResolverBindExtensions
     public static ResolverConfig BindContainer(
         this ResolverConfig config,
         Type serviceType,
-        Action<IBindingNamedWithSyntax> option)
+        Action<IBindingConstraintWithSyntax> option)
     {
         var syntax = config.Bind(serviceType).ToSelf();
         option(syntax);
@@ -484,7 +484,7 @@ public static class ResolverBindExtensions
 
     public static ResolverConfig BindContainer<TService, TImplementation>(
         this ResolverConfig config,
-        Action<IBindingNamedWithSyntax> option)
+        Action<IBindingConstraintWithSyntax> option)
         where TService : class
         where TImplementation : class, TService
     {
@@ -503,7 +503,7 @@ public static class ResolverBindExtensions
 
     public static ResolverConfig BindContainer<TService>(
         this ResolverConfig config,
-        Action<IBindingNamedWithSyntax> option)
+        Action<IBindingConstraintWithSyntax> option)
         where TService : class
     {
         var syntax = config.Bind<TService>().ToSelf();
@@ -525,7 +525,7 @@ public static class ResolverBindExtensions
         this ResolverConfig config,
         Type serviceType,
         object value,
-        Action<IBindingNamedWithSyntax> option)
+        Action<IBindingConstraintWithSyntax> option)
     {
         var syntax = config.Bind(serviceType).ToConstant(value);
         option(syntax);
@@ -545,7 +545,7 @@ public static class ResolverBindExtensions
     public static ResolverConfig BindContainer<TService>(
         this ResolverConfig config,
         TService value,
-        Action<IBindingNamedWithSyntax> option)
+        Action<IBindingConstraintWithSyntax> option)
         where TService : class
     {
         var syntax = config.Bind<TService>().ToConstant(value);
@@ -567,7 +567,7 @@ public static class ResolverBindExtensions
     public static ResolverConfig BindContainer<TService, TImplementation>(
         this ResolverConfig config,
         TImplementation value,
-        Action<IBindingNamedWithSyntax> option)
+        Action<IBindingConstraintWithSyntax> option)
         where TService : class
         where TImplementation : class, TService
     {
@@ -590,7 +590,7 @@ public static class ResolverBindExtensions
         this ResolverConfig config,
         Type serviceType,
         Func<IResolver, object> factory,
-        Action<IBindingNamedWithSyntax> option)
+        Action<IBindingConstraintWithSyntax> option)
     {
         var syntax = config.Bind(serviceType).ToMethod(factory);
         option(syntax);
@@ -610,7 +610,7 @@ public static class ResolverBindExtensions
     public static ResolverConfig BindContainer<TService>(
         this ResolverConfig config,
         Func<IResolver, TService> factory,
-        Action<IBindingNamedWithSyntax> option)
+        Action<IBindingConstraintWithSyntax> option)
         where TService : class
     {
         var syntax = config.Bind<TService>().ToMethod(factory);
@@ -632,7 +632,7 @@ public static class ResolverBindExtensions
     public static ResolverConfig BindContainer<TService, TImplementation>(
         this ResolverConfig config,
         Func<IResolver, TImplementation> factory,
-        Action<IBindingNamedWithSyntax> option)
+        Action<IBindingConstraintWithSyntax> option)
         where TService : class
         where TImplementation : class, TService
     {
