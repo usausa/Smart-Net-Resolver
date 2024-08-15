@@ -37,6 +37,7 @@ public sealed class ArrayMissingHandler : IMissingHandler
 
         var bindings = table.FindBindings(elementType);
 
+        // TODO constraint version ?
         // hack for singleton
         var useSingleton = bindings.Length > 0 && bindings.All(static b => b.Scope is SingletonScope);
 #pragma warning disable CA2000

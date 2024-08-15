@@ -4,9 +4,9 @@ using Smart.Resolver.Bindings;
 
 public sealed class KeyConstraint : IConstraint
 {
-    private readonly object key;
+    private readonly object? key;
 
-    public KeyConstraint(object key)
+    public KeyConstraint(object? key)
     {
         this.key = key;
     }

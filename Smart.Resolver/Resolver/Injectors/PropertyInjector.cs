@@ -44,7 +44,7 @@ public sealed class PropertyInjector : IInjector
 
         // TODO key and compatibility
         var propertyType = delegateFactory.GetExtendedPropertyType(pi);
-        var keyed = pi.GetCustomAttribute<KeyedAttribute>();
+        var keyed = pi.GetCustomAttribute<ResolveByAttribute>();
         if (keyed is not null)
         {
             return new InjectEntry(CreateConstraintProvider(propertyType, keyed), setter);

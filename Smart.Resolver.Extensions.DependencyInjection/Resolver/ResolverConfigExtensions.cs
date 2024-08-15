@@ -16,7 +16,7 @@ public static class ResolverConfigExtensions
                     .Bind(descriptor.ServiceType)
                     .To(descriptor.KeyedImplementationType)
                     .ConfigureScope(descriptor.Lifetime)
-                    .Named(descriptor.ServiceKey!);
+                    .Keyed(descriptor.ServiceKey!);
             }
             else if (descriptor.KeyedImplementationFactory is not null)
             {
@@ -24,7 +24,7 @@ public static class ResolverConfigExtensions
                     .Bind(descriptor.ServiceType)
                     .ToMethod(kernel => descriptor.KeyedImplementationFactory(kernel.Get<IServiceProvider>(), descriptor.ServiceKey))
                     .ConfigureScope(descriptor.Lifetime)
-                    .Named(descriptor.ServiceKey!);
+                    .Keyed(descriptor.ServiceKey!);
             }
             else if (descriptor.KeyedImplementationInstance is not null)
             {
@@ -32,7 +32,7 @@ public static class ResolverConfigExtensions
                     .Bind(descriptor.ServiceType)
                     .ToConstant(descriptor.KeyedImplementationInstance)
                     .ConfigureScope(descriptor.Lifetime)
-                    .Named(descriptor.ServiceKey!);
+                    .Keyed(descriptor.ServiceKey!);
             }
             else if (descriptor.ImplementationType is not null)
             {

@@ -142,8 +142,8 @@ public sealed class StandardResolverTest
     public void ObjectIsAllResolvedWhenMultiBinding()
     {
         var config = new ResolverConfig();
-        config.Bind<SimpleObject>().ToSelf().InSingletonScope().Named("foo");
-        config.Bind<SimpleObject>().ToSelf().InSingletonScope().Named("bar");
+        config.Bind<SimpleObject>().ToSelf().InSingletonScope().Keyed("foo");
+        config.Bind<SimpleObject>().ToSelf().InSingletonScope().Keyed("bar");
 
         using var resolver = config.ToResolver();
         var objects = resolver.GetAll<SimpleObject>();

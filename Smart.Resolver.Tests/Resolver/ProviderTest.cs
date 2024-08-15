@@ -37,8 +37,8 @@ public sealed class ProviderTest
     public void ObjectArrayCreatedByStandardProvider()
     {
         var config = new ResolverConfig();
-        config.Bind<SimpleObject>().ToSelf().InSingletonScope().Named("foo");
-        config.Bind<SimpleObject>().ToSelf().InSingletonScope().Named("bar");
+        config.Bind<SimpleObject>().ToSelf().InSingletonScope().Keyed("foo");
+        config.Bind<SimpleObject>().ToSelf().InSingletonScope().Keyed("bar");
         config.Bind<ArrayInjectedObject>().ToSelf();
 
         using var resolver = config.ToResolver();
@@ -56,8 +56,8 @@ public sealed class ProviderTest
     public void ObjectEnumerableCreatedByStandardProvider()
     {
         var config = new ResolverConfig();
-        config.Bind<SimpleObject>().ToSelf().InSingletonScope().Named("foo");
-        config.Bind<SimpleObject>().ToSelf().InSingletonScope().Named("bar");
+        config.Bind<SimpleObject>().ToSelf().InSingletonScope().Keyed("foo");
+        config.Bind<SimpleObject>().ToSelf().InSingletonScope().Keyed("bar");
         config.Bind<EnumerableInjectedObject>().ToSelf();
 
         using var resolver = config.ToResolver();
@@ -75,8 +75,8 @@ public sealed class ProviderTest
     public void ObjectCollectionCreatedByStandardProvider()
     {
         var config = new ResolverConfig();
-        config.Bind<SimpleObject>().ToSelf().InSingletonScope().Named("foo");
-        config.Bind<SimpleObject>().ToSelf().InSingletonScope().Named("bar");
+        config.Bind<SimpleObject>().ToSelf().InSingletonScope().Keyed("foo");
+        config.Bind<SimpleObject>().ToSelf().InSingletonScope().Keyed("bar");
         config.Bind<CollectionInjectedObject>().ToSelf();
 
         using var resolver = config.ToResolver();
@@ -94,8 +94,8 @@ public sealed class ProviderTest
     public void ObjectListCreatedByStandardProvider()
     {
         var config = new ResolverConfig();
-        config.Bind<SimpleObject>().ToSelf().InSingletonScope().Named("foo");
-        config.Bind<SimpleObject>().ToSelf().InSingletonScope().Named("bar");
+        config.Bind<SimpleObject>().ToSelf().InSingletonScope().Keyed("foo");
+        config.Bind<SimpleObject>().ToSelf().InSingletonScope().Keyed("bar");
         config.Bind<ListInjectedObject>().ToSelf();
 
         using var resolver = config.ToResolver();

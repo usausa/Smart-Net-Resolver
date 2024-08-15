@@ -33,11 +33,11 @@ builder.Host.ConfigureContainer<ResolverConfig>(config =>
     config
         .Bind<IDbProvider>()
         .ToConstant(new DelegateDbProvider(() => new SqliteConnection(connectionStringMaster)))
-        .Named("Master");
+        .Keyed("Master");
     config
         .Bind<IDbProvider>()
         .ToConstant(new DelegateDbProvider(() => new SqliteConnection(connectionStringCharacter)))
-        .Named("Character");
+        .Keyed("Character");
 
     config
         .Bind<MasterService>()

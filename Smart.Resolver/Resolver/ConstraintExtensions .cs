@@ -5,9 +5,9 @@ using Smart.Resolver.Constraints;
 
 public static class ConstraintExtensions
 {
-    public static IBindingWithSyntax Named(
+    public static IBindingWithSyntax Keyed(
         this IBindingConstraintSyntax syntax,
-        object key)
+        object? key)
     {
         return syntax.Constraint(new KeyConstraint(key));
     }

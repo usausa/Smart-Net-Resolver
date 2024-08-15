@@ -5,7 +5,6 @@ using System.Runtime.CompilerServices;
 
 using Smart.Resolver.Components;
 
-// TODO slot with constraint
 public sealed class SmartChildResolver : IResolver, IContainer
 {
     [ThreadStatic]

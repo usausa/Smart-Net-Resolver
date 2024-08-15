@@ -11,12 +11,12 @@ public sealed class ConstraintTest
     public void ObjectIsSelectedByNameConstraint()
     {
         var config = new ResolverConfig();
-        config.Bind<SimpleObject>().ToSelf().InSingletonScope().Named("foo");
-        config.Bind<SimpleObject>().ToSelf().InSingletonScope().Named("bar");
-        config.Bind<NameConstraintInjectedObject>().ToSelf();
+        config.Bind<SimpleObject>().ToSelf().InSingletonScope().Keyed("foo");
+        config.Bind<SimpleObject>().ToSelf().InSingletonScope().Keyed("bar");
+        config.Bind<KeyedConstraintInjectedObject>().ToSelf();
 
         using var resolver = config.ToResolver();
-        var obj = resolver.Get<NameConstraintInjectedObject>();
+        var obj = resolver.Get<KeyedConstraintInjectedObject>();
         var foo = resolver.Get<SimpleObject>("foo");
         var bar = resolver.Get<SimpleObject>("bar");
 
@@ -29,70 +29,26 @@ public sealed class ConstraintTest
     {
         var config = new ResolverConfig();
         config.Bind<SimpleObject>().ToSelf().InSingletonScope();
-        config.Bind<SimpleObject>().ToSelf().InSingletonScope().WithMetadata("hoge", null);
+        config.Bind<SimpleObject>().ToSelf().InSingletonScope().Constraint(new HasMetadataConstraint()).WithMetadata("hoge", null);
         config.Bind<HasMetadataConstraintInjectedObject>().ToSelf();
 
         using var resolver = config.ToResolver();
         var obj = resolver.Get<HasMetadataConstraintInjectedObject>();
-        var hoge = resolver.Get(typeof(SimpleObject), new HasMetadataConstraint("hoge"));
+        var hoge = resolver.Get(typeof(SimpleObject), "hoge");
 
         Assert.Same(obj.SimpleObject, hoge);
     }
 
-    [Fact]
-    public void ObjectIsSelectedByChainConstraint()
-    {
-        var config = new ResolverConfig();
-        config.Bind<SimpleObject>().ToSelf().InSingletonScope();
-        config.Bind<SimpleObject>().ToSelf().InSingletonScope().WithMetadata("hoge", null);
-        config.Bind<SimpleObject>().ToSelf().InSingletonScope().Named("foo");
-        config.Bind<SimpleObject>().ToSelf().InSingletonScope().Named("bar");
-        config.Bind<SimpleObject>().ToSelf().InSingletonScope().Named("bar").WithMetadata("hoge", null);
-        config.Bind<ChainConstraintInjectedObject>().ToSelf();
-
-        using var resolver = config.ToResolver();
-        var obj = resolver.Get<ChainConstraintInjectedObject>();
-        var barHoge = resolver.Get(typeof(SimpleObject), new ChainConstraint(new KeyConstraint("bar"), new HasMetadataConstraint("hoge")));
-
-        Assert.Same(obj.SimpleObject, barHoge);
-    }
-
     public sealed class HasMetadataConstraint : IConstraint
     {
-        public string Key { get; }
-
-        public HasMetadataConstraint(string key)
-        {
-            Key = key;
-        }
-
-        public bool Match(BindingMetadata metadata)
-        {
-            return metadata.Has(Key);
-        }
+        public bool Match(BindingMetadata metadata, object? parameter) => parameter is string key && metadata.Has(key);
     }
 
-    [AttributeUsage(AttributeTargets.Property | AttributeTargets.Parameter, AllowMultiple = true)]
-    public sealed class HasMetadataAttribute : ConstraintAttribute
-    {
-        public string Key { get; }
-
-        public HasMetadataAttribute(string key)
-        {
-            Key = key;
-        }
-
-        public override IConstraint CreateConstraint()
-        {
-            return new HasMetadataConstraint(Key);
-        }
-    }
-
-    public sealed class NameConstraintInjectedObject
+    public sealed class KeyedConstraintInjectedObject
     {
         public SimpleObject SimpleObject { get; }
 
-        public NameConstraintInjectedObject([Keyed("foo")] SimpleObject simpleObject)
+        public KeyedConstraintInjectedObject([ResolveBy("foo")] SimpleObject simpleObject)
         {
             SimpleObject = simpleObject;
         }
@@ -102,17 +58,7 @@ public sealed class ConstraintTest
     {
         public SimpleObject SimpleObject { get; }
 
-        public HasMetadataConstraintInjectedObject([HasMetadata("hoge")] SimpleObject simpleObject)
-        {
-            SimpleObject = simpleObject;
-        }
-    }
-
-    public sealed class ChainConstraintInjectedObject
-    {
-        public SimpleObject SimpleObject { get; }
-
-        public ChainConstraintInjectedObject([Keyed("bar")][HasMetadata("hoge")] SimpleObject simpleObject)
+        public HasMetadataConstraintInjectedObject([ResolveBy("hoge")] SimpleObject simpleObject)
         {
             SimpleObject = simpleObject;
         }

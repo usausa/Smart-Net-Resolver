@@ -29,7 +29,7 @@ public sealed class SingletonScope : IScope, IDisposable
         if (objectFactory is null)
         {
             value = factory();
-            var holder = new SingletonHolder(factory);
+            var holder = new SingletonHolder(value);
             objectFactory = holder.Resolve;
         }
 

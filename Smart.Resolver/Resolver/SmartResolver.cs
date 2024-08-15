@@ -98,7 +98,6 @@ public sealed class SmartResolver : IResolver, IKernel
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool CanGet<T>() => FindFactoryEntry(typeof(T)).CanGet;
 
-    // TODO constraint cache ?、重複しないかの確認、stringとSBで？
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool CanGet<T>(object? parameter) => FindFactoryEntry(typeof(T), parameter).CanGet;
 
@@ -267,8 +266,6 @@ public sealed class SmartResolver : IResolver, IKernel
     // ------------------------------------------------------------
     // Inject
     // ------------------------------------------------------------
-
-    // TODO Re Check Keyed
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void Inject(object instance)
