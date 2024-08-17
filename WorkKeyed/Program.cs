@@ -10,7 +10,6 @@ public static class Program
 {
     public static void Main()
     {
-        // TODO 3. Benchmark re
         var services = new ServiceCollection();
         services.AddKeyedSingleton<IService, Service1>(nameof(Service1));
         services.AddKeyedSingleton<IService, Service2>(nameof(Service2));
