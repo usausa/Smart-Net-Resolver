@@ -7,14 +7,13 @@
 Smart.Resolver .NET is simplified resolver library, degradation version of Ninject.
 
 * ASP.NET Core / Generic Host support
-* Xamarin support (Code generation mode and Reflection mode both supported)
 * Transient, Singleton, Container(child) and custom scope supported
 * Callback, Constant provider supported
 * Property injection supported (optional)
 * Custom initialize processor supported
 * Construct with parameter supported
 * Constraint supported (like keyed)
-* Missing handler supported (For automatic registration, Xamarin integration, open generic type, ...)
+* Missing handler supported (For automatic registration, open generic type, ...)
 * Customization-first implementation, but not too late (see benchmark)
 
 ### Usage example
@@ -317,15 +316,6 @@ public static class Program
         // Add component
     }
 }
-```
-
-### Xamarin
-
-```csharp
-var config = new ResolverConfig()
-    .UseDependencyService();
-
-var resolver = config.ToResolver();
 ```
 
 ## Other
