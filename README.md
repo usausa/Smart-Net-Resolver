@@ -13,7 +13,7 @@ Smart.Resolver .NET is simplified resolver library, degradation version of Ninje
 * Property injection supported (optional)
 * Custom initialize processor supported
 * Construct with parameter supported
-* Constraint supported (like named)
+* Constraint supported (like keyed)
 * Missing handler supported (For automatic registration, Xamarin integration, open generic type, ...)
 * Customization-first implementation, but not too late (see benchmark)
 
@@ -54,7 +54,7 @@ var controller = resolver.Get<Controller>();
 |-|-|
 | [![NuGet Badge](https://buildstats.info/nuget/Usa.Smart.Resolver)](https://www.nuget.org/packages/Usa.Smart.Resolver/) | Core libyrary  |
 | [![NuGet Badge](https://buildstats.info/nuget/Usa.Smart.Resolver.Extensions.DependencyInjection)](https://www.nuget.org/packages/Usa.Smart.Resolver.Extensions.DependencyInjection/) | Microsoft.Extensions.DependencyInjection integration |
-| [![NuGet Badge](https://buildstats.info/nuget/Usa.Smart.Resolver.Xamarin)](https://www.nuget.org/packages/Usa.Smart.Resolver.Xamarin/) | Xamarin DependencyService integration |
+| [![NuGet Badge](https://buildstats.info/nuget/Usa.Smart.Resolver.Extensions.Configuration)](https://www.nuget.org/packages/Usa.Smart.Resolver.Extensions.Configuration/) | Configuration extension |
 
 ## Bindings
 
@@ -92,7 +92,7 @@ config.Bind<Messenger>().ToConstant(Messenger.Default);
 * InTransientScope
 * InSingletonScope
 * InScope
-* Named
+* Keyed
 * WithConstructorArgument
 * WithPropertyValue
 * WithMetadata
@@ -144,9 +144,9 @@ config.Bind<CustomeScopeObject>().ToSelf().InScope(new CustomeScope());
 
 Prepared by standard.
 
-### NamedAttribute
+### ResolveByAttribute
 
-Naming constraint for lookup binding.
+Key constraint for lookup binding.
 
 ```csharp
 public sealed class Child
@@ -157,7 +157,7 @@ public sealed class Parent
 {
     pulbic Child Child { get; }
 
-    public Parent([Named("foo")] Child child)
+    public Parent([ResolveBy("foo")] Child child)
     {
         Child = child;
     }
@@ -165,8 +165,8 @@ public sealed class Parent
 
 // Usage
 var config = new ResolverConfig();
-config.Bind<Child>().ToSelf().InSingletonScope().Named("foo");
-config.Bind<Child>().ToSelf().InSingletonScope().Named("bar");
+config.Bind<Child>().ToSelf().InSingletonScope().Keyed("foo");
+config.Bind<Child>().ToSelf().InSingletonScope().Keyed("bar");
 config.Bind<Parent>().ToSelf();
 
 var resolver = config.ToResolver();
