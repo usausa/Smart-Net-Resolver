@@ -2,24 +2,32 @@ namespace Smart.Resolver;
 
 using Microsoft.Extensions.DependencyInjection;
 
+using Smart.Resolver.Keys;
+
 public sealed class SmartServiceProviderFactory : IServiceProviderFactory<ResolverConfig>
 {
     private readonly ResolverConfig config;
 
     public SmartServiceProviderFactory()
-        : this(new ResolverConfig())
+        : this(new ResolverConfig(), _ => { })
     {
     }
 
     public SmartServiceProviderFactory(ResolverConfig config)
+        : this(config, _ => { })
     {
-        this.config = config;
     }
 
     public SmartServiceProviderFactory(Action<ResolverConfig> action)
+        : this(new ResolverConfig(), action)
     {
-        config = new ResolverConfig();
+    }
+
+    private SmartServiceProviderFactory(ResolverConfig config, Action<ResolverConfig> action)
+    {
+        this.config = config;
         action(config);
+        config.Components.Add<IKeySource, FromKeyedServicesSource>();
     }
 
     public ResolverConfig CreateBuilder(IServiceCollection services)
