@@ -35,6 +35,34 @@ public sealed class ConstraintTest
     }
 
     [Fact]
+    public void ObjectsIsSelectedByNameConstraint()
+    {
+        var config = new ResolverConfig();
+        config.Bind<IService>().To<Service1>().InSingletonScope().Keyed("foo");
+        config.Bind<IService>().To<Service2>().InSingletonScope().Keyed("foo");
+        config.Bind<KeyedConstraintArrayInjectedObject>().ToSelf();
+
+        using var resolver = config.ToResolver();
+        var obj = resolver.Get<KeyedConstraintArrayInjectedObject>();
+        var services = resolver.GetAll<IService>("foo").ToList();
+
+        Assert.Equal(2, obj.Services.Length);
+        Assert.True(obj.Services.All(services.Contains));
+    }
+
+#pragma warning disable CA1819
+    public sealed class KeyedConstraintArrayInjectedObject
+    {
+        public IService[] Services { get; }
+
+        public KeyedConstraintArrayInjectedObject([ResolveBy("foo")] IService[] services)
+        {
+            Services = services;
+        }
+    }
+#pragma warning restore CA1819
+
+    [Fact]
     public void ObjectIsInjectedByNameConstraint()
     {
         var config = new ResolverConfig();

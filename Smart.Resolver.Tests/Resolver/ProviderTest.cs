@@ -1,6 +1,7 @@
 namespace Smart.Resolver;
 
-using Smart.Collections.Generic;
+using System.Linq;
+
 using Smart.Resolver.Mocks;
 
 public sealed class ProviderTest
@@ -37,76 +38,64 @@ public sealed class ProviderTest
     public void ObjectArrayCreatedByStandardProvider()
     {
         var config = new ResolverConfig();
-        config.Bind<SimpleObject>().ToSelf().InSingletonScope().Keyed("foo");
-        config.Bind<SimpleObject>().ToSelf().InSingletonScope().Keyed("bar");
+        config.Bind<IService>().To<Service1>().InSingletonScope();
+        config.Bind<IService>().To<Service2>().InSingletonScope();
         config.Bind<ArrayInjectedObject>().ToSelf();
 
         using var resolver = config.ToResolver();
         var obj = resolver.Get<ArrayInjectedObject>();
-        var foo = resolver.Get<SimpleObject>("foo");
-        var bar = resolver.Get<SimpleObject>("bar");
+        var services = resolver.GetAll<IService>().ToList();
 
-        Assert.Equal(2, obj.Objects.Length);
-        Assert.NotSame(foo, bar);
-        Assert.True(obj.Objects.Contains(foo, static x => x));
-        Assert.True(obj.Objects.Contains(bar, static x => x));
+        Assert.Equal(2, obj.Services.Length);
+        Assert.True(obj.Services.All(services.Contains));
     }
 
     [Fact]
     public void ObjectEnumerableCreatedByStandardProvider()
     {
         var config = new ResolverConfig();
-        config.Bind<SimpleObject>().ToSelf().InSingletonScope().Keyed("foo");
-        config.Bind<SimpleObject>().ToSelf().InSingletonScope().Keyed("bar");
+        config.Bind<IService>().To<Service1>().InSingletonScope();
+        config.Bind<IService>().To<Service2>().InSingletonScope();
         config.Bind<EnumerableInjectedObject>().ToSelf();
 
         using var resolver = config.ToResolver();
         var obj = resolver.Get<EnumerableInjectedObject>();
-        var foo = resolver.Get<SimpleObject>("foo");
-        var bar = resolver.Get<SimpleObject>("bar");
+        var services = resolver.GetAll<IService>().ToList();
 
-        Assert.Equal(2, obj.Objects.Count());
-        Assert.NotSame(foo, bar);
-        Assert.True(obj.Objects.Contains(foo, static x => x));
-        Assert.True(obj.Objects.Contains(bar, static x => x));
+        Assert.Equal(2, obj.Services.Count());
+        Assert.True(obj.Services.All(services.Contains));
     }
 
     [Fact]
     public void ObjectCollectionCreatedByStandardProvider()
     {
         var config = new ResolverConfig();
-        config.Bind<SimpleObject>().ToSelf().InSingletonScope().Keyed("foo");
-        config.Bind<SimpleObject>().ToSelf().InSingletonScope().Keyed("bar");
+        config.Bind<IService>().To<Service1>().InSingletonScope();
+        config.Bind<IService>().To<Service2>().InSingletonScope();
         config.Bind<CollectionInjectedObject>().ToSelf();
 
         using var resolver = config.ToResolver();
         var obj = resolver.Get<CollectionInjectedObject>();
-        var foo = resolver.Get<SimpleObject>("foo");
-        var bar = resolver.Get<SimpleObject>("bar");
+        var services = resolver.GetAll<IService>().ToList();
 
-        Assert.Equal(2, obj.Objects.Count);
-        Assert.NotSame(foo, bar);
-        Assert.True(obj.Objects.Contains(foo, static x => x));
-        Assert.True(obj.Objects.Contains(bar, static x => x));
+        Assert.Equal(2, obj.Services.Count);
+        Assert.True(obj.Services.All(services.Contains));
     }
 
     [Fact]
     public void ObjectListCreatedByStandardProvider()
     {
         var config = new ResolverConfig();
-        config.Bind<SimpleObject>().ToSelf().InSingletonScope().Keyed("foo");
-        config.Bind<SimpleObject>().ToSelf().InSingletonScope().Keyed("bar");
+        config.Bind<IService>().To<Service1>().InSingletonScope();
+        config.Bind<IService>().To<Service2>().InSingletonScope();
         config.Bind<ListInjectedObject>().ToSelf();
 
         using var resolver = config.ToResolver();
         var obj = resolver.Get<ListInjectedObject>();
-        var foo = resolver.Get<SimpleObject>("foo");
-        var bar = resolver.Get<SimpleObject>("bar");
+        var services = resolver.GetAll<IService>().ToList();
 
-        Assert.Equal(2, obj.Objects.Count);
-        Assert.NotSame(foo, bar);
-        Assert.True(obj.Objects.Contains(foo, static x => x));
-        Assert.True(obj.Objects.Contains(bar, static x => x));
+        Assert.Equal(2, obj.Services.Count);
+        Assert.True(obj.Services.All(services.Contains));
     }
 
     [Fact]
@@ -157,42 +146,42 @@ public sealed class ProviderTest
 #pragma warning disable CA1819
     public sealed class ArrayInjectedObject
     {
-        public SimpleObject[] Objects { get; }
+        public IService[] Services { get; }
 
-        public ArrayInjectedObject(SimpleObject[] objects)
+        public ArrayInjectedObject(IService[] services)
         {
-            Objects = objects;
+            Services = services;
         }
     }
 #pragma warning restore CA1819
 
     public sealed class EnumerableInjectedObject
     {
-        public IEnumerable<SimpleObject> Objects { get; }
+        public IEnumerable<IService> Services { get; }
 
-        public EnumerableInjectedObject(IEnumerable<SimpleObject> objects)
+        public EnumerableInjectedObject(IEnumerable<IService> services)
         {
-            Objects = objects;
+            Services = services;
         }
     }
 
     public sealed class CollectionInjectedObject
     {
-        public ICollection<SimpleObject> Objects { get; }
+        public ICollection<IService> Services { get; }
 
-        public CollectionInjectedObject(ICollection<SimpleObject> objects)
+        public CollectionInjectedObject(ICollection<IService> services)
         {
-            Objects = objects;
+            Services = services;
         }
     }
 
     public sealed class ListInjectedObject
     {
-        public IList<SimpleObject> Objects { get; }
+        public IList<IService> Services { get; }
 
-        public ListInjectedObject(IList<SimpleObject> objects)
+        public ListInjectedObject(IList<IService> services)
         {
-            Objects = objects;
+            Services = services;
         }
     }
 }
