@@ -43,13 +43,13 @@ public sealed class SmartChildResolver : IResolver, IContainer
     public bool CanGet<T>() => resolver.FindFactoryEntry(this, typeof(T)).CanGet;
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public bool CanGet<T>(object? parameter) => resolver.FindFactoryEntry(this, typeof(T), parameter).CanGet;
+    public bool CanGet<T>(object? key) => resolver.FindFactoryEntry(this, typeof(T), key).CanGet;
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool CanGet(Type type) => resolver.FindFactoryEntry(this, type).CanGet;
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public bool CanGet(Type type, object? parameter) => resolver.FindFactoryEntry(this, type, parameter).CanGet;
+    public bool CanGet(Type type, object? key) => resolver.FindFactoryEntry(this, type, key).CanGet;
 
     // TryGet
 
@@ -68,9 +68,9 @@ public sealed class SmartChildResolver : IResolver, IContainer
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public bool TryGet<T>(object? parameter, [MaybeNullWhen(false)] out T obj)
+    public bool TryGet<T>(object? key, [MaybeNullWhen(false)] out T obj)
     {
-        var entry = resolver.FindFactoryEntry(this, typeof(T), parameter);
+        var entry = resolver.FindFactoryEntry(this, typeof(T), key);
         if (entry.CanGet)
         {
             obj = (T)entry.Single(this);
@@ -96,9 +96,9 @@ public sealed class SmartChildResolver : IResolver, IContainer
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public bool TryGet(Type type, object? parameter, [MaybeNullWhen(false)] out object obj)
+    public bool TryGet(Type type, object? key, [MaybeNullWhen(false)] out object obj)
     {
-        var entry = resolver.FindFactoryEntry(this, type, parameter);
+        var entry = resolver.FindFactoryEntry(this, type, key);
         if (entry.CanGet)
         {
             obj = entry.Single(this);
@@ -115,13 +115,13 @@ public sealed class SmartChildResolver : IResolver, IContainer
     public T Get<T>() => (T)resolver.FindFactoryEntry(this, typeof(T)).Single(this);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public T Get<T>(object? parameter) => (T)resolver.FindFactoryEntry(this, typeof(T), parameter).Single(this);
+    public T Get<T>(object? key) => (T)resolver.FindFactoryEntry(this, typeof(T), key).Single(this);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public object Get(Type type) => resolver.FindFactoryEntry(this, type).Single(this);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public object Get(Type type, object? parameter) => resolver.FindFactoryEntry(this, type, parameter).Single(this);
+    public object Get(Type type, object? key) => resolver.FindFactoryEntry(this, type, key).Single(this);
 
     // GetAll
 
@@ -129,13 +129,13 @@ public sealed class SmartChildResolver : IResolver, IContainer
     public IEnumerable<T> GetAll<T>() => resolver.FindFactoryEntry(this, typeof(T)).Multiple.Select(x => (T)x(this));
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public IEnumerable<T> GetAll<T>(object? parameter) => resolver.FindFactoryEntry(this, typeof(T), parameter).Multiple.Select(x => (T)x(this));
+    public IEnumerable<T> GetAll<T>(object? key) => resolver.FindFactoryEntry(this, typeof(T), key).Multiple.Select(x => (T)x(this));
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public IEnumerable<object> GetAll(Type type) => resolver.FindFactoryEntry(this, type).Multiple.Select(x => x(this));
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public IEnumerable<object> GetAll(Type type, object? parameter) => resolver.FindFactoryEntry(this, type, parameter).Multiple.Select(x => x(this));
+    public IEnumerable<object> GetAll(Type type, object? key) => resolver.FindFactoryEntry(this, type, key).Multiple.Select(x => x(this));
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void Inject(object instance)

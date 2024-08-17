@@ -4,12 +4,12 @@ using Smart.Resolver.Bindings;
 
 public sealed class KeyConstraint : IConstraint
 {
-    private readonly object? key;
+    private readonly object? serviceKey;
 
-    public KeyConstraint(object? key)
+    public KeyConstraint(object? serviceKey)
     {
-        this.key = key;
+        this.serviceKey = serviceKey;
     }
 
-    public bool Match(BindingMetadata metadata, object? parameter) => parameter == key;
+    public bool Match(BindingMetadata metadata, object? key) => key?.Equals(serviceKey) ?? false;
 }

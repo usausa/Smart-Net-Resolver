@@ -24,6 +24,41 @@ public sealed class ConstraintTest
         Assert.NotSame(obj.SimpleObject, bar);
     }
 
+    public sealed class KeyedConstraintInjectedObject
+    {
+        public SimpleObject SimpleObject { get; }
+
+        public KeyedConstraintInjectedObject([ResolveBy("foo")] SimpleObject simpleObject)
+        {
+            SimpleObject = simpleObject;
+        }
+    }
+
+    [Fact]
+    public void ObjectIsInjectedByNameConstraint()
+    {
+        var config = new ResolverConfig();
+        config.UsePropertyInjector();
+        config.Bind<SimpleObject>().ToSelf().InSingletonScope().Keyed("foo");
+        config.Bind<SimpleObject>().ToSelf().InSingletonScope().Keyed("bar");
+        config.Bind<KeyedConstraintPropertyObject>().ToSelf();
+
+        using var resolver = config.ToResolver();
+        var obj = resolver.Get<KeyedConstraintPropertyObject>();
+        var foo = resolver.Get<SimpleObject>("foo");
+        var bar = resolver.Get<SimpleObject>("bar");
+
+        Assert.Same(obj.Injected, foo);
+        Assert.NotSame(obj.Injected, bar);
+    }
+
+    public sealed class KeyedConstraintPropertyObject
+    {
+        [Inject]
+        [ResolveBy("foo")]
+        public SimpleObject? Injected { get; set; }
+    }
+
     [Fact]
     public void ObjectIsSelectedByHasMetadataConstraint()
     {
@@ -41,17 +76,7 @@ public sealed class ConstraintTest
 
     public sealed class HasMetadataConstraint : IConstraint
     {
-        public bool Match(BindingMetadata metadata, object? parameter) => parameter is string key && metadata.Has(key);
-    }
-
-    public sealed class KeyedConstraintInjectedObject
-    {
-        public SimpleObject SimpleObject { get; }
-
-        public KeyedConstraintInjectedObject([ResolveBy("foo")] SimpleObject simpleObject)
-        {
-            SimpleObject = simpleObject;
-        }
+        public bool Match(BindingMetadata metadata, object? key) => key is string str && metadata.Has(str);
     }
 
     public sealed class HasMetadataConstraintInjectedObject

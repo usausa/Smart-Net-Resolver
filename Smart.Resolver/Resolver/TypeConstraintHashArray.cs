@@ -35,9 +35,9 @@ internal sealed class TypeConstraintHashArray<T>
     //--------------------------------------------------------------------------------
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private static int CalculateHash(Type type, object? parameter)
+    private static int CalculateHash(Type type, object? key)
     {
-        return type.GetHashCode() ^ (parameter?.GetHashCode() ?? 0);
+        return type.GetHashCode() ^ (key?.GetHashCode() ?? 0);
     }
 
     private static int CalculateDepth(Node node)
@@ -131,7 +131,7 @@ internal sealed class TypeConstraintHashArray<T>
                 var next = node.Next;
                 node.Next = null;
 
-                UpdateLink(ref nodes[CalculateHash(node.Type, node.Parameter) & (nodes.Length - 1)], node);
+                UpdateLink(ref nodes[CalculateHash(node.Type, node.Key) & (nodes.Length - 1)], node);
 
                 node = next;
             }
@@ -153,7 +153,7 @@ internal sealed class TypeConstraintHashArray<T>
 
             RelocateNodes(newNodes, nodes);
 
-            UpdateLink(ref newNodes[CalculateHash(node.Type, node.Parameter) & (newNodes.Length - 1)], node);
+            UpdateLink(ref newNodes[CalculateHash(node.Type, node.Key) & (newNodes.Length - 1)], node);
 
             Interlocked.MemoryBarrier();
 
@@ -165,7 +165,7 @@ internal sealed class TypeConstraintHashArray<T>
         {
             Interlocked.MemoryBarrier();
 
-            var hash = CalculateHash(node.Type, node.Parameter);
+            var hash = CalculateHash(node.Type, node.Key);
 
             UpdateLink(ref nodes[hash & (nodes.Length - 1)], node);
 
@@ -204,13 +204,13 @@ internal sealed class TypeConstraintHashArray<T>
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public bool TryGetValue(Type type, object? parameter, [MaybeNullWhen(false)] out T value)
+    public bool TryGetValue(Type type, object? key, [MaybeNullWhen(false)] out T value)
     {
         var temp = nodes;
-        var node = temp[CalculateHash(type, parameter) & (temp.Length - 1)];
+        var node = temp[CalculateHash(type, key) & (temp.Length - 1)];
         do
         {
-            if ((node.Type == type) && (node.Parameter == parameter))
+            if (node.Match(type, key))
             {
                 value = node.Value;
                 return true;
@@ -223,25 +223,25 @@ internal sealed class TypeConstraintHashArray<T>
         return false;
     }
 
-    public T AddIfNotExist(Type type, object? parameter, Func<Type, object?, T> valueFactory)
+    public T AddIfNotExist(Type type, object? key, Func<Type, object?, T> valueFactory)
     {
         lock (sync)
         {
             // Double-checked locking
-            if (TryGetValue(type, parameter, out var currentValue))
+            if (TryGetValue(type, key, out var currentValue))
             {
                 return currentValue;
             }
 
-            var value = valueFactory(type, parameter);
+            var value = valueFactory(type, key);
 
             // Check if added by recursive
-            if (TryGetValue(type, parameter, out currentValue))
+            if (TryGetValue(type, key, out currentValue))
             {
                 return currentValue;
             }
 
-            AddNode(new Node(type, parameter, value));
+            AddNode(new Node(type, key, value));
 
             return value;
         }
@@ -262,17 +262,33 @@ internal sealed class TypeConstraintHashArray<T>
     {
         public readonly Type Type;
 
-        public readonly object? Parameter;
+        public readonly object? Key;
 
         public readonly T Value;
 
         public Node? Next;
 
-        public Node(Type type, object? parameter, T value)
+        public Node(Type type, object? key, T value)
         {
             Type = type;
-            Parameter = parameter;
+            Key = key;
             Value = value;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public bool Match(Type type, object? key)
+        {
+            if (Type != type)
+            {
+                return false;
+            }
+
+            if (Key is null)
+            {
+                return key is null;
+            }
+
+            return Key.Equals(key);
         }
     }
 #pragma warning restore SA1401

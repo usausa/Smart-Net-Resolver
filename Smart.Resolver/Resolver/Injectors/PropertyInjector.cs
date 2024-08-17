@@ -6,15 +6,19 @@ using System.Runtime.CompilerServices;
 using Smart.Reflection;
 using Smart.Resolver.Attributes;
 using Smart.Resolver.Bindings;
+using Smart.Resolver.Keys;
 using Smart.Resolver.Parameters;
 
 public sealed class PropertyInjector : IInjector
 {
     private readonly IDelegateFactory delegateFactory;
 
-    public PropertyInjector(IDelegateFactory delegateFactory)
+    private readonly IKeySource[] keySources;
+
+    public PropertyInjector(IDelegateFactory delegateFactory, IKeySource[] keySources)
     {
         this.delegateFactory = delegateFactory;
+        this.keySources = keySources;
     }
 
     public Action<IResolver, object>? CreateInjector(Type type, Binding binding)
@@ -42,12 +46,11 @@ public sealed class PropertyInjector : IInjector
             return new InjectEntry(CreateParameterProvider(parameter), setter);
         }
 
-        // TODO key and compatibility
         var propertyType = delegateFactory.GetExtendedPropertyType(pi);
-        var keyed = pi.GetCustomAttribute<ResolveByAttribute>();
-        if (keyed is not null)
+        var key = KeySourceHelper.GetValue(pi, keySources);
+        if (key is not null)
         {
-            return new InjectEntry(CreateConstraintProvider(propertyType, keyed), setter);
+            return new InjectEntry(CreateConstraintProvider(propertyType, key), setter);
         }
 
         return new InjectEntry(CreateProvider(propertyType), setter);
@@ -58,9 +61,9 @@ public sealed class PropertyInjector : IInjector
         return parameter.Resolve;
     }
 
-    private static Func<IResolver, object> CreateConstraintProvider(Type propertyType, object? parameter)
+    private static Func<IResolver, object> CreateConstraintProvider(Type propertyType, object? key)
     {
-        return resolver => resolver.Get(propertyType, parameter);
+        return resolver => resolver.Get(propertyType, key);
     }
 
     private static Func<IResolver, object> CreateProvider(Type propertyType)

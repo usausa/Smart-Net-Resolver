@@ -6,6 +6,7 @@ using Smart.Resolver.Bindings;
 using Smart.Resolver.Builders;
 using Smart.Resolver.Components;
 using Smart.Resolver.Configs;
+using Smart.Resolver.Keys;
 
 public sealed class ResolverConfig : IResolverConfig, IBindingRoot
 {
@@ -16,6 +17,7 @@ public sealed class ResolverConfig : IResolverConfig, IBindingRoot
     public ResolverConfig()
     {
         Components.Add<DisposableStorage>();
+        Components.Add<IKeySource, ResolveBySource>();
         Components.Add<IDelegateFactory>(DelegateFactory.Default);
         if (DelegateFactory.Default.IsCodegenRequired)
         {

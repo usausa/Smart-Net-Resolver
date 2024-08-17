@@ -4,5 +4,5 @@ using Smart.Resolver.Bindings;
 
 public interface IConstraint
 {
-    bool Match(BindingMetadata metadata, object? parameter);
+    bool Match(BindingMetadata metadata, object? key);
 }

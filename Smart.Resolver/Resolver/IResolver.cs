@@ -9,41 +9,41 @@ public interface IResolver : IServiceProvider, IDisposable
 
     bool CanGet<T>();
 
-    bool CanGet<T>(object? parameter);
+    bool CanGet<T>(object? key);
 
     bool CanGet(Type type);
 
-    bool CanGet(Type type, object? parameter);
+    bool CanGet(Type type, object? key);
 
     // TryGet
 
     bool TryGet<T>([MaybeNullWhen(false)] out T obj);
 
-    bool TryGet<T>(object? parameter, [MaybeNullWhen(false)] out T obj);
+    bool TryGet<T>(object? key, [MaybeNullWhen(false)] out T obj);
 
     bool TryGet(Type type, [MaybeNullWhen(false)] out object obj);
 
-    bool TryGet(Type type, object? parameter, [MaybeNullWhen(false)] out object obj);
+    bool TryGet(Type type, object? key, [MaybeNullWhen(false)] out object obj);
 
     // Get
 
     T Get<T>();
 
-    T Get<T>(object? parameter);
+    T Get<T>(object? key);
 
     object Get(Type type);
 
-    object Get(Type type, object? parameter);
+    object Get(Type type, object? key);
 
     // GetAll
 
     IEnumerable<T> GetAll<T>();
 
-    IEnumerable<T> GetAll<T>(object? parameter);
+    IEnumerable<T> GetAll<T>(object? key);
 
     IEnumerable<object> GetAll(Type type);
 
-    IEnumerable<object> GetAll(Type type, object? parameter);
+    IEnumerable<object> GetAll(Type type, object? key);
 
     // Inject
 

@@ -7,17 +7,18 @@ using Smart.ComponentModel;
 using Smart.Resolver.Attributes;
 using Smart.Resolver.Bindings;
 using Smart.Resolver.Builders;
-using Smart.Resolver.Constraints;
 using Smart.Resolver.Helpers;
 using Smart.Resolver.Injectors;
+using Smart.Resolver.Keys;
 using Smart.Resolver.Processors;
 
-// TODO constraint
 public sealed class StandardProvider : IProvider
 {
     private readonly IInjector[] injectors;
 
     private readonly IProcessor[] processors;
+
+    private readonly IKeySource[] keySources;
 
     private readonly IFactoryBuilder builder;
 
@@ -28,6 +29,7 @@ public sealed class StandardProvider : IProvider
         TargetType = type;
         injectors = components.GetAll<IInjector>().ToArray();
         processors = components.GetAll<IProcessor>().ToArray();
+        keySources = components.GetAll<IKeySource>().ToArray();
         builder = components.Get<IFactoryBuilder>();
     }
 
@@ -58,7 +60,7 @@ public sealed class StandardProvider : IProvider
                 }
 
                 // Resolve
-                if (kernel.TryResolveFactory(pi.ParameterType, parameter.Constraint, out var factory))
+                if (kernel.TryResolveFactory(pi.ParameterType, parameter.ResolveBy, out var factory))
                 {
                     argumentFactories.Add(factory);
                     continue;
@@ -66,7 +68,7 @@ public sealed class StandardProvider : IProvider
 
                 // Multiple
                 if ((parameter.ElementType is not null) &&
-                    kernel.TryResolveFactories(parameter.ElementType, parameter.Constraint, out var factories))
+                    kernel.TryResolveFactories(parameter.ElementType, parameter.ResolveBy, out var factories))
                 {
                     var arrayFactory = builder.CreateArrayFactory(parameter.ElementType, factories);
                     argumentFactories.Add(arrayFactory);
@@ -106,7 +108,11 @@ public sealed class StandardProvider : IProvider
             .OrderByDescending(static c => c.IsInjectDefined() ? 1 : 0)
             .ThenByDescending(static c => c.GetParameters().Length)
             .ThenByDescending(static c => c.GetParameters().Count(static p => p.HasDefaultValue))
-            .Select(c => new ConstructorMetadata(c))
+            .Select(c => new ConstructorMetadata(
+                c,
+                c.GetParameters()
+                    .Select(p => new ParameterMetadata(p, KeySourceHelper.GetValue(p, keySources)))
+                    .ToArray()))
             .ToArray();
     }
 
@@ -130,12 +136,10 @@ public sealed class StandardProvider : IProvider
 
         public ParameterMetadata[] Parameters { get; }
 
-        public ConstructorMetadata(ConstructorInfo ci)
+        public ConstructorMetadata(ConstructorInfo ci, ParameterMetadata[] parameters)
         {
             Constructor = ci;
-            Parameters = ci.GetParameters()
-                .Select(static x => new ParameterMetadata(x))
-                .ToArray();
+            Parameters = parameters;
         }
     }
 
@@ -145,14 +149,13 @@ public sealed class StandardProvider : IProvider
 
         public Type? ElementType { get; }
 
-        public IConstraint? Constraint { get; }
+        public object? ResolveBy { get; }
 
-        public ParameterMetadata(ParameterInfo pi)
+        public ParameterMetadata(ParameterInfo pi, object? resolveBy)
         {
             Parameter = pi;
             ElementType = TypeHelper.GetEnumerableElementType(pi.ParameterType);
-            // TODO Constraint+
-            Constraint = null; //ConstraintBuilder.Build(pi.GetCustomAttributes<ConstraintAttribute>());
+            ResolveBy = resolveBy;
         }
     }
 }
