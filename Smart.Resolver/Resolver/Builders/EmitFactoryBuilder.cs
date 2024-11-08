@@ -118,28 +118,13 @@ public sealed class EmitFactoryBuilder : IFactoryBuilder
 
     private sealed class HolderBuilder
     {
+        private readonly object sync = new();
+
         private readonly Dictionary<Tuple<int, int>, Type> cache = [];
 
         private AssemblyBuilder? assemblyBuilder;
 
         private ModuleBuilder? moduleBuilder;
-
-        private ModuleBuilder ModuleBuilder
-        {
-            get
-            {
-                if (moduleBuilder is null)
-                {
-                    assemblyBuilder = AssemblyBuilder.DefineDynamicAssembly(
-                        new AssemblyName("EmitBuilderAssembly"),
-                        AssemblyBuilderAccess.Run);
-                    moduleBuilder = assemblyBuilder.DefineDynamicModule(
-                        "EmitBuilderModule");
-                }
-
-                return moduleBuilder;
-            }
-        }
 
         public object? CreateHolder(Func<IResolver, object?>[] factories, Action<IResolver, object>[] actions)
         {
@@ -181,12 +166,30 @@ public sealed class EmitFactoryBuilder : IFactoryBuilder
             }
         }
 
+        private TypeBuilder DefineType(int factoryCount, int actionCount)
+        {
+            lock (sync)
+            {
+                if (moduleBuilder is null)
+                {
+                    assemblyBuilder = AssemblyBuilder.DefineDynamicAssembly(
+                        new AssemblyName("EmitBuilderAssembly"),
+                        AssemblyBuilderAccess.Run);
+                    moduleBuilder = assemblyBuilder.DefineDynamicModule(
+                        "EmitBuilderModule");
+                }
+
+                var typeBuilder = moduleBuilder.DefineType(
+                    $"Holder_{factoryCount}_{actionCount}",
+                    TypeAttributes.Public | TypeAttributes.AutoLayout | TypeAttributes.AnsiClass | TypeAttributes.Sealed | TypeAttributes.BeforeFieldInit);
+                return typeBuilder;
+            }
+        }
+
         private Type CreateType(int factoryCount, int actionCount)
         {
             // Define type
-            var typeBuilder = ModuleBuilder.DefineType(
-                $"Holder_{factoryCount}_{actionCount}",
-                TypeAttributes.Public | TypeAttributes.AutoLayout | TypeAttributes.AnsiClass | TypeAttributes.Sealed | TypeAttributes.BeforeFieldInit);
+            var typeBuilder = DefineType(factoryCount, actionCount);
 
             // Define factory fields
             for (var i = 0; i < factoryCount; i++)
