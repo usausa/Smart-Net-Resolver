@@ -5,6 +5,7 @@ using Smart.Resolver.Bindings;
 using Smart.Resolver.Constraints;
 using Smart.Resolver.Mocks;
 
+#pragma warning disable CA2263
 public sealed class ConstraintTest
 {
     [Fact]

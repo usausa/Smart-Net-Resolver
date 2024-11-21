@@ -16,7 +16,7 @@ public static class ResolverConfigExtensions
     public static ResolverConfig UseDelegateFactory<T>(this ResolverConfig config)
         where T : IDelegateFactory
     {
-        config.Components.Add(typeof(IDelegateFactory), typeof(T));
+        config.Components.Add<IDelegateFactory, T>();
         return config;
     }
 
@@ -29,7 +29,7 @@ public static class ResolverConfigExtensions
     public static ResolverConfig UseFactoryBuilder<T>(this ResolverConfig config)
         where T : IFactoryBuilder
     {
-        config.Components.Add(typeof(IFactoryBuilder), typeof(T));
+        config.Components.Add<IFactoryBuilder, T>();
         return config;
     }
 
@@ -48,7 +48,7 @@ public static class ResolverConfigExtensions
     public static ResolverConfig UseProcessor<T>(this ResolverConfig config)
         where T : IProcessor
     {
-        config.Components.Add(typeof(IProcessor), typeof(T));
+        config.Components.Add<IProcessor, T>();
         return config;
     }
 
@@ -61,7 +61,7 @@ public static class ResolverConfigExtensions
     public static ResolverConfig UseInjector<T>(this ResolverConfig config)
         where T : IInjector
     {
-        config.Components.Add(typeof(IInjector), typeof(T));
+        config.Components.Add<IInjector, T>();
         return config;
     }
 
@@ -122,7 +122,7 @@ public static class ResolverConfigExtensions
     public static ResolverConfig UseMissingHandler<T>(this ResolverConfig config)
         where T : IMissingHandler
     {
-        config.Components.Add(typeof(IMissingHandler), typeof(T));
+        config.Components.Add<IMissingHandler, T>();
         return config;
     }
 

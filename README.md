@@ -1,6 +1,6 @@
 # Smart.Resolver .NET - resolver library for .NET
 
-[![NuGet Badge](https://buildstats.info/nuget/Usa.Smart.Resolver)](https://www.nuget.org/packages/Usa.Smart.Resolver/)
+[![NuGet](https://img.shields.io/nuget/v/Usa.Smart.Resolver.svg)](https://www.nuget.org/packages/Usa.Smart.Resolver)
 
 ## What is this?
 
@@ -51,9 +51,9 @@ var controller = resolver.Get<Controller>();
 
 | Package | Note  |
 |-|-|
-| [![NuGet Badge](https://buildstats.info/nuget/Usa.Smart.Resolver)](https://www.nuget.org/packages/Usa.Smart.Resolver/) | Core libyrary  |
-| [![NuGet Badge](https://buildstats.info/nuget/Usa.Smart.Resolver.Extensions.DependencyInjection)](https://www.nuget.org/packages/Usa.Smart.Resolver.Extensions.DependencyInjection/) | Microsoft.Extensions.DependencyInjection integration |
-| [![NuGet Badge](https://buildstats.info/nuget/Usa.Smart.Resolver.Extensions.Configuration)](https://www.nuget.org/packages/Usa.Smart.Resolver.Extensions.Configuration/) | Configuration extension |
+| [![NuGet Badge](https://img.shields.io/nuget/v/Usa.Smart.Resolver.svg)](https://www.nuget.org/packages/Usa.Smart.Resolver/) | Core libyrary  |
+| [![NuGet Badge](https://img.shields.io/nuget/v/Usa.Smart.Resolver.Extensions.DependencyInjection.svg)](https://www.nuget.org/packages/Usa.Smart.Resolver.Extensions.DependencyInjection/) | Microsoft.Extensions.DependencyInjection integration |
+| [![NuGet Badge](https://img.shields.io/nuget/v/Usa.Smart.Resolver.Extensions.Configuration.svg)](https://www.nuget.org/packages/Usa.Smart.Resolver.Extensions.Configuration/) | Configuration extension |
 
 ## Bindings
 

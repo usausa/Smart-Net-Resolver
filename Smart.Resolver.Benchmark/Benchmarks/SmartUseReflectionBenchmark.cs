@@ -6,6 +6,7 @@ using Smart.Reflection;
 using Smart.Resolver;
 using Smart.Resolver.Benchmark.Classes;
 
+#pragma warning disable CA2263
 [Config(typeof(BenchmarkConfig))]
 public class SmartUseReflectionBenchmark
 {

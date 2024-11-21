@@ -6,6 +6,7 @@ using Smart.Resolver.Handlers;
 using Smart.Resolver.Mocks;
 using Smart.Resolver.Providers;
 
+#pragma warning disable CA2263
 public sealed class ResolverTest
 {
     [Fact]
