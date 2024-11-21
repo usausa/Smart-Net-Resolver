@@ -16,6 +16,6 @@ public sealed class CharacterService
 
     public IList<CharacterEntity> QueryCharacterList()
     {
-        return Provider.Using(con => con.QueryList<CharacterEntity>("SELECT * FROM Character ORDER BY Id"));
+        return Provider.Using(static con => con.QueryList<CharacterEntity>("SELECT * FROM Character ORDER BY Id"));
     }
 }

@@ -9,12 +9,12 @@ public sealed class SmartServiceProviderFactory : IServiceProviderFactory<Resolv
     private readonly ResolverConfig config;
 
     public SmartServiceProviderFactory()
-        : this(new ResolverConfig(), _ => { })
+        : this(new ResolverConfig(), static _ => { })
     {
     }
 
     public SmartServiceProviderFactory(ResolverConfig config)
-        : this(config, _ => { })
+        : this(config, static _ => { })
     {
     }
 

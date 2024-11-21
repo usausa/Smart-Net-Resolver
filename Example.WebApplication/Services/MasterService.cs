@@ -16,6 +16,6 @@ public sealed class MasterService
 
     public IList<ItemEntity> QueryItemList()
     {
-        return Provider.Using(con => con.QueryList<ItemEntity>("SELECT * FROM Item ORDER BY Id"));
+        return Provider.Using(static con => con.QueryList<ItemEntity>("SELECT * FROM Item ORDER BY Id"));
     }
 }

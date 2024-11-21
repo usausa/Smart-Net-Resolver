@@ -19,7 +19,7 @@ public sealed class SmartResolver : IResolver, IKernel
 
     private readonly ThreadsafeTypeHashArrayMap<Action<IResolver, object>[]> injectorsCache = new();
 
-    private readonly Func<IResolver, object> nullFactory = _ => default!;
+    private readonly Func<IResolver, object> nullFactory = static _ => default!;
 
     private readonly object sync = new();
 
