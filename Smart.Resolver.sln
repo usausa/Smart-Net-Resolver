@@ -18,6 +18,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		LICENSE = LICENSE
 		README.md = README.md
 		Smart.Resolver.sln.DotSettings = Smart.Resolver.sln.DotSettings
+		test.runsettings = test.runsettings
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Smart.Resolver.Benchmark", "Smart.Resolver.Benchmark\Smart.Resolver.Benchmark.csproj", "{1D14E0F7-7C89-4B1C-B38B-D30FCD89DAB4}"
