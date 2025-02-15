@@ -1,0 +1,11 @@
+<Solution>
+  <Project Path="BuilderBenchmark/BuilderBenchmark.csproj" />
+  <Project Path="CombineComplexBenchmark/CombineComplexBenchmark.csproj" />
+  <Project Path="ComplexFactoryBenchmark/ComplexFactoryBenchmark.csproj" />
+  <Project Path="FactoryBenchmark/FactoryBenchmark.csproj" />
+  <Project Path="FuncBenchmark/FuncBenchmark.csproj" />
+  <Project Path="ReflectionNewBenchmark/ReflectionNewBenchmark.csproj" />
+  <Project Path="ScopeBenchmark/ScopeBenchmark.csproj" />
+  <Project Path="TypedFactoryBenchmark/TypedFactoryBenchmark.csproj" />
+  <Project Path="TypedFuncCacheBenchmark/TypedFuncCacheBenchmark.csproj" />
+</Solution>

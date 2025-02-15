@@ -1,0 +1,28 @@
+<Solution>
+  <Folder Name="/Solution Items/">
+    <File Path=".editorconfig" />
+    <File Path=".gitattributes" />
+    <File Path=".gitignore" />
+    <File Path="Analyzers.ruleset" />
+    <File Path="Directory.Build.props" />
+    <File Path="Directory.Build.targets" />
+    <File Path="LICENSE" />
+    <File Path="README.md" />
+    <File Path="Smart.Resolver.sln.DotSettings" />
+    <File Path="test.runsettings" />
+  </Folder>
+  <Folder Name="/Library/">
+    <Project Path="Smart.Resolver.Extensions.Configuration/Smart.Resolver.Extensions.Configuration.csproj" />
+    <Project Path="Smart.Resolver.Extensions.DependencyInjection/Smart.Resolver.Extensions.DependencyInjection.csproj" />
+    <Project Path="Smart.Resolver/Smart.Resolver.csproj" />
+  </Folder>
+  <Folder Name="/Test/">
+    <Project Path="Smart.Resolver.Tests/Smart.Resolver.Tests.csproj" />
+  </Folder>
+  <Folder Name="/Benchmark/">
+    <Project Path="Smart.Resolver.Benchmark/Smart.Resolver.Benchmark.csproj" />
+  </Folder>
+  <Folder Name="/Example/">
+    <Project Path="Example.WebApplication/Example.WebApplication.csproj" />
+  </Folder>
+</Solution>
