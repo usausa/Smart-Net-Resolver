@@ -37,7 +37,31 @@ internal sealed class TypeConstraintHashArray<T>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private static int CalculateHash(Type type, object? key)
     {
-        return type.GetHashCode() ^ (key?.GetHashCode() ?? 0);
+        return type.GetHashCode() ^ CalcKeyHash(key);
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private static int CalcKeyHash(object? key)
+    {
+        if (key is string str)
+        {
+            unchecked
+            {
+                var hash = 2166136261u;
+                foreach (var c in str)
+                {
+                    hash = (c ^ hash) * 16777619;
+                }
+                return (int)hash;
+            }
+        }
+
+        if (key is null)
+        {
+            return 0;
+        }
+
+        return key.GetHashCode();
     }
 
     private static int CalculateDepth(Node node)
