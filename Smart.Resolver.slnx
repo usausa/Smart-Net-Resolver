@@ -4,12 +4,12 @@
     <File Path=".gitattributes" />
     <File Path=".gitignore" />
     <File Path="Analyzers.ruleset" />
+    <File Path="CodeCoverage.runsettings" />
     <File Path="Directory.Build.props" />
     <File Path="Directory.Build.targets" />
     <File Path="LICENSE" />
     <File Path="README.md" />
     <File Path="Smart.Resolver.sln.DotSettings" />
-    <File Path="test.runsettings" />
   </Folder>
   <Folder Name="/Library/">
     <Project Path="Smart.Resolver.Extensions.Configuration/Smart.Resolver.Extensions.Configuration.csproj" />
