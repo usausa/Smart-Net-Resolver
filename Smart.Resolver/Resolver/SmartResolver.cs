@@ -293,7 +293,7 @@ public sealed class SmartResolver : IResolver, IKernel
         var binding = new Binding(type, null!);
         return injectors
             .Select(x => x.CreateInjector(type, binding))
-            .ExcludeNull()
+            .WhereNotNull()
             .ToArray();
     }
 
