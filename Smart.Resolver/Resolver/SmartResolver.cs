@@ -21,7 +21,11 @@ public sealed class SmartResolver : IResolver, IKernel
 
     private readonly Func<IResolver, object> nullFactory = static _ => default!;
 
+#if NET9_0_OR_GREATER
+    private readonly Lock sync = new();
+#else
     private readonly object sync = new();
+#endif
 
     private readonly BindingTable table;
 

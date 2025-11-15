@@ -118,7 +118,11 @@ public sealed class EmitFactoryBuilder : IFactoryBuilder
 
     private sealed class HolderBuilder
     {
+#if NET9_0_OR_GREATER
+        private readonly Lock sync = new();
+#else
         private readonly object sync = new();
+#endif
 
         private readonly Dictionary<Tuple<int, int>, Type> cache = [];
 

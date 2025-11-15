@@ -13,7 +13,11 @@ internal sealed class TypeConstraintHashArray<T>
 
     private static readonly Node EmptyNode = new(typeof(EmptyKey), null!, default!);
 
+#if NET9_0_OR_GREATER
+    private readonly Lock sync = new();
+#else
     private readonly object sync = new();
+#endif
 
     private Node[] nodes;
 
