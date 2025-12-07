@@ -402,7 +402,7 @@ public static class ResolverBindExtensions
         return config;
     }
 
-    public static ResolverConfig BindTBindKeyedTransient<TService>(
+    public static ResolverConfig BindKeyedTransient<TService>(
         this ResolverConfig config,
         object? serviceKey,
         Func<IResolver, TService> factory)
