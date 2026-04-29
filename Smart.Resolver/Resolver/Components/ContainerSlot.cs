@@ -1,5 +1,7 @@
 namespace Smart.Resolver.Components;
 
+using System.Runtime.CompilerServices;
+
 internal sealed class ContainerSlot
 {
 #if NET9_0_OR_GREATER
@@ -10,11 +12,12 @@ internal sealed class ContainerSlot
 
     private object?[] entries = new object?[8];
 
+    [MethodImpl(MethodImplOptions.AggressiveOptimization)]
     public object GetOrCreate(int index, Func<object> factory)
     {
         lock (sync)
         {
-            if (index < entries.Length)
+            if ((uint)index < (uint)entries.Length)
             {
                 var obj = entries[index];
                 if (obj is null)
@@ -40,7 +43,7 @@ internal sealed class ContainerSlot
     private void Grow(int index)
     {
         var newEntries = new object[((index >> 3) << 3) + 8];
-        Array.Copy(entries, 0, newEntries, 0, entries.Length);
+        entries.CopyTo(newEntries, 0);
         entries = newEntries;
     }
 

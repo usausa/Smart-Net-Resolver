@@ -112,12 +112,7 @@ internal sealed class TypeConstraintHashArray<T>
     private static Node[] CreateInitialTable()
     {
         var newNodes = new Node[InitialSize];
-
-        for (var i = 0; i < newNodes.Length; i++)
-        {
-            newNodes[i] = EmptyNode;
-        }
-
+        Array.Fill(newNodes, EmptyNode);
         return newNodes;
     }
 
@@ -174,10 +169,7 @@ internal sealed class TypeConstraintHashArray<T>
         if (size > nodes.Length)
         {
             var newNodes = new Node[size];
-            for (var i = 0; i < newNodes.Length; i++)
-            {
-                newNodes[i] = EmptyNode;
-            }
+            Array.Fill(newNodes, EmptyNode);
 
             RelocateNodes(newNodes, nodes);
 
@@ -231,11 +223,12 @@ internal sealed class TypeConstraintHashArray<T>
         }
     }
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
     public bool TryGetValue(Type type, object? key, [MaybeNullWhen(false)] out T value)
     {
         var temp = nodes;
-        var node = temp[CalculateHash(type, key) & (temp.Length - 1)];
+        var index = CalculateHash(type, key) & (temp.Length - 1);
+        var node = temp[index];
         do
         {
             if (node.Match(type, key))
