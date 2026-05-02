@@ -2,6 +2,7 @@ namespace Smart.Resolver;
 
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
+using System.Numerics;
 using System.Runtime.CompilerServices;
 
 [DebuggerDisplay("{" + nameof(Diagnostics) + "}")]
@@ -41,7 +42,7 @@ internal sealed class TypeConstraintHashArray<T>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private static int CalculateHash(Type type, object? key)
     {
-        return type.GetHashCode() ^ CalcKeyHash(key);
+        return (int)(BitOperations.RotateLeft((uint)type.GetHashCode(), 16) ^ (uint)CalcKeyHash(key));
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -99,20 +100,13 @@ internal sealed class TypeConstraintHashArray<T>
 
     private static int CalculateSize(int requestSize)
     {
-        uint size = 0;
-
-        for (var i = 1L; i < requestSize; i *= 2)
-        {
-            size = (size << 1) + 1;
-        }
-
-        return (int)(size + 1);
+        return (int)BitOperations.RoundUpToPowerOf2((uint)requestSize);
     }
 
     private static Node[] CreateInitialTable()
     {
         var newNodes = new Node[InitialSize];
-        Array.Fill(newNodes, EmptyNode);
+        newNodes.AsSpan().Fill(EmptyNode);
         return newNodes;
     }
 
@@ -139,9 +133,10 @@ internal sealed class TypeConstraintHashArray<T>
         }
     }
 
-    private static void RelocateNodes(Node[] nodes, Node[] oldNodes)
+    private static void RelocateNodes(Node[] nodes, Node[] oldNodes, int count)
     {
-        for (var i = 0; i < oldNodes.Length; i++)
+        var remaining = count;
+        for (var i = 0; (i < oldNodes.Length) && (remaining > 0); i++)
         {
             var node = oldNodes[i];
             if (node == EmptyNode)
@@ -157,6 +152,7 @@ internal sealed class TypeConstraintHashArray<T>
                 UpdateLink(ref nodes[CalculateHash(node.Type, node.Key) & (nodes.Length - 1)], node);
 
                 node = next;
+                remaining--;
             }
             while (node is not null);
         }
@@ -169,9 +165,9 @@ internal sealed class TypeConstraintHashArray<T>
         if (size > nodes.Length)
         {
             var newNodes = new Node[size];
-            Array.Fill(newNodes, EmptyNode);
+            newNodes.AsSpan().Fill(EmptyNode);
 
-            RelocateNodes(newNodes, nodes);
+            RelocateNodes(newNodes, nodes, count);
 
             UpdateLink(ref newNodes[CalculateHash(node.Type, node.Key) & (newNodes.Length - 1)], node);
 
@@ -223,12 +219,13 @@ internal sealed class TypeConstraintHashArray<T>
         }
     }
 
+    [SkipLocalsInit]
     [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
     public bool TryGetValue(Type type, object? key, [MaybeNullWhen(false)] out T value)
     {
         var temp = nodes;
-        var index = CalculateHash(type, key) & (temp.Length - 1);
-        var node = temp[index];
+        var hash = CalculateHash(type, key);
+        var node = temp[hash & (temp.Length - 1)];
         do
         {
             if (node.Match(type, key))

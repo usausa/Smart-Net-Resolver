@@ -119,7 +119,7 @@ public sealed class SmartResolver : IResolver, IKernel
         var entry = FindFactoryEntry(typeof(T));
         if (entry.CanGet)
         {
-            obj = (T)entry.Single(this);
+            obj = UnsafeCast<T>(entry.Single(this));
             return true;
         }
 
@@ -133,7 +133,7 @@ public sealed class SmartResolver : IResolver, IKernel
         var entry = FindFactoryEntry(typeof(T), key);
         if (entry.CanGet)
         {
-            obj = (T)entry.Single(this);
+            obj = UnsafeCast<T>(entry.Single(this));
             return true;
         }
 
@@ -172,10 +172,10 @@ public sealed class SmartResolver : IResolver, IKernel
     // Get
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public T Get<T>() => (T)FindFactoryEntry(typeof(T)).Single(this);
+    public T Get<T>() => UnsafeCast<T>(FindFactoryEntry(typeof(T)).Single(this));
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public T Get<T>(object? key) => (T)FindFactoryEntry(typeof(T), key).Single(this);
+    public T Get<T>(object? key) => UnsafeCast<T>(FindFactoryEntry(typeof(T), key).Single(this));
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public object Get(Type type) => FindFactoryEntry(type).Single(this);
@@ -186,20 +186,33 @@ public sealed class SmartResolver : IResolver, IKernel
     // GetAll
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public IEnumerable<T> GetAll<T>() => FindFactoryEntry(typeof(T)).Multiple.Select(x => (T)x(this));
+    public IEnumerable<T> GetAll<T>() => FindFactoryEntry(typeof(T)).Multiple.Select(x => UnsafeCast<T>(x(this)));
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public IEnumerable<T> GetAll<T>(object? key) => FindFactoryEntry(typeof(T), key).Multiple.Select(x => (T)x(this));
+    public IEnumerable<T> GetAll<T>(object? key) => FindFactoryEntry(typeof(T), key).Multiple.Select(x => UnsafeCast<T>(x(this)));
 
     public IEnumerable<object> GetAll(Type type) => FindFactoryEntry(type).Multiple.Select(x => x(this));
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public IEnumerable<object> GetAll(Type type, object? key) => FindFactoryEntry(type, key).Multiple.Select(x => x(this));
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private static T UnsafeCast<T>(object obj)
+    {
+        if (typeof(T).IsValueType)
+        {
+            return (T)obj;
+        }
+
+        ref var r = ref Unsafe.As<object, T>(ref obj);
+        return r;
+    }
+
     // ------------------------------------------------------------
     // Binding
     // ------------------------------------------------------------
 
+    [SkipLocalsInit]
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     internal FactoryEntry FindFactoryEntry(Type type)
     {
@@ -211,6 +224,7 @@ public sealed class SmartResolver : IResolver, IKernel
         return entry;
     }
 
+    [SkipLocalsInit]
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     internal FactoryEntry FindFactoryEntry(Type type, object? key)
     {

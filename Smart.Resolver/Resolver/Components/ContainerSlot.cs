@@ -1,6 +1,7 @@
 namespace Smart.Resolver.Components;
 
 using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 
 internal sealed class ContainerSlot
 {
@@ -12,18 +13,21 @@ internal sealed class ContainerSlot
 
     private object?[] entries = new object?[8];
 
+    [SkipLocalsInit]
     [MethodImpl(MethodImplOptions.AggressiveOptimization)]
     public object GetOrCreate(int index, Func<object> factory)
     {
         lock (sync)
         {
-            if ((uint)index < (uint)entries.Length)
+            var entriesLocal = entries;
+            if ((uint)index < (uint)entriesLocal.Length)
             {
-                var obj = entries[index];
+                ref var slot = ref Unsafe.Add(ref MemoryMarshal.GetArrayDataReference(entriesLocal), index);
+                var obj = slot;
                 if (obj is null)
                 {
                     obj = factory();
-                    entries[index] = obj;
+                    slot = obj;
                 }
 
                 return obj;
@@ -42,8 +46,8 @@ internal sealed class ContainerSlot
 
     private void Grow(int index)
     {
-        var newEntries = new object[((index >> 3) << 3) + 8];
-        entries.CopyTo(newEntries, 0);
+        var newEntries = new object?[((index >> 3) << 3) + 8];
+        entries.AsSpan().CopyTo(newEntries);
         entries = newEntries;
     }
 
@@ -51,12 +55,12 @@ internal sealed class ContainerSlot
     {
         lock (sync)
         {
-            foreach (var entry in entries)
+            foreach (var entry in entries.AsSpan())
             {
                 (entry as IDisposable)?.Dispose();
             }
 
-            Array.Clear(entries, 0, entries.Length);
+            entries.AsSpan().Clear();
         }
     }
 }

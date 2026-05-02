@@ -59,7 +59,7 @@ public sealed class SmartChildResolver : IResolver, IContainer
         var entry = resolver.FindFactoryEntry(this, typeof(T));
         if (entry.CanGet)
         {
-            obj = (T)entry.Single(this);
+            obj = UnsafeCast<T>(entry.Single(this));
             return true;
         }
 
@@ -73,7 +73,7 @@ public sealed class SmartChildResolver : IResolver, IContainer
         var entry = resolver.FindFactoryEntry(this, typeof(T), key);
         if (entry.CanGet)
         {
-            obj = (T)entry.Single(this);
+            obj = UnsafeCast<T>(entry.Single(this));
             return true;
         }
 
@@ -112,10 +112,10 @@ public sealed class SmartChildResolver : IResolver, IContainer
     // Get
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public T Get<T>() => (T)resolver.FindFactoryEntry(this, typeof(T)).Single(this);
+    public T Get<T>() => UnsafeCast<T>(resolver.FindFactoryEntry(this, typeof(T)).Single(this));
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public T Get<T>(object? key) => (T)resolver.FindFactoryEntry(this, typeof(T), key).Single(this);
+    public T Get<T>(object? key) => UnsafeCast<T>(resolver.FindFactoryEntry(this, typeof(T), key).Single(this));
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public object Get(Type type) => resolver.FindFactoryEntry(this, type).Single(this);
@@ -126,10 +126,10 @@ public sealed class SmartChildResolver : IResolver, IContainer
     // GetAll
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public IEnumerable<T> GetAll<T>() => resolver.FindFactoryEntry(this, typeof(T)).Multiple.Select(x => (T)x(this));
+    public IEnumerable<T> GetAll<T>() => resolver.FindFactoryEntry(this, typeof(T)).Multiple.Select(x => UnsafeCast<T>(x(this)));
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public IEnumerable<T> GetAll<T>(object? key) => resolver.FindFactoryEntry(this, typeof(T), key).Multiple.Select(x => (T)x(this));
+    public IEnumerable<T> GetAll<T>(object? key) => resolver.FindFactoryEntry(this, typeof(T), key).Multiple.Select(x => UnsafeCast<T>(x(this)));
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public IEnumerable<object> GetAll(Type type) => resolver.FindFactoryEntry(this, type).Multiple.Select(x => x(this));
@@ -145,6 +145,20 @@ public sealed class SmartChildResolver : IResolver, IContainer
         {
             actions[i](this, instance);
         }
+    }
+
+    // Helper
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private static T UnsafeCast<T>(object obj)
+    {
+        if (typeof(T).IsValueType)
+        {
+            return (T)obj;
+        }
+
+        ref var r = ref Unsafe.As<object, T>(ref obj);
+        return r;
     }
 
     // IServiceProvider

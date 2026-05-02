@@ -422,6 +422,27 @@ WarmupCount=10
 | MultipleTransient |  91.725 ns | 0.8332 ns | 1.2471 ns | 89.852 ns |  94.266 ns |  93.480 ns | 0.0110 |     184 B |
 | AspNet            | 101.012 ns | 0.8376 ns | 1.1465 ns | 99.009 ns | 103.599 ns | 102.215 ns | 0.0153 |     256 B |
 
+```
+BenchmarkDotNet v0.15.8, Windows 11 (10.0.26200.8246/25H2/2025Update/HudsonValley2)
+AMD Ryzen 9 5900X 3.70GHz, 1 CPU, 24 logical and 12 physical cores
+.NET SDK 10.0.202
+  [Host]    : .NET 10.0.6 (10.0.6, 10.0.626.17701), X64 RyuJIT x86-64-v3
+  MediumRun : .NET 10.0.6 (10.0.6, 10.0.626.17701), X64 RyuJIT x86-64-v3
+
+Job=MediumRun  Jit=RyuJit  Platform=X64  
+IterationCount=15  LaunchCount=2  WarmupCount=10  
+```
+| Method            | Mean      | Error     | StdDev    | Min       | Max       | P90       | Gen0   | Allocated |
+|------------------ |----------:|----------:|----------:|----------:|----------:|----------:|-------:|----------:|
+| Singleton         |  2.148 ns | 0.0388 ns | 0.0580 ns |  2.074 ns |  2.276 ns |  2.231 ns |      - |         - |
+| Transient         | 11.277 ns | 1.0863 ns | 1.6259 ns |  8.806 ns | 13.285 ns | 13.101 ns | 0.0014 |      24 B |
+| Combined          | 21.712 ns | 0.4666 ns | 0.6984 ns | 20.563 ns | 22.807 ns | 22.546 ns | 0.0014 |      24 B |
+| Complex           | 37.988 ns | 1.0547 ns | 1.5460 ns | 36.125 ns | 41.611 ns | 40.078 ns | 0.0081 |     136 B |
+| Generics          |  4.390 ns | 0.2015 ns | 0.3016 ns |  3.988 ns |  4.995 ns |  4.810 ns | 0.0014 |      24 B |
+| MultipleSingleton |  2.184 ns | 0.0384 ns | 0.0562 ns |  2.098 ns |  2.303 ns |  2.264 ns |      - |         - |
+| MultipleTransient | 38.818 ns | 0.8019 ns | 1.2003 ns | 36.903 ns | 41.126 ns | 40.289 ns | 0.0110 |     184 B |
+| AspNet            | 85.339 ns | 2.4725 ns | 3.7007 ns | 80.815 ns | 92.325 ns | 90.795 ns | 0.0153 |     256 B |
+
 ## Unsupported
 
 * AOP( ﾟдﾟ)､ﾍﾟｯ
