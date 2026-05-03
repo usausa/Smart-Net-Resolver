@@ -98,6 +98,26 @@ internal sealed class TypeConstraintHashArray<T>
         return depth;
     }
 
+    private static int CalculateCount(Node[] targetNodes)
+    {
+        var count = 0;
+        for (var i = 0; i < targetNodes.Length; i++)
+        {
+            var node = targetNodes[i];
+            if (node != EmptyNode)
+            {
+                do
+                {
+                    count++;
+                    node = node.Next;
+                }
+                while (node is not null);
+            }
+        }
+
+        return count;
+    }
+
     private static int CalculateSize(int requestSize)
     {
         return (int)BitOperations.RoundUpToPowerOf2((uint)requestSize);
@@ -133,47 +153,46 @@ internal sealed class TypeConstraintHashArray<T>
         }
     }
 
-    private static void RelocateNodes(Node[] nodes, Node[] oldNodes, int count)
+    private static void RelocateNodes(Node[] newNodes, Node[] oldNodes, int count)
     {
         var remaining = count;
         for (var i = 0; (i < oldNodes.Length) && (remaining > 0); i++)
         {
-            var node = oldNodes[i];
-            if (node == EmptyNode)
+            var current = oldNodes[i];
+            if (current == EmptyNode)
             {
                 continue;
             }
 
             do
             {
-                var next = node.Next;
-                node.Next = null;
+                UpdateLink(ref newNodes[CalculateHash(current.Type, current.Key) & (newNodes.Length - 1)], new Node(current.Type, current.Key, current.Value));
 
-                UpdateLink(ref nodes[CalculateHash(node.Type, node.Key) & (nodes.Length - 1)], node);
-
-                node = next;
+                current = current.Next;
                 remaining--;
             }
-            while (node is not null);
+            while (current is not null);
         }
     }
 
     private void AddNode(Node node)
     {
+        var currentNodes = nodes;
+
         var requestSize = Math.Max(InitialSize, (count + 1) * Factor);
         var size = CalculateSize(requestSize);
-        if (size > nodes.Length)
+        if (size > currentNodes.Length)
         {
             var newNodes = new Node[size];
             newNodes.AsSpan().Fill(EmptyNode);
 
-            RelocateNodes(newNodes, nodes, count);
+            RelocateNodes(newNodes, currentNodes, count);
 
             UpdateLink(ref newNodes[CalculateHash(node.Type, node.Key) & (newNodes.Length - 1)], node);
 
             nodes = newNodes;
             depth = CalculateDepth(newNodes);
-            count++;
+            count = CalculateCount(newNodes);
         }
         else
         {
@@ -181,9 +200,9 @@ internal sealed class TypeConstraintHashArray<T>
 
             var hash = CalculateHash(node.Type, node.Key);
 
-            UpdateLink(ref nodes[hash & (nodes.Length - 1)], node);
+            UpdateLink(ref currentNodes[hash & (currentNodes.Length - 1)], node);
 
-            depth = Math.Max(CalculateDepth(nodes[hash & (nodes.Length - 1)]), depth);
+            depth = Math.Max(CalculateDepth(currentNodes[hash & (currentNodes.Length - 1)]), depth);
             count++;
         }
     }
