@@ -20,7 +20,7 @@ internal sealed class TypeConstraintHashArray<T>
     private readonly object sync = new();
 #endif
 
-    private Node[] nodes;
+    private volatile Node[] nodes;
 
     private int depth;
 
@@ -171,8 +171,6 @@ internal sealed class TypeConstraintHashArray<T>
 
             UpdateLink(ref newNodes[CalculateHash(node.Type, node.Key) & (newNodes.Length - 1)], node);
 
-            Interlocked.MemoryBarrier();
-
             nodes = newNodes;
             depth = CalculateDepth(newNodes);
             count++;
@@ -210,8 +208,6 @@ internal sealed class TypeConstraintHashArray<T>
         lock (sync)
         {
             var newNodes = CreateInitialTable();
-
-            Interlocked.MemoryBarrier();
 
             nodes = newNodes;
             depth = 0;
