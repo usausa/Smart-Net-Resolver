@@ -412,14 +412,14 @@ IterationCount=15  LaunchCount=2  WarmupCount=10
 ```
 | Method            | Mean      | Error     | StdDev    | Min       | Max       | P90       | Gen0   | Allocated |
 |------------------ |----------:|----------:|----------:|----------:|----------:|----------:|-------:|----------:|
-| Singleton         |  2.148 ns | 0.0388 ns | 0.0580 ns |  2.074 ns |  2.276 ns |  2.231 ns |      - |         - |
-| Transient         | 11.277 ns | 1.0863 ns | 1.6259 ns |  8.806 ns | 13.285 ns | 13.101 ns | 0.0014 |      24 B |
-| Combined          | 21.712 ns | 0.4666 ns | 0.6984 ns | 20.563 ns | 22.807 ns | 22.546 ns | 0.0014 |      24 B |
-| Complex           | 37.988 ns | 1.0547 ns | 1.5460 ns | 36.125 ns | 41.611 ns | 40.078 ns | 0.0081 |     136 B |
-| Generics          |  4.390 ns | 0.2015 ns | 0.3016 ns |  3.988 ns |  4.995 ns |  4.810 ns | 0.0014 |      24 B |
-| MultipleSingleton |  2.184 ns | 0.0384 ns | 0.0562 ns |  2.098 ns |  2.303 ns |  2.264 ns |      - |         - |
-| MultipleTransient | 38.818 ns | 0.8019 ns | 1.2003 ns | 36.903 ns | 41.126 ns | 40.289 ns | 0.0110 |     184 B |
-| AspNet            | 85.339 ns | 2.4725 ns | 3.7007 ns | 80.815 ns | 92.325 ns | 90.795 ns | 0.0153 |     256 B |
+| Singleton         |  2.121 ns | 0.0306 ns | 0.0458 ns |  2.061 ns |  2.262 ns |  2.180 ns |      - |         - |
+| Transient         | 12.752 ns | 0.9961 ns | 1.4600 ns | 11.022 ns | 14.951 ns | 14.481 ns | 0.0014 |      24 B |
+| Combined          | 21.474 ns | 0.2398 ns | 0.3588 ns | 20.795 ns | 22.366 ns | 21.935 ns | 0.0014 |      24 B |
+| Complex           | 33.642 ns | 0.3751 ns | 0.5380 ns | 32.895 ns | 34.699 ns | 34.433 ns | 0.0081 |     136 B |
+| Generics          |  3.819 ns | 0.0658 ns | 0.0985 ns |  3.699 ns |  4.132 ns |  3.926 ns | 0.0014 |      24 B |
+| MultipleSingleton |  2.145 ns | 0.0396 ns | 0.0593 ns |  2.067 ns |  2.280 ns |  2.212 ns |      - |         - |
+| MultipleTransient | 38.031 ns | 1.5301 ns | 2.2901 ns | 35.366 ns | 45.711 ns | 40.442 ns | 0.0110 |     184 B |
+| AspNet            | 80.771 ns | 0.8595 ns | 1.2864 ns | 78.424 ns | 82.946 ns | 82.537 ns | 0.0153 |     256 B |
 
 ## Unsupported
 
