@@ -26,7 +26,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Smart.Resolver\Smart.Resolver.csproj" />
-    <ProjectReference Include="..\Smart.Resolver.Configuration\Smart.Resolver.Configuration.csproj" />
   </ItemGroup>
 
 </Project>
