@@ -33,23 +33,23 @@ internal static class DefinitionApplier
         int index,
         Func<string, Type> resolveType)
     {
-        if (String.IsNullOrWhiteSpace(binding.ServiceType))
+        if (String.IsNullOrWhiteSpace(binding.Service))
         {
-            throw new ResolverDefinitionException(index, "ServiceType", "ServiceType is required.");
+            throw new ResolverDefinitionException(index, "Service", "Service is required.");
         }
 
         Type serviceType;
         try
         {
-            serviceType = resolveType(binding.ServiceType);
+            serviceType = resolveType(binding.Service);
         }
         catch (Exception ex)
         {
-            throw new ResolverDefinitionException(index, "ServiceType", $"Type could not be resolved. type=[{binding.ServiceType}].", ex);
+            throw new ResolverDefinitionException(index, "Service", $"Type could not be resolved. type=[{binding.Service}].", ex);
         }
 
         // To
-        var toSyntax = binding.TargetKind switch
+        var toSyntax = binding.BindingTarget switch
         {
             BindingTargetKind.Self => config.Bind(serviceType).ToSelf(),
             BindingTargetKind.Type => ResolveTypeTo(config, binding, index, serviceType, resolveType),
@@ -66,8 +66,8 @@ internal static class DefinitionApplier
         };
 
         // Constraint
-        var withSyntax = binding.ConstraintKey is not null ?
-            constraintSyntax.Constraint(new KeyConstraint(binding.ConstraintKey)) :
+        var withSyntax = binding.Key is not null ?
+            constraintSyntax.Constraint(new KeyConstraint(binding.Key)) :
             constraintSyntax;
 
         // Metadata
@@ -86,12 +86,22 @@ internal static class DefinitionApplier
         }
 
         // ConstructorArguments
-        withSyntax = ApplyParameters(withSyntax, binding.ConstructorArguments, "ConstructorArguments", index, resolveType,
+        withSyntax = ApplyParameters(
+            withSyntax,
+            binding.ConstructorArguments,
+            "ConstructorArguments",
+            index,
+            resolveType,
             static (s, n, v) => s.WithConstructorArgument(n, v),
             static (s, n, f) => s.WithConstructorArgument(n, f));
 
         // PropertyValues
-        ApplyParameters(withSyntax, binding.PropertyValues, "PropertyValues", index, resolveType,
+        ApplyParameters(
+            withSyntax,
+            binding.PropertyValues,
+            "PropertyValues",
+            index,
+            resolveType,
             static (s, n, v) => s.WithPropertyValue(n, v),
             static (s, n, f) => s.WithPropertyValue(n, f));
     }
@@ -107,19 +117,19 @@ internal static class DefinitionApplier
         Type serviceType,
         Func<string, Type> resolveType)
     {
-        if (binding.ImplementationType is null)
+        if (binding.Implementation is null)
         {
-            throw new ResolverDefinitionException(index, "ImplementationType", "ImplementationType is required when TargetKind is Type.");
+            throw new ResolverDefinitionException(index, "Implementation", "Implementation is required when BindingTarget is Type.");
         }
 
         try
         {
-            var type = resolveType(binding.ImplementationType);
+            var type = resolveType(binding.Implementation);
             return config.Bind(serviceType).To(type);
         }
         catch (Exception ex)
         {
-            throw new ResolverDefinitionException(index, "ImplementationType", $"Type could not be resolved. type=[{binding.ImplementationType}].", ex);
+            throw new ResolverDefinitionException(index, "Implementation", $"Type could not be resolved. type=[{binding.Implementation}].", ex);
         }
     }
 
@@ -130,16 +140,16 @@ internal static class DefinitionApplier
         Type serviceType,
         Func<string, Type> resolveType)
     {
-        if (binding.ConstantValue is null)
+        if (binding.Constant is null)
         {
-            throw new ResolverDefinitionException(index, "ConstantValue", "ConstantValue is required when TargetKind is Constant.");
+            throw new ResolverDefinitionException(index, "Constant", "Constant is required when BindingTarget is Constant.");
         }
 
-        var targetType = binding.ConstantValueType is not null
-            ? ResolveValueType(resolveType, binding.ConstantValueType, index, "ConstantValueType")
+        var targetType = binding.ConstantType is not null
+            ? ResolveValueType(resolveType, binding.ConstantType, index, "ConstantType")
             : serviceType;
 
-        var converted = ConvertValue(binding.ConstantValue, targetType, index, "ConstantValue");
+        var converted = ConvertValue(binding.Constant, targetType, index, "Constant");
         return config.Bind(serviceType).ToConstant(converted);
     }
 

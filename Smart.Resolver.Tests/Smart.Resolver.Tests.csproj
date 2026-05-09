@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net10.0</TargetFramework>
@@ -26,6 +26,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Smart.Resolver\Smart.Resolver.csproj" />
+    <ProjectReference Include="..\Smart.Resolver.Configuration\Smart.Resolver.Configuration.csproj" />
   </ItemGroup>
 
 </Project>

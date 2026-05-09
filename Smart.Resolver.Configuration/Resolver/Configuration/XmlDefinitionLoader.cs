@@ -32,16 +32,16 @@ internal static class XmlDefinitionLoader
     {
         return new BindingDefinition
         {
-            ServiceType = element.Attribute("serviceType")?.Value ?? string.Empty,
-            TargetKind = ParseEnum(element.Attribute("targetKind")?.Value, BindingTargetKind.Type),
-            ImplementationType = element.Attribute("implementationType")?.Value,
-            ConstantValue = element.Attribute("constantValue")?.Value,
-            ConstantValueType = element.Attribute("constantValueType")?.Value,
+            Key = element.Attribute("key")?.Value,
             Scope = ParseEnum(element.Attribute("scope")?.Value, ScopeKind.Transient),
-            ConstraintKey = element.Attribute("constraintKey")?.Value,
-            Metadata = element.Elements("metadata").Select(ParseMetadata).ToList(),
+            BindingTarget = ParseEnum(element.Attribute("bindingTarget")?.Value, BindingTargetKind.Type),
+            Service = element.Attribute("service")?.Value ?? string.Empty,
+            Implementation = element.Attribute("implementation")?.Value,
+            Constant = element.Attribute("constant")?.Value,
+            ConstantType = element.Attribute("constantType")?.Value,
             ConstructorArguments = element.Elements("constructorArgument").Select(ParseParameter).ToList(),
-            PropertyValues = element.Elements("propertyValue").Select(ParseParameter).ToList()
+            PropertyValues = element.Elements("propertyValue").Select(ParseParameter).ToList(),
+            Metadata = element.Elements("metadata").Select(ParseMetadata).ToList()
         };
     }
 
