@@ -29,4 +29,11 @@ public sealed class ResolverDefinitionException : Exception
         BindingIndex = bindingIndex;
         FieldName = fieldName;
     }
+
+    public ResolverDefinitionException(int bindingIndex, string fieldName, string message, Exception innerException)
+        : base($"[Binding #{bindingIndex}] {fieldName}: {message}", innerException)
+    {
+        BindingIndex = bindingIndex;
+        FieldName = fieldName;
+    }
 }

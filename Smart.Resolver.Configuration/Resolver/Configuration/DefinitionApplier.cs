@@ -45,69 +45,59 @@ internal static class DefinitionApplier
         }
         catch (Exception ex)
         {
-            throw new ResolverDefinitionException(index, "ServiceType",
-                $"Type '{binding.ServiceType}' could not be resolved. ({ex.Message})");
+            throw new ResolverDefinitionException(index, "ServiceType", $"Type could not be resolved. type=[{binding.ServiceType}].", ex);
         }
 
-        // --- To ---
-#pragma warning disable IDE0007
-        IBindingInConstraintWithSyntax toSyntax = binding.TargetKind switch
-#pragma warning restore IDE0007
+        // To
+        var toSyntax = binding.TargetKind switch
         {
             BindingTargetKind.Self => config.Bind(serviceType).ToSelf(),
             BindingTargetKind.Type => ResolveTypeTo(config, binding, index, serviceType, resolveType),
             BindingTargetKind.Constant => ResolveConstantTo(config, binding, index, serviceType, resolveType),
-            _ => config.Bind(serviceType).ToSelf(),
+            _ => config.Bind(serviceType).ToSelf()
         };
 
-        // --- In (Scope) ---
-#pragma warning disable IDE0007
-        IBindingConstraintWithSyntax constraintSyntax = binding.Scope switch
-#pragma warning restore IDE0007
+        // In (Scope)
+        var constraintSyntax = binding.Scope switch
         {
             ScopeKind.Singleton => toSyntax.InSingletonScope(),
             ScopeKind.Container => toSyntax.InContainerScope(),
-            _ => toSyntax.InTransientScope(),
+            _ => toSyntax.InTransientScope()
         };
 
-        // --- Constraint ---
-        IBindingWithSyntax withSyntax;
-        if (binding.ConstraintKey is not null)
-        {
-            withSyntax = constraintSyntax.Constraint(new KeyConstraint(binding.ConstraintKey));
-        }
-        else
-        {
-            withSyntax = constraintSyntax;
-        }
+        // Constraint
+        var withSyntax = binding.ConstraintKey is not null ?
+            constraintSyntax.Constraint(new KeyConstraint(binding.ConstraintKey)) :
+            constraintSyntax;
 
-        // --- Metadata ---
-        for (var m = 0; m < binding.Metadata.Count; m++)
+        // Metadata
+        for (var i = 0; i < binding.Metadata.Count; i++)
         {
-            var entry = binding.Metadata[m];
+            var entry = binding.Metadata[i];
             if (String.IsNullOrWhiteSpace(entry.Key))
             {
-                throw new ResolverDefinitionException(index, $"Metadata[{m}].Key", "Key is required.");
+                throw new ResolverDefinitionException(index, $"Metadata[{i}].Key", "Key is required.");
             }
 
-            object? metaValue = entry.ValueType is not null
-                ? ConvertValue(entry.Value, ResolveValueType(resolveType, entry.ValueType, index, $"Metadata[{m}].ValueType"), index, $"Metadata[{m}].Value")
+            var metaValue = entry.ValueType is not null
+                ? ConvertValue(entry.Value, ResolveValueType(resolveType, entry.ValueType, index, $"Metadata[{i}].ValueType"), index, $"Metadata[{i}].Value")
                 : entry.Value;
             withSyntax = withSyntax.WithMetadata(entry.Key, metaValue);
         }
 
-        // --- ConstructorArguments ---
+        // ConstructorArguments
         withSyntax = ApplyParameters(withSyntax, binding.ConstructorArguments, "ConstructorArguments", index, resolveType,
             static (s, n, v) => s.WithConstructorArgument(n, v),
             static (s, n, f) => s.WithConstructorArgument(n, f));
 
-        // --- PropertyValues ---
+        // PropertyValues
         ApplyParameters(withSyntax, binding.PropertyValues, "PropertyValues", index, resolveType,
             static (s, n, v) => s.WithPropertyValue(n, v),
             static (s, n, f) => s.WithPropertyValue(n, f));
     }
 
     //--------------------------------------------------------------------------------
+    // To
     //--------------------------------------------------------------------------------
 
     private static IBindingInConstraintWithSyntax ResolveTypeTo(
@@ -119,22 +109,18 @@ internal static class DefinitionApplier
     {
         if (binding.ImplementationType is null)
         {
-            throw new ResolverDefinitionException(index, "ImplementationType",
-                "ImplementationType is required when TargetKind is Type.");
+            throw new ResolverDefinitionException(index, "ImplementationType", "ImplementationType is required when TargetKind is Type.");
         }
 
-        Type implType;
         try
         {
-            implType = resolveType(binding.ImplementationType);
+            var type = resolveType(binding.ImplementationType);
+            return config.Bind(serviceType).To(type);
         }
         catch (Exception ex)
         {
-            throw new ResolverDefinitionException(index, "ImplementationType",
-                $"Type '{binding.ImplementationType}' could not be resolved. ({ex.Message})");
+            throw new ResolverDefinitionException(index, "ImplementationType", $"Type could not be resolved. type=[{binding.ImplementationType}].", ex);
         }
-
-        return config.Bind(serviceType).To(implType);
     }
 
     private static IBindingInConstraintWithSyntax ResolveConstantTo(
@@ -146,8 +132,7 @@ internal static class DefinitionApplier
     {
         if (binding.ConstantValue is null)
         {
-            throw new ResolverDefinitionException(index, "ConstantValue",
-                "ConstantValue is required when TargetKind is Constant.");
+            throw new ResolverDefinitionException(index, "ConstantValue", "ConstantValue is required when TargetKind is Constant.");
         }
 
         var targetType = binding.ConstantValueType is not null
@@ -159,6 +144,7 @@ internal static class DefinitionApplier
     }
 
     //--------------------------------------------------------------------------------
+    // Parameter
     //--------------------------------------------------------------------------------
 
     private static IBindingWithSyntax ApplyParameters(
@@ -170,20 +156,19 @@ internal static class DefinitionApplier
         Func<IBindingWithSyntax, string, object?, IBindingWithSyntax> applyConstant,
         Func<IBindingWithSyntax, string, Func<IResolver, object?>, IBindingWithSyntax> applyReference)
     {
-        for (var p = 0; p < entries.Count; p++)
+        for (var i = 0; i < entries.Count; i++)
         {
-            var entry = entries[p];
+            var entry = entries[i];
             if (String.IsNullOrWhiteSpace(entry.Name))
             {
-                throw new ResolverDefinitionException(index, $"{fieldPrefix}[{p}].Name", "Name is required.");
+                throw new ResolverDefinitionException(index, $"{fieldPrefix}[{i}].Name", "Name is required.");
             }
 
             if (entry.Kind == ParameterKind.Reference)
             {
                 if (entry.Value is null)
                 {
-                    throw new ResolverDefinitionException(index, $"{fieldPrefix}[{p}].Value",
-                        "Value (reference type name) is required for Reference kind.");
+                    throw new ResolverDefinitionException(index, $"{fieldPrefix}[{i}].Value", "Value (reference type name) is required for Reference kind.");
                 }
 
                 var refTypeName = entry.Value;
@@ -194,16 +179,15 @@ internal static class DefinitionApplier
                 }
                 catch (Exception ex)
                 {
-                    throw new ResolverDefinitionException(index, $"{fieldPrefix}[{p}].Value",
-                        $"Type '{refTypeName}' could not be resolved. ({ex.Message})");
+                    throw new ResolverDefinitionException(index, $"{fieldPrefix}[{i}].Value", $"Type could not be resolved. type=[{refTypeName}].", ex);
                 }
 
-                syntax = applyReference(syntax, entry.Name, r => r.Get(refType));
+                syntax = applyReference(syntax, entry.Name, x => x.Get(refType));
             }
             else
             {
-                object? value = entry.ValueType is not null
-                    ? ConvertValue(entry.Value, ResolveValueType(resolveType, entry.ValueType, index, $"{fieldPrefix}[{p}].ValueType"), index, $"{fieldPrefix}[{p}].Value")
+                var value = entry.ValueType is not null
+                    ? ConvertValue(entry.Value, ResolveValueType(resolveType, entry.ValueType, index, $"{fieldPrefix}[{i}].ValueType"), index, $"{fieldPrefix}[{i}].Value")
                     : entry.Value;
                 syntax = applyConstant(syntax, entry.Name, value);
             }
@@ -213,6 +197,7 @@ internal static class DefinitionApplier
     }
 
     //--------------------------------------------------------------------------------
+    // Value
     //--------------------------------------------------------------------------------
 
     private static Type ResolveValueType(Func<string, Type> resolveType, string typeName, int index, string fieldName)
@@ -223,13 +208,9 @@ internal static class DefinitionApplier
         }
         catch (Exception ex)
         {
-            throw new ResolverDefinitionException(index, fieldName,
-                $"Type '{typeName}' could not be resolved. ({ex.Message})");
+            throw new ResolverDefinitionException(index, fieldName, $"Type could not be resolved. type=[{typeName}].", ex);
         }
     }
-
-    //--------------------------------------------------------------------------------
-    //--------------------------------------------------------------------------------
 
     private static object ConvertValue(string? value, Type targetType, int index, string fieldName)
     {
@@ -240,7 +221,7 @@ internal static class DefinitionApplier
 
         if (value is null)
         {
-            throw new ResolverDefinitionException(index, fieldName, $"Value is required for type '{targetType}'.");
+            throw new ResolverDefinitionException(index, fieldName, $"Value is required for type. targetType=[{targetType}].");
         }
 
         try
@@ -248,9 +229,8 @@ internal static class DefinitionApplier
             var converter = TypeDescriptor.GetConverter(targetType);
             if (converter.CanConvertFrom(typeof(string)))
             {
-                return converter.ConvertFromInvariantString(value)
-                       ?? throw new ResolverDefinitionException(index, fieldName,
-                           $"Conversion of '{value}' to '{targetType}' returned null.");
+                return converter.ConvertFromInvariantString(value) ??
+                       throw new ResolverDefinitionException(index, fieldName, $"Conversion of '{value}' to '{targetType}' returned null.");
             }
 
             return Convert.ChangeType(value, targetType, System.Globalization.CultureInfo.InvariantCulture);
@@ -261,8 +241,7 @@ internal static class DefinitionApplier
         }
         catch (Exception ex)
         {
-            throw new ResolverDefinitionException(index, fieldName,
-                $"Failed to convert '{value}' to type '{targetType}'. ({ex.Message})");
+            throw new ResolverDefinitionException(index, fieldName, $"Failed to convert '{value}' to type '{targetType}'.", ex);
         }
     }
 }
