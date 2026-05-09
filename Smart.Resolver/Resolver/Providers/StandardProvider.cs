@@ -97,9 +97,9 @@ public sealed class StandardProvider : IProvider
         String.Format(CultureInfo.InvariantCulture, "Constructor parameter unresolved. type = {0}", TargetType.Name));
     }
 
-    // ------------------------------------------------------------
+    //--------------------------------------------------------------------------------
     // Helpers
-    // ------------------------------------------------------------
+    //--------------------------------------------------------------------------------
 
     private ConstructorMetadata[] CreateConstructorMetadata()
     {
@@ -126,9 +126,9 @@ public sealed class StandardProvider : IProvider
         return targetInjectors.Concat(targetProcessors).Where(static x => x is not null).ToArray()!;
     }
 
-    // ------------------------------------------------------------
+    //--------------------------------------------------------------------------------
     // Metadata
-    // ------------------------------------------------------------
+    //--------------------------------------------------------------------------------
 
     private sealed class ConstructorMetadata
     {

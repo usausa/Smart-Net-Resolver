@@ -4,9 +4,9 @@ using Smart.Resolver.Expressions;
 
 public static class ResolverBindExtensions
 {
-    // ------------------------------------------------------------
+    //--------------------------------------------------------------------------------
     // Transient
-    // ------------------------------------------------------------
+    //--------------------------------------------------------------------------------
 
     public static ResolverConfig BindTransient(
         this ResolverConfig config,
@@ -216,9 +216,9 @@ public static class ResolverBindExtensions
         return config;
     }
 
-    // ------------------------------------------------------------
+    //--------------------------------------------------------------------------------
     // Transient Keyed
-    // ------------------------------------------------------------
+    //--------------------------------------------------------------------------------
 
     public static ResolverConfig BindKeyedTransient(
         this ResolverConfig config,
@@ -450,9 +450,9 @@ public static class ResolverBindExtensions
         return config;
     }
 
-    // ------------------------------------------------------------
+    //--------------------------------------------------------------------------------
     // Singleton
-    // ------------------------------------------------------------
+    //--------------------------------------------------------------------------------
 
     public static ResolverConfig BindSingleton(
         this ResolverConfig config,
@@ -662,9 +662,9 @@ public static class ResolverBindExtensions
         return config;
     }
 
-    // ------------------------------------------------------------
+    //--------------------------------------------------------------------------------
     // Singleton Keyed
-    // ------------------------------------------------------------
+    //--------------------------------------------------------------------------------
 
     public static ResolverConfig BindKeyedSingleton(
         this ResolverConfig config,
@@ -896,9 +896,9 @@ public static class ResolverBindExtensions
         return config;
     }
 
-    // ------------------------------------------------------------
+    //--------------------------------------------------------------------------------
     // Container
-    // ------------------------------------------------------------
+    //--------------------------------------------------------------------------------
 
     public static ResolverConfig BindContainer(
         this ResolverConfig config,
@@ -1110,7 +1110,7 @@ public static class ResolverBindExtensions
 
     // -----------------------------------------------------------
     // Container Keyed
-    // ------------------------------------------------------------
+    //--------------------------------------------------------------------------------
 
     public static ResolverConfig BindKeyedContainer(
         this ResolverConfig config,

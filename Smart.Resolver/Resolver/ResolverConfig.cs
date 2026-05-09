@@ -29,9 +29,9 @@ public sealed class ResolverConfig : IResolverConfig, IBindingRoot
         }
     }
 
-    // ------------------------------------------------------------
+    //--------------------------------------------------------------------------------
     // IResolverConfig
-    // ------------------------------------------------------------
+    //--------------------------------------------------------------------------------
 
     ComponentContainer IResolverConfig.CreateComponentContainer()
     {
@@ -43,9 +43,9 @@ public sealed class ResolverConfig : IResolverConfig, IBindingRoot
         return bindingFactories.Select(f => f.CreateBinding(components));
     }
 
-    // ------------------------------------------------------------
+    //--------------------------------------------------------------------------------
     // IBindingRoot
-    // ------------------------------------------------------------
+    //--------------------------------------------------------------------------------
 
     public IBindingToSyntax<T> Bind<T>()
     {

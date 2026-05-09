@@ -30,9 +30,9 @@ public sealed class BindingBuilder<T> : IBindingFactory, IBindingToInConstraintW
         targetType = type;
     }
 
-    // ------------------------------------------------------------
+    //--------------------------------------------------------------------------------
     // To
-    // ------------------------------------------------------------
+    //--------------------------------------------------------------------------------
 
     public IBindingInConstraintWithSyntax ToProvider(Func<ComponentContainer, IProvider> factory)
     {
@@ -71,9 +71,9 @@ public sealed class BindingBuilder<T> : IBindingFactory, IBindingToInConstraintW
         return ToProvider(_ => new ConstantProvider<T>(value));
     }
 
-    // ------------------------------------------------------------
+    //--------------------------------------------------------------------------------
     // In
-    // ------------------------------------------------------------
+    //--------------------------------------------------------------------------------
 
     public IBindingConstraintWithSyntax InScope(Func<ComponentContainer, IScope> factory)
     {
@@ -99,9 +99,9 @@ public sealed class BindingBuilder<T> : IBindingFactory, IBindingToInConstraintW
         return this;
     }
 
-    // ------------------------------------------------------------
+    //--------------------------------------------------------------------------------
     // Constraint
-    // ------------------------------------------------------------
+    //--------------------------------------------------------------------------------
 
     public IBindingWithSyntax Constraint(IConstraint constraint)
     {
@@ -109,9 +109,9 @@ public sealed class BindingBuilder<T> : IBindingFactory, IBindingToInConstraintW
         return this;
     }
 
-    // ------------------------------------------------------------
+    //--------------------------------------------------------------------------------
     // With
-    // ------------------------------------------------------------
+    //--------------------------------------------------------------------------------
 
     public IBindingWithSyntax WithMetadata(string key, object? value)
     {
@@ -158,9 +158,9 @@ public sealed class BindingBuilder<T> : IBindingFactory, IBindingToInConstraintW
         return this;
     }
 
-    // ------------------------------------------------------------
+    //--------------------------------------------------------------------------------
     // Factory
-    // ------------------------------------------------------------
+    //--------------------------------------------------------------------------------
 
     Binding IBindingFactory.CreateBinding(ComponentContainer components)
     {

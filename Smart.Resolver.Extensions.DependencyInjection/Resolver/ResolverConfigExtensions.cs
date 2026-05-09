@@ -2,7 +2,7 @@ namespace Smart.Resolver;
 
 using Microsoft.Extensions.DependencyInjection;
 
-using Smart.Resolver.Configs;
+using Smart.Resolver.Expressions;
 
 public static class ResolverConfigExtensions
 {
