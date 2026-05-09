@@ -1,7 +1,7 @@
 namespace Smart.Resolver;
 
-using Smart.Resolver.Configs;
 using Smart.Resolver.Constraints;
+using Smart.Resolver.Expressions;
 
 public static class ConstraintExtensions
 {

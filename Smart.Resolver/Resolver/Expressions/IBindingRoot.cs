@@ -1,4 +1,4 @@
-namespace Smart.Resolver.Configs;
+namespace Smart.Resolver.Expressions;
 
 public interface IBindingRoot
 {
