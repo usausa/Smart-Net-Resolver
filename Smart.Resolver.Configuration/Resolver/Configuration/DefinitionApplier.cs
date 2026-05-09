@@ -49,11 +49,11 @@ internal static class DefinitionApplier
         }
 
         // To
-        var toSyntax = binding.BindingTarget switch
+        var toSyntax = binding.Binding switch
         {
-            BindingTargetKind.Self => config.Bind(serviceType).ToSelf(),
-            BindingTargetKind.Type => ResolveTypeTo(config, binding, index, serviceType, resolveType),
-            BindingTargetKind.Constant => ResolveConstantTo(config, binding, index, serviceType, resolveType),
+            BindingKind.Self => config.Bind(serviceType).ToSelf(),
+            BindingKind.Type => ResolveTypeTo(config, binding, index, serviceType, resolveType),
+            BindingKind.Constant => ResolveConstantTo(config, binding, index, serviceType, resolveType),
             _ => config.Bind(serviceType).ToSelf()
         };
 
@@ -119,7 +119,7 @@ internal static class DefinitionApplier
     {
         if (binding.Implementation is null)
         {
-            throw new ResolverDefinitionException(index, "Implementation", "Implementation is required when BindingTarget is Type.");
+            throw new ResolverDefinitionException(index, "Implementation", "Implementation is required when Binding is Type.");
         }
 
         try
@@ -142,7 +142,7 @@ internal static class DefinitionApplier
     {
         if (binding.Constant is null)
         {
-            throw new ResolverDefinitionException(index, "Constant", "Constant is required when BindingTarget is Constant.");
+            throw new ResolverDefinitionException(index, "Constant", "Constant is required when Binding is Constant.");
         }
 
         var targetType = binding.ConstantType is not null

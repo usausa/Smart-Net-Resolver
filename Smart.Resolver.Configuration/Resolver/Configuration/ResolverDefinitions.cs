@@ -4,7 +4,7 @@ namespace Smart.Resolver.Configuration;
 // Enums
 //--------------------------------------------------------------------------------
 
-public enum BindingTargetKind
+public enum BindingKind
 {
     Self,
     Type,
@@ -60,7 +60,7 @@ public sealed class BindingDefinition
 
     public ScopeKind Scope { get; set; } = ScopeKind.Transient;
 
-    public BindingTargetKind BindingTarget { get; set; } = BindingTargetKind.Type;
+    public BindingKind Binding { get; set; } = BindingKind.Type;
 
     public string Service { get; set; } = string.Empty;
 

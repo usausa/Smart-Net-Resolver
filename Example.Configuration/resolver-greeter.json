@@ -1,0 +1,10 @@
+{
+  "bindings": [
+    {
+      "binding": "Type",
+      "scope": "Singleton",
+      "service": "Example.Configuration.Services.IGreeter, Example.Configuration",
+      "implementation": "Example.Configuration.Services.HelloGreeter, Example.Configuration"
+    }
+  ]
+}

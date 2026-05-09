@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<resolver>
+  <binding
+    binding="Self"
+    scope="Singleton"
+    service="Example.Configuration.Services.MessageService, Example.Configuration" />
+</resolver>

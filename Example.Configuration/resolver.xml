@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<resolver>
+  <binding
+    binding="Type"
+    scope="Singleton"
+    service="Example.Configuration.Services.IGreeter, Example.Configuration"
+    implementation="Example.Configuration.Services.HiGreeter, Example.Configuration" />
+  <binding
+    binding="Self"
+    scope="Singleton"
+    service="Example.Configuration.Services.MessageService, Example.Configuration" />
+</resolver>

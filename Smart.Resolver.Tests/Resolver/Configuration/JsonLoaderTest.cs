@@ -17,8 +17,8 @@ public sealed class JsonLoaderTest
             {
               "bindings": [
                 {
-                  "serviceType": "Smart.Resolver.Mocks.Service1, {{Asm}}",
-                  "targetKind": "Self"
+                  "binding": "Self",
+                  "service": "Smart.Resolver.Mocks.Service1, {{Asm}}"
                 }
               ]
             }
@@ -43,9 +43,9 @@ public sealed class JsonLoaderTest
             {
               "bindings": [
                 {
-                  "serviceType": "Smart.Resolver.Mocks.IService, {{Asm}}",
-                  "targetKind": "Type",
-                  "implementationType": "Smart.Resolver.Mocks.Service1, {{Asm}}"
+                  "binding": "Type",
+                  "service": "Smart.Resolver.Mocks.IService, {{Asm}}",
+                  "implementation": "Smart.Resolver.Mocks.Service1, {{Asm}}"
                 }
               ]
             }
@@ -70,9 +70,9 @@ public sealed class JsonLoaderTest
             {
               "bindings": [
                 {
-                  "serviceType": "System.String",
-                  "targetKind": "Constant",
-                  "constantValue": "hello"
+                  "binding": "Constant",
+                  "service": "System.String",
+                  "constant": "hello"
                 }
               ]
             }
@@ -97,10 +97,10 @@ public sealed class JsonLoaderTest
             {
               "bindings": [
                 {
-                  "serviceType": "System.Object",
-                  "targetKind": "Constant",
-                  "constantValue": "42",
-                  "constantValueType": "System.Int32"
+                  "binding": "Constant",
+                  "service": "System.Object",
+                  "constantType": "System.Int32",
+                  "constant": "42"
                 }
               ]
             }
@@ -125,9 +125,9 @@ public sealed class JsonLoaderTest
             {
               "bindings": [
                 {
-                  "serviceType": "Smart.Resolver.Mocks.Service1, {{Asm}}",
-                  "targetKind": "Self",
-                  "scope": "Transient"
+                  "binding": "Self",
+                  "scope": "Transient",
+                  "service": "Smart.Resolver.Mocks.Service1, {{Asm}}"
                 }
               ]
             }
@@ -153,9 +153,9 @@ public sealed class JsonLoaderTest
             {
               "bindings": [
                 {
-                  "serviceType": "Smart.Resolver.Mocks.Service1, {{Asm}}",
-                  "targetKind": "Self",
-                  "scope": "Singleton"
+                  "binding": "Self",
+                  "scope": "Singleton",
+                  "service": "Smart.Resolver.Mocks.Service1, {{Asm}}"
                 }
               ]
             }
@@ -181,9 +181,9 @@ public sealed class JsonLoaderTest
             {
               "bindings": [
                 {
-                  "serviceType": "Smart.Resolver.Mocks.Service1, {{Asm}}",
-                  "targetKind": "Self",
-                  "scope": "Container"
+                  "binding": "Self",
+                  "scope": "Container",
+                  "service": "Smart.Resolver.Mocks.Service1, {{Asm}}"
                 }
               ]
             }
@@ -206,9 +206,9 @@ public sealed class JsonLoaderTest
             {
               "bindings": [
                 {
-                  "serviceType": "Smart.Resolver.Mocks.Service1, {{Asm}}",
-                  "targetKind": "Self",
-                  "scope": "Container"
+                  "binding": "Self",
+                  "scope": "Container",
+                  "service": "Smart.Resolver.Mocks.Service1, {{Asm}}"
                 }
               ]
             }
@@ -236,18 +236,18 @@ public sealed class JsonLoaderTest
             {
               "bindings": [
                 {
-                  "serviceType": "Smart.Resolver.Mocks.IService, {{Asm}}",
-                  "targetKind": "Type",
-                  "implementationType": "Smart.Resolver.Mocks.Service1, {{Asm}}",
+                  "key": "a",
+                  "binding": "Type",
                   "scope": "Singleton",
-                  "constraintKey": "a"
+                  "service": "Smart.Resolver.Mocks.IService, {{Asm}}",
+                  "implementation": "Smart.Resolver.Mocks.Service1, {{Asm}}"
                 },
                 {
-                  "serviceType": "Smart.Resolver.Mocks.IService, {{Asm}}",
-                  "targetKind": "Type",
-                  "implementationType": "Smart.Resolver.Mocks.Service2, {{Asm}}",
+                  "key": "b",
+                  "binding": "Type",
                   "scope": "Singleton",
-                  "constraintKey": "b"
+                  "service": "Smart.Resolver.Mocks.IService, {{Asm}}",
+                  "implementation": "Smart.Resolver.Mocks.Service2, {{Asm}}"
                 }
               ]
             }
@@ -274,9 +274,9 @@ public sealed class JsonLoaderTest
             {
               "bindings": [
                 {
-                  "serviceType": "Smart.Resolver.Mocks.Service1, {{Asm}}",
-                  "targetKind": "Self",
+                  "binding": "Self",
                   "scope": "Singleton",
+                  "service": "Smart.Resolver.Mocks.Service1, {{Asm}}",
                   "metadata": [
                     { "key": "tag", "value": "primary" }
                   ]
@@ -304,11 +304,11 @@ public sealed class JsonLoaderTest
             {
               "bindings": [
                 {
-                  "serviceType": "Smart.Resolver.Mocks.Service1, {{Asm}}",
-                  "targetKind": "Self",
+                  "binding": "Self",
                   "scope": "Singleton",
+                  "service": "Smart.Resolver.Mocks.Service1, {{Asm}}",
                   "metadata": [
-                    { "key": "order", "value": "10", "valueType": "System.Int32" }
+                    { "key": "order", "valueType": "System.Int32", "value": "10" }
                   ]
                 }
               ]
@@ -334,17 +334,17 @@ public sealed class JsonLoaderTest
             {
               "bindings": [
                 {
-                  "serviceType": "Smart.Resolver.Mocks.IService, {{Asm}}",
-                  "targetKind": "Type",
-                  "implementationType": "Smart.Resolver.Mocks.Service1, {{Asm}}",
-                  "scope": "Singleton"
+                  "binding": "Type",
+                  "scope": "Singleton",
+                  "service": "Smart.Resolver.Mocks.IService, {{Asm}}",
+                  "implementation": "Smart.Resolver.Mocks.Service1, {{Asm}}"
                 },
                 {
-                  "serviceType": "Smart.Resolver.Mocks.ServiceWithConstructor, {{Asm}}",
-                  "targetKind": "Self",
+                  "binding": "Self",
+                  "service": "Smart.Resolver.Mocks.ServiceWithConstructor, {{Asm}}",
                   "constructorArguments": [
                     { "name": "name", "kind": "Constant", "value": "test-name" },
-                    { "name": "count", "kind": "Constant", "value": "5", "valueType": "System.Int32" },
+                    { "name": "count", "kind": "Constant", "valueType": "System.Int32", "value": "5" },
                     {
                       "name": "service",
                       "kind": "Reference",
@@ -377,17 +377,17 @@ public sealed class JsonLoaderTest
             {
               "bindings": [
                 {
-                  "serviceType": "Smart.Resolver.Mocks.IService, {{Asm}}",
-                  "targetKind": "Type",
-                  "implementationType": "Smart.Resolver.Mocks.Service2, {{Asm}}",
-                  "scope": "Singleton"
+                  "binding": "Type",
+                  "scope": "Singleton",
+                  "service": "Smart.Resolver.Mocks.IService, {{Asm}}",
+                  "implementation": "Smart.Resolver.Mocks.Service2, {{Asm}}"
                 },
                 {
-                  "serviceType": "Smart.Resolver.Mocks.ServiceWithConstructor, {{Asm}}",
-                  "targetKind": "Self",
+                  "binding": "Self",
+                  "service": "Smart.Resolver.Mocks.ServiceWithConstructor, {{Asm}}",
                   "constructorArguments": [
                     { "name": "name", "kind": "Constant", "value": "ref-test" },
-                    { "name": "count", "kind": "Constant", "value": "0", "valueType": "System.Int32" },
+                    { "name": "count", "kind": "Constant", "valueType": "System.Int32", "value": "0" },
                     {
                       "name": "service",
                       "kind": "Reference",
@@ -419,11 +419,11 @@ public sealed class JsonLoaderTest
             {
               "bindings": [
                 {
-                  "serviceType": "Smart.Resolver.Mocks.ServiceWithProperty, {{Asm}}",
-                  "targetKind": "Self",
+                  "binding": "Self",
+                  "service": "Smart.Resolver.Mocks.ServiceWithProperty, {{Asm}}",
                   "propertyValues": [
                     { "name": "Name", "kind": "Constant", "value": "prop-name" },
-                    { "name": "Count", "kind": "Constant", "value": "7", "valueType": "System.Int32" }
+                    { "name": "Count", "kind": "Constant", "valueType": "System.Int32", "value": "7" }
                   ]
                 }
               ]
@@ -452,14 +452,14 @@ public sealed class JsonLoaderTest
             {
               "bindings": [
                 {
-                  "serviceType": "Smart.Resolver.Mocks.IService, {{Asm}}",
-                  "targetKind": "Type",
-                  "implementationType": "Smart.Resolver.Mocks.Service1, {{Asm}}"
+                  "binding": "Type",
+                  "service": "Smart.Resolver.Mocks.IService, {{Asm}}",
+                  "implementation": "Smart.Resolver.Mocks.Service1, {{Asm}}"
                 },
                 {
-                  "serviceType": "Smart.Resolver.Mocks.IService, {{Asm}}",
-                  "targetKind": "Type",
-                  "implementationType": "Smart.Resolver.Mocks.Service2, {{Asm}}"
+                  "binding": "Type",
+                  "service": "Smart.Resolver.Mocks.IService, {{Asm}}",
+                  "implementation": "Smart.Resolver.Mocks.Service2, {{Asm}}"
                 }
               ]
             }
@@ -486,9 +486,9 @@ public sealed class JsonLoaderTest
             [
                 new BindingDefinition
                 {
-                    ServiceType = $"Smart.Resolver.Mocks.IService, {Asm}",
-                    TargetKind = BindingTargetKind.Type,
-                    ImplementationType = $"Smart.Resolver.Mocks.Service1, {Asm}",
+                    Service = $"Smart.Resolver.Mocks.IService, {Asm}",
+                    Binding = BindingKind.Type,
+                    Implementation = $"Smart.Resolver.Mocks.Service1, {Asm}",
                     Scope = ScopeKind.Singleton
                 }
             ]

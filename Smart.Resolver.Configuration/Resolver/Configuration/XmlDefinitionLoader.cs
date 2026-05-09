@@ -34,11 +34,11 @@ internal static class XmlDefinitionLoader
         {
             Key = element.Attribute("key")?.Value,
             Scope = ParseEnum(element.Attribute("scope")?.Value, ScopeKind.Transient),
-            BindingTarget = ParseEnum(element.Attribute("bindingTarget")?.Value, BindingTargetKind.Type),
+            Binding = ParseEnum(element.Attribute("binding")?.Value, BindingKind.Type),
             Service = element.Attribute("service")?.Value ?? string.Empty,
             Implementation = element.Attribute("implementation")?.Value,
-            Constant = element.Attribute("constant")?.Value,
             ConstantType = element.Attribute("constantType")?.Value,
+            Constant = element.Attribute("constant")?.Value,
             ConstructorArguments = element.Elements("constructorArgument").Select(ParseParameter).ToList(),
             PropertyValues = element.Elements("propertyValue").Select(ParseParameter).ToList(),
             Metadata = element.Elements("metadata").Select(ParseMetadata).ToList()
@@ -48,16 +48,16 @@ internal static class XmlDefinitionLoader
     private static MetadataEntry ParseMetadata(XElement element) => new()
     {
         Key = element.Attribute("key")?.Value ?? string.Empty,
-        Value = element.Attribute("value")?.Value,
-        ValueType = element.Attribute("valueType")?.Value
+        ValueType = element.Attribute("valueType")?.Value,
+        Value = element.Attribute("value")?.Value
     };
 
     private static ParameterEntry ParseParameter(XElement element) => new()
     {
         Name = element.Attribute("name")?.Value ?? string.Empty,
         Kind = ParseEnum(element.Attribute("kind")?.Value, ParameterKind.Constant),
-        Value = element.Attribute("value")?.Value,
-        ValueType = element.Attribute("valueType")?.Value
+        ValueType = element.Attribute("valueType")?.Value,
+        Value = element.Attribute("value")?.Value
     };
 
     private static TEnum ParseEnum<TEnum>(string? value, TEnum defaultValue)
