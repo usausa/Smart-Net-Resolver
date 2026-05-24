@@ -1,5 +1,6 @@
 namespace Smart.Resolver.Injectors;
 
+using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 
@@ -21,7 +22,9 @@ public sealed class PropertyInjector : IInjector
         this.keySources = keySources;
     }
 
-    public Action<IResolver, object>? CreateInjector(Type type, Binding binding)
+    public Action<IResolver, object>? CreateInjector(
+        [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties)] Type type,
+        Binding binding)
     {
         var entries = type.GetRuntimeProperties()
             .Where(static p => p.IsInjectDefined())

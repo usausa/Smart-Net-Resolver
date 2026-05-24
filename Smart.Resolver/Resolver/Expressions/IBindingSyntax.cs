@@ -18,7 +18,8 @@ public interface IBindingToSyntax<in T>
     IBindingInConstraintWithSyntax To<TImplementation>()
         where TImplementation : T;
 
-    IBindingInConstraintWithSyntax To(Type implementationType);
+    IBindingInConstraintWithSyntax To(
+        [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors | DynamicallyAccessedMemberTypes.PublicProperties)] Type implementationType);
 
     IBindingInConstraintWithSyntax ToMethod(Func<IResolver, T> factory);
 

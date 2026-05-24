@@ -1,8 +1,11 @@
 namespace Smart.Resolver.Handlers;
 
+using System.Diagnostics.CodeAnalysis;
+
 using Smart.ComponentModel;
 using Smart.Resolver.Bindings;
 
+[RequiresUnreferencedCode("AssignableMissingHandler scans all registered bindings at runtime which may not be compatible with IL trimming.")]
 public sealed class AssignableMissingHandler : IMissingHandler
 {
     private readonly HashSet<Type> targetTypes;

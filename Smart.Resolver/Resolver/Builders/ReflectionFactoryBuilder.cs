@@ -1,5 +1,6 @@
 namespace Smart.Resolver.Builders;
 
+using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 
 public sealed class ReflectionFactoryBuilder : IFactoryBuilder
@@ -18,12 +19,15 @@ public sealed class ReflectionFactoryBuilder : IFactoryBuilder
             : BuildConstructorWithActionsFactory(ci, factories, actions);
     }
 
-    private static Func<IResolver, object> BuildActivatorFactory(Type type)
+    private static Func<IResolver, object> BuildActivatorFactory(
+        [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] Type type)
     {
         return _ => Activator.CreateInstance(type)!;
     }
 
-    private static Func<IResolver, object> BuildActivatorWithActionsFactory(Type type, Action<IResolver, object>[] actions)
+    private static Func<IResolver, object> BuildActivatorWithActionsFactory(
+        [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] Type type,
+        Action<IResolver, object>[] actions)
     {
         return r =>
         {

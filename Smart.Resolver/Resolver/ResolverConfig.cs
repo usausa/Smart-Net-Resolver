@@ -1,5 +1,7 @@
 namespace Smart.Resolver;
 
+using System.Diagnostics.CodeAnalysis;
+
 using Smart.ComponentModel;
 using Smart.Reflection;
 using Smart.Resolver.Bindings;
@@ -14,6 +16,7 @@ public sealed class ResolverConfig : IResolverConfig, IBindingRoot
 
     private readonly List<IBindingFactory> bindingFactories = [];
 
+    [UnconditionalSuppressMessage("AOT", "IL3050", Justification = "EmitFactoryBuilder is only registered when IsCodegenRequired is true, which means dynamic code is supported at runtime.")]
     public ResolverConfig()
     {
         Components.Add<DisposableStorage>();
@@ -54,7 +57,8 @@ public sealed class ResolverConfig : IResolverConfig, IBindingRoot
         return builder;
     }
 
-    public IBindingToSyntax<object> Bind(Type type)
+    public IBindingToSyntax<object> Bind(
+        [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors | DynamicallyAccessedMemberTypes.PublicProperties)] Type type)
     {
         var builder = new BindingBuilder<object>(type);
         bindingFactories.Add(builder);

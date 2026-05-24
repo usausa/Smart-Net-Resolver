@@ -1,9 +1,12 @@
 namespace Smart.Resolver.Handlers;
 
+using System.Diagnostics.CodeAnalysis;
+
 using Smart.ComponentModel;
 using Smart.Resolver.Bindings;
 using Smart.Resolver.Providers;
 
+[RequiresDynamicCode("OpenGenericMissingHandler uses MakeGenericType which is not supported in AOT environments.")]
 public sealed class OpenGenericMissingHandler : IMissingHandler
 {
     private readonly HashSet<Type> ignoreTypes;

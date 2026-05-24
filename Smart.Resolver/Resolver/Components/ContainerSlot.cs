@@ -14,7 +14,7 @@ internal sealed class ContainerSlot
     private object?[] entries = new object?[8];
 
     [SkipLocalsInit]
-    [MethodImpl(MethodImplOptions.AggressiveOptimization)]
+    [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
     public object GetOrCreate(int index, Func<object> factory)
     {
         lock (sync)

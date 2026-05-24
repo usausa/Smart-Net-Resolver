@@ -1,5 +1,6 @@
 namespace Smart.Resolver.Providers;
 
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Reflection;
 
@@ -22,9 +23,12 @@ public sealed class StandardProvider : IProvider
 
     private readonly IFactoryBuilder builder;
 
+    [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors | DynamicallyAccessedMemberTypes.PublicProperties)]
     public Type TargetType { get; }
 
-    public StandardProvider(Type type, ComponentContainer components)
+    public StandardProvider(
+        [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors | DynamicallyAccessedMemberTypes.PublicProperties)] Type type,
+        ComponentContainer components)
     {
         TargetType = type;
         injectors = components.GetAll<IInjector>().ToArray();

@@ -11,6 +11,7 @@ using Smart.Resolver.Scopes;
 
 public sealed class BindingBuilder<T> : IBindingFactory, IBindingToInConstraintWithSyntax<T>
 {
+    [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors | DynamicallyAccessedMemberTypes.PublicProperties)]
     private readonly Type targetType;
 
     private Func<ComponentContainer, IProvider> providerFactory = default!;
@@ -25,7 +26,8 @@ public sealed class BindingBuilder<T> : IBindingFactory, IBindingToInConstraintW
 
     private Dictionary<string, Func<ComponentContainer, IParameter>>? propertyValueFactories;
 
-    public BindingBuilder(Type type)
+    public BindingBuilder(
+        [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors | DynamicallyAccessedMemberTypes.PublicProperties)] Type type)
     {
         targetType = type;
     }
@@ -51,7 +53,8 @@ public sealed class BindingBuilder<T> : IBindingFactory, IBindingToInConstraintW
         return ToProvider(static c => new StandardProvider(typeof(TImplementation), c));
     }
 
-    public IBindingInConstraintWithSyntax To(Type implementationType)
+    public IBindingInConstraintWithSyntax To(
+        [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors | DynamicallyAccessedMemberTypes.PublicProperties)] Type implementationType)
     {
         return ToProvider(c => new StandardProvider(implementationType, c));
     }

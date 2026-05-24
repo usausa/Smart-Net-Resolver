@@ -1,10 +1,12 @@
 namespace Smart.Resolver.Builders;
 
+using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 using System.Reflection.Emit;
 
 using Smart.Reflection.Emit;
 
+[RequiresDynamicCode("EmitFactoryBuilder uses Reflection.Emit which is not supported in AOT environments.")]
 public sealed class EmitFactoryBuilder : IFactoryBuilder
 {
     private static readonly Action<IResolver, object>[] EmptyActions = [];
