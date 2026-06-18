@@ -2,13 +2,18 @@ namespace Smart.Resolver;
 
 using Microsoft.Extensions.DependencyInjection;
 
-internal sealed class SmartServiceProvider : IKeyedServiceProvider
+internal sealed class SmartServiceProvider : IKeyedServiceProvider, IDisposable
 {
     private readonly SmartResolver resolver;
 
     public SmartServiceProvider(SmartResolver resolver)
     {
         this.resolver = resolver;
+    }
+
+    public void Dispose()
+    {
+        resolver.Dispose();
     }
 
     public object GetService(Type serviceType)
