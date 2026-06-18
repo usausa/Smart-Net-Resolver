@@ -17,19 +17,19 @@ internal static class FactoryEnumerable
 
         private int index;
 
+#pragma warning disable IDE0032
         private T current = default!;
+
+        public T Current => current;
+#pragma warning restore IDE0032
+
+        object? IEnumerator.Current => current;
 
         public Enumerable(IResolver resolver, Func<IResolver, object>[] factories)
         {
             this.resolver = resolver;
             this.factories = factories;
         }
-
-#pragma warning disable IDE0032
-        public T Current => current;
-#pragma warning restore IDE0032
-
-        object? IEnumerator.Current => current;
 
         public IEnumerator<T> GetEnumerator()
         {
