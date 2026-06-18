@@ -14,6 +14,8 @@ public sealed class SmartChildResolver : IResolver, IContainer
 
     private readonly ContainerSlot slot;
 
+    private int disposed;
+
     ContainerSlot IContainer.Slot => slot;
 
     public SmartChildResolver(SmartResolver resolver)
@@ -33,6 +35,11 @@ public sealed class SmartChildResolver : IResolver, IContainer
 
     public void Dispose()
     {
+        if (Interlocked.CompareExchange(ref disposed, 1, 0) == 1)
+        {
+            return;
+        }
+
         slot.Clear();
         pool ??= slot;
     }
@@ -126,16 +133,16 @@ public sealed class SmartChildResolver : IResolver, IContainer
     // GetAll
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public IEnumerable<T> GetAll<T>() => resolver.FindFactoryEntry(this, typeof(T)).Multiple.Select(x => UnsafeCast<T>(x(this)));
+    public IEnumerable<T> GetAll<T>() => FactoryEnumerable.Create<T>(this, resolver.FindFactoryEntry(this, typeof(T)).Multiple);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public IEnumerable<T> GetAll<T>(object? key) => resolver.FindFactoryEntry(this, typeof(T), key).Multiple.Select(x => UnsafeCast<T>(x(this)));
+    public IEnumerable<T> GetAll<T>(object? key) => FactoryEnumerable.Create<T>(this, resolver.FindFactoryEntry(this, typeof(T), key).Multiple);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public IEnumerable<object> GetAll(Type type) => resolver.FindFactoryEntry(this, type).Multiple.Select(x => x(this));
+    public IEnumerable<object> GetAll(Type type) => FactoryEnumerable.Create<object>(this, resolver.FindFactoryEntry(this, type).Multiple);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public IEnumerable<object> GetAll(Type type, object? key) => resolver.FindFactoryEntry(this, type, key).Multiple.Select(x => x(this));
+    public IEnumerable<object> GetAll(Type type, object? key) => FactoryEnumerable.Create<object>(this, resolver.FindFactoryEntry(this, type, key).Multiple);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void Inject(object instance)

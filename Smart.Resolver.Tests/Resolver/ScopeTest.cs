@@ -102,6 +102,22 @@ public sealed class ScopeTest
         Assert.True(obj.Disposed);
     }
 
+    [Fact]
+    public void ObjectInContainerScopeIsDisposedOnceWhenChildResolverDisposedTwice()
+    {
+        var config = new ResolverConfig();
+        config.Bind<DisposeCountingObject>().ToSelf().InContainerScope();
+
+        using var resolver = config.ToResolver();
+        var child = resolver.CreateChildResolver();
+        var obj = child.Get<DisposeCountingObject>();
+
+        child.Dispose();
+        child.Dispose();
+
+        Assert.Equal(1, obj.DisposeCount);
+    }
+
     public sealed class DisposeTrackingObject : IDisposable
     {
         public bool Disposed { get; private set; }
@@ -109,6 +125,16 @@ public sealed class ScopeTest
         public void Dispose()
         {
             Disposed = true;
+        }
+    }
+
+    public sealed class DisposeCountingObject : IDisposable
+    {
+        public int DisposeCount { get; private set; }
+
+        public void Dispose()
+        {
+            DisposeCount++;
         }
     }
 

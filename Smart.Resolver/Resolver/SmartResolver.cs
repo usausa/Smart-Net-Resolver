@@ -186,15 +186,15 @@ public sealed class SmartResolver : IResolver, IKernel
     // GetAll
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public IEnumerable<T> GetAll<T>() => FindFactoryEntry(typeof(T)).Multiple.Select(x => UnsafeCast<T>(x(this)));
+    public IEnumerable<T> GetAll<T>() => FactoryEnumerable.Create<T>(this, FindFactoryEntry(typeof(T)).Multiple);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public IEnumerable<T> GetAll<T>(object? key) => FindFactoryEntry(typeof(T), key).Multiple.Select(x => UnsafeCast<T>(x(this)));
+    public IEnumerable<T> GetAll<T>(object? key) => FactoryEnumerable.Create<T>(this, FindFactoryEntry(typeof(T), key).Multiple);
 
-    public IEnumerable<object> GetAll(Type type) => FindFactoryEntry(type).Multiple.Select(x => x(this));
+    public IEnumerable<object> GetAll(Type type) => FactoryEnumerable.Create<object>(this, FindFactoryEntry(type).Multiple);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public IEnumerable<object> GetAll(Type type, object? key) => FindFactoryEntry(type, key).Multiple.Select(x => x(this));
+    public IEnumerable<object> GetAll(Type type, object? key) => FactoryEnumerable.Create<object>(this, FindFactoryEntry(type, key).Multiple);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private static T UnsafeCast<T>(object obj)
