@@ -18,14 +18,15 @@
     <Project Path="Smart.Resolver.Extensions.DependencyInjection/Smart.Resolver.Extensions.DependencyInjection.csproj" />
     <Project Path="Smart.Resolver/Smart.Resolver.csproj" />
   </Folder>
-  <Folder Name="/Test/">
-    <Project Path="Smart.Resolver.Tests/Smart.Resolver.Tests.csproj" />
-  </Folder>
   <Folder Name="/Benchmark/">
     <Project Path="Smart.Resolver.Benchmark/Smart.Resolver.Benchmark.csproj" />
   </Folder>
   <Folder Name="/Example/">
     <Project Path="Example.Configuration/Example.Configuration.csproj" />
     <Project Path="Example.WebApplication/Example.WebApplication.csproj" />
+  </Folder>
+  <Folder Name="/Tests/">
+    <Project Path="Smart.Resolver.CompatibilityTest/Smart.Resolver.CompatibilityTest.csproj" />
+    <Project Path="Smart.Resolver.Tests/Smart.Resolver.Tests.csproj" />
   </Folder>
 </Solution>
