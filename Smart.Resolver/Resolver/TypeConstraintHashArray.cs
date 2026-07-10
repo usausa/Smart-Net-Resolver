@@ -235,7 +235,7 @@ internal sealed class TypeConstraintHashArray<T>
     }
 
     [SkipLocalsInit]
-    [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool TryGetValue(Type type, object? key, [MaybeNullWhen(false)] out T value)
     {
         var temp = nodes;
