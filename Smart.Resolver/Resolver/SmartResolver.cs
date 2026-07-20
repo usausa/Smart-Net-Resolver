@@ -10,6 +10,7 @@ using Smart.Resolver.Bindings;
 using Smart.Resolver.Handlers;
 using Smart.Resolver.Injectors;
 using Smart.Resolver.Providers;
+using Smart.Resolver.Scopes;
 
 public sealed class SmartResolver : IResolver, IKernel
 {
@@ -93,6 +94,13 @@ public sealed class SmartResolver : IResolver, IKernel
         return entry.CanGet;
     }
 
+    bool IKernel.TryResolveConstant(Type type, object? key, out object? constant)
+    {
+        var entry = key is null ? FindFactoryEntry(type) : FindFactoryEntry(type, key);
+        constant = entry.Constant;
+        return constant is not null;
+    }
+
     //--------------------------------------------------------------------------------
     // Resolver
     //--------------------------------------------------------------------------------
@@ -119,7 +127,7 @@ public sealed class SmartResolver : IResolver, IKernel
         var entry = FindFactoryEntry(typeof(T));
         if (entry.CanGet)
         {
-            obj = UnsafeCast<T>(entry.Single(this));
+            obj = UnsafeCast<T>(entry.Constant ?? entry.Single(this));
             return true;
         }
 
@@ -133,7 +141,7 @@ public sealed class SmartResolver : IResolver, IKernel
         var entry = FindFactoryEntry(typeof(T), key);
         if (entry.CanGet)
         {
-            obj = UnsafeCast<T>(entry.Single(this));
+            obj = UnsafeCast<T>(entry.Constant ?? entry.Single(this));
             return true;
         }
 
@@ -147,7 +155,7 @@ public sealed class SmartResolver : IResolver, IKernel
         var entry = FindFactoryEntry(type);
         if (entry.CanGet)
         {
-            obj = entry.Single(this);
+            obj = entry.Constant ?? entry.Single(this);
             return true;
         }
 
@@ -161,7 +169,7 @@ public sealed class SmartResolver : IResolver, IKernel
         var entry = FindFactoryEntry(type, key);
         if (entry.CanGet)
         {
-            obj = entry.Single(this);
+            obj = entry.Constant ?? entry.Single(this);
             return true;
         }
 
@@ -172,16 +180,32 @@ public sealed class SmartResolver : IResolver, IKernel
     // Get
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public T Get<T>() => UnsafeCast<T>(FindFactoryEntry(typeof(T)).Single(this));
+    public T Get<T>()
+    {
+        var entry = FindFactoryEntry(typeof(T));
+        return UnsafeCast<T>(entry.Constant ?? entry.Single(this));
+    }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public T Get<T>(object? key) => UnsafeCast<T>(FindFactoryEntry(typeof(T), key).Single(this));
+    public T Get<T>(object? key)
+    {
+        var entry = FindFactoryEntry(typeof(T), key);
+        return UnsafeCast<T>(entry.Constant ?? entry.Single(this));
+    }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public object Get(Type type) => FindFactoryEntry(type).Single(this);
+    public object Get(Type type)
+    {
+        var entry = FindFactoryEntry(type);
+        return entry.Constant ?? entry.Single(this);
+    }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public object Get(Type type, object? key) => FindFactoryEntry(type, key).Single(this);
+    public object Get(Type type, object? key)
+    {
+        var entry = FindFactoryEntry(type, key);
+        return entry.Constant ?? entry.Single(this);
+    }
 
     // GetAll
 
@@ -266,19 +290,38 @@ public sealed class SmartResolver : IResolver, IKernel
             bindings = useConstraint
                 ? bindings.Where(b => b.Constraint is not null && b.Constraint.Match(b.Metadata, key))
                 : bindings.Where(b => b.Constraint is null);
-            var factories = bindings
-                .Select(b =>
-                {
-                    var factory = b.Provider.CreateFactory(this, b);
-                    return b.Scope is null ? factory : b.Scope.Create(() => factory(resolver));
-                })
-                .ToArray();
+            var targets = bindings.ToArray();
+            var factories = new Func<IResolver, object>[targets.Length];
+            for (var i = 0; i < targets.Length; i++)
+            {
+                var binding = targets[i];
+                var factory = binding.Provider.CreateFactory(this, binding);
+                factories[i] = binding.Scope is null ? factory : binding.Scope.Create(() => factory(resolver));
+            }
+
+            var constant = targets.Length > 0 ? ResolveConstant(targets[^1], factories[^1], resolver) : null;
 
             return new FactoryEntry(
                 factories.Length > 0,
+                constant,
                 factories.Length > 0 ? factories[^1] : nullFactory,
                 factories);
         }
+    }
+
+    private static object? ResolveConstant(Binding binding, Func<IResolver, object> single, IResolver resolver)
+    {
+        if (binding.Scope is SingletonScope)
+        {
+            return single(resolver);
+        }
+
+        if ((binding.Scope is null) && (binding.Provider is IConstantSource source))
+        {
+            return source.Value;
+        }
+
+        return null;
     }
 
     //--------------------------------------------------------------------------------

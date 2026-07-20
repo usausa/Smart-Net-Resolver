@@ -50,6 +50,7 @@ public sealed class StandardProvider : IProvider
         {
             var match = true;
             var argumentFactories = new List<Func<IResolver, object?>>(constructor.Parameters.Length);
+            var argumentConstants = new List<object?>(constructor.Parameters.Length);
 
             foreach (var parameter in constructor.Parameters)
             {
@@ -60,13 +61,16 @@ public sealed class StandardProvider : IProvider
                 if (argument is not null)
                 {
                     argumentFactories.Add(argument.Resolve);
+                    argumentConstants.Add(null);
                     continue;
                 }
 
                 // Resolve
                 if (kernel.TryResolveFactory(pi.ParameterType, parameter.ResolveBy, out var factory))
                 {
+                    kernel.TryResolveConstant(pi.ParameterType, parameter.ResolveBy, out var constant);
                     argumentFactories.Add(factory);
+                    argumentConstants.Add(constant);
                     continue;
                 }
 
@@ -76,6 +80,7 @@ public sealed class StandardProvider : IProvider
                 {
                     var arrayFactory = builder.CreateArrayFactory(parameter.ElementType, factories);
                     argumentFactories.Add(arrayFactory);
+                    argumentConstants.Add(null);
                     continue;
                 }
 
@@ -83,6 +88,7 @@ public sealed class StandardProvider : IProvider
                 if (pi.HasDefaultValue)
                 {
                     argumentFactories.Add(_ => pi.DefaultValue);
+                    argumentConstants.Add(null);
                     continue;
                 }
 
@@ -93,7 +99,7 @@ public sealed class StandardProvider : IProvider
             if (match)
             {
                 var actions = CreateActions(binding);
-                return builder.CreateFactory(constructor.Constructor, [.. argumentFactories], actions);
+                return builder.CreateFactory(constructor.Constructor, [.. argumentFactories], [.. argumentConstants], actions);
             }
         }
 

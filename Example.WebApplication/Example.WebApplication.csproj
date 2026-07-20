@@ -3,11 +3,12 @@
   <PropertyGroup>
     <TargetFramework>net10.0</TargetFramework>
     <CodeAnalysisRuleSet>..\Analyzers.ruleset</CodeAnalysisRuleSet>
+    <NoWarn>$(NoWarn);NU1903</NoWarn>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="Microsoft.Data.Sqlite" Version="10.0.10" />
-    <PackageReference Include="Usa.Smart.Core" Version="2.13.0" />
+    <PackageReference Include="Usa.Smart.Core" Version="2.14.0" />
     <PackageReference Include="Usa.Smart.Data" Version="2.10.0" />
     <PackageReference Include="Usa.Smart.Data.Mapper" Version="2.13.0" />
   </ItemGroup>

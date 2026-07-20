@@ -66,7 +66,7 @@ public sealed class SmartChildResolver : IResolver, IContainer
         var entry = resolver.FindFactoryEntry(this, typeof(T));
         if (entry.CanGet)
         {
-            obj = UnsafeCast<T>(entry.Single(this));
+            obj = UnsafeCast<T>(entry.Constant ?? entry.Single(this));
             return true;
         }
 
@@ -80,7 +80,7 @@ public sealed class SmartChildResolver : IResolver, IContainer
         var entry = resolver.FindFactoryEntry(this, typeof(T), key);
         if (entry.CanGet)
         {
-            obj = UnsafeCast<T>(entry.Single(this));
+            obj = UnsafeCast<T>(entry.Constant ?? entry.Single(this));
             return true;
         }
 
@@ -94,7 +94,7 @@ public sealed class SmartChildResolver : IResolver, IContainer
         var entry = resolver.FindFactoryEntry(this, type);
         if (entry.CanGet)
         {
-            obj = entry.Single(this);
+            obj = entry.Constant ?? entry.Single(this);
             return true;
         }
 
@@ -108,7 +108,7 @@ public sealed class SmartChildResolver : IResolver, IContainer
         var entry = resolver.FindFactoryEntry(this, type, key);
         if (entry.CanGet)
         {
-            obj = entry.Single(this);
+            obj = entry.Constant ?? entry.Single(this);
             return true;
         }
 
@@ -119,16 +119,32 @@ public sealed class SmartChildResolver : IResolver, IContainer
     // Get
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public T Get<T>() => UnsafeCast<T>(resolver.FindFactoryEntry(this, typeof(T)).Single(this));
+    public T Get<T>()
+    {
+        var entry = resolver.FindFactoryEntry(this, typeof(T));
+        return UnsafeCast<T>(entry.Constant ?? entry.Single(this));
+    }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public T Get<T>(object? key) => UnsafeCast<T>(resolver.FindFactoryEntry(this, typeof(T), key).Single(this));
+    public T Get<T>(object? key)
+    {
+        var entry = resolver.FindFactoryEntry(this, typeof(T), key);
+        return UnsafeCast<T>(entry.Constant ?? entry.Single(this));
+    }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public object Get(Type type) => resolver.FindFactoryEntry(this, type).Single(this);
+    public object Get(Type type)
+    {
+        var entry = resolver.FindFactoryEntry(this, type);
+        return entry.Constant ?? entry.Single(this);
+    }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public object Get(Type type, object? key) => resolver.FindFactoryEntry(this, type, key).Single(this);
+    public object Get(Type type, object? key)
+    {
+        var entry = resolver.FindFactoryEntry(this, type, key);
+        return entry.Constant ?? entry.Single(this);
+    }
 
     // GetAll
 

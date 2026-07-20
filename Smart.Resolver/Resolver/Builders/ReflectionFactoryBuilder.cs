@@ -5,7 +5,7 @@ using System.Reflection;
 
 public sealed class ReflectionFactoryBuilder : IFactoryBuilder
 {
-    public Func<IResolver, object> CreateFactory(ConstructorInfo ci, Func<IResolver, object?>[] factories, Action<IResolver, object>[] actions)
+    public Func<IResolver, object> CreateFactory(ConstructorInfo ci, Func<IResolver, object?>[] factories, object?[] constants, Action<IResolver, object>[] actions)
     {
         if (ci.GetParameters().Length == 0)
         {
@@ -15,8 +15,8 @@ public sealed class ReflectionFactoryBuilder : IFactoryBuilder
         }
 
         return actions.Length == 0
-            ? BuildConstructorFactory(ci, factories)
-            : BuildConstructorWithActionsFactory(ci, factories, actions);
+            ? BuildConstructorFactory(ci, factories, constants)
+            : BuildConstructorWithActionsFactory(ci, factories, constants, actions);
     }
 
     private static Func<IResolver, object> BuildActivatorFactory(
@@ -42,28 +42,28 @@ public sealed class ReflectionFactoryBuilder : IFactoryBuilder
         };
     }
 
-    private static Func<IResolver, object> BuildConstructorFactory(ConstructorInfo ci, Func<IResolver, object?>[] factories)
+    private static Func<IResolver, object> BuildConstructorFactory(ConstructorInfo ci, Func<IResolver, object?>[] factories, object?[] constants)
     {
         return r =>
         {
             var args = new object?[factories.Length];
             for (var i = 0; i < factories.Length; i++)
             {
-                args[i] = factories[i](r);
+                args[i] = constants[i] ?? factories[i](r);
             }
 
             return ci.Invoke(args);
         };
     }
 
-    private static Func<IResolver, object> BuildConstructorWithActionsFactory(ConstructorInfo ci, Func<IResolver, object?>[] factories, Action<IResolver, object>[] actions)
+    private static Func<IResolver, object> BuildConstructorWithActionsFactory(ConstructorInfo ci, Func<IResolver, object?>[] factories, object?[] constants, Action<IResolver, object>[] actions)
     {
         return r =>
         {
             var args = new object?[factories.Length];
             for (var i = 0; i < factories.Length; i++)
             {
-                args[i] = factories[i](r);
+                args[i] = constants[i] ?? factories[i](r);
             }
 
             var obj = ci.Invoke(args);
