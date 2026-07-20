@@ -20,18 +20,11 @@ public sealed class EmitFactoryBuilder : IFactoryBuilder
 
     private const int InlineBudget = 32;
 
-    private readonly bool useLeafFactory;
+    public bool UseLeafFactory { get; init; } = true;
 
-    private readonly bool useConstantEmbedding;
+    public bool UseConstantEmbedding { get; init; } = true;
 
-    private readonly bool useInlineExpansion;
-
-    public EmitFactoryBuilder(bool useLeafFactory = true, bool useConstantEmbedding = true, bool useInlineExpansion = true)
-    {
-        this.useLeafFactory = useLeafFactory;
-        this.useConstantEmbedding = useConstantEmbedding;
-        this.useInlineExpansion = useInlineExpansion;
-    }
+    public bool UseInlineExpansion { get; init; } = true;
 
     public Func<IResolver, object> CreateFactory(ConstructorInfo ci, Func<IResolver, object?>[] factories, object?[] constants, Action<IResolver, object>[] actions)
     {
@@ -40,7 +33,7 @@ public sealed class EmitFactoryBuilder : IFactoryBuilder
         var direct = true;
         for (var i = 0; i < factories.Length; i++)
         {
-            nodes[i] = BuildNode(useConstantEmbedding ? constants[i] : null, factories[i], ref budget);
+            nodes[i] = BuildNode(UseConstantEmbedding ? constants[i] : null, factories[i], ref budget);
             direct &= nodes[i] is FactoryNode;
         }
 
@@ -56,7 +49,7 @@ public sealed class EmitFactoryBuilder : IFactoryBuilder
     {
         var holder = DefaultHolderBuilder.CreateHolder(factories, actions);
 
-        if (useLeafFactory && (holder is null) && !ci.DeclaringType!.IsValueType && (ci.GetParameters().Length == 0) && ci.IsPublic && ci.DeclaringType.IsVisible)
+        if (UseLeafFactory && (holder is null) && !ci.DeclaringType!.IsValueType && (ci.GetParameters().Length == 0) && ci.IsPublic && ci.DeclaringType.IsVisible)
         {
             var leafFactory = DefaultLeafFactoryBuilder.CreateFactory(ci);
             Recipes.Add(leafFactory, new Recipe(ci, [], []));
@@ -138,7 +131,7 @@ public sealed class EmitFactoryBuilder : IFactoryBuilder
 
     public Func<IResolver, object> CreateArrayFactory(Type type, Func<IResolver, object>[] factories)
     {
-        if (useInlineExpansion && (factories.Length > 0))
+        if (UseInlineExpansion && (factories.Length > 0))
         {
             var budget = InlineBudget;
             var nodes = new Node[factories.Length];
@@ -291,7 +284,7 @@ public sealed class EmitFactoryBuilder : IFactoryBuilder
         var factory = (Func<IResolver, object>)dynamicMethod.CreateDelegate(funcType, holder);
         if ((actions.Length == 0) && !ci.DeclaringType.IsValueType)
         {
-            Recipes.Add(factory, new Recipe(ci, useConstantEmbedding ? constants : new object?[factories.Length], factories));
+            Recipes.Add(factory, new Recipe(ci, UseConstantEmbedding ? constants : new object?[factories.Length], factories));
         }
 
         return factory;
@@ -304,7 +297,7 @@ public sealed class EmitFactoryBuilder : IFactoryBuilder
             return new ConstantNode(constant);
         }
 
-        if (useInlineExpansion && (budget > 0) && Recipes.TryGetValue(factory, out var recipe))
+        if (UseInlineExpansion && (budget > 0) && Recipes.TryGetValue(factory, out var recipe))
         {
             budget--;
 
