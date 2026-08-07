@@ -22,7 +22,7 @@
     <Project Path="Smart.Resolver.Benchmark/Smart.Resolver.Benchmark.csproj" />
   </Folder>
   <Folder Name="/Example/">
-    <Project Path="Example.Configuration/Example.Configuration.csproj" />
+    <Project Path="Example.Configuration/Example.Configuration.csproj" DefaultStartup="true" />
     <Project Path="Example.WebApplication/Example.WebApplication.csproj" />
   </Folder>
   <Folder Name="/Tests/">
