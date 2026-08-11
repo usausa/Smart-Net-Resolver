@@ -7,8 +7,7 @@ using Smart.Resolver;
 
 public sealed class KeyedDependencyInjectionComplianceTest : KeyedDependencyInjectionSpecificationTests
 {
-    // The adapter does not register IServiceProviderIsKeyedService. See "Microsoft.Extensions.DependencyInjection compatibility" in README.
-    public override bool SupportsIServiceProviderIsKeyedService => false;
+    public override bool SupportsIServiceProviderIsKeyedService => true;
 
     protected override IServiceProvider CreateServiceProvider(IServiceCollection collection)
     {

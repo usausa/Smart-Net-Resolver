@@ -46,17 +46,13 @@ public sealed class SmartChildResolver : IResolver, IContainer
 
     // CanGet
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public bool CanGet<T>() => resolver.FindFactoryEntry(this, typeof(T)).CanGet;
+    public bool CanGet<T>() => resolver.CanGet<T>();
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public bool CanGet<T>(object? key) => resolver.FindFactoryEntry(this, typeof(T), key).CanGet;
+    public bool CanGet<T>(object? key) => resolver.CanGet<T>(key);
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public bool CanGet(Type type) => resolver.FindFactoryEntry(this, type).CanGet;
+    public bool CanGet(Type type) => resolver.CanGet(type);
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public bool CanGet(Type type, object? key) => resolver.FindFactoryEntry(this, type, key).CanGet;
+    public bool CanGet(Type type, object? key) => resolver.CanGet(type, key);
 
     // TryGet
 

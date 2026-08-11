@@ -12,7 +12,12 @@ internal sealed class FromKeyedServicesSource : IKeySource
     public object? GetValue(ICustomAttributeProvider provider)
     {
         var attributes = provider.GetCustomAttributes(typeof(FromKeyedServicesAttribute), false);
-        return attributes.Length > 0 ? ((FromKeyedServicesAttribute)attributes[0]).Key : null;
+        if (attributes.Length == 0)
+        {
+            return null;
+        }
+
+        return ((FromKeyedServicesAttribute)attributes[0]).Key ?? InheritKeyMarker.Instance;
     }
 }
 #pragma warning restore CA1812

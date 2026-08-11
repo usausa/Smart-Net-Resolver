@@ -67,15 +67,23 @@ public sealed class StandardProvider : IProvider
 
                 if (ReferenceEquals(parameter.ResolveBy, ServiceKeyMarker.Instance))
                 {
+                    if (!IsKeyAssignable(pi.ParameterType, key))
+                    {
+                        match = false;
+                        break;
+                    }
+
                     argumentFactories.Add(_ => key);
                     argumentConstants.Add(key);
                     continue;
                 }
 
+                var resolveBy = ReferenceEquals(parameter.ResolveBy, InheritKeyMarker.Instance) ? key : parameter.ResolveBy;
+
                 // Resolve
-                if (kernel.TryResolveFactory(pi.ParameterType, parameter.ResolveBy, out var factory))
+                if (kernel.TryResolveFactory(pi.ParameterType, resolveBy, out var factory))
                 {
-                    kernel.TryResolveConstant(pi.ParameterType, parameter.ResolveBy, out var constant);
+                    kernel.TryResolveConstant(pi.ParameterType, resolveBy, out var constant);
                     argumentFactories.Add(factory);
                     argumentConstants.Add(constant);
                     continue;
@@ -83,7 +91,7 @@ public sealed class StandardProvider : IProvider
 
                 // Multiple
                 if ((parameter.ElementType is not null) &&
-                    kernel.TryResolveFactories(parameter.ElementType, parameter.ResolveBy, out var factories))
+                    kernel.TryResolveFactories(parameter.ElementType, resolveBy, out var factories))
                 {
                     var arrayFactory = builder.CreateArrayFactory(parameter.ElementType, factories);
                     argumentFactories.Add(arrayFactory);
@@ -117,6 +125,16 @@ public sealed class StandardProvider : IProvider
     //--------------------------------------------------------------------------------
     // Helpers
     //--------------------------------------------------------------------------------
+
+    private static bool IsKeyAssignable(Type parameterType, object? key)
+    {
+        if (key is not null)
+        {
+            return parameterType.IsInstanceOfType(key);
+        }
+
+        return !parameterType.IsValueType || (Nullable.GetUnderlyingType(parameterType) is not null);
+    }
 
     private ConstructorMetadata[] CreateConstructorMetadata()
     {

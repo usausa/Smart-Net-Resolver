@@ -10,5 +10,7 @@ public sealed class MatchAnyConstraint : IConstraint
     {
     }
 
+    public bool IsMultiKey => true;
+
     public bool Match(BindingMetadata metadata, object? key) => true;
 }

@@ -7,8 +7,7 @@ using Smart.Resolver;
 
 public sealed class DependencyInjectionComplianceTest : DependencyInjectionSpecificationTests
 {
-    // The adapter does not register IServiceProviderIsService. See "Microsoft.Extensions.DependencyInjection compatibility" in README.
-    public override bool SupportsIServiceProviderIsService => false;
+    public override bool SupportsIServiceProviderIsService => true;
 
     protected override IServiceProvider CreateServiceProvider(IServiceCollection serviceCollection)
     {

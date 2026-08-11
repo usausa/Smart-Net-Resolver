@@ -36,6 +36,8 @@ public sealed class SmartServiceProviderFactory : IServiceProviderFactory<Resolv
         config.Populate(services);
 
         config.Bind<IServiceScopeFactory>().To<SmartServiceScopeFactory>().InSingletonScope();
+        config.Bind<IServiceProviderIsService>().ToMethod(static r => new SmartServiceProviderIsService(r)).InSingletonScope();
+        config.Bind<IServiceProviderIsKeyedService>().ToMethod(static r => new SmartServiceProviderIsService(r)).InSingletonScope();
 
         config.UseOpenGenericBinding();
         config.UseArrayBinding();

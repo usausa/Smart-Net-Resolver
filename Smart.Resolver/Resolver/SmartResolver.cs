@@ -115,17 +115,22 @@ public sealed class SmartResolver : IResolver, IKernel
 
     // CanGet
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public bool CanGet<T>() => FindFactoryEntry(typeof(T)).CanGet;
+    public bool CanGet<T>() => CanGet(typeof(T));
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public bool CanGet<T>(object? key) => FindFactoryEntry(typeof(T), key).CanGet;
+    public bool CanGet<T>(object? key) => CanGet(typeof(T), key);
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public bool CanGet(Type type) => FindFactoryEntry(type).CanGet;
+    public bool CanGet(Type type) => factoriesCache.TryGetValue(type, out var entry) ? entry.CanGet : HasBinding(type, false, null);
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public bool CanGet(Type type, object? key) => FindFactoryEntry(type, key).CanGet;
+    public bool CanGet(Type type, object? key) => factoriesCacheWithConstraint.TryGetValue(type, key, out var entry) ? entry.CanGet : HasBinding(type, true, key);
+
+    private bool HasBinding(Type type, bool useConstraint, object? key)
+    {
+        var bindings = (table.Get(type) ?? Enumerable.Empty<Binding>())
+            .Concat(handlers.SelectMany(h => h.Handle(Components, table, type)));
+        return useConstraint
+            ? bindings.Any(b => b.Constraint is not null && b.Constraint.Match(b.Metadata, key))
+            : bindings.Any(static b => b.Constraint is null);
+    }
 
     // TryGet
 
@@ -303,18 +308,39 @@ public sealed class SmartResolver : IResolver, IKernel
                 : bindings.Where(b => b.Constraint is null);
             var targets = filtered.ToArray();
             var factories = new Func<IResolver, object>[targets.Length];
+            var multipleCount = 0;
             for (var i = 0; i < targets.Length; i++)
             {
                 var binding = targets[i];
                 var factory = binding.Provider.CreateFactory(this, binding, key);
 
-                var scope = useConstraint ? binding.Scope?.Copy(Components) : binding.Scope;
+                var scope = useConstraint && binding.Constraint!.IsMultiKey ? binding.Scope?.Copy(Components) : binding.Scope;
                 factories[i] = scope is null ? factory : scope.Create(() => factory(resolver));
+
+                if (!useConstraint || !binding.Constraint!.IsMultiKey)
+                {
+                    multipleCount++;
+                }
             }
 
             if (targets.Length == 0)
             {
                 return new FactoryEntry(false, null, nullFactory, factories);
+            }
+
+            var multiple = factories;
+            if (multipleCount != targets.Length)
+            {
+                multiple = new Func<IResolver, object>[multipleCount];
+                var index = 0;
+                for (var i = 0; i < targets.Length; i++)
+                {
+                    if (!targets[i].Constraint!.IsMultiKey)
+                    {
+                        multiple[index] = factories[i];
+                        index++;
+                    }
+                }
             }
 
             var singleIndex = targets.Length - 1;
@@ -334,7 +360,7 @@ public sealed class SmartResolver : IResolver, IKernel
                 true,
                 ResolveConstant(targets[singleIndex], factories[singleIndex], resolver),
                 factories[singleIndex],
-                factories);
+                multiple);
         }
     }
 

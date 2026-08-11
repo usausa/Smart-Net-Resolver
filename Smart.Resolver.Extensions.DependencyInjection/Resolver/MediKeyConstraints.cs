@@ -14,8 +14,8 @@ internal sealed class MediKeyConstraint : IConstraint
         this.serviceKey = serviceKey;
     }
 
-    public bool Match(BindingMetadata metadata, object? key)
-        => ReferenceEquals(key, KeyedService.AnyKey) || serviceKey.Equals(key);
+    public bool Match(BindingMetadata metadata, object? key) =>
+        ReferenceEquals(key, KeyedService.AnyKey) || serviceKey.Equals(key);
 }
 
 internal sealed class MediAnyKeyConstraint : IConstraint
@@ -25,6 +25,8 @@ internal sealed class MediAnyKeyConstraint : IConstraint
     private MediAnyKeyConstraint()
     {
     }
+
+    public bool IsMultiKey => true;
 
     public bool Match(BindingMetadata metadata, object? key) =>
         (key is not null) && !ReferenceEquals(key, KeyedService.AnyKey);
