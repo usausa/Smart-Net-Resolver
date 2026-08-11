@@ -25,7 +25,7 @@ internal sealed class SmartServiceProvider : IKeyedServiceProvider, IDisposable
     {
         if (serviceKey is null)
         {
-            return resolver.Get(serviceType);
+            return resolver.TryGet(serviceType, out var obj) ? obj : null;
         }
 
         if (ReferenceEquals(serviceKey, KeyedService.AnyKey) && !KeyedServiceHelper.IsEnumerableService(serviceType))
@@ -33,15 +33,14 @@ internal sealed class SmartServiceProvider : IKeyedServiceProvider, IDisposable
             ThrowHelper.ThrowAnyKeyNotSupported();
         }
 
-        return resolver.TryGet(serviceType, serviceKey, out var obj) ? obj : null;
+        return resolver.TryGet(serviceType, serviceKey, out var keyed) ? keyed : null;
     }
 
     public object GetRequiredKeyedService(Type serviceType, object? serviceKey)
     {
         if (serviceKey is null)
         {
-            var obj = resolver.Get(serviceType);
-            if (obj is null)
+            if (!resolver.TryGet(serviceType, out var obj))
             {
                 ThrowHelper.ThrowServiceNotRegistered(serviceType);
             }

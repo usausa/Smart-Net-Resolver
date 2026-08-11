@@ -27,7 +27,7 @@ internal sealed class SmartServiceScope : IServiceScope, IKeyedServiceProvider
     {
         if (serviceKey is null)
         {
-            return childResolver.Get(serviceType);
+            return childResolver.TryGet(serviceType, out var obj) ? obj : null;
         }
 
         if (ReferenceEquals(serviceKey, KeyedService.AnyKey) && !KeyedServiceHelper.IsEnumerableService(serviceType))
@@ -35,15 +35,14 @@ internal sealed class SmartServiceScope : IServiceScope, IKeyedServiceProvider
             ThrowHelper.ThrowAnyKeyNotSupported();
         }
 
-        return childResolver.TryGet(serviceType, serviceKey, out var obj) ? obj : null;
+        return childResolver.TryGet(serviceType, serviceKey, out var keyed) ? keyed : null;
     }
 
     public object GetRequiredKeyedService(Type serviceType, object? serviceKey)
     {
         if (serviceKey is null)
         {
-            var obj = childResolver.Get(serviceType);
-            if (obj is null)
+            if (!childResolver.TryGet(serviceType, out var obj))
             {
                 ThrowHelper.ThrowServiceNotRegistered(serviceType);
             }
