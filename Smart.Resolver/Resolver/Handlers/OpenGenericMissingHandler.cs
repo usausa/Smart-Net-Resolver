@@ -30,14 +30,32 @@ public sealed class OpenGenericMissingHandler : IMissingHandler
             return [];
         }
 
-        return table.FindBindings(type.GetGenericTypeDefinition())
-            .Select(b => new Binding(
+        var bindings = new List<Binding>();
+        foreach (var b in table.FindBindings(type.GetGenericTypeDefinition()))
+        {
+            Type implementationType;
+            try
+            {
+                implementationType = b.Provider.TargetType.MakeGenericType(type.GenericTypeArguments);
+            }
+            catch (ArgumentException)
+            {
+                continue;
+            }
+
+            bindings.Add(new Binding(
                 type,
-                new StandardProvider(b.Provider.TargetType.MakeGenericType(type.GenericTypeArguments), components),
+                new StandardProvider(implementationType, components),
                 b.Scope?.Copy(components),
                 b.Constraint,
                 b.Metadata,
                 b.ConstructorArguments,
-                b.PropertyValues));
+                b.PropertyValues)
+            {
+                Order = b.Order
+            });
+        }
+
+        return bindings;
     }
 }

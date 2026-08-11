@@ -2,6 +2,7 @@ namespace Smart.Resolver;
 
 using Microsoft.Extensions.DependencyInjection;
 
+using Smart.Resolver.Constraints;
 using Smart.Resolver.Expressions;
 
 public static class ResolverConfigExtensions
@@ -12,21 +13,25 @@ public static class ResolverConfigExtensions
         {
             if (descriptor.IsKeyedService)
             {
+                var constraint = ReferenceEquals(descriptor.ServiceKey, KeyedService.AnyKey)
+                    ? MediAnyKeyConstraint.Instance
+                    : (IConstraint)new MediKeyConstraint(descriptor.ServiceKey!);
+
                 if (descriptor.KeyedImplementationType is not null)
                 {
                     config
                         .Bind(descriptor.ServiceType)
                         .To(descriptor.KeyedImplementationType)
                         .ConfigureScope(descriptor.Lifetime)
-                        .Keyed(descriptor.ServiceKey!);
+                        .Constraint(constraint);
                 }
                 else if (descriptor.KeyedImplementationFactory is not null)
                 {
                     config
                         .Bind(descriptor.ServiceType)
-                        .ToMethod(kernel => descriptor.KeyedImplementationFactory(kernel.Get<IServiceProvider>(), descriptor.ServiceKey))
+                        .ToProvider(_ => new KeyedFactoryProvider(descriptor.ServiceType, descriptor.KeyedImplementationFactory, descriptor.ServiceKey!))
                         .ConfigureScope(descriptor.Lifetime)
-                        .Keyed(descriptor.ServiceKey!);
+                        .Constraint(constraint);
                 }
                 else if (descriptor.KeyedImplementationInstance is not null)
                 {
@@ -34,7 +39,7 @@ public static class ResolverConfigExtensions
                         .Bind(descriptor.ServiceType)
                         .ToConstant(descriptor.KeyedImplementationInstance)
                         .ConfigureScope(descriptor.Lifetime)
-                        .Keyed(descriptor.ServiceKey!);
+                        .Constraint(constraint);
                 }
             }
             else

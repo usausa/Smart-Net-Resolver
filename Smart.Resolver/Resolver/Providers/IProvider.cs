@@ -6,5 +6,5 @@ public interface IProvider
 {
     Type TargetType { get; }
 
-    Func<IResolver, object> CreateFactory(IKernel kernel, Binding binding);
+    Func<IResolver, object> CreateFactory(IKernel kernel, Binding binding, object? key);
 }

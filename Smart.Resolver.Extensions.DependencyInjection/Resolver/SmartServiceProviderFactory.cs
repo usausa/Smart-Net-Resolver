@@ -28,6 +28,7 @@ public sealed class SmartServiceProviderFactory : IServiceProviderFactory<Resolv
         this.config = config;
         action(config);
         config.Components.Add<IKeySource, FromKeyedServicesSource>();
+        config.Components.Add<IKeySource, ServiceKeySource>();
     }
 
     public ResolverConfig CreateBuilder(IServiceCollection services)

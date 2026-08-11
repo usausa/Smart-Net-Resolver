@@ -37,7 +37,7 @@ public sealed class StandardProvider : IProvider
         builder = components.Get<IFactoryBuilder>();
     }
 
-    public Func<IResolver, object> CreateFactory(IKernel kernel, Binding binding)
+    public Func<IResolver, object> CreateFactory(IKernel kernel, Binding binding, object? key)
     {
         var constructors = CreateConstructorMetadata();
         if (constructors.Length == 0)
@@ -62,6 +62,13 @@ public sealed class StandardProvider : IProvider
                 {
                     argumentFactories.Add(argument.Resolve);
                     argumentConstants.Add(null);
+                    continue;
+                }
+
+                if (ReferenceEquals(parameter.ResolveBy, ServiceKeyMarker.Instance))
+                {
+                    argumentFactories.Add(_ => key);
+                    argumentConstants.Add(key);
                     continue;
                 }
 

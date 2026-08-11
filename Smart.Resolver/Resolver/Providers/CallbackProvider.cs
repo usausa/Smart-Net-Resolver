@@ -15,7 +15,7 @@ public sealed class CallbackProvider<T> : IProvider
         TargetType = typeof(T);
     }
 
-    public Func<IResolver, object> CreateFactory(IKernel kernel, Binding binding)
+    public Func<IResolver, object> CreateFactory(IKernel kernel, Binding binding, object? key)
     {
         return factory;
     }
@@ -34,7 +34,7 @@ public sealed class StructCallbackProvider<T> : IProvider
         TargetType = typeof(T);
     }
 
-    public Func<IResolver, object> CreateFactory(IKernel kernel, Binding binding)
+    public Func<IResolver, object> CreateFactory(IKernel kernel, Binding binding, object? key)
     {
         return r => factory(r);
     }

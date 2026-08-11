@@ -22,6 +22,11 @@ public sealed class SelfMissingHandler : IMissingHandler
 
     public IEnumerable<Binding> Handle(ComponentContainer components, BindingTable table, Type type)
     {
+        if (table.FindBindings(type).Length > 0)
+        {
+            return [];
+        }
+
         if (type.IsInterface || type.IsAbstract || type.IsValueType || type.ContainsGenericParameters ||
             ignoreTypes.Contains(type))
         {

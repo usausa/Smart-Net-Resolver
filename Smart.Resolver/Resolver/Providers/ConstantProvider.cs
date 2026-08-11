@@ -18,7 +18,7 @@ public sealed class ConstantProvider<T> : IProvider, IConstantSource
         TargetType = typeof(T);
     }
 
-    public Func<IResolver, object> CreateFactory(IKernel kernel, Binding binding)
+    public Func<IResolver, object> CreateFactory(IKernel kernel, Binding binding, object? key)
     {
         return _ => value;
     }

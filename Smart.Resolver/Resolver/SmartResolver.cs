@@ -45,18 +45,26 @@ public sealed class SmartResolver : IResolver, IKernel
         injectors = Components.GetAll<IInjector>().ToArray();
         handlers = Components.GetAll<IMissingHandler>().ToArray();
 
-        var tableEntries = new Dictionary<Type, Binding[]>();
+        var order = 0;
+        var tableEntries = new Dictionary<Type, List<Binding>>();
 
-        foreach (var group in config.CreateBindings(Components).GroupBy(static b => b.Type))
+        foreach (var binding in config.CreateBindings(Components))
         {
-            tableEntries[group.Key] = [.. group];
+            binding.Order = order++;
+            if (!tableEntries.TryGetValue(binding.Type, out var list))
+            {
+                list = [];
+                tableEntries[binding.Type] = list;
+            }
+
+            list.Add(binding);
         }
 
-        tableEntries[typeof(IResolver)] = [new Binding(typeof(IResolver), new ConstantProvider<IResolver>(this), null, null, null, null, null)];
-        tableEntries[typeof(SmartResolver)] = [new Binding(typeof(SmartResolver), new ConstantProvider<SmartResolver>(this), null, null, null, null, null)];
-        tableEntries[typeof(IServiceProvider)] = [new Binding(typeof(IServiceProvider), new ConstantProvider<IServiceProvider>(this), null, null, null, null, null)];
+        tableEntries[typeof(IResolver)] = [new Binding(typeof(IResolver), new ConstantProvider<IResolver>(this), null, null, null, null, null) { Order = order++ }];
+        tableEntries[typeof(SmartResolver)] = [new Binding(typeof(SmartResolver), new ConstantProvider<SmartResolver>(this), null, null, null, null, null) { Order = order++ }];
+        tableEntries[typeof(IServiceProvider)] = [new Binding(typeof(IServiceProvider), new ConstantProvider<IServiceProvider>(this), null, null, null, null, null) { Order = order }];
 
-        table = new BindingTable(tableEntries);
+        table = new BindingTable(tableEntries.ToDictionary(static x => x.Key, static x => x.Value.ToArray()));
     }
 
     public void Dispose()
@@ -286,25 +294,46 @@ public sealed class SmartResolver : IResolver, IKernel
     {
         lock (sync)
         {
-            var bindings = table.Get(type) ?? handlers.SelectMany(h => h.Handle(Components, table, type));
-            bindings = useConstraint
+            var closed = table.Get(type);
+            var bindings = (closed ?? Enumerable.Empty<Binding>())
+                .Concat(handlers.SelectMany(h => h.Handle(Components, table, type)))
+                .OrderBy(static b => b.Order);
+            var filtered = useConstraint
                 ? bindings.Where(b => b.Constraint is not null && b.Constraint.Match(b.Metadata, key))
                 : bindings.Where(b => b.Constraint is null);
-            var targets = bindings.ToArray();
+            var targets = filtered.ToArray();
             var factories = new Func<IResolver, object>[targets.Length];
             for (var i = 0; i < targets.Length; i++)
             {
                 var binding = targets[i];
-                var factory = binding.Provider.CreateFactory(this, binding);
-                factories[i] = binding.Scope is null ? factory : binding.Scope.Create(() => factory(resolver));
+                var factory = binding.Provider.CreateFactory(this, binding, key);
+
+                var scope = useConstraint ? binding.Scope?.Copy(Components) : binding.Scope;
+                factories[i] = scope is null ? factory : scope.Create(() => factory(resolver));
             }
 
-            var constant = targets.Length > 0 ? ResolveConstant(targets[^1], factories[^1], resolver) : null;
+            if (targets.Length == 0)
+            {
+                return new FactoryEntry(false, null, nullFactory, factories);
+            }
+
+            var singleIndex = targets.Length - 1;
+            if (closed is not null)
+            {
+                for (var i = targets.Length - 1; i >= 0; i--)
+                {
+                    if (Array.IndexOf(closed, targets[i]) >= 0)
+                    {
+                        singleIndex = i;
+                        break;
+                    }
+                }
+            }
 
             return new FactoryEntry(
-                factories.Length > 0,
-                constant,
-                factories.Length > 0 ? factories[^1] : nullFactory,
+                true,
+                ResolveConstant(targets[singleIndex], factories[singleIndex], resolver),
+                factories[singleIndex],
                 factories);
         }
     }

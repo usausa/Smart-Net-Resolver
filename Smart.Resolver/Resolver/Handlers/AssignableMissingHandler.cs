@@ -24,6 +24,11 @@ public sealed class AssignableMissingHandler : IMissingHandler
 
     public IEnumerable<Binding> Handle(ComponentContainer components, BindingTable table, Type type)
     {
+        if (table.FindBindings(type).Length > 0)
+        {
+            return [];
+        }
+
         if ((targetTypes.Count > 0) && !targetTypes.Contains(type))
         {
             return [];

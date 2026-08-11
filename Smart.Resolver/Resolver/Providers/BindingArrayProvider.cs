@@ -10,23 +10,18 @@ internal sealed class BindingArrayProvider : IProvider
 
     private readonly IFactoryBuilder builder;
 
-    private readonly Binding[] bindings;
-
     public Type TargetType { get; }
 
-    public BindingArrayProvider(Type type, Type elementType, ComponentContainer components, Binding[] bindings)
+    public BindingArrayProvider(Type type, Type elementType, ComponentContainer components)
     {
         TargetType = type;
         this.elementType = elementType;
         builder = components.Get<IFactoryBuilder>();
-        this.bindings = bindings;
     }
 
-    public Func<IResolver, object> CreateFactory(IKernel kernel, Binding binding)
+    public Func<IResolver, object> CreateFactory(IKernel kernel, Binding binding, object? key)
     {
-        var factories = bindings
-            .Select(b => b.Provider.CreateFactory(kernel, b))
-            .ToArray();
+        kernel.TryResolveFactories(elementType, key, out var factories);
         return builder.CreateArrayFactory(elementType, factories);
     }
 }

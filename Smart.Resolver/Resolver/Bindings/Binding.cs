@@ -13,6 +13,8 @@ public sealed class Binding
 
     public Type Type { get; }
 
+    public int Order { get; internal set; }
+
     public IProvider Provider { get; }
 
     public IScope? Scope { get; }

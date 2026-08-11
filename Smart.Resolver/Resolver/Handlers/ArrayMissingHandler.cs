@@ -2,6 +2,7 @@ namespace Smart.Resolver.Handlers;
 
 using Smart.ComponentModel;
 using Smart.Resolver.Bindings;
+using Smart.Resolver.Constraints;
 using Smart.Resolver.Helpers;
 using Smart.Resolver.Providers;
 using Smart.Resolver.Scopes;
@@ -35,18 +36,48 @@ public sealed class ArrayMissingHandler : IMissingHandler
             return [];
         }
 
-        var bindings = table.FindBindings(elementType);
+        var closedBindings = table.FindBindings(elementType);
+        IEnumerable<Binding> candidates = closedBindings;
+        if (elementType.IsGenericType)
+        {
+            candidates = candidates.Concat(table.FindBindings(elementType.GetGenericTypeDefinition()));
+        }
 
-        // hack for singleton
-        var useSingleton = bindings.Length > 0 && bindings.All(static b => b.Scope is SingletonScope);
+        var any = false;
+        var useSingleton = true;
+        var anyKeyed = false;
+        var useSingletonKeyed = true;
+        foreach (var candidate in candidates)
+        {
+            if (candidate.Constraint is null)
+            {
+                any = true;
+                useSingleton &= candidate.Scope is SingletonScope;
+            }
+            else
+            {
+                anyKeyed = true;
+                useSingletonKeyed &= candidate.Scope is SingletonScope;
+            }
+        }
+
+        var provider = new BindingArrayProvider(type, elementType, components);
 #pragma warning disable CA2000
         return
         [
             new Binding(
                 type,
-                new BindingArrayProvider(type, elementType, components, bindings),
-                useSingleton ? new SingletonScope(components) : null,
+                provider,
+                any && useSingleton ? new SingletonScope(components) : null,
                 null,
+                null,
+                null,
+                null),
+            new Binding(
+                type,
+                provider,
+                anyKeyed && useSingletonKeyed ? new SingletonScope(components) : null,
+                MatchAnyConstraint.Instance,
                 null,
                 null,
                 null)
