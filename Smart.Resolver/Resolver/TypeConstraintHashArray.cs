@@ -42,7 +42,7 @@ internal sealed class TypeConstraintHashArray<T>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private static int CalculateHash(Type type, object? key)
     {
-        return (int)(BitOperations.RotateLeft((uint)type.GetHashCode(), 16) ^ (uint)CalcKeyHash(key));
+        return (int)(BitOperations.RotateLeft((uint)RuntimeHelpers.GetHashCode(type), 16) ^ (uint)CalcKeyHash(key));
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
