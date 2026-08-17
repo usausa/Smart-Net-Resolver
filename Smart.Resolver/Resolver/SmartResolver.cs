@@ -407,10 +407,14 @@ public sealed class SmartResolver : IResolver, IKernel
     private Action<IResolver, object>[] CreateInjectors(Type type)
     {
         var binding = new Binding(type, null!);
+        // ReSharper disable UseCollectionExpression
+#pragma warning disable IDE0028
         return injectors
             .Select(x => x.CreateInjector(type, binding))
             .WhereNotNull()
             .ToArray();
+#pragma warning restore IDE0028
+        // ReSharper restore UseCollectionExpression
     }
 
     //--------------------------------------------------------------------------------
