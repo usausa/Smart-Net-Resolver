@@ -40,9 +40,16 @@ internal sealed class TypeConstraintHashArray<T>
     //--------------------------------------------------------------------------------
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private static int TypeHash(Type type) => (int)(type.TypeHandle.Value >> 4);
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private static int CalculateHash(Type type, object? key)
     {
-        return (int)(BitOperations.RotateLeft((uint)RuntimeHelpers.GetHashCode(type), 16) ^ (uint)CalcKeyHash(key));
+        unchecked
+        {
+            var hash = ((uint)TypeHash(type) ^ (uint)CalcKeyHash(key)) * 2654435761u;
+            return (int)(hash ^ (hash >> 16));
+        }
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -50,15 +57,13 @@ internal sealed class TypeConstraintHashArray<T>
     {
         if (key is string str)
         {
-            unchecked
+            var length = str.Length;
+            if (length == 0)
             {
-                var hash = 2166136261u;
-                foreach (var c in str)
-                {
-                    hash = (c ^ hash) * 16777619;
-                }
-                return (int)hash;
+                return 0;
             }
+
+            return (length << 16) ^ (str[0] << 8) ^ (str[length >> 1] << 4) ^ str[length - 1];
         }
 
         if (key is null)
