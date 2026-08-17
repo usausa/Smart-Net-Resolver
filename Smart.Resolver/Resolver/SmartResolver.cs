@@ -14,7 +14,7 @@ using Smart.Resolver.Scopes;
 
 public sealed class SmartResolver : IResolver, IKernel
 {
-    private readonly ThreadsafeTypeHashArrayMap<FactoryEntry> factoriesCache = new(128);
+    private readonly ThreadsafeTypeHashArrayMap<FactoryEntry> factoriesCache = [with(128)];
 
     private readonly TypeConstraintHashArray<FactoryEntry> factoriesCacheWithConstraint = new();
 
@@ -42,8 +42,12 @@ public sealed class SmartResolver : IResolver, IKernel
     {
         Components = config.CreateComponentContainer();
 
+        // ReSharper disable UseCollectionExpression
+#pragma warning disable IDE0028
         injectors = Components.GetAll<IInjector>().ToArray();
         handlers = Components.GetAll<IMissingHandler>().ToArray();
+#pragma warning restore IDE0028
+        // ReSharper restore UseCollectionExpression
 
         var order = 0;
         var tableEntries = new Dictionary<Type, List<Binding>>();
