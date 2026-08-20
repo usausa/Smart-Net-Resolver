@@ -1,130 +1,140 @@
 # Smart.Resolver.CompatibilityTest
 
-English | [日本語](README.ja.md)
-
 Verifies the `Smart.Resolver.Extensions.DependencyInjection` adapter against the official
 `Microsoft.Extensions.DependencyInjection` specification suite
-(`Microsoft.Extensions.DependencyInjection.Specification.Tests`, 10.0.8).
+(`Microsoft.Extensions.DependencyInjection.Specification.Tests`, 10.0.10).
 
 ```
 dotnet test Smart.Resolver.CompatibilityTest/Smart.Resolver.CompatibilityTest.csproj
 ```
 
-Current status: **96 / 143 specs pass** (47 fail).
+All 143 specs pass. This document records *how* each part of the M.E.DependencyInjection
+contract is satisfied, since most of it is expressed through Smart.Resolver's own
+extension points rather than through code that knows about M.E.DependencyInjection.
 
-The `IServiceProviderIsService` / `IServiceProviderIsKeyedService` specs are not counted above:
-the adapter does not register those services, so `SupportsIServiceProviderIsService` and
-`SupportsIServiceProviderIsKeyedService` return `false` in the test classes.
+The guiding rule is that the core resolver never references M.E.DependencyInjection types,
+and that every compatibility decision is made once, while a factory is built, so that the
+cached delegate a resolution actually runs is unaffected.
 
-The adapter types referenced below live in
-`Smart.Resolver.Extensions.DependencyInjection/Resolver/`.
+## Lifetimes and scopes
 
-## Compatible
+`ServiceLifetime` maps onto the existing scopes: `Singleton` to `SingletonScope`, `Scoped`
+to `ContainerScope`, `Transient` to no scope at all. `IServiceScope` is a child resolver,
+whose `ContainerSlot` already caches and disposes container-scoped instances.
 
-Behaviors verified by passing specs:
+Singletons resolve their dependencies against the root resolver regardless of which scope
+first materialised the entry, so a singleton never captures a child resolver that outlives
+it (`SmartResolver.CreateFactoryEntry`).
 
-- [x] Constructor injection, including nested object graphs
-- [x] `Transient` / `Singleton` / `Scoped` lifetimes (`ServiceLifetime` → Smart.Resolver scope)
-- [x] Scopes via `IServiceScopeFactory` / `IServiceScope` (each scope uses a child resolver)
-- [x] `IEnumerable<T>` resolution of multiple **distinct** implementations
-- [x] Open generic registrations (`UseOpenGenericBinding`) **without** generic parameter constraints
-- [x] Registration by implementation type, factory delegate, and singleton instance
-- [x] `[FromKeyedServices]` constructor parameter injection by an explicit key
-- [x] Disposal of the provider / scope (the underlying resolver is disposed)
+## Enumerable resolution
 
-## Not compatible
+`IEnumerable<T>` follows M.E.DependencyInjection's slot semantics: one element per
+registration, in registration order, closed and open generic registrations merged.
+`Binding.Order` records the registration index, and the entry is built by sorting on it.
 
-Each item lists the failing spec(s) and what would be required to support it.
+Elements are not resolved separately: `BindingArrayProvider` asks the kernel for the same
+factories a single resolution would use, so an element and an individually resolved service
+are the same instance when the lifetime says they should be.
 
-### `IServiceProviderIs(Keyed)Service`
+## Open generics
 
-- [ ] `IServiceProviderIsService` / `IServiceProviderIsKeyedService` are not registered
-  (the `Supports…` flags are set to `false`, so the specs are skipped).
-  **How to address:** bind these services in `SmartServiceProviderFactory.CreateBuilder` to an
-  implementation that answers `IsService(Type)` by inspecting the `ResolverConfig` bindings
-  (including `IEnumerable<T>` and open generics).
+Open generic registrations go through `OpenGenericMissingHandler`. A closed type that
+violates the implementation's generic constraints is skipped rather than failing the
+resolution, which the handler detects by catching the `ArgumentException` that
+`MakeGenericType` raises.
 
-### Keyed services
+For a single resolution a closed registration wins over one produced from an open generic,
+and the last matching registration wins within each group.
 
-Keyed services are only partially supported. Resolving by an explicit, matching key works, but
-the cases below do not.
+## Keyed services
 
-- [ ] **Injected `IServiceProvider` cannot resolve keyed services**
-  (`SimpleServiceKeyedResolution`, `ResolveKeyed{Transient,Singleton}FromInjectedServiceProvider`).
-  An injected `IServiceProvider` resolves to the bare `SmartResolver`, which does not implement
-  `IKeyedServiceProvider`, so `GetKeyedService` throws *"This service provider doesn't support
-  keyed services."*
-  **How to address:** bind `IServiceProvider` / `IKeyedServiceProvider` to the adapter provider
-  (`SmartServiceProvider` at the root, `SmartChildServiceProvider` inside a scope) instead of the
-  raw resolver, so the injected provider is keyed- and scope-aware.
+Keys are carried by Smart.Resolver's existing constraint mechanism; the M.E.DependencyInjection
+key semantics live entirely in the adapter's `IConstraint` implementations
+(`MediKeyConstraint`, `MediAnyKeyConstraint`).
 
-- [ ] **`KeyedService.AnyKey`** registration and query
-  (`ResolveKeyedServicesAnyKey*`, `ResolveKeyedService*WithAnyKey*`, `ResolveWithAnyKeyQuery_*`).
-  Keys are matched by equality, so the `AnyKey` sentinel matches nothing.
-  **How to address:** special-case `AnyKey` in the keyed binding lookup — treat an `AnyKey`
-  registration as matching any requested key, and an `AnyKey` query as matching every keyed
-  registration of the type.
+`KeyedService.AnyKey` needs two behaviours the plain key comparison cannot express, both
+provided by `IConstraint.IsMultiKey`:
 
-- [ ] **Keyed `IEnumerable<T>` resolution**
-  (`ResolveKeyedServices`, `ResolveKeyedGenericServices`).
-  `UseArrayBinding` only collects non-keyed bindings, so `GetKeyedServices<T>(key)` returns `null`.
-  **How to address:** extend array binding to gather all bindings whose key equals the requested key.
+- an `AnyKey` registration is a catch-all that must cache **per key**, so the resolver takes
+  a `Scope.Copy` for each keyed entry instead of sharing one scope
+- an `AnyKey` registration must be excluded from enumerations, so it is dropped from the
+  entry's `Multiple` array while remaining available for single resolution
 
-- [ ] **`[ServiceKey]` key injection**
-  (`ResolveKeyedServiceSingletonInstanceWithKeyInjection`, `...WithKeyedParameter`,
-  `ResolveKeyedServiceWithFromServiceKeyAttribute`, `CreateServiceWithKeyedParameter`).
-  The key a service was resolved with is not injected into its constructor (a default value is used).
-  **How to address:** add an `IKeySource` / parameter source that supplies the current resolution
-  key for parameters annotated with `[ServiceKey]` (mirroring `FromKeyedServicesSource`).
+Querying with `AnyKey` is enumeration-only; a single resolution throws, which the adapter
+raises in `GetKeyedService`.
 
-- [ ] **`null` key falls back to the non-keyed registration; keyed/non-keyed isolation**
-  (`ResolveNullKeyedService`, `ResolveNonKeyedService`, `CombinationalRegistration`).
-  A `null` key should resolve the non-keyed service, and keyed-only registrations should not leak
-  into non-keyed resolution.
-  **How to address:** in `SmartServiceProvider.GetKeyedService` / `GetRequiredKeyedService`, resolve
-  without a key when `serviceKey` is `null`, and keep keyed and non-keyed bindings isolated otherwise.
+Keyed enumerations work because `ArrayMissingHandler` emits two bindings for an array type:
+one with no constraint for the non-keyed case, and one with `MatchAnyConstraint` so that a
+keyed request finds the matching elements.
 
-- [ ] **`GetRequiredKeyedService` throws when the service is missing**
-  (`ResolveRequiredKeyedServiceThrowsIfNotFound`, `ResolveKeyedServicesAnyKeyConsistency`).
-  It currently returns `null` instead of throwing `InvalidOperationException`.
-  **How to address:** throw when the resolver yields no instance in the required-resolution paths.
+`[ServiceKey]` and parameterless `[FromKeyedServices]` are resolved by two sentinel markers
+that `StandardProvider` recognises while building a constructor: `ServiceKeyMarker` bakes the
+key in as a constant, and `InheritKeyMarker` resolves the parameter with the key of the
+service being constructed. A key that is not assignable to the `[ServiceKey]` parameter makes
+that constructor unusable, which surfaces as the `InvalidOperationException` the spec expects.
 
-### Generics
+## Injected IServiceProvider
 
-- [ ] **Generic parameter constraint filtering for open generics**
-  (`ConstrainedOpenGenericServicesCanBeResolved`, `Interface…`, `AbstractClass…`).
-  `where T : …` constraints on open generic implementations are not checked, so unsatisfiable
-  closings are attempted.
-  **How to address:** when closing an open generic, skip bindings whose constraints the requested
-  type arguments do not satisfy.
+The provider handed to a constructor must resolve against the requesting scope and must
+implement `IKeyedServiceProvider`. Neither requires the core to know the adapter: the
+adapter binds `IServiceProvider` to a factory that wraps the resolving context in a keyed
+view (`SmartResolverServiceProvider`), whose keyed contract is implemented entirely on the
+resolver's own keyed API (`TryGet(type, key)`), including the null-key equivalence and the
+`AnyKey` enumeration-only rule.
 
-- [ ] **Mixed open + closed generics in one `IEnumerable<T>` (slot order)**
-  (`ResolvesMixedOpenClosedGenericsAsEnumerable`, `ResolvingEnumerableContainingOpenGenericServiceUsesCorrectSlot`).
-  Closed and open-generic registrations are not merged in registration order.
-  **How to address:** build the enumerable from both closed and open-generic bindings while
-  preserving registration order.
+The view is bound `InContainerScope`, so each scope caches one view in its own slot: every
+injection within a scope receives the same instance and allocates nothing after the first.
+A singleton's dependencies materialise once while its factory is built, so a singleton
+receives one view for its lifetime. No association is stored anywhere - the core resolver
+carries no reference to any adapter object. The core's own default binding remains a
+constant root resolver, which resolves without a delegate call.
 
-### Enumerable instancing
+## Service queries
 
-- [ ] **Duplicate registrations yield distinct instances**
-  (`ResolvesDifferentInstancesForServiceWhenResolvingEnumerable`).
-  Registering the same implementation N times should produce N elements, but the array binding
-  collapses them to a single cached instance.
-  **How to address:** cache singleton / scoped instances per binding rather than per service type,
-  so each registration contributes its own element.
+`IServiceProviderIsService` / `IServiceProviderIsKeyedService` are answered by
+`SmartServiceProviderIsService` through `IResolver.CanGet`, which reports a materialised
+entry's flag when there is one and otherwise probes the binding table structurally. It never
+builds a factory, so asking about a registered-but-unconstructable service answers instead of
+throwing.
 
-### Scopes and disposal
+## Disposal
 
-- [ ] **Injected `IServiceProvider` reflects the current scope**
-  (`NonSingletonService_WithInjectedProvider_ResolvesScopeProvider`).
-  A resolved `IServiceProvider` should be the active scope's provider, not the root.
-  **How to address:** register `IServiceProvider` per scope so the child resolver injects its own
-  provider (shares the root cause with the keyed injected-provider item above).
+Two behaviours are needed that cost resolution speed, so both are opt-in through
+`ResolverOption` and both are enabled by the adapter:
 
-- [ ] **Container-tracked disposal of created services**
-  (`DisposingScopeDisposesService`, `DisposesInReverseOrderOfCreation`,
-  `FactoryServicesAreCreatedAsPartOfCreatingObjectGraph`).
-  Transient / factory-created `IDisposable`s are not tracked, so disposing a scope does not dispose
-  the services it created, and disposal is not performed in reverse creation order.
-  **How to address:** track each created `IDisposable` / `IAsyncDisposable` in its owning scope and
-  dispose them in reverse creation order when the scope / provider is disposed.
+```csharp
+public sealed class ResolverOption
+{
+    public bool DisposalTracking { get; init; }
+
+    public bool RootScope { get; init; }
+}
+```
+
+`DisposalTracking` makes the owning resolver or scope dispose what it created, in reverse
+creation order. Only bindings that can produce an `IDisposable` are wrapped: `IProvider`
+declares whether its instances are candidates (`DisposalTracking.ByType` for
+`StandardProvider`, whose `TargetType` is the exact runtime type, `Never` for constants and
+arrays), so services that cannot be disposable keep the delegates they would have had with
+tracking off.
+
+Scopes take part through `IScope.TransferDisposal()`. A scope that returns `true` hands
+disposal of its instances to the resolver and stops disposing them itself; the resolver then
+captures each instance inside the creation callback, which a scope runs exactly once per
+instance. Built-in and custom scopes are treated identically here, and a scope that keeps
+ownership is simply never tracked, so nothing is disposed twice.
+
+`RootScope` makes the root provider behave as the root scope, so scoped services resolved
+from it are cached once instead of being created per call. It is implemented by resolving
+through a dedicated child resolver, and the two shapes are separate types
+(`SmartServiceProvider`, `SmartRootScopeServiceProvider`) so that neither carries a branch
+for the other.
+
+Instances registered as existing objects are never disposed, matching M.E.DependencyInjection's
+ownership rule.
+
+## Behaviour outside the spec
+
+- Within one scope, tracked transients are disposed in reverse creation order first, then
+  container-scoped instances; no order is defined between the two groups.
+- Types implementing only `IAsyncDisposable` are not tracked.

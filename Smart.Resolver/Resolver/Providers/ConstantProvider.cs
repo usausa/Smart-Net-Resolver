@@ -10,6 +10,8 @@ public sealed class ConstantProvider<T> : IProvider, IConstantSource
 
     public Type TargetType { get; }
 
+    public DisposalTracking DisposalTracking => DisposalTracking.Never;
+
     object IConstantSource.Value => value;
 
     public ConstantProvider([DisallowNull] T value)

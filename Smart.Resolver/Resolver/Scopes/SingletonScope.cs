@@ -9,6 +9,8 @@ public sealed class SingletonScope : IScope, IDisposable
 
     private Func<IResolver, object>? objectFactory;
 
+    private bool disposalTransferred;
+
     public SingletonScope(ComponentContainer components)
     {
         components.Get<DisposableStorage>().Add(this);
@@ -16,7 +18,16 @@ public sealed class SingletonScope : IScope, IDisposable
 
     public void Dispose()
     {
-        (value as IDisposable)?.Dispose();
+        if (!disposalTransferred)
+        {
+            (value as IDisposable)?.Dispose();
+        }
+    }
+
+    public bool TransferDisposal()
+    {
+        disposalTransferred = true;
+        return true;
     }
 
     public IScope Copy(ComponentContainer components)
@@ -24,11 +35,11 @@ public sealed class SingletonScope : IScope, IDisposable
         return new SingletonScope(components);
     }
 
-    public Func<IResolver, object> Create(Func<object> factory)
+    public Func<IResolver, object> Create(IResolver resolver, Func<IResolver, object> factory)
     {
         if (objectFactory is null)
         {
-            value = factory();
+            value = factory(resolver);
             var holder = new SingletonHolder(value);
             objectFactory = holder.Resolve;
         }

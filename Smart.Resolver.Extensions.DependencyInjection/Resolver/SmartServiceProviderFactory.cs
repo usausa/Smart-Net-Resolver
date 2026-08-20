@@ -2,11 +2,15 @@ namespace Smart.Resolver;
 
 using Microsoft.Extensions.DependencyInjection;
 
+using Smart.Resolver.Components;
 using Smart.Resolver.Keys;
+using Smart.Resolver.Providers;
 
 public sealed class SmartServiceProviderFactory : IServiceProviderFactory<ResolverConfig>
 {
     private readonly ResolverConfig config;
+
+    public ResolverOption Option { get; init; } = new() { DisposalTracking = true, RootScope = true };
 
     public SmartServiceProviderFactory()
         : this(new ResolverConfig(), static _ => { })
@@ -36,17 +40,20 @@ public sealed class SmartServiceProviderFactory : IServiceProviderFactory<Resolv
         config.Populate(services);
 
         config.Bind<IServiceScopeFactory>().To<SmartServiceScopeFactory>().InSingletonScope();
+        config.Bind<IServiceProvider>().ToProvider(static _ => new CallbackProvider<IServiceProvider>(static r => new SmartResolverServiceProvider(r)) { DisposalTracking = DisposalTracking.Never }).InContainerScope();
         config.Bind<IServiceProviderIsService>().ToMethod(static r => new SmartServiceProviderIsService(r)).InSingletonScope();
         config.Bind<IServiceProviderIsKeyedService>().ToMethod(static r => new SmartServiceProviderIsService(r)).InSingletonScope();
 
         config.UseOpenGenericBinding();
         config.UseArrayBinding();
+        config.UseOption(Option);
 
         return config;
     }
 
     public IServiceProvider CreateServiceProvider(ResolverConfig containerBuilder)
     {
-        return new SmartServiceProvider(containerBuilder.ToResolver());
+        var resolver = containerBuilder.ToResolver();
+        return Option.RootScope ? new SmartRootScopeServiceProvider(resolver) : new SmartServiceProvider(resolver);
     }
 }

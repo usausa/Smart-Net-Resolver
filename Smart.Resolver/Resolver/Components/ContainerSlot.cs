@@ -13,9 +13,11 @@ internal sealed class ContainerSlot
 
     private object?[] entries = new object?[8];
 
+    private List<IDisposable>? disposables;
+
     [SkipLocalsInit]
     [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
-    public object GetOrCreate(int index, Func<object> factory)
+    public object GetOrCreate(int index, IResolver resolver, Func<IResolver, object> factory)
     {
         lock (sync)
         {
@@ -26,7 +28,7 @@ internal sealed class ContainerSlot
                 var obj = slot;
                 if (obj is null)
                 {
-                    obj = factory();
+                    obj = factory(resolver);
                     slot = obj;
                 }
 
@@ -36,7 +38,7 @@ internal sealed class ContainerSlot
             {
                 Grow(index);
 
-                var obj = factory();
+                var obj = factory(resolver);
                 entries[index] = obj;
 
                 return obj;
@@ -51,10 +53,31 @@ internal sealed class ContainerSlot
         entries = newEntries;
     }
 
+    public void AddDisposable(IDisposable disposable)
+    {
+        lock (sync)
+        {
+            disposables ??= [];
+            disposables.Add(disposable);
+        }
+    }
+
     public void Clear()
     {
         lock (sync)
         {
+            var list = disposables;
+            if (list is not null)
+            {
+                // Reverse creation order, before container-scoped instances
+                for (var i = list.Count - 1; i >= 0; i--)
+                {
+                    list[i].Dispose();
+                }
+
+                list.Clear();
+            }
+
             foreach (var entry in entries.AsSpan())
             {
                 (entry as IDisposable)?.Dispose();

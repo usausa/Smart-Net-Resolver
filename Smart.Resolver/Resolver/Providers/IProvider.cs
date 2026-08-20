@@ -6,5 +6,7 @@ public interface IProvider
 {
     Type TargetType { get; }
 
+    DisposalTracking DisposalTracking { get; }
+
     Func<IResolver, object> CreateFactory(IKernel kernel, Binding binding, object? key);
 }

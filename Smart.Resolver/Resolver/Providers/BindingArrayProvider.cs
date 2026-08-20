@@ -12,6 +12,8 @@ internal sealed class BindingArrayProvider : IProvider
 
     public Type TargetType { get; }
 
+    public DisposalTracking DisposalTracking => DisposalTracking.Never;
+
     public BindingArrayProvider(Type type, Type elementType, ComponentContainer components)
     {
         TargetType = type;

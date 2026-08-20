@@ -2,6 +2,7 @@ namespace Smart.Resolver;
 
 using Smart.Reflection;
 using Smart.Resolver.Builders;
+using Smart.Resolver.Components;
 using Smart.Resolver.Handlers;
 using Smart.Resolver.Injectors;
 using Smart.Resolver.Processors;
@@ -129,6 +130,12 @@ public static class ResolverConfigExtensions
     public static ResolverConfig UseMissingHandler(this ResolverConfig config, IMissingHandler handler)
     {
         config.Components.Add(typeof(IMissingHandler), handler);
+        return config;
+    }
+
+    public static ResolverConfig UseOption(this ResolverConfig config, ResolverOption option)
+    {
+        config.Components.Add(option);
         return config;
     }
 

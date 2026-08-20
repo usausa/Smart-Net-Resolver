@@ -7,12 +7,13 @@ using Smart.Collections.Concurrent;
 using Smart.ComponentModel;
 using Smart.Linq;
 using Smart.Resolver.Bindings;
+using Smart.Resolver.Components;
 using Smart.Resolver.Handlers;
 using Smart.Resolver.Injectors;
 using Smart.Resolver.Providers;
 using Smart.Resolver.Scopes;
 
-public sealed class SmartResolver : IResolver, IKernel
+public sealed class SmartResolver : IResolver, IKernel, IDisposableTracker
 {
     private readonly ThreadsafeTypeHashArrayMap<FactoryEntry> factoriesCache = [with(128)];
 
@@ -34,6 +35,10 @@ public sealed class SmartResolver : IResolver, IKernel
 
     private readonly IMissingHandler[] handlers;
 
+    private readonly bool trackDisposables;
+
+    private List<IDisposable>? disposables;
+
     private int disposed;
 
     public ComponentContainer Components { get; }
@@ -48,6 +53,7 @@ public sealed class SmartResolver : IResolver, IKernel
         handlers = Components.GetAll<IMissingHandler>().ToArray();
 #pragma warning restore IDE0028
         // ReSharper restore UseCollectionExpression
+        trackDisposables = Components.GetAll<ResolverOption>().Any(static x => x.DisposalTracking);
 
         var order = 0;
         var tableEntries = new Dictionary<Type, List<Binding>>();
@@ -66,7 +72,11 @@ public sealed class SmartResolver : IResolver, IKernel
 
         tableEntries[typeof(IResolver)] = [new Binding(typeof(IResolver), new ConstantProvider<IResolver>(this), null, null, null, null, null) { Order = order++ }];
         tableEntries[typeof(SmartResolver)] = [new Binding(typeof(SmartResolver), new ConstantProvider<SmartResolver>(this), null, null, null, null, null) { Order = order++ }];
-        tableEntries[typeof(IServiceProvider)] = [new Binding(typeof(IServiceProvider), new ConstantProvider<IServiceProvider>(this), null, null, null, null, null) { Order = order }];
+
+        if (!tableEntries.ContainsKey(typeof(IServiceProvider)))
+        {
+            tableEntries[typeof(IServiceProvider)] = [new Binding(typeof(IServiceProvider), new ConstantProvider<IServiceProvider>(this), null, null, null, null, null) { Order = order }];
+        }
 
         table = new BindingTable(tableEntries.ToDictionary(static x => x.Key, static x => x.Value.ToArray()));
     }
@@ -78,7 +88,38 @@ public sealed class SmartResolver : IResolver, IKernel
             return;
         }
 
+        var list = disposables;
+        if (list is not null)
+        {
+            lock (list)
+            {
+                for (var i = list.Count - 1; i >= 0; i--)
+                {
+                    list[i].Dispose();
+                }
+
+                list.Clear();
+            }
+        }
+
         Components.Dispose();
+    }
+
+    void IDisposableTracker.TrackDisposable(IDisposable disposable) => TrackDisposable(disposable);
+
+    private void TrackDisposable(IDisposable disposable)
+    {
+        var list = Volatile.Read(ref disposables);
+        if (list is null)
+        {
+            var created = new List<IDisposable>();
+            list = Interlocked.CompareExchange(ref disposables, created, null) ?? created;
+        }
+
+        lock (list)
+        {
+            list.Add(disposable);
+        }
     }
 
     //--------------------------------------------------------------------------------
@@ -92,21 +133,21 @@ public sealed class SmartResolver : IResolver, IKernel
     // ObjectFactory
     //--------------------------------------------------------------------------------
 
-    bool IKernel.TryResolveFactory(Type type, object? key, out Func<IResolver, object> factory)
+    public bool TryResolveFactory(Type type, object? key, out Func<IResolver, object> factory)
     {
         var entry = key is null ? FindFactoryEntry(type) : FindFactoryEntry(type, key);
         factory = entry.Single;
         return entry.CanGet;
     }
 
-    bool IKernel.TryResolveFactories(Type type, object? key, out Func<IResolver, object>[] factories)
+    public bool TryResolveFactories(Type type, object? key, out Func<IResolver, object>[] factories)
     {
         var entry = key is null ? FindFactoryEntry(type) : FindFactoryEntry(type, key);
         factories = entry.Multiple;
         return entry.CanGet;
     }
 
-    bool IKernel.TryResolveConstant(Type type, object? key, out object? constant)
+    public bool TryResolveConstant(Type type, object? key, out object? constant)
     {
         var entry = key is null ? FindFactoryEntry(type) : FindFactoryEntry(type, key);
         constant = entry.Constant;
@@ -280,24 +321,22 @@ public sealed class SmartResolver : IResolver, IKernel
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     internal FactoryEntry FindFactoryEntry(IResolver resolver, Type type)
     {
-        if (!factoriesCache.TryGetValue(type, out var entry))
-        {
-            entry = factoriesCache.AddIfNotExist(type, t => CreateFactoryEntry(t, false, null, resolver));
-        }
-
-        return entry;
+        return factoriesCache.TryGetValue(type, out var entry) ? entry : AddFactoryEntry(resolver, type);
     }
+
+    [MethodImpl(MethodImplOptions.NoInlining)]
+    private FactoryEntry AddFactoryEntry(IResolver resolver, Type type) =>
+        factoriesCache.AddIfNotExist(type, t => CreateFactoryEntry(t, false, null, resolver));
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     internal FactoryEntry FindFactoryEntry(IResolver resolver, Type type, object? key)
     {
-        if (!factoriesCacheWithConstraint.TryGetValue(type, key, out var entry))
-        {
-            entry = factoriesCacheWithConstraint.AddIfNotExist(type, key, (t, p) => CreateFactoryEntry(t, true, p, resolver));
-        }
-
-        return entry;
+        return factoriesCacheWithConstraint.TryGetValue(type, key, out var entry) ? entry : AddFactoryEntry(resolver, type, key);
     }
+
+    [MethodImpl(MethodImplOptions.NoInlining)]
+    private FactoryEntry AddFactoryEntry(IResolver resolver, Type type, object? key) =>
+        factoriesCacheWithConstraint.AddIfNotExist(type, key, (t, p) => CreateFactoryEntry(t, true, p, resolver));
 
     private FactoryEntry CreateFactoryEntry(Type type, bool useConstraint, object? key, IResolver resolver)
     {
@@ -319,7 +358,11 @@ public sealed class SmartResolver : IResolver, IKernel
                 var factory = binding.Provider.CreateFactory(this, binding, key);
 
                 var scope = useConstraint && binding.Constraint!.IsMultiKey ? binding.Scope?.Copy(Components) : binding.Scope;
-                factories[i] = scope is null ? factory : scope.Create(() => factory(resolver));
+
+                var scopeResolver = binding.Scope is SingletonScope ? this : resolver;
+                factories[i] = trackDisposables
+                    ? CreateTrackedFactory(binding, factory, scope, scopeResolver)
+                    : scope is null ? factory : scope.Create(scopeResolver, factory);
 
                 if (!useConstraint || !binding.Constraint!.IsMultiKey)
                 {
@@ -366,6 +409,46 @@ public sealed class SmartResolver : IResolver, IKernel
                 factories[singleIndex],
                 multiple);
         }
+    }
+
+    private static Func<IResolver, object> CreateTrackedFactory(Binding binding, Func<IResolver, object> factory, IScope? scope, IResolver scopeResolver)
+    {
+        var tracking = binding.Provider.DisposalTracking;
+        if ((tracking == DisposalTracking.Never) ||
+            ((tracking == DisposalTracking.ByType) && !typeof(IDisposable).IsAssignableFrom(binding.Provider.TargetType)))
+        {
+            return scope is null ? factory : scope.Create(scopeResolver, factory);
+        }
+
+        if (scope is null)
+        {
+            return r =>
+            {
+                var instance = factory(r);
+                if ((instance is IDisposable disposable) && !ReferenceEquals(instance, r) && (r is IDisposableTracker tracker))
+                {
+                    tracker.TrackDisposable(disposable);
+                }
+
+                return instance;
+            };
+        }
+
+        if (!scope.TransferDisposal())
+        {
+            return scope.Create(scopeResolver, factory);
+        }
+
+        return scope.Create(scopeResolver, r =>
+        {
+            var instance = factory(r);
+            if ((instance is IDisposable disposable) && !ReferenceEquals(instance, r) && (r is IDisposableTracker tracker))
+            {
+                tracker.TrackDisposable(disposable);
+            }
+
+            return instance;
+        });
     }
 
     private static object? ResolveConstant(Binding binding, Func<IResolver, object> single, IResolver resolver)

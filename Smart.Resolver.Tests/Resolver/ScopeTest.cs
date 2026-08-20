@@ -143,21 +143,23 @@ public sealed class ScopeTest
         private static readonly ThreadLocal<Dictionary<CustomScope, object>> Cache =
             new(static () => []);
 
+        public bool TransferDisposal() => false;
+
         public IScope Copy(ComponentContainer components)
         {
             return this;
         }
 
-        public Func<IResolver, object> Create(Func<object> factory)
+        public Func<IResolver, object> Create(IResolver resolver, Func<IResolver, object> factory)
         {
-            return _ =>
+            return r =>
             {
                 if (Cache.Value!.TryGetValue(this, out var value))
                 {
                     return value;
                 }
 
-                value = factory();
+                value = factory(r);
                 Cache.Value![this] = value;
 
                 return value;

@@ -12,12 +12,14 @@ public sealed class ContainerScope : IScope
         index = ContainerIndexManager.Acquire();
     }
 
+    public bool TransferDisposal() => false;
+
     public IScope Copy(ComponentContainer components)
     {
         return new ContainerScope();
     }
 
-    public Func<IResolver, object> Create(Func<object> factory)
+    public Func<IResolver, object> Create(IResolver resolver, Func<IResolver, object> factory)
     {
         var adaptor = new ContainerAdaptor(index, factory);
         return adaptor.Resolve;
@@ -27,9 +29,9 @@ public sealed class ContainerScope : IScope
     {
         private readonly int index;
 
-        private readonly Func<object> factory;
+        private readonly Func<IResolver, object> factory;
 
-        public ContainerAdaptor(int index, Func<object> factory)
+        public ContainerAdaptor(int index, Func<IResolver, object> factory)
         {
             this.index = index;
             this.factory = factory;
@@ -39,10 +41,10 @@ public sealed class ContainerScope : IScope
         {
             if (resolver is IContainer container)
             {
-                return container.Slot.GetOrCreate(index, factory);
+                return container.Slot.GetOrCreate(index, resolver, factory);
             }
 
-            return factory();
+            return factory(resolver);
         }
     }
 }

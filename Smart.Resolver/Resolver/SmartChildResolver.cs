@@ -5,7 +5,7 @@ using System.Runtime.CompilerServices;
 
 using Smart.Resolver.Components;
 
-public sealed class SmartChildResolver : IResolver, IContainer
+public sealed class SmartChildResolver : IResolver, IContainer, IDisposableTracker
 {
     [ThreadStatic]
     private static ContainerSlot? pool;
@@ -43,6 +43,8 @@ public sealed class SmartChildResolver : IResolver, IContainer
         slot.Clear();
         pool ??= slot;
     }
+
+    void IDisposableTracker.TrackDisposable(IDisposable disposable) => slot.AddDisposable(disposable);
 
     // CanGet
 

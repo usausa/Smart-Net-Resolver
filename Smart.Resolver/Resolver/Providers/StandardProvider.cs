@@ -26,6 +26,8 @@ public sealed class StandardProvider : IProvider
     [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors | DynamicallyAccessedMemberTypes.PublicProperties)]
     public Type TargetType { get; }
 
+    public DisposalTracking DisposalTracking => DisposalTracking.ByType;
+
     public StandardProvider(
         [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors | DynamicallyAccessedMemberTypes.PublicProperties)] Type type,
         ComponentContainer components)

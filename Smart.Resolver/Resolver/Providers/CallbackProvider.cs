@@ -9,6 +9,8 @@ public sealed class CallbackProvider<T> : IProvider
 
     public Type TargetType { get; }
 
+    public DisposalTracking DisposalTracking { get; init; } = DisposalTracking.Runtime;
+
     public CallbackProvider(Func<IResolver, T> factory)
     {
         this.factory = factory;
@@ -27,6 +29,8 @@ public sealed class StructCallbackProvider<T> : IProvider
     private readonly Func<IResolver, T> factory;
 
     public Type TargetType { get; }
+
+    public DisposalTracking DisposalTracking { get; init; } = DisposalTracking.Runtime;
 
     public StructCallbackProvider(Func<IResolver, T> factory)
     {

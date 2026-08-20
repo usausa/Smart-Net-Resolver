@@ -13,6 +13,8 @@ internal sealed class KeyedFactoryProvider : IProvider
 
     public Type TargetType { get; }
 
+    public DisposalTracking DisposalTracking => DisposalTracking.Runtime;
+
     public KeyedFactoryProvider(Type serviceType, Func<IServiceProvider, object?, object> factory, object serviceKey)
     {
         TargetType = serviceType;
