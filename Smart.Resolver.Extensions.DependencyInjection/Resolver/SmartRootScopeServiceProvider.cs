@@ -32,7 +32,7 @@ internal sealed class SmartRootScopeServiceProvider : IKeyedServiceProvider, IDi
             return rootScope.TryGet(serviceType, out var obj) ? obj : null;
         }
 
-        if (ReferenceEquals(serviceKey, KeyedService.AnyKey) && !KeyedServiceHelper.IsEnumerableService(serviceType))
+        if (ReferenceEquals(serviceKey, KeyedService.AnyKey) && !ServiceTypeHelper.IsEnumerableService(serviceType))
         {
             ThrowHelper.ThrowAnyKeyNotSupported();
         }
@@ -52,7 +52,7 @@ internal sealed class SmartRootScopeServiceProvider : IKeyedServiceProvider, IDi
             return obj;
         }
 
-        if (ReferenceEquals(serviceKey, KeyedService.AnyKey) && !KeyedServiceHelper.IsEnumerableService(serviceType))
+        if (ReferenceEquals(serviceKey, KeyedService.AnyKey) && !ServiceTypeHelper.IsEnumerableService(serviceType))
         {
             ThrowHelper.ThrowAnyKeyNotSupported();
         }

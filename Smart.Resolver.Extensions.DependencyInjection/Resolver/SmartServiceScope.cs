@@ -30,7 +30,7 @@ internal sealed class SmartServiceScope : IServiceScope, IKeyedServiceProvider
             return childResolver.TryGet(serviceType, out var obj) ? obj : null;
         }
 
-        if (ReferenceEquals(serviceKey, KeyedService.AnyKey) && !KeyedServiceHelper.IsEnumerableService(serviceType))
+        if (ReferenceEquals(serviceKey, KeyedService.AnyKey) && !ServiceTypeHelper.IsEnumerableService(serviceType))
         {
             ThrowHelper.ThrowAnyKeyNotSupported();
         }
@@ -50,7 +50,7 @@ internal sealed class SmartServiceScope : IServiceScope, IKeyedServiceProvider
             return obj;
         }
 
-        if (ReferenceEquals(serviceKey, KeyedService.AnyKey) && !KeyedServiceHelper.IsEnumerableService(serviceType))
+        if (ReferenceEquals(serviceKey, KeyedService.AnyKey) && !ServiceTypeHelper.IsEnumerableService(serviceType))
         {
             ThrowHelper.ThrowAnyKeyNotSupported();
         }

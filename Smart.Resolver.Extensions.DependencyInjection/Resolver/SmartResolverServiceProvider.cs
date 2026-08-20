@@ -23,7 +23,7 @@ internal sealed class SmartResolverServiceProvider : IKeyedServiceProvider
             return resolver.TryGet(serviceType, out var obj) ? obj : null;
         }
 
-        if (ReferenceEquals(serviceKey, KeyedService.AnyKey) && !KeyedServiceHelper.IsEnumerableService(serviceType))
+        if (ReferenceEquals(serviceKey, KeyedService.AnyKey) && !ServiceTypeHelper.IsEnumerableService(serviceType))
         {
             ThrowHelper.ThrowAnyKeyNotSupported();
         }
@@ -43,7 +43,7 @@ internal sealed class SmartResolverServiceProvider : IKeyedServiceProvider
             return obj;
         }
 
-        if (ReferenceEquals(serviceKey, KeyedService.AnyKey) && !KeyedServiceHelper.IsEnumerableService(serviceType))
+        if (ReferenceEquals(serviceKey, KeyedService.AnyKey) && !ServiceTypeHelper.IsEnumerableService(serviceType))
         {
             ThrowHelper.ThrowAnyKeyNotSupported();
         }
