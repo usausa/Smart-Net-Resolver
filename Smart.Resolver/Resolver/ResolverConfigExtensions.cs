@@ -2,7 +2,6 @@ namespace Smart.Resolver;
 
 using Smart.Reflection;
 using Smart.Resolver.Builders;
-using Smart.Resolver.Components;
 using Smart.Resolver.Handlers;
 using Smart.Resolver.Injectors;
 using Smart.Resolver.Processors;

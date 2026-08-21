@@ -2,7 +2,6 @@ namespace Smart.Resolver;
 
 using Microsoft.Extensions.DependencyInjection;
 
-using Smart.Resolver.Components;
 using Smart.Resolver.Keys;
 using Smart.Resolver.Providers;
 
@@ -10,7 +9,7 @@ public sealed class SmartServiceProviderFactory : IServiceProviderFactory<Resolv
 {
     private readonly ResolverConfig config;
 
-    public ResolverOption Option { get; init; } = new() { DisposalTracking = true, RootScope = true };
+    public SmartServiceProviderOption Option { get; init; } = new();
 
     public SmartServiceProviderFactory()
         : this(new ResolverConfig(), static _ => { })
@@ -46,7 +45,7 @@ public sealed class SmartServiceProviderFactory : IServiceProviderFactory<Resolv
 
         config.UseOpenGenericBinding();
         config.UseArrayBinding();
-        config.UseOption(Option);
+        config.UseOption(new ResolverOption { DisposalTracking = Option.DisposalTracking });
 
         return config;
     }

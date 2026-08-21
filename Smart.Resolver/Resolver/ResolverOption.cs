@@ -1,8 +1,6 @@
-namespace Smart.Resolver.Components;
+namespace Smart.Resolver;
 
 public sealed class ResolverOption
 {
     public bool DisposalTracking { get; init; }
-
-    public bool RootScope { get; init; }
 }

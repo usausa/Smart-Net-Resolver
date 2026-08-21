@@ -1,7 +1,6 @@
 namespace Smart.Resolver;
 
 using Smart.ComponentModel;
-using Smart.Resolver.Components;
 using Smart.Resolver.Scopes;
 
 public sealed class DisposalTrackingTest

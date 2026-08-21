@@ -7,7 +7,6 @@ using Smart.Collections.Concurrent;
 using Smart.ComponentModel;
 using Smart.Linq;
 using Smart.Resolver.Bindings;
-using Smart.Resolver.Components;
 using Smart.Resolver.Handlers;
 using Smart.Resolver.Injectors;
 using Smart.Resolver.Providers;
