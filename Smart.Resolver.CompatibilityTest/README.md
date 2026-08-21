@@ -99,17 +99,20 @@ throwing.
 
 ## Disposal
 
-Two behaviours are needed that cost resolution speed, so both are opt-in through
-`ResolverOption` and both are enabled by the adapter:
+Two behaviours are needed that cost resolution speed, so both are switches on the adapter
+and both are on by default (`SmartServiceProviderFactory.Option`):
 
 ```csharp
-public sealed class ResolverOption
+public sealed class SmartServiceProviderOption
 {
-    public bool DisposalTracking { get; init; }
+    public bool DisposalTracking { get; init; } = true;
 
-    public bool RootScope { get; init; }
+    public bool RootScope { get; init; } = true;
 }
 ```
+
+Only `DisposalTracking` means anything to the resolver, so the factory passes that one down
+as the core's own `ResolverOption`; `RootScope` is decided by the adapter alone.
 
 `DisposalTracking` makes the owning resolver or scope dispose what it created, in reverse
 creation order. Only bindings that can produce an `IDisposable` are wrapped: `IProvider`

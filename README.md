@@ -116,7 +116,7 @@ config.Bind<TransientObject>().ToSelf();
 ### Singleton
 
 * Single instance created and same instance returned
-* Lifecycle managed by resolver (IScopeStorage) and Dispose called when resolver disposed
+* Lifecycle managed by resolver and Dispose called when resolver disposed
 
 ```csharp
 config.Bind<SingletonObject>().ToSelf().InSingletonScope();
@@ -207,6 +207,19 @@ config.Bind<ITimer>().To<Timer>().InSingletonScope();
 config.Bind<Sceduler>().ToSelf().InSingletonScope().WithConstructorArgument("timeout", 30);
 ```
 
+## ResolverOption
+
+Optional behaviours, off by default.
+
+```csharp
+config.UseOption(new ResolverOption { DisposalTracking = true });
+```
+
+### DisposalTracking
+
+* Created IDisposable instances are disposed by the owning resolver or child container in reverse creation order
+* Only bindings that can produce IDisposable are affected
+
 ## Configuration
 
 StandardResolver is constructed from sub-components. Change the sub-components in ResolverConfig, can be customized StandardResolver.
@@ -228,25 +241,27 @@ config.UseProcessor<CustomInitializeProcessor>();
 // Add custome scope
 public sealed class CustomScope : IScope
 {
-    private static readonly ThreadLocal<Dictionary<IBinding, object>> Cache =
-        new ThreadLocal<Dictionary<IBinding, object>>(() => new Dictionary<IBinding, object>());
+    private static readonly ThreadLocal<Dictionary<CustomScope, object>> Cache = new(() => []);
 
-    public IScope Copy(IComponentContainer components)
+    // Return true to hand disposal of created instances to the resolver
+    public bool TransferDisposal() => false;
+
+    public IScope Copy(ComponentContainer components)
     {
         return this;
     }
 
-    public Func<IResolver, object> Create(IBinding binding, Func<object> factory)
+    public Func<IResolver, object> Create(IResolver resolver, Func<IResolver, object> factory)
     {
-        return resolver =>
+        return r =>
         {
-            if (Cache.Value.TryGetValue(binding, out var value))
+            if (Cache.Value.TryGetValue(this, out var value))
             {
                 return value;
             }
 
-            value = factory();
-            Cache.Value[binding] = value;
+            value = factory(r);
+            Cache.Value[this] = value;
 
             return value;
         };
@@ -260,6 +275,10 @@ config.Bind<SimpleObject>().ToSelf().InScope(new CustomScope());
 ## Integration
 
 See the sample project for details.
+
+### Microsoft.Extensions.DependencyInjection compatibility
+
+See [Smart.Resolver.CompatibilityTest](Smart.Resolver.CompatibilityTest/README.md).
 
 ### ASP.NET Core 3.1
 
@@ -401,25 +420,25 @@ config.Bind<Parent>().ToSelf();
 ## Benchmark (for reference purpose only)
 
 ```
-BenchmarkDotNet v0.15.8, Windows 11 (10.0.26200.8737/25H2/2025Update/HudsonValley2)
+BenchmarkDotNet v0.15.8, Windows 11 (10.0.26200.9168/25H2/2025Update/HudsonValley2)
 AMD Ryzen 9 5900X 3.70GHz, 1 CPU, 24 logical and 12 physical cores
-.NET SDK 10.0.301
-  [Host]    : .NET 10.0.9 (10.0.9, 10.0.926.27113), X64 RyuJIT x86-64-v3
-  MediumRun : .NET 10.0.9 (10.0.9, 10.0.926.27113), X64 RyuJIT x86-64-v3
+.NET SDK 10.0.400
+  [Host]    : .NET 10.0.11 (10.0.11, 10.0.1126.37416), X64 RyuJIT x86-64-v3
+  MediumRun : .NET 10.0.11 (10.0.11, 10.0.1126.37416), X64 RyuJIT x86-64-v3
 
 Job=MediumRun  Jit=RyuJit  Platform=X64  
 IterationCount=15  LaunchCount=6  WarmupCount=10  
 ```
-| Method            | Mean      | Error     | StdDev    | Min       | Max       | P90       | Gen0   | Allocated |
-|------------------ |----------:|----------:|----------:|----------:|----------:|----------:|-------:|----------:|
-| Singleton         |  1.575 ns | 0.0206 ns | 0.0576 ns |  1.451 ns |  1.688 ns |  1.654 ns |      - |         - |
-| Transient         |  8.975 ns | 1.0145 ns | 2.8111 ns |  4.162 ns | 14.920 ns | 13.287 ns | 0.0011 |      19 B |
-| Combined          | 20.498 ns | 0.5137 ns | 1.4321 ns | 17.890 ns | 23.464 ns | 22.334 ns | 0.0014 |      24 B |
-| Complex           | 30.061 ns | 0.5560 ns | 1.5220 ns | 27.718 ns | 34.151 ns | 32.139 ns | 0.0081 |     136 B |
-| Generics          |  3.742 ns | 0.0618 ns | 0.1713 ns |  3.440 ns |  4.096 ns |  3.977 ns | 0.0006 |      10 B |
-| MultipleSingleton |  1.555 ns | 0.0210 ns | 0.0582 ns |  1.434 ns |  1.695 ns |  1.629 ns |      - |         - |
-| MultipleTransient | 43.601 ns | 0.6622 ns | 1.8349 ns | 40.269 ns | 48.413 ns | 45.956 ns | 0.0110 |     184 B |
-| AspNet            | 84.917 ns | 1.4470 ns | 4.0335 ns | 78.376 ns | 96.022 ns | 89.966 ns | 0.0157 |     264 B |
+| Method            | Mean      | Error     | StdDev    | Median    | Min       | Max       | P90       | Gen0   | Allocated |
+|------------------ |----------:|----------:|----------:|----------:|----------:|----------:|----------:|-------:|----------:|
+| Singleton         |  1.335 ns | 0.0610 ns | 0.1701 ns |  1.257 ns |  1.181 ns |  1.803 ns |  1.614 ns |      - |         - |
+| Transient         |  3.993 ns | 0.0913 ns | 0.2544 ns |  3.980 ns |  3.595 ns |  4.518 ns |  4.356 ns | 0.0011 |      19 B |
+| Combined          |  6.646 ns | 0.1274 ns | 0.3552 ns |  6.628 ns |  6.041 ns |  7.542 ns |  7.143 ns | 0.0014 |      24 B |
+| Complex           | 28.686 ns | 0.4447 ns | 1.2397 ns | 28.592 ns | 26.525 ns | 31.766 ns | 30.252 ns | 0.0081 |     136 B |
+| Generics          |  3.123 ns | 0.0366 ns | 0.1020 ns |  3.114 ns |  2.910 ns |  3.346 ns |  3.248 ns | 0.0006 |      10 B |
+| MultipleSingleton |  1.702 ns | 0.0159 ns | 0.0444 ns |  1.691 ns |  1.618 ns |  1.798 ns |  1.756 ns |      - |         - |
+| MultipleTransient | 21.142 ns | 0.2722 ns | 0.7587 ns | 21.071 ns | 19.515 ns | 22.827 ns | 21.957 ns | 0.0110 |     184 B |
+| AspNet            | 70.618 ns | 0.5556 ns | 1.5303 ns | 70.584 ns | 66.738 ns | 74.371 ns | 72.556 ns | 0.0119 |     200 B |
 
 ## Unsupported
 
