@@ -12,6 +12,7 @@ using Smart.Resolver.Injectors;
 using Smart.Resolver.Providers;
 using Smart.Resolver.Scopes;
 
+#pragma warning disable CA1034
 public sealed class SmartResolver : IResolver, IKernel, IDisposableTracker
 {
     private readonly ThreadsafeTypeHashArrayMap<FactoryEntry> factoriesCache = [with(128)];
@@ -172,7 +173,7 @@ public sealed class SmartResolver : IResolver, IKernel, IDisposableTracker
         var bindings = (table.Get(type) ?? Enumerable.Empty<Binding>())
             .Concat(handlers.SelectMany(h => h.Handle(Components, table, type)));
         return useConstraint
-            ? bindings.Any(b => b.Constraint is not null && b.Constraint.Match(b.Metadata, key))
+            ? bindings.Any(b => (b.Constraint is not null) && b.Constraint.Match(b.Metadata, key))
             : bindings.Any(static b => b.Constraint is null);
     }
 
@@ -346,7 +347,7 @@ public sealed class SmartResolver : IResolver, IKernel, IDisposableTracker
                 .Concat(handlers.SelectMany(h => h.Handle(Components, table, type)))
                 .OrderBy(static b => b.Order);
             var filtered = useConstraint
-                ? bindings.Where(b => b.Constraint is not null && b.Constraint.Match(b.Metadata, key))
+                ? bindings.Where(b => (b.Constraint is not null) && b.Constraint.Match(b.Metadata, key))
                 : bindings.Where(b => b.Constraint is null);
             var targets = filtered.ToArray();
             var factories = new Func<IResolver, object>[targets.Length];
@@ -578,3 +579,4 @@ public sealed class SmartResolver : IResolver, IKernel, IDisposableTracker
         }
     }
 }
+#pragma warning restore CA1034

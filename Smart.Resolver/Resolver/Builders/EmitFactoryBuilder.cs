@@ -10,6 +10,8 @@ using Smart.Reflection.Emit;
 [RequiresDynamicCode("EmitFactoryBuilder uses Reflection.Emit which is not supported in AOT environments.")]
 public sealed class EmitFactoryBuilder : IFactoryBuilder
 {
+    private const int InlineBudget = 32;
+
     private static readonly Action<IResolver, object>[] EmptyActions = [];
 
     private static readonly HolderBuilder DefaultHolderBuilder = new();
@@ -17,8 +19,6 @@ public sealed class EmitFactoryBuilder : IFactoryBuilder
     private static readonly LeafFactoryBuilder DefaultLeafFactoryBuilder = new();
 
     private static readonly ConditionalWeakTable<object, Recipe> Recipes = [];
-
-    private const int InlineBudget = 32;
 
     public bool UseLeafFactory { get; init; } = true;
 
@@ -661,7 +661,7 @@ public sealed class EmitFactoryBuilder : IFactoryBuilder
 
             var typeInfo = typeBuilder.CreateTypeInfo();
             // ReSharper disable once RedundantSuppressNullableWarningExpression <= net6.0
-            return typeInfo!.AsType();
+            return typeInfo.AsType();
         }
     }
 }

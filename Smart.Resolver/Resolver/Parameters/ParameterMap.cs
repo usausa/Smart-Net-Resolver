@@ -11,6 +11,6 @@ public sealed class ParameterMap
 
     public IParameter? GetParameter(string name)
     {
-        return parameters is not null && parameters.TryGetValue(name, out var parameter) ? parameter : null;
+        return (parameters is not null) && parameters.TryGetValue(name, out var parameter) ? parameter : null;
     }
 }

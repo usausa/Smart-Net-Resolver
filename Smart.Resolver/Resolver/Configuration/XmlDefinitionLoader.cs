@@ -62,5 +62,5 @@ internal static class XmlDefinitionLoader
 
     private static TEnum ParseEnum<TEnum>(string? value, TEnum defaultValue)
         where TEnum : struct, Enum =>
-        value is not null && Enum.TryParse<TEnum>(value, ignoreCase: true, out var result) ? result : defaultValue;
+        (value is not null) && Enum.TryParse<TEnum>(value, ignoreCase: true, out var result) ? result : defaultValue;
 }

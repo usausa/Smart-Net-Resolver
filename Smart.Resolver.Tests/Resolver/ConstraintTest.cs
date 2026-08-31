@@ -105,7 +105,7 @@ public sealed class ConstraintTest
 
     public sealed class HasMetadataConstraint : IConstraint
     {
-        public bool Match(BindingMetadata metadata, object? key) => key is string str && metadata.Has(str);
+        public bool Match(BindingMetadata metadata, object? key) => (key is string str) && metadata.Has(str);
     }
 
     public sealed class HasMetadataConstraintInjectedObject
