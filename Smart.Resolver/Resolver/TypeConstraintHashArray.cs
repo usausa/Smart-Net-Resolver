@@ -290,9 +290,7 @@ internal sealed class TypeConstraintHashArray<T>
     //--------------------------------------------------------------------------------
 
 #pragma warning disable CA1812
-    private sealed class EmptyKey
-    {
-    }
+    private sealed class EmptyKey;
 #pragma warning restore CA1812
 
 #pragma warning disable SA1401

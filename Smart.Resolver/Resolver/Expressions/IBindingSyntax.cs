@@ -59,15 +59,9 @@ public interface IBindingWithSyntax
     IBindingWithSyntax WithPropertyValue(string name, Func<IResolver, object?> factory);
 }
 
-public interface IBindingConstraintWithSyntax : IBindingConstraintSyntax, IBindingWithSyntax
-{
-}
+public interface IBindingConstraintWithSyntax : IBindingConstraintSyntax, IBindingWithSyntax;
 
-public interface IBindingInConstraintWithSyntax : IBindingInSyntax, IBindingConstraintWithSyntax
-{
-}
+public interface IBindingInConstraintWithSyntax : IBindingInSyntax, IBindingConstraintWithSyntax;
 
-public interface IBindingToInConstraintWithSyntax<in T> : IBindingToSyntax<T>, IBindingInConstraintWithSyntax
-{
-}
+public interface IBindingToInConstraintWithSyntax<in T> : IBindingToSyntax<T>, IBindingInConstraintWithSyntax;
 #pragma warning restore CA1716

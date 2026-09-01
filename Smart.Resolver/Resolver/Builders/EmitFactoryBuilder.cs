@@ -395,9 +395,7 @@ public sealed class EmitFactoryBuilder : IFactoryBuilder
         }
     }
 
-    private abstract class Node
-    {
-    }
+    private abstract class Node;
 
     private sealed class ConstantNode : Node
     {

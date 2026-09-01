@@ -3,9 +3,7 @@ namespace Smart.Resolver.Attributes;
 using System.Reflection;
 
 [AttributeUsage(AttributeTargets.Constructor | AttributeTargets.Property)]
-public sealed class InjectAttribute : Attribute
-{
-}
+public sealed class InjectAttribute : Attribute;
 
 public static class InjectAttributeExtensions
 {
