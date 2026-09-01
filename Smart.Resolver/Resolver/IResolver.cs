@@ -2,6 +2,7 @@ namespace Smart.Resolver;
 
 using System.Diagnostics.CodeAnalysis;
 
+#pragma warning disable CA1716
 public interface IResolver : IServiceProvider, IDisposable
 {
     // CanGet
@@ -48,3 +49,4 @@ public interface IResolver : IServiceProvider, IDisposable
 
     void Inject(object instance);
 }
+#pragma warning restore CA1716

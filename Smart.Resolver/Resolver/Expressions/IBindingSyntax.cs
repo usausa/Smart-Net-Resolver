@@ -8,6 +8,7 @@ using Smart.Resolver.Parameters;
 using Smart.Resolver.Providers;
 using Smart.Resolver.Scopes;
 
+#pragma warning disable CA1716
 public interface IBindingToSyntax<in T>
 {
     IBindingInConstraintWithSyntax ToProvider(Func<ComponentContainer, IProvider> factory);
@@ -69,3 +70,4 @@ public interface IBindingInConstraintWithSyntax : IBindingInSyntax, IBindingCons
 public interface IBindingToInConstraintWithSyntax<in T> : IBindingToSyntax<T>, IBindingInConstraintWithSyntax
 {
 }
+#pragma warning restore CA1716

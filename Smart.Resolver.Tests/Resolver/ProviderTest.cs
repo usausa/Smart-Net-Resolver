@@ -4,6 +4,7 @@ using System.Linq;
 
 using Smart.Resolver.Mocks;
 
+#pragma warning disable CA1034
 public sealed class ProviderTest
 {
     [Fact]

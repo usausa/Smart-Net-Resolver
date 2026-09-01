@@ -3,6 +3,7 @@ namespace Smart.Resolver;
 using Smart.Resolver.Mocks;
 using Smart.Resolver.Processors;
 
+#pragma warning disable CA1034
 public sealed class ProcessorTest
 {
     [Fact]

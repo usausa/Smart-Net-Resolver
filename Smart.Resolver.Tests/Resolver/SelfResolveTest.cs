@@ -1,5 +1,6 @@
 namespace Smart.Resolver;
 
+#pragma warning disable CA1034
 public sealed class SelfResolveTest
 {
     [Fact]
