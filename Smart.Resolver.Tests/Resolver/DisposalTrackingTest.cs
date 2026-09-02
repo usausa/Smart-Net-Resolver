@@ -3,7 +3,6 @@ namespace Smart.Resolver;
 using Smart.ComponentModel;
 using Smart.Resolver.Scopes;
 
-#pragma warning disable CA1034
 public sealed class DisposalTrackingTest
 {
     [Fact]
