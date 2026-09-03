@@ -20,20 +20,11 @@ internal sealed class TypeConstraintHashArray<T>
     private readonly object sync = new();
 #endif
 
-    private volatile Node[] nodes;
+    private volatile Node[] nodes = CreateInitialTable();
 
     private int depth;
 
     private int count;
-
-    //--------------------------------------------------------------------------------
-    // Constructor
-    //--------------------------------------------------------------------------------
-
-    public TypeConstraintHashArray()
-    {
-        nodes = CreateInitialTable();
-    }
 
     //--------------------------------------------------------------------------------
     // Private
@@ -91,6 +82,7 @@ internal sealed class TypeConstraintHashArray<T>
     {
         var depth = 0;
 
+        // ReSharper disable once ForCanBeConvertedToForeach
         for (var i = 0; i < targetNodes.Length; i++)
         {
             var node = targetNodes[i];
@@ -106,6 +98,7 @@ internal sealed class TypeConstraintHashArray<T>
     private static int CalculateCount(Node[] targetNodes)
     {
         var count = 0;
+        // ReSharper disable once ForCanBeConvertedToForeach
         for (var i = 0; i < targetNodes.Length; i++)
         {
             var node = targetNodes[i];
