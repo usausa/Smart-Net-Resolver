@@ -5,7 +5,7 @@ using Microsoft.Extensions.DependencyInjection.Specification;
 
 using Smart.Resolver;
 
-public sealed class KeyedDependencyInjectionComplianceTest : KeyedDependencyInjectionSpecificationTests
+public sealed class KeyedDependencyInjectionComplianceTests : KeyedDependencyInjectionSpecificationTests
 {
     public override bool SupportsIServiceProviderIsKeyedService => true;
 

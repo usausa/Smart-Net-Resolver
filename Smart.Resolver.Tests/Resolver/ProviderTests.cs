@@ -4,7 +4,7 @@ using System.Linq;
 
 using Smart.Resolver.Mocks;
 
-public sealed class ProviderTest
+public sealed class ProviderTests
 {
     [Fact]
     public void ObjectCreatedByConstantProvider()

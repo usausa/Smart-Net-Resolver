@@ -2,7 +2,7 @@ namespace Smart.Resolver;
 
 using Smart.Resolver.Mocks;
 
-public sealed class ParameterTest
+public sealed class ParameterTests
 {
     [Fact]
     public void ObjectIsInjectedOnCreationWithConstantParameter()

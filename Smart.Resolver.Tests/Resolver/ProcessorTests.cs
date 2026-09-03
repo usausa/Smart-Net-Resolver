@@ -3,7 +3,7 @@ namespace Smart.Resolver;
 using Smart.Resolver.Mocks;
 using Smart.Resolver.Processors;
 
-public sealed class ProcessorTest
+public sealed class ProcessorTests
 {
     [Fact]
     public void ObjectIsInitializedOnCreation()

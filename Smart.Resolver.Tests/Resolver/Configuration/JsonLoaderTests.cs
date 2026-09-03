@@ -2,7 +2,7 @@ namespace Smart.Resolver.Configuration;
 
 using Smart.Resolver.Mocks;
 
-public sealed class JsonLoaderTest
+public sealed class JsonLoaderTests
 {
     private const string Asm = "Smart.Resolver.Tests";
 

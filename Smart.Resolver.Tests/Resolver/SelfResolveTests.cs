@@ -1,6 +1,6 @@
 namespace Smart.Resolver;
 
-public sealed class SelfResolveTest
+public sealed class SelfResolveTests
 {
     [Fact]
     public void ResolveResolverInterface()

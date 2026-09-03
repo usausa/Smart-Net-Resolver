@@ -3,7 +3,7 @@ namespace Smart.Resolver;
 using Smart.ComponentModel;
 using Smart.Resolver.Scopes;
 
-public sealed class DisposalTrackingTest
+public sealed class DisposalTrackingTests
 {
     [Fact]
     public void TransientDisposedInReverseOrderOnResolverDispose()

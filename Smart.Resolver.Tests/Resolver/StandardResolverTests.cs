@@ -3,7 +3,7 @@ namespace Smart.Resolver;
 using Smart.Resolver.Mocks;
 
 #pragma warning disable CA2263
-public sealed class StandardResolverTest
+public sealed class StandardResolverTests
 {
     [Fact]
     public void SelfResolved()

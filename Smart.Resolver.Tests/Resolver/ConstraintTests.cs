@@ -6,7 +6,7 @@ using Smart.Resolver.Constraints;
 using Smart.Resolver.Mocks;
 
 #pragma warning disable CA2263
-public sealed class ConstraintTest
+public sealed class ConstraintTests
 {
     [Fact]
     public void ObjectIsSelectedByNameConstraint()
