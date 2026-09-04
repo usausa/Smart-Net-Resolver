@@ -33,9 +33,9 @@ public sealed class ReflectionFactoryBuilder : IFactoryBuilder
         {
             var obj = Activator.CreateInstance(type)!;
 
-            for (var i = 0; i < actions.Length; i++)
+            foreach (var action in actions)
             {
-                actions[i](r, obj);
+                action(r, obj);
             }
 
             return obj;
@@ -68,9 +68,9 @@ public sealed class ReflectionFactoryBuilder : IFactoryBuilder
 
             var obj = ci.Invoke(args);
 
-            for (var i = 0; i < actions.Length; i++)
+            foreach (var action in actions)
             {
-                actions[i](r, obj);
+                action(r, obj);
             }
 
             return obj;

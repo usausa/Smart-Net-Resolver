@@ -474,9 +474,9 @@ public sealed class SmartResolver : IResolver, IKernel, IDisposableTracker
     public void Inject(object instance)
     {
         var actions = FindInjectors(instance.GetType());
-        for (var i = 0; i < actions.Length; i++)
+        foreach (var action in actions)
         {
-            actions[i](this, instance);
+            action(this, instance);
         }
     }
 

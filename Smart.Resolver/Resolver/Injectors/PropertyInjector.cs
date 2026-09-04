@@ -105,9 +105,9 @@ public sealed class PropertyInjector : IInjector
         public void Inject(IResolver resolver, object instance)
         {
             var entriesLocal = entries;
-            for (var i = 0; i < entriesLocal.Length; i++)
+            foreach (var entry in entriesLocal)
             {
-                entriesLocal[i].Inject(resolver, instance);
+                entry.Inject(resolver, instance);
             }
         }
     }

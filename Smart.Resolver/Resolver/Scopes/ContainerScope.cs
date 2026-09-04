@@ -5,12 +5,7 @@ using Smart.Resolver.Components;
 
 public sealed class ContainerScope : IScope
 {
-    private readonly int index;
-
-    public ContainerScope()
-    {
-        index = ContainerIndexManager.Acquire();
-    }
+    private readonly int index = ContainerIndexManager.Acquire();
 
     public bool TransferDisposal() => false;
 
