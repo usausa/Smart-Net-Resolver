@@ -39,9 +39,9 @@ internal static class XmlDefinitionLoader
             Implementation = element.Attribute("implementation")?.Value,
             ConstantType = element.Attribute("constantType")?.Value,
             Constant = element.Attribute("constant")?.Value,
-            ConstructorArguments = element.Elements("constructorArgument").Select(ParseParameter).ToList(),
-            PropertyValues = element.Elements("propertyValue").Select(ParseParameter).ToList(),
-            Metadata = element.Elements("metadata").Select(ParseMetadata).ToList()
+            ConstructorArguments = [.. element.Elements("constructorArgument").Select(ParseParameter)],
+            PropertyValues = [.. element.Elements("propertyValue").Select(ParseParameter)],
+            Metadata = [.. element.Elements("metadata").Select(ParseMetadata)]
         };
     }
 

@@ -33,9 +33,9 @@ public sealed class StandardProvider : IProvider
         ComponentContainer components)
     {
         TargetType = type;
-        injectors = components.GetAll<IInjector>().ToArray();
-        processors = components.GetAll<IProcessor>().ToArray();
-        keySources = components.GetAll<IKeySource>().ToArray();
+        injectors = [.. components.GetAll<IInjector>()];
+        processors = [.. components.GetAll<IProcessor>()];
+        keySources = [.. components.GetAll<IKeySource>()];
         builder = components.Get<IFactoryBuilder>();
     }
 
@@ -140,6 +140,7 @@ public sealed class StandardProvider : IProvider
 
     private ConstructorMetadata[] CreateConstructorMetadata()
     {
+#pragma warning disable IDE0028
         return TargetType.GetConstructors()
             .Where(static c => !c.IsStatic)
             .OrderByDescending(static c => c.IsInjectDefined() ? 1 : 0)
@@ -147,10 +148,9 @@ public sealed class StandardProvider : IProvider
             .ThenByDescending(static c => c.GetParameters().Count(static p => p.HasDefaultValue))
             .Select(c => new ConstructorMetadata(
                 c,
-                c.GetParameters()
-                    .Select(p => new ParameterMetadata(p, KeySourceHelper.GetValue(p, keySources)))
-                    .ToArray()))
+                c.GetParameters().Select(p => new ParameterMetadata(p, KeySourceHelper.GetValue(p, keySources))).ToArray()))
             .ToArray();
+#pragma warning restore IDE0028
     }
 
     private Action<IResolver, object>[] CreateActions(Binding binding)
@@ -160,7 +160,9 @@ public sealed class StandardProvider : IProvider
         var targetProcessors = processors
             .OrderByDescending(static x => x.Order)
             .Select(x => x.CreateProcessor(TargetType));
+#pragma warning disable IDE0028
         return targetInjectors.Concat(targetProcessors).Where(static x => x is not null).ToArray()!;
+#pragma warning restore IDE0028
     }
 
     //--------------------------------------------------------------------------------
