@@ -138,16 +138,18 @@ internal sealed class TypeConstraintHashArray<T>
         return node;
     }
 
+    // Release store: addNode is fully built before its reference becomes reachable, so a reader that sees the
+    // reference also sees the fields. x64 emits the same instruction as a plain store, Arm64 a store-release
     private static void UpdateLink(ref Node node, Node addNode)
     {
         if (node == EmptyNode)
         {
-            node = addNode;
+            Volatile.Write(ref node, addNode);
         }
         else
         {
             var last = FindLastNode(node);
-            last.Next = addNode;
+            Volatile.Write(ref last.Next, addNode);
         }
     }
 
@@ -194,8 +196,6 @@ internal sealed class TypeConstraintHashArray<T>
         }
         else
         {
-            Interlocked.MemoryBarrier();
-
             var hash = CalculateHash(node.Type, node.Key);
 
             UpdateLink(ref currentNodes[hash & (currentNodes.Length - 1)], node);
