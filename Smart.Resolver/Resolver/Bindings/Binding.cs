@@ -15,6 +15,8 @@ public sealed class Binding
 
     public int Order { get; internal set; }
 
+    public bool Optional { get; init; }
+
     public IProvider Provider { get; }
 
     public IScope? Scope { get; }

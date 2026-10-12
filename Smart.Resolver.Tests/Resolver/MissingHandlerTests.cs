@@ -117,4 +117,70 @@ public sealed class MissingHandlerTests
             Service = service;
         }
     }
+
+    [Fact]
+    public void CanGetIsFalseWhenAutoBoundTypeCannotBeCreated()
+    {
+        var config = new ResolverConfig().UseAutoBinding();
+
+        using var resolver = config.ToResolver();
+
+        Assert.False(resolver.CanGet<Controller>());
+        Assert.False(resolver.TryGet<Controller>(out _));
+        Assert.False(resolver.CanGet<Controller>());
+    }
+
+    [Fact]
+    public void TypeWithoutPublicConstructorIsNotCreatedByAutoBinding()
+    {
+        var config = new ResolverConfig().UseAutoBinding();
+
+        using var resolver = config.ToResolver();
+
+        Assert.False(resolver.CanGet<NoPublicConstructorObject>());
+        Assert.False(resolver.TryGet<NoPublicConstructorObject>(out _));
+    }
+
+    [Fact]
+    public void OtherConstructorIsUsedWhenAutoBoundArgumentCannotBeCreated()
+    {
+        var config = new ResolverConfig().UseAutoBinding();
+
+        using var resolver = config.ToResolver();
+        var obj = resolver.Get<AlternativeConstructorObject>();
+
+        Assert.Null(obj.Dependency);
+    }
+
+    [Fact]
+    public void BoundTypeWithoutPublicConstructorThrowsException()
+    {
+        var config = new ResolverConfig();
+        config.Bind<NoPublicConstructorObject>().ToSelf();
+
+        using var resolver = config.ToResolver();
+
+        Assert.Throws<InvalidOperationException>(resolver.Get<NoPublicConstructorObject>);
+    }
+
+    public sealed class NoPublicConstructorObject
+    {
+        private NoPublicConstructorObject()
+        {
+        }
+    }
+
+    public sealed class AlternativeConstructorObject
+    {
+        public NoPublicConstructorObject? Dependency { get; }
+
+        public AlternativeConstructorObject(NoPublicConstructorObject dependency)
+        {
+            Dependency = dependency;
+        }
+
+        public AlternativeConstructorObject()
+        {
+        }
+    }
 }

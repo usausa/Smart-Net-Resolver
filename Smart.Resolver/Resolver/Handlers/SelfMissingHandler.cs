@@ -35,7 +35,7 @@ public sealed class SelfMissingHandler : IMissingHandler
 
         return
         [
-            new Binding(type, new StandardProvider(type, components) { Optional = true })
+            new Binding(type, new StandardProvider(type, components)) { Optional = true }
         ];
     }
 }

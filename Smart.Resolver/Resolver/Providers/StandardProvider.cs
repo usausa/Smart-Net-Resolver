@@ -28,8 +28,6 @@ public sealed class StandardProvider : IProvider
 
     public DisposalTracking DisposalTracking => DisposalTracking.ByType;
 
-    public bool Optional { get; init; }
-
     public StandardProvider(
         [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors | DynamicallyAccessedMemberTypes.PublicProperties)] Type type,
         ComponentContainer components)
@@ -46,6 +44,11 @@ public sealed class StandardProvider : IProvider
         var constructors = CreateConstructorMetadata();
         if (constructors.Length == 0)
         {
+            if (binding.Optional)
+            {
+                return null;
+            }
+
             throw new InvalidOperationException(
                 String.Format(CultureInfo.InvariantCulture, "No constructor available. type = {0}", TargetType.Name));
         }
@@ -122,7 +125,7 @@ public sealed class StandardProvider : IProvider
             }
         }
 
-        if (Optional)
+        if (binding.Optional)
         {
             return null;
         }

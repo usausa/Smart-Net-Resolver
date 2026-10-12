@@ -175,9 +175,21 @@ public sealed class SmartResolver : IResolver, IKernel, IDisposableTracker
     {
         var bindings = (table.Get(type) ?? Enumerable.Empty<Binding>())
             .Concat(handlers.SelectMany(h => h.Handle(Components, table, type)));
-        return useConstraint
-            ? bindings.Any(b => (b.Constraint is not null) && b.Constraint.Match(b.Metadata, key))
-            : bindings.Any(static b => b.Constraint is null);
+        var filtered = useConstraint
+            ? bindings.Where(b => (b.Constraint is not null) && b.Constraint.Match(b.Metadata, key))
+            : bindings.Where(static b => b.Constraint is null);
+        var optional = false;
+        foreach (var binding in filtered)
+        {
+            if (!binding.Optional)
+            {
+                return true;
+            }
+
+            optional = true;
+        }
+
+        return optional && (useConstraint ? FindFactoryEntry(type, key) : FindFactoryEntry(type)).CanGet;
     }
 
     // TryGet
