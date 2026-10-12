@@ -8,5 +8,5 @@ public interface IProvider
 
     DisposalTracking DisposalTracking { get; }
 
-    Func<IResolver, object> CreateFactory(IKernel kernel, Binding binding, object? key);
+    Func<IResolver, object>? CreateFactory(IKernel kernel, Binding binding, object? key);
 }

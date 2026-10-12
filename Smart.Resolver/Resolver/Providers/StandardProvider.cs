@@ -28,6 +28,8 @@ public sealed class StandardProvider : IProvider
 
     public DisposalTracking DisposalTracking => DisposalTracking.ByType;
 
+    public bool Optional { get; init; }
+
     public StandardProvider(
         [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors | DynamicallyAccessedMemberTypes.PublicProperties)] Type type,
         ComponentContainer components)
@@ -39,7 +41,7 @@ public sealed class StandardProvider : IProvider
         builder = components.Get<IFactoryBuilder>();
     }
 
-    public Func<IResolver, object> CreateFactory(IKernel kernel, Binding binding, object? key)
+    public Func<IResolver, object>? CreateFactory(IKernel kernel, Binding binding, object? key)
     {
         var constructors = CreateConstructorMetadata();
         if (constructors.Length == 0)
@@ -118,6 +120,11 @@ public sealed class StandardProvider : IProvider
                 var actions = CreateActions(binding);
                 return builder.CreateFactory(constructor.Constructor, [.. argumentFactories], [.. argumentConstants], actions);
             }
+        }
+
+        if (Optional)
+        {
+            return null;
         }
 
         throw new InvalidOperationException(

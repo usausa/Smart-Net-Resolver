@@ -28,14 +28,14 @@ public sealed class SelfMissingHandler : IMissingHandler
         }
 
         if (type.IsInterface || type.IsAbstract || type.IsValueType || type.ContainsGenericParameters ||
-            ignoreTypes.Contains(type))
+            type.IsSubclassOf(typeof(Delegate)) || ignoreTypes.Contains(type))
         {
             return [];
         }
 
         return
         [
-            new Binding(type, new StandardProvider(type, components))
+            new Binding(type, new StandardProvider(type, components) { Optional = true })
         ];
     }
 }

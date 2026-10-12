@@ -73,7 +73,7 @@ public static class ResolverConfigExtensions
 
     public static ResolverConfig UseAutoBinding(this ResolverConfig config)
     {
-        config.Components.Add<IMissingHandler, SelfMissingHandler>();
+        config.Components.Add<IMissingHandler>(new SelfMissingHandler());
         return config;
     }
 

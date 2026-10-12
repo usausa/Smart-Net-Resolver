@@ -1,6 +1,7 @@
 namespace Smart.Resolver;
 
 using System.Diagnostics.CodeAnalysis;
+using System.Globalization;
 using System.Runtime.CompilerServices;
 
 using Smart.Collections.Concurrent;
@@ -34,6 +35,8 @@ public sealed class SmartResolver : IResolver, IKernel, IDisposableTracker
     private readonly IInjector[] injectors;
 
     private readonly IMissingHandler[] handlers;
+
+    private readonly List<(Type Type, bool UseConstraint, object? Key)> creatingEntries = [];
 
     private readonly bool trackDisposables;
 
@@ -342,72 +345,94 @@ public sealed class SmartResolver : IResolver, IKernel, IDisposableTracker
     {
         lock (sync)
         {
-            var closed = table.Get(type);
-            var bindings = (closed ?? Enumerable.Empty<Binding>())
-                .Concat(handlers.SelectMany(h => h.Handle(Components, table, type)))
-                .OrderBy(static b => b.Order);
-            var filtered = useConstraint
-                ? bindings.Where(b => (b.Constraint is not null) && b.Constraint.Match(b.Metadata, key))
-                : bindings.Where(b => b.Constraint is null);
-            var targets = filtered.ToArray();
-            var factories = new Func<IResolver, object>[targets.Length];
-            var multipleCount = 0;
-            for (var i = 0; i < targets.Length; i++)
+            if (creatingEntries.Exists(x => (x.Type == type) && (x.UseConstraint == useConstraint) && Equals(x.Key, key)))
             {
-                var binding = targets[i];
-                var factory = binding.Provider.CreateFactory(this, binding, key);
-
-                var scope = useConstraint && binding.Constraint!.IsMultiKey ? binding.Scope?.Copy(Components) : binding.Scope;
-
-                var scopeResolver = binding.Scope is SingletonScope ? this : resolver;
-                factories[i] = trackDisposables
-                    ? CreateTrackedFactory(binding, factory, scope, scopeResolver)
-                    : scope is null ? factory : scope.Create(scopeResolver, factory);
-
-                if (!useConstraint || !binding.Constraint!.IsMultiKey)
-                {
-                    multipleCount++;
-                }
+                throw new InvalidOperationException(
+                    String.Format(CultureInfo.InvariantCulture, "Circular dependency detected. type = {0}, path = {1}", type, String.Join(" -> ", creatingEntries.Select(static x => x.Type))));
             }
 
-            if (targets.Length == 0)
+            creatingEntries.Add((type, useConstraint, key));
+            try
             {
-                return new FactoryEntry(false, null, nullFactory, factories);
-            }
-
-            var multiple = factories;
-            if (multipleCount != targets.Length)
-            {
-                multiple = new Func<IResolver, object>[multipleCount];
-                var index = 0;
-                for (var i = 0; i < targets.Length; i++)
+                var closed = table.Get(type);
+                var bindings = (closed ?? Enumerable.Empty<Binding>())
+                    .Concat(handlers.SelectMany(h => h.Handle(Components, table, type)))
+                    .OrderBy(static b => b.Order);
+                var filtered = useConstraint
+                    ? bindings.Where(b => (b.Constraint is not null) && b.Constraint.Match(b.Metadata, key))
+                    : bindings.Where(b => b.Constraint is null);
+                List<Binding> bindingList = [];
+                List<Func<IResolver, object>> factoryList = [];
+                var multipleCount = 0;
+                foreach (var binding in filtered)
                 {
-                    if (!targets[i].Constraint!.IsMultiKey)
+                    // Skip the optional binding that cannot create the instance
+                    var factory = binding.Provider.CreateFactory(this, binding, key);
+                    if (factory is null)
                     {
-                        multiple[index] = factories[i];
-                        index++;
+                        continue;
+                    }
+
+                    var scope = useConstraint && binding.Constraint!.IsMultiKey ? binding.Scope?.Copy(Components) : binding.Scope;
+
+                    var scopeResolver = binding.Scope is SingletonScope ? this : resolver;
+                    bindingList.Add(binding);
+                    factoryList.Add(trackDisposables
+                        ? CreateTrackedFactory(binding, factory, scope, scopeResolver)
+                        : scope is null ? factory : scope.Create(scopeResolver, factory));
+
+                    if (!useConstraint || !binding.Constraint!.IsMultiKey)
+                    {
+                        multipleCount++;
                     }
                 }
-            }
 
-            var singleIndex = targets.Length - 1;
-            if (closed is not null)
-            {
-                for (var i = targets.Length - 1; i >= 0; i--)
+                Binding[] targets = [.. bindingList];
+                Func<IResolver, object>[] factories = [.. factoryList];
+
+                if (targets.Length == 0)
                 {
-                    if (Array.IndexOf(closed, targets[i]) >= 0)
+                    return new FactoryEntry(false, null, nullFactory, factories);
+                }
+
+                var multiple = factories;
+                if (multipleCount != targets.Length)
+                {
+                    multiple = new Func<IResolver, object>[multipleCount];
+                    var index = 0;
+                    for (var i = 0; i < targets.Length; i++)
                     {
-                        singleIndex = i;
-                        break;
+                        if (!targets[i].Constraint!.IsMultiKey)
+                        {
+                            multiple[index] = factories[i];
+                            index++;
+                        }
                     }
                 }
-            }
 
-            return new FactoryEntry(
-                true,
-                ResolveConstant(targets[singleIndex], factories[singleIndex], resolver),
-                factories[singleIndex],
-                multiple);
+                var singleIndex = targets.Length - 1;
+                if (closed is not null)
+                {
+                    for (var i = targets.Length - 1; i >= 0; i--)
+                    {
+                        if (Array.IndexOf(closed, targets[i]) >= 0)
+                        {
+                            singleIndex = i;
+                            break;
+                        }
+                    }
+                }
+
+                return new FactoryEntry(
+                    true,
+                    ResolveConstant(targets[singleIndex], factories[singleIndex], resolver),
+                    factories[singleIndex],
+                    multiple);
+            }
+            finally
+            {
+                creatingEntries.RemoveAt(creatingEntries.Count - 1);
+            }
         }
     }
 
