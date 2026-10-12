@@ -163,6 +163,7 @@ public sealed class MissingHandlerTests
         Assert.Throws<InvalidOperationException>(resolver.Get<NoPublicConstructorObject>);
     }
 
+    // ReSharper disable once ClassCannotBeInstantiated
     public sealed class NoPublicConstructorObject
     {
         private NoPublicConstructorObject()
