@@ -150,7 +150,6 @@ public sealed class StandardProvider : IProvider
 
     private ConstructorMetadata[] CreateConstructorMetadata()
     {
-#pragma warning disable IDE0028
         return TargetType.GetConstructors()
             .Where(static c => !c.IsStatic)
             .OrderByDescending(static c => c.IsInjectDefined() ? 1 : 0)
@@ -160,7 +159,6 @@ public sealed class StandardProvider : IProvider
                 c,
                 c.GetParameters().Select(p => new ParameterMetadata(p, KeySourceHelper.GetValue(p, keySources))).ToArray()))
             .ToArray();
-#pragma warning restore IDE0028
     }
 
     private Action<IResolver, object>[] CreateActions(Binding binding)
@@ -170,9 +168,7 @@ public sealed class StandardProvider : IProvider
         var targetProcessors = processors
             .OrderByDescending(static x => x.Order)
             .Select(x => x.CreateProcessor(TargetType));
-#pragma warning disable IDE0028
         return targetInjectors.Concat(targetProcessors).Where(static x => x is not null).ToArray()!;
-#pragma warning restore IDE0028
     }
 
     //--------------------------------------------------------------------------------

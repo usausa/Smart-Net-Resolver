@@ -50,12 +50,8 @@ public sealed class SmartResolver : IResolver, IKernel, IDisposableTracker
     {
         Components = config.CreateComponentContainer();
 
-        // ReSharper disable UseCollectionExpression
-#pragma warning disable IDE0028
         injectors = Components.GetAll<IInjector>().ToArray();
         handlers = Components.GetAll<IMissingHandler>().ToArray();
-#pragma warning restore IDE0028
-        // ReSharper restore UseCollectionExpression
         trackDisposables = Components.GetAll<ResolverOption>().Any(static x => x.DisposalTracking);
 
         var order = 0;
@@ -531,14 +527,10 @@ public sealed class SmartResolver : IResolver, IKernel, IDisposableTracker
     private Action<IResolver, object>[] CreateInjectors(Type type)
     {
         var binding = new Binding(type, null!);
-        // ReSharper disable UseCollectionExpression
-#pragma warning disable IDE0028
         return injectors
             .Select(x => x.CreateInjector(type, binding))
             .WhereNotNull()
             .ToArray();
-#pragma warning restore IDE0028
-        // ReSharper restore UseCollectionExpression
     }
 
     //--------------------------------------------------------------------------------
