@@ -5,11 +5,7 @@ using System.Runtime.InteropServices;
 
 internal sealed class ContainerSlot
 {
-#if NET9_0_OR_GREATER
     private readonly Lock sync = new();
-#else
-    private readonly object sync = new();
-#endif
 
     private object?[] entries = new object?[8];
 

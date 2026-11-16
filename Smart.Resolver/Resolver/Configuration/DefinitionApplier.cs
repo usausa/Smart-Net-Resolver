@@ -66,9 +66,9 @@ internal static class DefinitionApplier
         };
 
         // Constraint
-        var withSyntax = binding.Key is not null ?
-            constraintSyntax.Constraint(new KeyConstraint(binding.Key)) :
-            constraintSyntax;
+        var withSyntax = binding.Key is not null
+            ? constraintSyntax.Constraint(new KeyConstraint(binding.Key))
+            : constraintSyntax;
 
         // Metadata
         for (var i = 0; i < binding.Metadata.Count; i++)

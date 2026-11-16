@@ -1,6 +1,6 @@
 namespace Smart.Resolver.Configuration;
 
-public static class Extensions
+public static class ResolverConfigurationExtensions
 {
     //--------------------------------------------------------------------------------
     // JSON

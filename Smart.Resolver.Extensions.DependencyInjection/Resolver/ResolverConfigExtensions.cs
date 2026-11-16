@@ -15,7 +15,7 @@ public static class ResolverConfigExtensions
             {
                 var constraint = ReferenceEquals(descriptor.ServiceKey, KeyedService.AnyKey)
                     ? MediAnyKeyConstraint.Instance
-                    : (IConstraint)new MediKeyConstraint(descriptor.ServiceKey!);
+                    : (IConstraint)new MediKeyConstraint(descriptor.ServiceKey);
 
                 if (descriptor.KeyedImplementationType is not null)
                 {
@@ -29,7 +29,7 @@ public static class ResolverConfigExtensions
                 {
                     config
                         .Bind(descriptor.ServiceType)
-                        .ToProvider(_ => new KeyedFactoryProvider(descriptor.ServiceType, descriptor.KeyedImplementationFactory, descriptor.ServiceKey!))
+                        .ToProvider(_ => new KeyedFactoryProvider(descriptor.ServiceType, descriptor.KeyedImplementationFactory, descriptor.ServiceKey))
                         .ConfigureScope(descriptor.Lifetime)
                         .Constraint(constraint);
                 }
