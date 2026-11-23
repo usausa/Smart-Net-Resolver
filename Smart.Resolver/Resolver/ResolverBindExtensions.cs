@@ -1,5 +1,7 @@
 namespace Smart.Resolver;
 
+using System.Diagnostics.CodeAnalysis;
+
 using Smart.Resolver.Expressions;
 
 public static class ResolverBindExtensions
@@ -10,8 +12,8 @@ public static class ResolverBindExtensions
 
     public static ResolverConfig BindTransient(
         this ResolverConfig config,
-        Type serviceType,
-        Type implementationType)
+        [DynamicallyAccessedMembers(LinkerFlags.Binding)] Type serviceType,
+        [DynamicallyAccessedMembers(LinkerFlags.Binding)] Type implementationType)
     {
         config.Bind(serviceType).To(implementationType).InTransientScope();
         return config;
@@ -19,8 +21,8 @@ public static class ResolverBindExtensions
 
     public static ResolverConfig BindTransient(
         this ResolverConfig config,
-        Type serviceType,
-        Type implementationType,
+        [DynamicallyAccessedMembers(LinkerFlags.Binding)] Type serviceType,
+        [DynamicallyAccessedMembers(LinkerFlags.Binding)] Type implementationType,
         Action<IBindingConstraintWithSyntax> option)
     {
         var syntax = config.Bind(serviceType).To(implementationType);
@@ -31,7 +33,7 @@ public static class ResolverBindExtensions
 
     public static ResolverConfig BindTransient(
         this ResolverConfig config,
-        Type serviceType)
+        [DynamicallyAccessedMembers(LinkerFlags.Binding)] Type serviceType)
     {
         config.Bind(serviceType).ToSelf().InTransientScope();
         return config;
@@ -39,7 +41,7 @@ public static class ResolverBindExtensions
 
     public static ResolverConfig BindTransient(
         this ResolverConfig config,
-        Type serviceType,
+        [DynamicallyAccessedMembers(LinkerFlags.Binding)] Type serviceType,
         Action<IBindingConstraintWithSyntax> option)
     {
         var syntax = config.Bind(serviceType).ToSelf();
@@ -48,7 +50,7 @@ public static class ResolverBindExtensions
         return config;
     }
 
-    public static ResolverConfig BindTransient<TService, TImplementation>(this ResolverConfig config)
+    public static ResolverConfig BindTransient<[DynamicallyAccessedMembers(LinkerFlags.Binding)] TService, [DynamicallyAccessedMembers(LinkerFlags.Binding)] TImplementation>(this ResolverConfig config)
         where TService : class
         where TImplementation : class, TService
     {
@@ -56,7 +58,7 @@ public static class ResolverBindExtensions
         return config;
     }
 
-    public static ResolverConfig BindTransient<TService, TImplementation>(
+    public static ResolverConfig BindTransient<[DynamicallyAccessedMembers(LinkerFlags.Binding)] TService, [DynamicallyAccessedMembers(LinkerFlags.Binding)] TImplementation>(
         this ResolverConfig config,
         Action<IBindingConstraintWithSyntax> option)
         where TService : class
@@ -68,14 +70,14 @@ public static class ResolverBindExtensions
         return config;
     }
 
-    public static ResolverConfig BindTransient<TService>(this ResolverConfig config)
+    public static ResolverConfig BindTransient<[DynamicallyAccessedMembers(LinkerFlags.Binding)] TService>(this ResolverConfig config)
         where TService : class
     {
         config.Bind<TService>().ToSelf().InTransientScope();
         return config;
     }
 
-    public static ResolverConfig BindTransient<TService>(
+    public static ResolverConfig BindTransient<[DynamicallyAccessedMembers(LinkerFlags.Binding)] TService>(
         this ResolverConfig config,
         Action<IBindingConstraintWithSyntax> option)
         where TService : class
@@ -88,7 +90,7 @@ public static class ResolverBindExtensions
 
     public static ResolverConfig BindTransient(
         this ResolverConfig config,
-        Type serviceType,
+        [DynamicallyAccessedMembers(LinkerFlags.Binding)] Type serviceType,
         object value)
     {
         config.Bind(serviceType).ToConstant(value).InTransientScope();
@@ -97,7 +99,7 @@ public static class ResolverBindExtensions
 
     public static ResolverConfig BindTransient(
         this ResolverConfig config,
-        Type serviceType,
+        [DynamicallyAccessedMembers(LinkerFlags.Binding)] Type serviceType,
         object value,
         Action<IBindingConstraintWithSyntax> option)
     {
@@ -107,7 +109,7 @@ public static class ResolverBindExtensions
         return config;
     }
 
-    public static ResolverConfig BindTransient<TService>(
+    public static ResolverConfig BindTransient<[DynamicallyAccessedMembers(LinkerFlags.Binding)] TService>(
         this ResolverConfig config,
         TService value)
         where TService : class
@@ -116,7 +118,7 @@ public static class ResolverBindExtensions
         return config;
     }
 
-    public static ResolverConfig BindTransient<TService>(
+    public static ResolverConfig BindTransient<[DynamicallyAccessedMembers(LinkerFlags.Binding)] TService>(
         this ResolverConfig config,
         TService value,
         Action<IBindingConstraintWithSyntax> option)
@@ -128,7 +130,7 @@ public static class ResolverBindExtensions
         return config;
     }
 
-    public static ResolverConfig BindTransient<TService, TImplementation>(
+    public static ResolverConfig BindTransient<[DynamicallyAccessedMembers(LinkerFlags.Binding)] TService, TImplementation>(
         this ResolverConfig config,
         TImplementation value)
         where TService : class
@@ -138,7 +140,7 @@ public static class ResolverBindExtensions
         return config;
     }
 
-    public static ResolverConfig BindTransient<TService, TImplementation>(
+    public static ResolverConfig BindTransient<[DynamicallyAccessedMembers(LinkerFlags.Binding)] TService, TImplementation>(
         this ResolverConfig config,
         TImplementation value,
         Action<IBindingConstraintWithSyntax> option)
@@ -153,7 +155,7 @@ public static class ResolverBindExtensions
 
     public static ResolverConfig BindTransient(
         this ResolverConfig config,
-        Type serviceType,
+        [DynamicallyAccessedMembers(LinkerFlags.Binding)] Type serviceType,
         Func<IResolver, object> factory)
     {
         config.Bind(serviceType).ToMethod(factory).InTransientScope();
@@ -162,7 +164,7 @@ public static class ResolverBindExtensions
 
     public static ResolverConfig BindTransient(
         this ResolverConfig config,
-        Type serviceType,
+        [DynamicallyAccessedMembers(LinkerFlags.Binding)] Type serviceType,
         Func<IResolver, object> factory,
         Action<IBindingConstraintWithSyntax> option)
     {
@@ -172,7 +174,7 @@ public static class ResolverBindExtensions
         return config;
     }
 
-    public static ResolverConfig BindTransient<TService>(
+    public static ResolverConfig BindTransient<[DynamicallyAccessedMembers(LinkerFlags.Binding)] TService>(
         this ResolverConfig config,
         Func<IResolver, TService> factory)
         where TService : class
@@ -181,7 +183,7 @@ public static class ResolverBindExtensions
         return config;
     }
 
-    public static ResolverConfig BindTransient<TService>(
+    public static ResolverConfig BindTransient<[DynamicallyAccessedMembers(LinkerFlags.Binding)] TService>(
         this ResolverConfig config,
         Func<IResolver, TService> factory,
         Action<IBindingConstraintWithSyntax> option)
@@ -193,7 +195,7 @@ public static class ResolverBindExtensions
         return config;
     }
 
-    public static ResolverConfig BindTransient<TService, TImplementation>(
+    public static ResolverConfig BindTransient<[DynamicallyAccessedMembers(LinkerFlags.Binding)] TService, TImplementation>(
         this ResolverConfig config,
         Func<IResolver, TImplementation> factory)
         where TService : class
@@ -203,7 +205,7 @@ public static class ResolverBindExtensions
         return config;
     }
 
-    public static ResolverConfig BindTransient<TService, TImplementation>(
+    public static ResolverConfig BindTransient<[DynamicallyAccessedMembers(LinkerFlags.Binding)] TService, TImplementation>(
         this ResolverConfig config,
         Func<IResolver, TImplementation> factory,
         Action<IBindingConstraintWithSyntax> option)
@@ -223,8 +225,8 @@ public static class ResolverBindExtensions
     public static ResolverConfig BindKeyedTransient(
         this ResolverConfig config,
         object? serviceKey,
-        Type serviceType,
-        Type implementationType)
+        [DynamicallyAccessedMembers(LinkerFlags.Binding)] Type serviceType,
+        [DynamicallyAccessedMembers(LinkerFlags.Binding)] Type implementationType)
     {
         config.Bind(serviceType).To(implementationType).InTransientScope().Keyed(serviceKey);
         return config;
@@ -233,8 +235,8 @@ public static class ResolverBindExtensions
     public static ResolverConfig BindKeyedTransient(
         this ResolverConfig config,
         object? serviceKey,
-        Type serviceType,
-        Type implementationType,
+        [DynamicallyAccessedMembers(LinkerFlags.Binding)] Type serviceType,
+        [DynamicallyAccessedMembers(LinkerFlags.Binding)] Type implementationType,
         Action<IBindingConstraintWithSyntax> option)
     {
         var syntax = config.Bind(serviceType).To(implementationType);
@@ -246,7 +248,7 @@ public static class ResolverBindExtensions
     public static ResolverConfig BindKeyedTransient(
         this ResolverConfig config,
         object? serviceKey,
-        Type serviceType)
+        [DynamicallyAccessedMembers(LinkerFlags.Binding)] Type serviceType)
     {
         config.Bind(serviceType).ToSelf().InTransientScope().Keyed(serviceKey);
         return config;
@@ -255,7 +257,7 @@ public static class ResolverBindExtensions
     public static ResolverConfig BindKeyedTransient(
         this ResolverConfig config,
         object? serviceKey,
-        Type serviceType,
+        [DynamicallyAccessedMembers(LinkerFlags.Binding)] Type serviceType,
         Action<IBindingConstraintWithSyntax> option)
     {
         var syntax = config.Bind(serviceType).ToSelf();
@@ -264,7 +266,7 @@ public static class ResolverBindExtensions
         return config;
     }
 
-    public static ResolverConfig BindKeyedTransient<TService, TImplementation>(
+    public static ResolverConfig BindKeyedTransient<[DynamicallyAccessedMembers(LinkerFlags.Binding)] TService, [DynamicallyAccessedMembers(LinkerFlags.Binding)] TImplementation>(
         this ResolverConfig config,
         object? serviceKey)
         where TService : class
@@ -274,7 +276,7 @@ public static class ResolverBindExtensions
         return config;
     }
 
-    public static ResolverConfig BindKeyedTransient<TService, TImplementation>(
+    public static ResolverConfig BindKeyedTransient<[DynamicallyAccessedMembers(LinkerFlags.Binding)] TService, [DynamicallyAccessedMembers(LinkerFlags.Binding)] TImplementation>(
         this ResolverConfig config,
         object? serviceKey,
         Action<IBindingConstraintWithSyntax> option)
@@ -287,7 +289,7 @@ public static class ResolverBindExtensions
         return config;
     }
 
-    public static ResolverConfig BindKeyedTransient<TService>(
+    public static ResolverConfig BindKeyedTransient<[DynamicallyAccessedMembers(LinkerFlags.Binding)] TService>(
         this ResolverConfig config,
         object? serviceKey)
         where TService : class
@@ -296,7 +298,7 @@ public static class ResolverBindExtensions
         return config;
     }
 
-    public static ResolverConfig BindKeyedTransient<TService>(
+    public static ResolverConfig BindKeyedTransient<[DynamicallyAccessedMembers(LinkerFlags.Binding)] TService>(
         this ResolverConfig config,
         object? serviceKey,
         Action<IBindingConstraintWithSyntax> option)
@@ -311,7 +313,7 @@ public static class ResolverBindExtensions
     public static ResolverConfig BindKeyedTransient(
         this ResolverConfig config,
         object? serviceKey,
-        Type serviceType,
+        [DynamicallyAccessedMembers(LinkerFlags.Binding)] Type serviceType,
         object value)
     {
         config.Bind(serviceType).ToConstant(value).InTransientScope().Keyed(serviceKey);
@@ -321,7 +323,7 @@ public static class ResolverBindExtensions
     public static ResolverConfig BindKeyedTransient(
         this ResolverConfig config,
         object? serviceKey,
-        Type serviceType,
+        [DynamicallyAccessedMembers(LinkerFlags.Binding)] Type serviceType,
         object value,
         Action<IBindingConstraintWithSyntax> option)
     {
@@ -331,7 +333,7 @@ public static class ResolverBindExtensions
         return config;
     }
 
-    public static ResolverConfig BindKeyedTransient<TService>(
+    public static ResolverConfig BindKeyedTransient<[DynamicallyAccessedMembers(LinkerFlags.Binding)] TService>(
         this ResolverConfig config,
         object? serviceKey,
         TService value)
@@ -341,7 +343,7 @@ public static class ResolverBindExtensions
         return config;
     }
 
-    public static ResolverConfig BindKeyedTransient<TService>(
+    public static ResolverConfig BindKeyedTransient<[DynamicallyAccessedMembers(LinkerFlags.Binding)] TService>(
         this ResolverConfig config,
         object? serviceKey,
         TService value,
@@ -354,7 +356,7 @@ public static class ResolverBindExtensions
         return config;
     }
 
-    public static ResolverConfig BindKeyedTransient<TService, TImplementation>(
+    public static ResolverConfig BindKeyedTransient<[DynamicallyAccessedMembers(LinkerFlags.Binding)] TService, TImplementation>(
         this ResolverConfig config,
         object? serviceKey,
         TImplementation value)
@@ -365,7 +367,7 @@ public static class ResolverBindExtensions
         return config;
     }
 
-    public static ResolverConfig BindKeyedTransient<TService, TImplementation>(
+    public static ResolverConfig BindKeyedTransient<[DynamicallyAccessedMembers(LinkerFlags.Binding)] TService, TImplementation>(
         this ResolverConfig config,
         object? serviceKey,
         TImplementation value,
@@ -382,7 +384,7 @@ public static class ResolverBindExtensions
     public static ResolverConfig BindKeyedTransient(
         this ResolverConfig config,
         object? serviceKey,
-        Type serviceType,
+        [DynamicallyAccessedMembers(LinkerFlags.Binding)] Type serviceType,
         Func<IResolver, object> factory)
     {
         config.Bind(serviceType).ToMethod(factory).InTransientScope().Keyed(serviceKey);
@@ -392,7 +394,7 @@ public static class ResolverBindExtensions
     public static ResolverConfig BindKeyedTransient(
         this ResolverConfig config,
         object? serviceKey,
-        Type serviceType,
+        [DynamicallyAccessedMembers(LinkerFlags.Binding)] Type serviceType,
         Func<IResolver, object> factory,
         Action<IBindingConstraintWithSyntax> option)
     {
@@ -402,7 +404,7 @@ public static class ResolverBindExtensions
         return config;
     }
 
-    public static ResolverConfig BindKeyedTransient<TService>(
+    public static ResolverConfig BindKeyedTransient<[DynamicallyAccessedMembers(LinkerFlags.Binding)] TService>(
         this ResolverConfig config,
         object? serviceKey,
         Func<IResolver, TService> factory)
@@ -412,7 +414,7 @@ public static class ResolverBindExtensions
         return config;
     }
 
-    public static ResolverConfig BindKeyedTransient<TService>(
+    public static ResolverConfig BindKeyedTransient<[DynamicallyAccessedMembers(LinkerFlags.Binding)] TService>(
         this ResolverConfig config,
         object? serviceKey,
         Func<IResolver, TService> factory,
@@ -425,7 +427,7 @@ public static class ResolverBindExtensions
         return config;
     }
 
-    public static ResolverConfig BindKeyedTransient<TService, TImplementation>(
+    public static ResolverConfig BindKeyedTransient<[DynamicallyAccessedMembers(LinkerFlags.Binding)] TService, TImplementation>(
         this ResolverConfig config,
         object? serviceKey,
         Func<IResolver, TImplementation> factory)
@@ -436,7 +438,7 @@ public static class ResolverBindExtensions
         return config;
     }
 
-    public static ResolverConfig BindKeyedTransient<TService, TImplementation>(
+    public static ResolverConfig BindKeyedTransient<[DynamicallyAccessedMembers(LinkerFlags.Binding)] TService, TImplementation>(
         this ResolverConfig config,
         object? serviceKey,
         Func<IResolver, TImplementation> factory,
@@ -456,8 +458,8 @@ public static class ResolverBindExtensions
 
     public static ResolverConfig BindSingleton(
         this ResolverConfig config,
-        Type serviceType,
-        Type implementationType)
+        [DynamicallyAccessedMembers(LinkerFlags.Binding)] Type serviceType,
+        [DynamicallyAccessedMembers(LinkerFlags.Binding)] Type implementationType)
     {
         config.Bind(serviceType).To(implementationType).InSingletonScope();
         return config;
@@ -465,8 +467,8 @@ public static class ResolverBindExtensions
 
     public static ResolverConfig BindSingleton(
         this ResolverConfig config,
-        Type serviceType,
-        Type implementationType,
+        [DynamicallyAccessedMembers(LinkerFlags.Binding)] Type serviceType,
+        [DynamicallyAccessedMembers(LinkerFlags.Binding)] Type implementationType,
         Action<IBindingConstraintWithSyntax> option)
     {
         var syntax = config.Bind(serviceType).To(implementationType);
@@ -477,7 +479,7 @@ public static class ResolverBindExtensions
 
     public static ResolverConfig BindSingleton(
         this ResolverConfig config,
-        Type serviceType)
+        [DynamicallyAccessedMembers(LinkerFlags.Binding)] Type serviceType)
     {
         config.Bind(serviceType).ToSelf().InSingletonScope();
         return config;
@@ -485,7 +487,7 @@ public static class ResolverBindExtensions
 
     public static ResolverConfig BindSingleton(
         this ResolverConfig config,
-        Type serviceType,
+        [DynamicallyAccessedMembers(LinkerFlags.Binding)] Type serviceType,
         Action<IBindingConstraintWithSyntax> option)
     {
         var syntax = config.Bind(serviceType).ToSelf();
@@ -494,7 +496,7 @@ public static class ResolverBindExtensions
         return config;
     }
 
-    public static ResolverConfig BindSingleton<TService, TImplementation>(this ResolverConfig config)
+    public static ResolverConfig BindSingleton<[DynamicallyAccessedMembers(LinkerFlags.Binding)] TService, [DynamicallyAccessedMembers(LinkerFlags.Binding)] TImplementation>(this ResolverConfig config)
         where TService : class
         where TImplementation : class, TService
     {
@@ -502,7 +504,7 @@ public static class ResolverBindExtensions
         return config;
     }
 
-    public static ResolverConfig BindSingleton<TService, TImplementation>(
+    public static ResolverConfig BindSingleton<[DynamicallyAccessedMembers(LinkerFlags.Binding)] TService, [DynamicallyAccessedMembers(LinkerFlags.Binding)] TImplementation>(
         this ResolverConfig config,
         Action<IBindingConstraintWithSyntax> option)
         where TService : class
@@ -514,14 +516,14 @@ public static class ResolverBindExtensions
         return config;
     }
 
-    public static ResolverConfig BindSingleton<TService>(this ResolverConfig config)
+    public static ResolverConfig BindSingleton<[DynamicallyAccessedMembers(LinkerFlags.Binding)] TService>(this ResolverConfig config)
         where TService : class
     {
         config.Bind<TService>().ToSelf().InSingletonScope();
         return config;
     }
 
-    public static ResolverConfig BindSingleton<TService>(
+    public static ResolverConfig BindSingleton<[DynamicallyAccessedMembers(LinkerFlags.Binding)] TService>(
         this ResolverConfig config,
         Action<IBindingConstraintWithSyntax> option)
         where TService : class
@@ -534,7 +536,7 @@ public static class ResolverBindExtensions
 
     public static ResolverConfig BindSingleton(
         this ResolverConfig config,
-        Type serviceType,
+        [DynamicallyAccessedMembers(LinkerFlags.Binding)] Type serviceType,
         object value)
     {
         config.Bind(serviceType).ToConstant(value).InSingletonScope();
@@ -543,7 +545,7 @@ public static class ResolverBindExtensions
 
     public static ResolverConfig BindSingleton(
         this ResolverConfig config,
-        Type serviceType,
+        [DynamicallyAccessedMembers(LinkerFlags.Binding)] Type serviceType,
         object value,
         Action<IBindingConstraintWithSyntax> option)
     {
@@ -553,7 +555,7 @@ public static class ResolverBindExtensions
         return config;
     }
 
-    public static ResolverConfig BindSingleton<TService>(
+    public static ResolverConfig BindSingleton<[DynamicallyAccessedMembers(LinkerFlags.Binding)] TService>(
         this ResolverConfig config,
         TService value)
         where TService : class
@@ -562,7 +564,7 @@ public static class ResolverBindExtensions
         return config;
     }
 
-    public static ResolverConfig BindSingleton<TService>(
+    public static ResolverConfig BindSingleton<[DynamicallyAccessedMembers(LinkerFlags.Binding)] TService>(
         this ResolverConfig config,
         TService value,
         Action<IBindingConstraintWithSyntax> option)
@@ -574,7 +576,7 @@ public static class ResolverBindExtensions
         return config;
     }
 
-    public static ResolverConfig BindSingleton<TService, TImplementation>(
+    public static ResolverConfig BindSingleton<[DynamicallyAccessedMembers(LinkerFlags.Binding)] TService, TImplementation>(
         this ResolverConfig config,
         TImplementation value)
         where TService : class
@@ -584,7 +586,7 @@ public static class ResolverBindExtensions
         return config;
     }
 
-    public static ResolverConfig BindSingleton<TService, TImplementation>(
+    public static ResolverConfig BindSingleton<[DynamicallyAccessedMembers(LinkerFlags.Binding)] TService, TImplementation>(
         this ResolverConfig config,
         TImplementation value,
         Action<IBindingConstraintWithSyntax> option)
@@ -599,7 +601,7 @@ public static class ResolverBindExtensions
 
     public static ResolverConfig BindSingleton(
         this ResolverConfig config,
-        Type serviceType,
+        [DynamicallyAccessedMembers(LinkerFlags.Binding)] Type serviceType,
         Func<IResolver, object> factory)
     {
         config.Bind(serviceType).ToMethod(factory).InSingletonScope();
@@ -608,7 +610,7 @@ public static class ResolverBindExtensions
 
     public static ResolverConfig BindSingleton(
         this ResolverConfig config,
-        Type serviceType,
+        [DynamicallyAccessedMembers(LinkerFlags.Binding)] Type serviceType,
         Func<IResolver, object> factory,
         Action<IBindingConstraintWithSyntax> option)
     {
@@ -618,7 +620,7 @@ public static class ResolverBindExtensions
         return config;
     }
 
-    public static ResolverConfig BindSingleton<TService>(
+    public static ResolverConfig BindSingleton<[DynamicallyAccessedMembers(LinkerFlags.Binding)] TService>(
         this ResolverConfig config,
         Func<IResolver, TService> factory)
         where TService : class
@@ -627,7 +629,7 @@ public static class ResolverBindExtensions
         return config;
     }
 
-    public static ResolverConfig BindSingleton<TService>(
+    public static ResolverConfig BindSingleton<[DynamicallyAccessedMembers(LinkerFlags.Binding)] TService>(
         this ResolverConfig config,
         Func<IResolver, TService> factory,
         Action<IBindingConstraintWithSyntax> option)
@@ -639,7 +641,7 @@ public static class ResolverBindExtensions
         return config;
     }
 
-    public static ResolverConfig BindSingleton<TService, TImplementation>(
+    public static ResolverConfig BindSingleton<[DynamicallyAccessedMembers(LinkerFlags.Binding)] TService, TImplementation>(
         this ResolverConfig config,
         Func<IResolver, TImplementation> factory)
         where TService : class
@@ -649,7 +651,7 @@ public static class ResolverBindExtensions
         return config;
     }
 
-    public static ResolverConfig BindSingleton<TService, TImplementation>(
+    public static ResolverConfig BindSingleton<[DynamicallyAccessedMembers(LinkerFlags.Binding)] TService, TImplementation>(
         this ResolverConfig config,
         Func<IResolver, TImplementation> factory,
         Action<IBindingConstraintWithSyntax> option)
@@ -669,8 +671,8 @@ public static class ResolverBindExtensions
     public static ResolverConfig BindKeyedSingleton(
         this ResolverConfig config,
         object? serviceKey,
-        Type serviceType,
-        Type implementationType)
+        [DynamicallyAccessedMembers(LinkerFlags.Binding)] Type serviceType,
+        [DynamicallyAccessedMembers(LinkerFlags.Binding)] Type implementationType)
     {
         config.Bind(serviceType).To(implementationType).InSingletonScope().Keyed(serviceKey);
         return config;
@@ -679,8 +681,8 @@ public static class ResolverBindExtensions
     public static ResolverConfig BindKeyedSingleton(
         this ResolverConfig config,
         object? serviceKey,
-        Type serviceType,
-        Type implementationType,
+        [DynamicallyAccessedMembers(LinkerFlags.Binding)] Type serviceType,
+        [DynamicallyAccessedMembers(LinkerFlags.Binding)] Type implementationType,
         Action<IBindingConstraintWithSyntax> option)
     {
         var syntax = config.Bind(serviceType).To(implementationType);
@@ -692,7 +694,7 @@ public static class ResolverBindExtensions
     public static ResolverConfig BindKeyedSingleton(
         this ResolverConfig config,
         object? serviceKey,
-        Type serviceType)
+        [DynamicallyAccessedMembers(LinkerFlags.Binding)] Type serviceType)
     {
         config.Bind(serviceType).ToSelf().InSingletonScope().Keyed(serviceKey);
         return config;
@@ -701,7 +703,7 @@ public static class ResolverBindExtensions
     public static ResolverConfig BindKeyedSingleton(
         this ResolverConfig config,
         object? serviceKey,
-        Type serviceType,
+        [DynamicallyAccessedMembers(LinkerFlags.Binding)] Type serviceType,
         Action<IBindingConstraintWithSyntax> option)
     {
         var syntax = config.Bind(serviceType).ToSelf();
@@ -710,7 +712,7 @@ public static class ResolverBindExtensions
         return config;
     }
 
-    public static ResolverConfig BindKeyedSingleton<TService, TImplementation>(
+    public static ResolverConfig BindKeyedSingleton<[DynamicallyAccessedMembers(LinkerFlags.Binding)] TService, [DynamicallyAccessedMembers(LinkerFlags.Binding)] TImplementation>(
         this ResolverConfig config,
         object? serviceKey)
         where TService : class
@@ -720,7 +722,7 @@ public static class ResolverBindExtensions
         return config;
     }
 
-    public static ResolverConfig BindKeyedSingleton<TService, TImplementation>(
+    public static ResolverConfig BindKeyedSingleton<[DynamicallyAccessedMembers(LinkerFlags.Binding)] TService, [DynamicallyAccessedMembers(LinkerFlags.Binding)] TImplementation>(
         this ResolverConfig config,
         object? serviceKey,
         Action<IBindingConstraintWithSyntax> option)
@@ -733,7 +735,7 @@ public static class ResolverBindExtensions
         return config;
     }
 
-    public static ResolverConfig BindKeyedSingleton<TService>(
+    public static ResolverConfig BindKeyedSingleton<[DynamicallyAccessedMembers(LinkerFlags.Binding)] TService>(
         this ResolverConfig config,
         object? serviceKey)
         where TService : class
@@ -742,7 +744,7 @@ public static class ResolverBindExtensions
         return config;
     }
 
-    public static ResolverConfig BindKeyedSingleton<TService>(
+    public static ResolverConfig BindKeyedSingleton<[DynamicallyAccessedMembers(LinkerFlags.Binding)] TService>(
         this ResolverConfig config,
         object? serviceKey,
         Action<IBindingConstraintWithSyntax> option)
@@ -757,7 +759,7 @@ public static class ResolverBindExtensions
     public static ResolverConfig BindKeyedSingleton(
         this ResolverConfig config,
         object? serviceKey,
-        Type serviceType,
+        [DynamicallyAccessedMembers(LinkerFlags.Binding)] Type serviceType,
         object value)
     {
         config.Bind(serviceType).ToConstant(value).InSingletonScope().Keyed(serviceKey);
@@ -767,7 +769,7 @@ public static class ResolverBindExtensions
     public static ResolverConfig BindKeyedSingleton(
         this ResolverConfig config,
         object? serviceKey,
-        Type serviceType,
+        [DynamicallyAccessedMembers(LinkerFlags.Binding)] Type serviceType,
         object value,
         Action<IBindingConstraintWithSyntax> option)
     {
@@ -777,7 +779,7 @@ public static class ResolverBindExtensions
         return config;
     }
 
-    public static ResolverConfig BindKeyedSingleton<TService>(
+    public static ResolverConfig BindKeyedSingleton<[DynamicallyAccessedMembers(LinkerFlags.Binding)] TService>(
         this ResolverConfig config,
         object? serviceKey,
         TService value)
@@ -787,7 +789,7 @@ public static class ResolverBindExtensions
         return config;
     }
 
-    public static ResolverConfig BindKeyedSingleton<TService>(
+    public static ResolverConfig BindKeyedSingleton<[DynamicallyAccessedMembers(LinkerFlags.Binding)] TService>(
         this ResolverConfig config,
         object? serviceKey,
         TService value,
@@ -800,7 +802,7 @@ public static class ResolverBindExtensions
         return config;
     }
 
-    public static ResolverConfig BindKeyedSingleton<TService, TImplementation>(
+    public static ResolverConfig BindKeyedSingleton<[DynamicallyAccessedMembers(LinkerFlags.Binding)] TService, TImplementation>(
         this ResolverConfig config,
         object? serviceKey,
         TImplementation value)
@@ -811,7 +813,7 @@ public static class ResolverBindExtensions
         return config;
     }
 
-    public static ResolverConfig BindKeyedSingleton<TService, TImplementation>(
+    public static ResolverConfig BindKeyedSingleton<[DynamicallyAccessedMembers(LinkerFlags.Binding)] TService, TImplementation>(
         this ResolverConfig config,
         object? serviceKey,
         TImplementation value,
@@ -828,7 +830,7 @@ public static class ResolverBindExtensions
     public static ResolverConfig BindKeyedSingleton(
         this ResolverConfig config,
         object? serviceKey,
-        Type serviceType,
+        [DynamicallyAccessedMembers(LinkerFlags.Binding)] Type serviceType,
         Func<IResolver, object> factory)
     {
         config.Bind(serviceType).ToMethod(factory).InSingletonScope().Keyed(serviceKey);
@@ -838,7 +840,7 @@ public static class ResolverBindExtensions
     public static ResolverConfig BindKeyedSingleton(
         this ResolverConfig config,
         object? serviceKey,
-        Type serviceType,
+        [DynamicallyAccessedMembers(LinkerFlags.Binding)] Type serviceType,
         Func<IResolver, object> factory,
         Action<IBindingConstraintWithSyntax> option)
     {
@@ -848,7 +850,7 @@ public static class ResolverBindExtensions
         return config;
     }
 
-    public static ResolverConfig BindKeyedSingleton<TService>(
+    public static ResolverConfig BindKeyedSingleton<[DynamicallyAccessedMembers(LinkerFlags.Binding)] TService>(
         this ResolverConfig config,
         object? serviceKey,
         Func<IResolver, TService> factory)
@@ -858,7 +860,7 @@ public static class ResolverBindExtensions
         return config;
     }
 
-    public static ResolverConfig BindKeyedSingleton<TService>(
+    public static ResolverConfig BindKeyedSingleton<[DynamicallyAccessedMembers(LinkerFlags.Binding)] TService>(
         this ResolverConfig config,
         object? serviceKey,
         Func<IResolver, TService> factory,
@@ -871,7 +873,7 @@ public static class ResolverBindExtensions
         return config;
     }
 
-    public static ResolverConfig BindKeyedSingleton<TService, TImplementation>(
+    public static ResolverConfig BindKeyedSingleton<[DynamicallyAccessedMembers(LinkerFlags.Binding)] TService, TImplementation>(
         this ResolverConfig config,
         object? serviceKey,
         Func<IResolver, TImplementation> factory)
@@ -882,7 +884,7 @@ public static class ResolverBindExtensions
         return config;
     }
 
-    public static ResolverConfig BindKeyedSingleton<TService, TImplementation>(
+    public static ResolverConfig BindKeyedSingleton<[DynamicallyAccessedMembers(LinkerFlags.Binding)] TService, TImplementation>(
         this ResolverConfig config,
         object? serviceKey,
         Func<IResolver, TImplementation> factory,
@@ -902,8 +904,8 @@ public static class ResolverBindExtensions
 
     public static ResolverConfig BindContainer(
         this ResolverConfig config,
-        Type serviceType,
-        Type implementationType)
+        [DynamicallyAccessedMembers(LinkerFlags.Binding)] Type serviceType,
+        [DynamicallyAccessedMembers(LinkerFlags.Binding)] Type implementationType)
     {
         config.Bind(serviceType).To(implementationType).InContainerScope();
         return config;
@@ -911,8 +913,8 @@ public static class ResolverBindExtensions
 
     public static ResolverConfig BindContainer(
         this ResolverConfig config,
-        Type serviceType,
-        Type implementationType,
+        [DynamicallyAccessedMembers(LinkerFlags.Binding)] Type serviceType,
+        [DynamicallyAccessedMembers(LinkerFlags.Binding)] Type implementationType,
         Action<IBindingConstraintWithSyntax> option)
     {
         var syntax = config.Bind(serviceType).To(implementationType);
@@ -923,7 +925,7 @@ public static class ResolverBindExtensions
 
     public static ResolverConfig BindContainer(
         this ResolverConfig config,
-        Type serviceType)
+        [DynamicallyAccessedMembers(LinkerFlags.Binding)] Type serviceType)
     {
         config.Bind(serviceType).ToSelf().InContainerScope();
         return config;
@@ -931,7 +933,7 @@ public static class ResolverBindExtensions
 
     public static ResolverConfig BindContainer(
         this ResolverConfig config,
-        Type serviceType,
+        [DynamicallyAccessedMembers(LinkerFlags.Binding)] Type serviceType,
         Action<IBindingConstraintWithSyntax> option)
     {
         var syntax = config.Bind(serviceType).ToSelf();
@@ -940,7 +942,7 @@ public static class ResolverBindExtensions
         return config;
     }
 
-    public static ResolverConfig BindContainer<TService, TImplementation>(this ResolverConfig config)
+    public static ResolverConfig BindContainer<[DynamicallyAccessedMembers(LinkerFlags.Binding)] TService, [DynamicallyAccessedMembers(LinkerFlags.Binding)] TImplementation>(this ResolverConfig config)
         where TService : class
         where TImplementation : class, TService
     {
@@ -948,7 +950,7 @@ public static class ResolverBindExtensions
         return config;
     }
 
-    public static ResolverConfig BindContainer<TService, TImplementation>(
+    public static ResolverConfig BindContainer<[DynamicallyAccessedMembers(LinkerFlags.Binding)] TService, [DynamicallyAccessedMembers(LinkerFlags.Binding)] TImplementation>(
         this ResolverConfig config,
         Action<IBindingConstraintWithSyntax> option)
         where TService : class
@@ -960,14 +962,14 @@ public static class ResolverBindExtensions
         return config;
     }
 
-    public static ResolverConfig BindContainer<TService>(this ResolverConfig config)
+    public static ResolverConfig BindContainer<[DynamicallyAccessedMembers(LinkerFlags.Binding)] TService>(this ResolverConfig config)
         where TService : class
     {
         config.Bind<TService>().ToSelf().InContainerScope();
         return config;
     }
 
-    public static ResolverConfig BindContainer<TService>(
+    public static ResolverConfig BindContainer<[DynamicallyAccessedMembers(LinkerFlags.Binding)] TService>(
         this ResolverConfig config,
         Action<IBindingConstraintWithSyntax> option)
         where TService : class
@@ -980,7 +982,7 @@ public static class ResolverBindExtensions
 
     public static ResolverConfig BindContainer(
         this ResolverConfig config,
-        Type serviceType,
+        [DynamicallyAccessedMembers(LinkerFlags.Binding)] Type serviceType,
         object value)
     {
         config.Bind(serviceType).ToConstant(value).InContainerScope();
@@ -989,7 +991,7 @@ public static class ResolverBindExtensions
 
     public static ResolverConfig BindContainer(
         this ResolverConfig config,
-        Type serviceType,
+        [DynamicallyAccessedMembers(LinkerFlags.Binding)] Type serviceType,
         object value,
         Action<IBindingConstraintWithSyntax> option)
     {
@@ -999,7 +1001,7 @@ public static class ResolverBindExtensions
         return config;
     }
 
-    public static ResolverConfig BindContainer<TService>(
+    public static ResolverConfig BindContainer<[DynamicallyAccessedMembers(LinkerFlags.Binding)] TService>(
         this ResolverConfig config,
         TService value)
         where TService : class
@@ -1008,7 +1010,7 @@ public static class ResolverBindExtensions
         return config;
     }
 
-    public static ResolverConfig BindContainer<TService>(
+    public static ResolverConfig BindContainer<[DynamicallyAccessedMembers(LinkerFlags.Binding)] TService>(
         this ResolverConfig config,
         TService value,
         Action<IBindingConstraintWithSyntax> option)
@@ -1020,7 +1022,7 @@ public static class ResolverBindExtensions
         return config;
     }
 
-    public static ResolverConfig BindContainer<TService, TImplementation>(
+    public static ResolverConfig BindContainer<[DynamicallyAccessedMembers(LinkerFlags.Binding)] TService, TImplementation>(
         this ResolverConfig config,
         TImplementation value)
         where TService : class
@@ -1030,7 +1032,7 @@ public static class ResolverBindExtensions
         return config;
     }
 
-    public static ResolverConfig BindContainer<TService, TImplementation>(
+    public static ResolverConfig BindContainer<[DynamicallyAccessedMembers(LinkerFlags.Binding)] TService, TImplementation>(
         this ResolverConfig config,
         TImplementation value,
         Action<IBindingConstraintWithSyntax> option)
@@ -1045,7 +1047,7 @@ public static class ResolverBindExtensions
 
     public static ResolverConfig BindContainer(
         this ResolverConfig config,
-        Type serviceType,
+        [DynamicallyAccessedMembers(LinkerFlags.Binding)] Type serviceType,
         Func<IResolver, object> factory)
     {
         config.Bind(serviceType).ToMethod(factory).InContainerScope();
@@ -1054,7 +1056,7 @@ public static class ResolverBindExtensions
 
     public static ResolverConfig BindContainer(
         this ResolverConfig config,
-        Type serviceType,
+        [DynamicallyAccessedMembers(LinkerFlags.Binding)] Type serviceType,
         Func<IResolver, object> factory,
         Action<IBindingConstraintWithSyntax> option)
     {
@@ -1064,7 +1066,7 @@ public static class ResolverBindExtensions
         return config;
     }
 
-    public static ResolverConfig BindContainer<TService>(
+    public static ResolverConfig BindContainer<[DynamicallyAccessedMembers(LinkerFlags.Binding)] TService>(
         this ResolverConfig config,
         Func<IResolver, TService> factory)
         where TService : class
@@ -1073,7 +1075,7 @@ public static class ResolverBindExtensions
         return config;
     }
 
-    public static ResolverConfig BindContainer<TService>(
+    public static ResolverConfig BindContainer<[DynamicallyAccessedMembers(LinkerFlags.Binding)] TService>(
         this ResolverConfig config,
         Func<IResolver, TService> factory,
         Action<IBindingConstraintWithSyntax> option)
@@ -1085,7 +1087,7 @@ public static class ResolverBindExtensions
         return config;
     }
 
-    public static ResolverConfig BindContainer<TService, TImplementation>(
+    public static ResolverConfig BindContainer<[DynamicallyAccessedMembers(LinkerFlags.Binding)] TService, TImplementation>(
         this ResolverConfig config,
         Func<IResolver, TImplementation> factory)
         where TService : class
@@ -1095,7 +1097,7 @@ public static class ResolverBindExtensions
         return config;
     }
 
-    public static ResolverConfig BindContainer<TService, TImplementation>(
+    public static ResolverConfig BindContainer<[DynamicallyAccessedMembers(LinkerFlags.Binding)] TService, TImplementation>(
         this ResolverConfig config,
         Func<IResolver, TImplementation> factory,
         Action<IBindingConstraintWithSyntax> option)
@@ -1115,8 +1117,8 @@ public static class ResolverBindExtensions
     public static ResolverConfig BindKeyedContainer(
         this ResolverConfig config,
         object? serviceKey,
-        Type serviceType,
-        Type implementationType)
+        [DynamicallyAccessedMembers(LinkerFlags.Binding)] Type serviceType,
+        [DynamicallyAccessedMembers(LinkerFlags.Binding)] Type implementationType)
     {
         config.Bind(serviceType).To(implementationType).InContainerScope().Keyed(serviceKey);
         return config;
@@ -1125,8 +1127,8 @@ public static class ResolverBindExtensions
     public static ResolverConfig BindKeyedContainer(
         this ResolverConfig config,
         object? serviceKey,
-        Type serviceType,
-        Type implementationType,
+        [DynamicallyAccessedMembers(LinkerFlags.Binding)] Type serviceType,
+        [DynamicallyAccessedMembers(LinkerFlags.Binding)] Type implementationType,
         Action<IBindingConstraintWithSyntax> option)
     {
         var syntax = config.Bind(serviceType).To(implementationType);
@@ -1138,7 +1140,7 @@ public static class ResolverBindExtensions
     public static ResolverConfig BindKeyedContainer(
         this ResolverConfig config,
         object? serviceKey,
-        Type serviceType)
+        [DynamicallyAccessedMembers(LinkerFlags.Binding)] Type serviceType)
     {
         config.Bind(serviceType).ToSelf().InContainerScope().Keyed(serviceKey);
         return config;
@@ -1147,7 +1149,7 @@ public static class ResolverBindExtensions
     public static ResolverConfig BindKeyedContainer(
         this ResolverConfig config,
         object? serviceKey,
-        Type serviceType,
+        [DynamicallyAccessedMembers(LinkerFlags.Binding)] Type serviceType,
         Action<IBindingConstraintWithSyntax> option)
     {
         var syntax = config.Bind(serviceType).ToSelf();
@@ -1156,7 +1158,7 @@ public static class ResolverBindExtensions
         return config;
     }
 
-    public static ResolverConfig BindKeyedContainer<TService, TImplementation>(
+    public static ResolverConfig BindKeyedContainer<[DynamicallyAccessedMembers(LinkerFlags.Binding)] TService, [DynamicallyAccessedMembers(LinkerFlags.Binding)] TImplementation>(
         this ResolverConfig config,
         object? serviceKey)
         where TService : class
@@ -1166,7 +1168,7 @@ public static class ResolverBindExtensions
         return config;
     }
 
-    public static ResolverConfig BindKeyedContainer<TService, TImplementation>(
+    public static ResolverConfig BindKeyedContainer<[DynamicallyAccessedMembers(LinkerFlags.Binding)] TService, [DynamicallyAccessedMembers(LinkerFlags.Binding)] TImplementation>(
         this ResolverConfig config,
         object? serviceKey,
         Action<IBindingConstraintWithSyntax> option)
@@ -1179,7 +1181,7 @@ public static class ResolverBindExtensions
         return config;
     }
 
-    public static ResolverConfig BindKeyedContainer<TService>(
+    public static ResolverConfig BindKeyedContainer<[DynamicallyAccessedMembers(LinkerFlags.Binding)] TService>(
         this ResolverConfig config,
         object? serviceKey)
         where TService : class
@@ -1188,7 +1190,7 @@ public static class ResolverBindExtensions
         return config;
     }
 
-    public static ResolverConfig BindKeyedContainer<TService>(
+    public static ResolverConfig BindKeyedContainer<[DynamicallyAccessedMembers(LinkerFlags.Binding)] TService>(
         this ResolverConfig config,
         object? serviceKey,
         Action<IBindingConstraintWithSyntax> option)
@@ -1203,7 +1205,7 @@ public static class ResolverBindExtensions
     public static ResolverConfig BindKeyedContainer(
         this ResolverConfig config,
         object? serviceKey,
-        Type serviceType,
+        [DynamicallyAccessedMembers(LinkerFlags.Binding)] Type serviceType,
         object value)
     {
         config.Bind(serviceType).ToConstant(value).InContainerScope().Keyed(serviceKey);
@@ -1213,7 +1215,7 @@ public static class ResolverBindExtensions
     public static ResolverConfig BindKeyedContainer(
         this ResolverConfig config,
         object? serviceKey,
-        Type serviceType,
+        [DynamicallyAccessedMembers(LinkerFlags.Binding)] Type serviceType,
         object value,
         Action<IBindingConstraintWithSyntax> option)
     {
@@ -1223,7 +1225,7 @@ public static class ResolverBindExtensions
         return config;
     }
 
-    public static ResolverConfig BindKeyedContainer<TService>(
+    public static ResolverConfig BindKeyedContainer<[DynamicallyAccessedMembers(LinkerFlags.Binding)] TService>(
         this ResolverConfig config,
         object? serviceKey,
         TService value)
@@ -1233,7 +1235,7 @@ public static class ResolverBindExtensions
         return config;
     }
 
-    public static ResolverConfig BindKeyedContainer<TService>(
+    public static ResolverConfig BindKeyedContainer<[DynamicallyAccessedMembers(LinkerFlags.Binding)] TService>(
         this ResolverConfig config,
         object? serviceKey,
         TService value,
@@ -1246,7 +1248,7 @@ public static class ResolverBindExtensions
         return config;
     }
 
-    public static ResolverConfig BindKeyedContainer<TService, TImplementation>(
+    public static ResolverConfig BindKeyedContainer<[DynamicallyAccessedMembers(LinkerFlags.Binding)] TService, TImplementation>(
         this ResolverConfig config,
         object? serviceKey,
         TImplementation value)
@@ -1257,7 +1259,7 @@ public static class ResolverBindExtensions
         return config;
     }
 
-    public static ResolverConfig BindKeyedContainer<TService, TImplementation>(
+    public static ResolverConfig BindKeyedContainer<[DynamicallyAccessedMembers(LinkerFlags.Binding)] TService, TImplementation>(
         this ResolverConfig config,
         object? serviceKey,
         TImplementation value,
@@ -1274,7 +1276,7 @@ public static class ResolverBindExtensions
     public static ResolverConfig BindKeyedContainer(
         this ResolverConfig config,
         object? serviceKey,
-        Type serviceType,
+        [DynamicallyAccessedMembers(LinkerFlags.Binding)] Type serviceType,
         Func<IResolver, object> factory)
     {
         config.Bind(serviceType).ToMethod(factory).InContainerScope().Keyed(serviceKey);
@@ -1284,7 +1286,7 @@ public static class ResolverBindExtensions
     public static ResolverConfig BindKeyedContainer(
         this ResolverConfig config,
         object? serviceKey,
-        Type serviceType,
+        [DynamicallyAccessedMembers(LinkerFlags.Binding)] Type serviceType,
         Func<IResolver, object> factory,
         Action<IBindingConstraintWithSyntax> option)
     {
@@ -1294,7 +1296,7 @@ public static class ResolverBindExtensions
         return config;
     }
 
-    public static ResolverConfig BindKeyedContainer<TService>(
+    public static ResolverConfig BindKeyedContainer<[DynamicallyAccessedMembers(LinkerFlags.Binding)] TService>(
         this ResolverConfig config,
         object? serviceKey,
         Func<IResolver, TService> factory)
@@ -1304,7 +1306,7 @@ public static class ResolverBindExtensions
         return config;
     }
 
-    public static ResolverConfig BindKeyedContainer<TService>(
+    public static ResolverConfig BindKeyedContainer<[DynamicallyAccessedMembers(LinkerFlags.Binding)] TService>(
         this ResolverConfig config,
         object? serviceKey,
         Func<IResolver, TService> factory,
@@ -1317,7 +1319,7 @@ public static class ResolverBindExtensions
         return config;
     }
 
-    public static ResolverConfig BindKeyedContainer<TService, TImplementation>(
+    public static ResolverConfig BindKeyedContainer<[DynamicallyAccessedMembers(LinkerFlags.Binding)] TService, TImplementation>(
         this ResolverConfig config,
         object? serviceKey,
         Func<IResolver, TImplementation> factory)
@@ -1328,7 +1330,7 @@ public static class ResolverBindExtensions
         return config;
     }
 
-    public static ResolverConfig BindKeyedContainer<TService, TImplementation>(
+    public static ResolverConfig BindKeyedContainer<[DynamicallyAccessedMembers(LinkerFlags.Binding)] TService, TImplementation>(
         this ResolverConfig config,
         object? serviceKey,
         Func<IResolver, TImplementation> factory,

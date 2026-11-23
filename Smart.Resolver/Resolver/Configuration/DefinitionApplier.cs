@@ -1,10 +1,12 @@
 namespace Smart.Resolver.Configuration;
 
 using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
 
 using Smart.Resolver.Constraints;
 using Smart.Resolver.Expressions;
 
+[RequiresUnreferencedCode("Resolver definitions resolve types by name at runtime, so their constructors and properties may be trimmed.")]
 internal static class DefinitionApplier
 {
     //--------------------------------------------------------------------------------

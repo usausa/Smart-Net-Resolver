@@ -75,6 +75,25 @@ public sealed class ScopeTests
     }
 
     [Fact]
+    public void ObjectInContainerScopeIsPassedToInterfaceParameter()
+    {
+        var config = new ResolverConfig();
+        config.Bind<IService>().To<Service>().InContainerScope();
+        config.Bind<Controller>().ToSelf().InTransientScope();
+
+        using var resolver = config.ToResolver();
+        using var child1 = resolver.CreateChildResolver();
+        using var child2 = resolver.CreateChildResolver();
+        var controller1 = child1.Get<Controller>();
+        var controller2 = child1.Get<Controller>();
+        var controller3 = child2.Get<Controller>();
+
+        Assert.IsType<Service>(controller1.Service);
+        Assert.Same(controller1.Service, controller2.Service);
+        Assert.NotSame(controller1.Service, controller3.Service);
+    }
+
+    [Fact]
     public void ObjectInCustomScope()
     {
         var config = new ResolverConfig();

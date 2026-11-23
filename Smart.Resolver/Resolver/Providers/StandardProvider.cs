@@ -23,15 +23,18 @@ public sealed class StandardProvider : IProvider
 
     private readonly IFactoryBuilder builder;
 
-    [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors | DynamicallyAccessedMemberTypes.PublicProperties)]
+    [DynamicallyAccessedMembers(LinkerFlags.Binding)]
+    private readonly Type type;
+
     public Type TargetType { get; }
 
     public DisposalTracking DisposalTracking => DisposalTracking.ByType;
 
     public StandardProvider(
-        [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors | DynamicallyAccessedMemberTypes.PublicProperties)] Type type,
+        [DynamicallyAccessedMembers(LinkerFlags.Binding)] Type type,
         ComponentContainer components)
     {
+        this.type = type;
         TargetType = type;
         injectors = [.. components.GetAll<IInjector>()];
         processors = [.. components.GetAll<IProcessor>()];
@@ -150,7 +153,7 @@ public sealed class StandardProvider : IProvider
 
     private ConstructorMetadata[] CreateConstructorMetadata()
     {
-        return TargetType.GetConstructors()
+        return type.GetConstructors()
             .Where(static c => !c.IsStatic)
             .OrderByDescending(static c => c.IsInjectDefined() ? 1 : 0)
             .ThenByDescending(static c => c.GetParameters().Length)
@@ -164,7 +167,7 @@ public sealed class StandardProvider : IProvider
     private Action<IResolver, object>[] CreateActions(Binding binding)
     {
         var targetInjectors = injectors
-            .Select(x => x.CreateInjector(TargetType, binding));
+            .Select(x => x.CreateInjector(type, binding));
         var targetProcessors = processors
             .OrderByDescending(static x => x.Order)
             .Select(x => x.CreateProcessor(TargetType));

@@ -14,6 +14,10 @@ public sealed class EmitFactoryBuilder : IFactoryBuilder
 
     private static readonly Action<IResolver, object>[] EmptyActions = [];
 
+    private static readonly MethodInfo FactoryInvokeMethod = typeof(Func<IResolver, object?>).GetMethod(nameof(Func<,>.Invoke))!;
+
+    private static readonly MethodInfo ActionInvokeMethod = typeof(Action<IResolver, object>).GetMethod(nameof(Action<,>.Invoke))!;
+
     private static readonly HolderBuilder DefaultHolderBuilder = new();
 
     private static readonly LeafFactoryBuilder DefaultLeafFactoryBuilder = new();
@@ -56,7 +60,7 @@ public sealed class EmitFactoryBuilder : IFactoryBuilder
             return leafFactory;
         }
 
-        var holderType = holder?.GetType() ?? typeof(object);
+        var holderType = holder?.Layout.Type ?? typeof(object);
 
         var returnType = ci.DeclaringType!.IsValueType ? typeof(object) : ci.DeclaringType;
 
@@ -65,21 +69,11 @@ public sealed class EmitFactoryBuilder : IFactoryBuilder
 
         for (var i = 0; i < factories.Length; i++)
         {
-            var invokeMethod = factories[i].GetType().GetMethod("Invoke");
-            if ((invokeMethod is null) ||
-                (invokeMethod.GetParameters().Length != 1) ||
-                (invokeMethod.GetParameters()[0].ParameterType != typeof(IResolver)))
-            {
-                throw new ArgumentException($"Invalid factory[{i}]");
-            }
-
-            var field = holderType.GetField($"factory{i}");
-
             ilGenerator.Emit(OpCodes.Ldarg_0);
-            ilGenerator.Emit(OpCodes.Ldfld, field!);
+            ilGenerator.Emit(OpCodes.Ldfld, holder!.Layout.Factories[i]);
             ilGenerator.Emit(OpCodes.Ldarg_1);
-            ilGenerator.Emit(OpCodes.Call, invokeMethod);
-            ilGenerator.EmitTypeConversion(ci.GetParameters()[i].ParameterType);
+            ilGenerator.Emit(OpCodes.Call, FactoryInvokeMethod);
+            EmitConversion(ilGenerator, ci.GetParameters()[i].ParameterType, ResultType(factories[i]));
         }
 
         ilGenerator.Emit(OpCodes.Newobj, ci);
@@ -92,21 +86,11 @@ public sealed class EmitFactoryBuilder : IFactoryBuilder
 
             for (var i = 0; i < actions.Length; i++)
             {
-                var invokeMethod = actions[i].GetType().GetMethod("Invoke");
-                if ((invokeMethod is null) ||
-                    (invokeMethod.GetParameters().Length != 2) ||
-                    (invokeMethod.GetParameters()[0].ParameterType != typeof(IResolver)))
-                {
-                    throw new ArgumentException($"Invalid actions[{i}]");
-                }
-
-                var field = holderType.GetField($"action{i}");
-
                 ilGenerator.Emit(OpCodes.Ldarg_0);
-                ilGenerator.Emit(OpCodes.Ldfld, field!);
+                ilGenerator.Emit(OpCodes.Ldfld, holder!.Layout.Actions[i]);
                 ilGenerator.Emit(OpCodes.Ldarg_1);
                 ilGenerator.Emit(OpCodes.Ldloc_0);
-                ilGenerator.Emit(OpCodes.Call, invokeMethod);
+                ilGenerator.Emit(OpCodes.Call, ActionInvokeMethod);
             }
 
             ilGenerator.Emit(OpCodes.Ldloc_0);
@@ -120,7 +104,7 @@ public sealed class EmitFactoryBuilder : IFactoryBuilder
         ilGenerator.Emit(OpCodes.Ret);
 
         var funcType = typeof(Func<,>).MakeGenericType(typeof(IResolver), returnType);
-        var factory = (Func<IResolver, object>)dynamicMethod.CreateDelegate(funcType, holder);
+        var factory = (Func<IResolver, object>)dynamicMethod.CreateDelegate(funcType, holder?.Instance);
         if ((actions.Length == 0) && !ci.DeclaringType.IsValueType)
         {
             Recipes.Add(factory, new Recipe(ci, new object?[factories.Length], factories));
@@ -149,7 +133,7 @@ public sealed class EmitFactoryBuilder : IFactoryBuilder
         }
 
         var holder = DefaultHolderBuilder.CreateHolder(factories, EmptyActions);
-        var holderType = holder?.GetType() ?? typeof(object);
+        var holderType = holder?.Layout.Type ?? typeof(object);
 
         var arrayType = type.MakeArrayType();
 
@@ -161,16 +145,14 @@ public sealed class EmitFactoryBuilder : IFactoryBuilder
 
         for (var i = 0; i < factories.Length; i++)
         {
-            var field = holderType.GetField($"factory{i}");
-
             ilGenerator.Emit(OpCodes.Dup);
             ilGenerator.EmitLdcI4(i);
 
             ilGenerator.Emit(OpCodes.Ldarg_0);
-            ilGenerator.Emit(OpCodes.Ldfld, field!);
+            ilGenerator.Emit(OpCodes.Ldfld, holder!.Layout.Factories[i]);
             ilGenerator.Emit(OpCodes.Ldarg_1);
-            var invokeMethod = factories[i].GetType().GetMethod("Invoke", [typeof(IResolver)]);
-            ilGenerator.Emit(OpCodes.Call, invokeMethod!);
+            ilGenerator.Emit(OpCodes.Call, FactoryInvokeMethod);
+            EmitElementConversion(ilGenerator, type, ResultType(factories[i]));
 
             ilGenerator.Emit(OpCodes.Stelem_Ref);
         }
@@ -178,7 +160,7 @@ public sealed class EmitFactoryBuilder : IFactoryBuilder
         ilGenerator.Emit(OpCodes.Ret);
 
         var funcType = typeof(Func<,>).MakeGenericType(typeof(IResolver), arrayType);
-        return (Func<IResolver, object>)dynamicMethod.CreateDelegate(funcType, holder);
+        return (Func<IResolver, object>)dynamicMethod.CreateDelegate(funcType, holder?.Instance);
     }
 
     private static Func<IResolver, object> CreateArrayFactoryFromNodes(Type type, Node[] nodes)
@@ -191,11 +173,10 @@ public sealed class EmitFactoryBuilder : IFactoryBuilder
         }
 
         var holder = DefaultHolderBuilder.CreateMixedHolder([.. constantValues], [.. factoryValues], EmptyActions);
-        var holderType = holder.GetType();
 
         var arrayType = type.MakeArrayType();
 
-        var dynamicMethod = new DynamicMethod(string.Empty, arrayType, [holderType, typeof(IResolver)], true);
+        var dynamicMethod = new DynamicMethod(string.Empty, arrayType, [holder.Layout.Type, typeof(IResolver)], true);
         var ilGenerator = dynamicMethod.GetILGenerator();
 
         ilGenerator.EmitLdcI4(nodes.Length);
@@ -207,14 +188,15 @@ public sealed class EmitFactoryBuilder : IFactoryBuilder
         {
             ilGenerator.Emit(OpCodes.Dup);
             ilGenerator.EmitLdcI4(i);
-            EmitNode(ilGenerator, holderType, nodes[i], typeof(object), ref constantIndex, ref factoryIndex);
+            EmitNode(ilGenerator, holder.Layout, nodes[i], typeof(object), ref constantIndex, ref factoryIndex);
+            EmitElementConversion(ilGenerator, type, nodes[i] is FactoryNode factoryNode ? ResultType(factoryNode.Factory) : null);
             ilGenerator.Emit(OpCodes.Stelem_Ref);
         }
 
         ilGenerator.Emit(OpCodes.Ret);
 
         var funcType = typeof(Func<,>).MakeGenericType(typeof(IResolver), arrayType);
-        return (Func<IResolver, object>)dynamicMethod.CreateDelegate(funcType, holder);
+        return (Func<IResolver, object>)dynamicMethod.CreateDelegate(funcType, holder.Instance);
     }
 
     private Func<IResolver, object> CreatePlannedFactory(ConstructorInfo ci, Func<IResolver, object?>[] factories, object?[] constants, Action<IResolver, object>[] actions, Node[] nodes)
@@ -229,18 +211,17 @@ public sealed class EmitFactoryBuilder : IFactoryBuilder
         }
 
         var holder = DefaultHolderBuilder.CreateMixedHolder([.. constantValues], [.. factoryValues], actions);
-        var holderType = holder.GetType();
 
         var returnType = ci.DeclaringType!.IsValueType ? typeof(object) : ci.DeclaringType;
 
-        var dynamicMethod = new DynamicMethod(string.Empty, returnType, [holderType, typeof(IResolver)], true);
+        var dynamicMethod = new DynamicMethod(string.Empty, returnType, [holder.Layout.Type, typeof(IResolver)], true);
         var ilGenerator = dynamicMethod.GetILGenerator();
 
         var constantIndex = 0;
         var factoryIndex = 0;
         for (var i = 0; i < nodes.Length; i++)
         {
-            EmitNode(ilGenerator, holderType, nodes[i], parameters[i].ParameterType, ref constantIndex, ref factoryIndex);
+            EmitNode(ilGenerator, holder.Layout, nodes[i], parameters[i].ParameterType, ref constantIndex, ref factoryIndex);
         }
 
         ilGenerator.Emit(OpCodes.Newobj, ci);
@@ -253,21 +234,11 @@ public sealed class EmitFactoryBuilder : IFactoryBuilder
 
             for (var i = 0; i < actions.Length; i++)
             {
-                var invokeMethod = actions[i].GetType().GetMethod("Invoke");
-                if ((invokeMethod is null) ||
-                    (invokeMethod.GetParameters().Length != 2) ||
-                    (invokeMethod.GetParameters()[0].ParameterType != typeof(IResolver)))
-                {
-                    throw new ArgumentException($"Invalid actions[{i}]");
-                }
-
-                var field = holderType.GetField($"action{i}");
-
                 ilGenerator.Emit(OpCodes.Ldarg_0);
-                ilGenerator.Emit(OpCodes.Ldfld, field!);
+                ilGenerator.Emit(OpCodes.Ldfld, holder.Layout.Actions[i]);
                 ilGenerator.Emit(OpCodes.Ldarg_1);
                 ilGenerator.Emit(OpCodes.Ldloc_0);
-                ilGenerator.Emit(OpCodes.Call, invokeMethod);
+                ilGenerator.Emit(OpCodes.Call, ActionInvokeMethod);
             }
 
             ilGenerator.Emit(OpCodes.Ldloc_0);
@@ -281,7 +252,7 @@ public sealed class EmitFactoryBuilder : IFactoryBuilder
         ilGenerator.Emit(OpCodes.Ret);
 
         var funcType = typeof(Func<,>).MakeGenericType(typeof(IResolver), returnType);
-        var factory = (Func<IResolver, object>)dynamicMethod.CreateDelegate(funcType, holder);
+        var factory = (Func<IResolver, object>)dynamicMethod.CreateDelegate(funcType, holder.Instance);
         if ((actions.Length == 0) && !ci.DeclaringType.IsValueType)
         {
             Recipes.Add(factory, new Recipe(ci, UseConstantEmbedding ? constants : new object?[factories.Length], factories));
@@ -334,49 +305,82 @@ public sealed class EmitFactoryBuilder : IFactoryBuilder
         }
     }
 
-    private static void EmitNode(ILGenerator ilGenerator, Type holderType, Node node, Type parameterType, ref int constantIndex, ref int factoryIndex)
+    private static void EmitNode(ILGenerator ilGenerator, HolderLayout layout, Node node, Type parameterType, ref int constantIndex, ref int factoryIndex)
     {
         switch (node)
         {
-            case ConstantNode:
-                var constantField = holderType.GetField($"const{constantIndex}");
+            case ConstantNode constantNode:
+                var constantField = layout.Constants[constantIndex];
                 constantIndex++;
 
                 ilGenerator.Emit(OpCodes.Ldarg_0);
-                ilGenerator.Emit(OpCodes.Ldfld, constantField!);
-                ilGenerator.EmitTypeConversion(parameterType);
+                ilGenerator.Emit(OpCodes.Ldfld, constantField);
+                EmitConversion(ilGenerator, parameterType, constantNode.Value.GetType());
                 break;
 
             case FactoryNode factoryNode:
-                var invokeMethod = factoryNode.Factory.GetType().GetMethod("Invoke");
-                if ((invokeMethod is null) ||
-                    (invokeMethod.GetParameters().Length != 1) ||
-                    (invokeMethod.GetParameters()[0].ParameterType != typeof(IResolver)))
-                {
-                    throw new ArgumentException($"Invalid factory[{factoryIndex}]");
-                }
-
-                var factoryField = holderType.GetField($"factory{factoryIndex}");
+                var factoryField = layout.Factories[factoryIndex];
                 factoryIndex++;
 
                 ilGenerator.Emit(OpCodes.Ldarg_0);
-                ilGenerator.Emit(OpCodes.Ldfld, factoryField!);
+                ilGenerator.Emit(OpCodes.Ldfld, factoryField);
                 ilGenerator.Emit(OpCodes.Ldarg_1);
-                ilGenerator.Emit(OpCodes.Call, invokeMethod);
-                ilGenerator.EmitTypeConversion(parameterType);
+                ilGenerator.Emit(OpCodes.Call, FactoryInvokeMethod);
+                EmitConversion(ilGenerator, parameterType, ResultType(factoryNode.Factory));
                 break;
 
             case NewNode newNode:
                 var parameters = newNode.Ci.GetParameters();
                 for (var i = 0; i < newNode.Args.Length; i++)
                 {
-                    EmitNode(ilGenerator, holderType, newNode.Args[i], parameters[i].ParameterType, ref constantIndex, ref factoryIndex);
+                    EmitNode(ilGenerator, layout, newNode.Args[i], parameters[i].ParameterType, ref constantIndex, ref factoryIndex);
                 }
 
                 // The concrete type is assignable to the parameter type; no conversion.
                 ilGenerator.Emit(OpCodes.Newobj, newNode.Ci);
                 break;
         }
+    }
+
+    private static Type ResultType(Func<IResolver, object?> factory)
+    {
+        var type = factory.GetType().GetGenericArguments()[1];
+        if (type != typeof(object))
+        {
+            return type;
+        }
+
+        if (Recipes.TryGetValue(factory, out var recipe))
+        {
+            return recipe.Ci.DeclaringType!;
+        }
+
+        return factory.Target is IFactoryWrapper wrapper ? ResultType(wrapper.Factory) : type;
+    }
+
+    private static void EmitConversion(ILGenerator ilGenerator, Type parameterType, Type? knownType)
+    {
+        if (CanUseKnownClass(parameterType, knownType))
+        {
+            ilGenerator.Emit(OpCodes.Castclass, knownType);
+        }
+        else
+        {
+            ilGenerator.EmitTypeConversion(parameterType);
+        }
+    }
+
+    private static void EmitElementConversion(ILGenerator ilGenerator, Type elementType, Type? knownType)
+    {
+        if (CanUseKnownClass(elementType, knownType))
+        {
+            ilGenerator.Emit(OpCodes.Castclass, knownType);
+        }
+    }
+
+    private static bool CanUseKnownClass(Type targetType, [NotNullWhen(true)] Type? knownType)
+    {
+        return (knownType is not null) && !knownType.IsValueType && !knownType.IsInterface && (knownType != typeof(object)) && targetType.IsAssignableFrom(knownType);
     }
 
     private sealed class Recipe
@@ -430,6 +434,7 @@ public sealed class EmitFactoryBuilder : IFactoryBuilder
         }
     }
 
+    [RequiresDynamicCode("LeafFactoryBuilder uses Reflection.Emit which is not supported in AOT environments.")]
     private sealed class LeafFactoryBuilder
     {
         private readonly Lock sync = new();
@@ -473,64 +478,97 @@ public sealed class EmitFactoryBuilder : IFactoryBuilder
             }
 
             var instance = Activator.CreateInstance(type)!;
-            return (Func<IResolver, object>)Delegate.CreateDelegate(typeof(Func<IResolver, object>), instance, "Create");
+            return type.GetMethod("Create")!.CreateDelegate<Func<IResolver, object>>(instance);
         }
     }
 
+    private sealed class HolderLayout
+    {
+        public Type Type { get; }
+
+        public ConstructorInfo Constructor { get; }
+
+        public FieldInfo[] Constants { get; }
+
+        public FieldInfo[] Factories { get; }
+
+        public FieldInfo[] Actions { get; }
+
+        public HolderLayout(Type type, ConstructorInfo constructor, FieldInfo[] constants, FieldInfo[] factories, FieldInfo[] actions)
+        {
+            Type = type;
+            Constructor = constructor;
+            Constants = constants;
+            Factories = factories;
+            Actions = actions;
+        }
+    }
+
+    private sealed class Holder
+    {
+        public object Instance { get; }
+
+        public HolderLayout Layout { get; }
+
+        public Holder(object instance, HolderLayout layout)
+        {
+            Instance = instance;
+            Layout = layout;
+        }
+    }
+
+    [RequiresDynamicCode("HolderBuilder uses Reflection.Emit which is not supported in AOT environments.")]
     private sealed class HolderBuilder
     {
         private readonly Lock sync = new();
 
-        private readonly Dictionary<Tuple<int, int>, Type> cache = [];
+        private readonly Dictionary<Tuple<int, int>, HolderLayout> cache = [];
 
-        private readonly Dictionary<Tuple<int, int, int>, Type> mixedCache = [];
+        private readonly Dictionary<Tuple<int, int, int>, HolderLayout> mixedCache = [];
 
         private AssemblyBuilder? assemblyBuilder;
 
         private ModuleBuilder? moduleBuilder;
 
-        public object CreateMixedHolder(object[] constants, Func<IResolver, object?>[] factories, Action<IResolver, object>[] actions)
+        public Holder CreateMixedHolder(object[] constants, Func<IResolver, object?>[] factories, Action<IResolver, object>[] actions)
         {
-            var type = ResolveMixedType(constants.Length, factories.Length, actions.Length);
-            var holder = Activator.CreateInstance(type)!;
+            var layout = ResolveMixedType(constants.Length, factories.Length, actions.Length);
+            var instance = layout.Constructor.Invoke(null);
 
             for (var i = 0; i < constants.Length; i++)
             {
-                var field = type.GetField($"const{i}");
-                field!.SetValue(holder, constants[i]);
+                layout.Constants[i].SetValue(instance, constants[i]);
             }
 
             for (var i = 0; i < factories.Length; i++)
             {
-                var field = type.GetField($"factory{i}");
-                field!.SetValue(holder, factories[i]);
+                layout.Factories[i].SetValue(instance, factories[i]);
             }
 
             for (var i = 0; i < actions.Length; i++)
             {
-                var field = type.GetField($"action{i}");
-                field!.SetValue(holder, actions[i]);
+                layout.Actions[i].SetValue(instance, actions[i]);
             }
 
-            return holder;
+            return new Holder(instance, layout);
         }
 
-        private Type ResolveMixedType(int constantCount, int factoryCount, int actionCount)
+        private HolderLayout ResolveMixedType(int constantCount, int factoryCount, int actionCount)
         {
             var key = Tuple.Create(constantCount, factoryCount, actionCount);
             lock (mixedCache)
             {
-                if (!mixedCache.TryGetValue(key, out var type))
+                if (!mixedCache.TryGetValue(key, out var layout))
                 {
-                    type = CreateMixedType(constantCount, factoryCount, actionCount);
-                    mixedCache[key] = type;
+                    layout = CreateMixedType(constantCount, factoryCount, actionCount);
+                    mixedCache[key] = layout;
                 }
 
-                return type;
+                return layout;
             }
         }
 
-        private Type CreateMixedType(int constantCount, int factoryCount, int actionCount)
+        private HolderLayout CreateMixedType(int constantCount, int factoryCount, int actionCount)
         {
             // Define type
             var typeBuilder = DefineType($"MixedHolder_{constantCount}_{factoryCount}_{actionCount}");
@@ -562,47 +600,44 @@ public sealed class EmitFactoryBuilder : IFactoryBuilder
                     FieldAttributes.Public);
             }
 
-            var typeInfo = typeBuilder.CreateTypeInfo();
-            return typeInfo.AsType();
+            return CreateLayout(typeBuilder.CreateType(), constantCount, factoryCount, actionCount);
         }
 
-        public object? CreateHolder(Func<IResolver, object?>[] factories, Action<IResolver, object>[] actions)
+        public Holder? CreateHolder(Func<IResolver, object?>[] factories, Action<IResolver, object>[] actions)
         {
             if ((factories.Length == 0) && (actions.Length == 0))
             {
                 return null;
             }
 
-            var type = ResolveFactoryType(factories, actions);
-            var holder = Activator.CreateInstance(type);
+            var layout = ResolveFactoryType(factories, actions);
+            var instance = layout.Constructor.Invoke(null);
 
             for (var i = 0; i < factories.Length; i++)
             {
-                var field = type.GetField($"factory{i}");
-                field!.SetValue(holder, factories[i]);
+                layout.Factories[i].SetValue(instance, factories[i]);
             }
 
             for (var i = 0; i < actions.Length; i++)
             {
-                var field = type.GetField($"action{i}");
-                field!.SetValue(holder, actions[i]);
+                layout.Actions[i].SetValue(instance, actions[i]);
             }
 
-            return holder;
+            return new Holder(instance, layout);
         }
 
-        private Type ResolveFactoryType(Func<IResolver, object?>[] factories, Action<IResolver, object>[] actions)
+        private HolderLayout ResolveFactoryType(Func<IResolver, object?>[] factories, Action<IResolver, object>[] actions)
         {
             var key = Tuple.Create(factories.Length, actions.Length);
             lock (cache)
             {
-                if (!cache.TryGetValue(key, out var type))
+                if (!cache.TryGetValue(key, out var layout))
                 {
-                    type = CreateType(factories.Length, actions.Length);
-                    cache[key] = type;
+                    layout = CreateType(factories.Length, actions.Length);
+                    cache[key] = layout;
                 }
 
-                return type;
+                return layout;
             }
         }
 
@@ -626,7 +661,7 @@ public sealed class EmitFactoryBuilder : IFactoryBuilder
             }
         }
 
-        private Type CreateType(int factoryCount, int actionCount)
+        private HolderLayout CreateType(int factoryCount, int actionCount)
         {
             // Define type
             var typeBuilder = DefineType($"Holder_{factoryCount}_{actionCount}");
@@ -649,9 +684,32 @@ public sealed class EmitFactoryBuilder : IFactoryBuilder
                     FieldAttributes.Public);
             }
 
-            var typeInfo = typeBuilder.CreateTypeInfo();
-            // ReSharper disable once RedundantSuppressNullableWarningExpression <= net6.0
-            return typeInfo.AsType();
+            return CreateLayout(typeBuilder.CreateType(), 0, factoryCount, actionCount);
+        }
+
+        private static HolderLayout CreateLayout(
+            [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicParameterlessConstructor | DynamicallyAccessedMemberTypes.PublicFields)] Type type,
+            int constantCount,
+            int factoryCount,
+            int actionCount)
+        {
+            return new HolderLayout(
+                type,
+                type.GetConstructor(Type.EmptyTypes)!,
+                GetFields(type, "const", constantCount),
+                GetFields(type, "factory", factoryCount),
+                GetFields(type, "action", actionCount));
+        }
+
+        private static FieldInfo[] GetFields([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicFields)] Type type, string prefix, int count)
+        {
+            var fields = new FieldInfo[count];
+            for (var i = 0; i < count; i++)
+            {
+                fields[i] = type.GetField($"{prefix}{i}")!;
+            }
+
+            return fields;
         }
     }
 }

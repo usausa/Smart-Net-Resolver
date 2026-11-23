@@ -85,6 +85,25 @@ public sealed class DisposalTrackingTests
     }
 
     [Fact]
+    public void TrackedDependencyIsPassedToInterfaceParameter()
+    {
+        var config = new ResolverConfig();
+        config.UseOption(new ResolverOption { DisposalTracking = true });
+        config.Bind<DisposeCallback>().ToSelf().InSingletonScope();
+        config.Bind<IDisposable>().To<TrackedObject>().InTransientScope();
+        config.Bind<TrackedConsumer>().ToSelf().InTransientScope();
+
+        var resolver = config.ToResolver();
+        var callback = resolver.Get<DisposeCallback>();
+        var consumer = resolver.Get<TrackedConsumer>();
+
+        resolver.Dispose();
+
+        Assert.IsType<TrackedObject>(consumer.Dependency);
+        Assert.Equal([consumer.Dependency], callback.Disposed);
+    }
+
+    [Fact]
     public void ConstantNotTracked()
     {
         var callback = new DisposeCallback();
@@ -224,6 +243,16 @@ public sealed class DisposalTrackingTests
         public void Dispose()
         {
             callback.Add(this);
+        }
+    }
+
+    public sealed class TrackedConsumer
+    {
+        public IDisposable Dependency { get; }
+
+        public TrackedConsumer(IDisposable dependency)
+        {
+            Dependency = dependency;
         }
     }
 }

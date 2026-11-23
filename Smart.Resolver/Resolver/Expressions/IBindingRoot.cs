@@ -4,8 +4,8 @@ using System.Diagnostics.CodeAnalysis;
 
 public interface IBindingRoot
 {
-    IBindingToSyntax<T> Bind<T>();
+    IBindingToSyntax<T> Bind<[DynamicallyAccessedMembers(LinkerFlags.Binding)] T>();
 
     IBindingToSyntax<object> Bind(
-        [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors | DynamicallyAccessedMemberTypes.PublicProperties)] Type type);
+        [DynamicallyAccessedMembers(LinkerFlags.Binding)] Type type);
 }

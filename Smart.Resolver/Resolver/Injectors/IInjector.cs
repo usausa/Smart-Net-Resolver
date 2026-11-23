@@ -6,5 +6,5 @@ using Smart.Resolver.Bindings;
 
 public interface IInjector
 {
-    Action<IResolver, object>? CreateInjector([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties)] Type type, Binding binding);
+    Action<IResolver, object>? CreateInjector([DynamicallyAccessedMembers(LinkerFlags.Injection)] Type type, Binding binding);
 }

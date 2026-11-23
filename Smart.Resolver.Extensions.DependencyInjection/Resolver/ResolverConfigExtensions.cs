@@ -1,5 +1,7 @@
 namespace Smart.Resolver;
 
+using System.Diagnostics.CodeAnalysis;
+
 using Microsoft.Extensions.DependencyInjection;
 
 using Smart.Resolver.Constraints;
@@ -7,6 +9,7 @@ using Smart.Resolver.Expressions;
 
 public static class ResolverConfigExtensions
 {
+    [UnconditionalSuppressMessage("Trimming", "IL2072", Justification = "ServiceType is used only as the binding key, and the implementation is always given by To, ToMethod, ToConstant or ToProvider. ImplementationType keeps the public constructors as in Microsoft.Extensions.DependencyInjection, and its properties are needed only for property injection, which Microsoft.Extensions.DependencyInjection does not provide.")]
     public static void Populate(this ResolverConfig config, IEnumerable<ServiceDescriptor> descriptors)
     {
         foreach (var descriptor in descriptors)

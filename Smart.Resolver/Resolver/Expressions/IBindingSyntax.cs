@@ -15,11 +15,11 @@ public interface IBindingToSyntax<in T>
 
     IBindingInConstraintWithSyntax ToSelf();
 
-    IBindingInConstraintWithSyntax To<TImplementation>()
+    IBindingInConstraintWithSyntax To<[DynamicallyAccessedMembers(LinkerFlags.Binding)] TImplementation>()
         where TImplementation : T;
 
     IBindingInConstraintWithSyntax To(
-        [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors | DynamicallyAccessedMemberTypes.PublicProperties)] Type implementationType);
+        [DynamicallyAccessedMembers(LinkerFlags.Binding)] Type implementationType);
 
     IBindingInConstraintWithSyntax ToMethod(Func<IResolver, T> factory);
 

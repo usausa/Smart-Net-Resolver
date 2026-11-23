@@ -23,7 +23,7 @@ public sealed class PropertyInjector : IInjector
     }
 
     public Action<IResolver, object>? CreateInjector(
-        [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties)] Type type,
+        [DynamicallyAccessedMembers(LinkerFlags.Injection)] Type type,
         Binding binding)
     {
         var entries = type.GetRuntimeProperties()

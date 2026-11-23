@@ -1,9 +1,12 @@
 namespace Smart.Resolver.Handlers;
 
+using System.Diagnostics.CodeAnalysis;
+
 using Smart.ComponentModel;
 using Smart.Resolver.Bindings;
 using Smart.Resolver.Providers;
 
+[RequiresUnreferencedCode("SelfMissingHandler binds types that are only known at runtime, so their constructors and properties may be trimmed.")]
 public sealed class SelfMissingHandler : IMissingHandler
 {
     private readonly HashSet<Type> ignoreTypes;

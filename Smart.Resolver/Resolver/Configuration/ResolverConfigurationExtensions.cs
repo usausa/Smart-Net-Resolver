@@ -1,11 +1,15 @@
 namespace Smart.Resolver.Configuration;
 
+using System.Diagnostics.CodeAnalysis;
+
 public static class ResolverConfigurationExtensions
 {
     //--------------------------------------------------------------------------------
     // JSON
     //--------------------------------------------------------------------------------
 
+    [RequiresUnreferencedCode("Resolver definitions resolve types by name at runtime, so their constructors and properties may be trimmed.")]
+    [RequiresDynamicCode("Resolver definitions in JSON are deserialized with reflection.")]
     public static ResolverConfig LoadJson(
         this ResolverConfig config,
         string json,
@@ -15,6 +19,8 @@ public static class ResolverConfigurationExtensions
         return config;
     }
 
+    [RequiresUnreferencedCode("Resolver definitions resolve types by name at runtime, so their constructors and properties may be trimmed.")]
+    [RequiresDynamicCode("Resolver definitions in JSON are deserialized with reflection.")]
     public static ResolverConfig LoadJson(
         this ResolverConfig config,
         Stream stream,
@@ -24,6 +30,8 @@ public static class ResolverConfigurationExtensions
         return config;
     }
 
+    [RequiresUnreferencedCode("Resolver definitions resolve types by name at runtime, so their constructors and properties may be trimmed.")]
+    [RequiresDynamicCode("Resolver definitions in JSON are deserialized with reflection.")]
     public static ResolverConfig LoadJsonFile(
         this ResolverConfig config,
         string path,
@@ -37,6 +45,7 @@ public static class ResolverConfigurationExtensions
     // XML
     //--------------------------------------------------------------------------------
 
+    [RequiresUnreferencedCode("Resolver definitions resolve types by name at runtime, so their constructors and properties may be trimmed.")]
     public static ResolverConfig LoadXml(
         this ResolverConfig config,
         string xml,
@@ -46,6 +55,7 @@ public static class ResolverConfigurationExtensions
         return config;
     }
 
+    [RequiresUnreferencedCode("Resolver definitions resolve types by name at runtime, so their constructors and properties may be trimmed.")]
     public static ResolverConfig LoadXml(
         this ResolverConfig config,
         Stream stream,
@@ -55,6 +65,7 @@ public static class ResolverConfigurationExtensions
         return config;
     }
 
+    [RequiresUnreferencedCode("Resolver definitions resolve types by name at runtime, so their constructors and properties may be trimmed.")]
     public static ResolverConfig LoadXmlFile(
         this ResolverConfig config,
         string path,
@@ -68,6 +79,7 @@ public static class ResolverConfigurationExtensions
     // Direct
     //--------------------------------------------------------------------------------
 
+    [RequiresUnreferencedCode("Resolver definitions resolve types by name at runtime, so their constructors and properties may be trimmed.")]
     public static ResolverConfig LoadDefinition(
         this ResolverConfig config,
         ResolverDefinition definition,

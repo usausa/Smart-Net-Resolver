@@ -20,26 +20,26 @@ public sealed class ContainerScope : IScope
         return adaptor.Resolve;
     }
 
-    private sealed class ContainerAdaptor
+    private sealed class ContainerAdaptor : IFactoryWrapper
     {
         private readonly int index;
 
-        private readonly Func<IResolver, object> factory;
+        public Func<IResolver, object> Factory { get; }
 
         public ContainerAdaptor(int index, Func<IResolver, object> factory)
         {
             this.index = index;
-            this.factory = factory;
+            Factory = factory;
         }
 
         public object Resolve(IResolver resolver)
         {
             if (resolver is IContainer container)
             {
-                return container.Slot.GetOrCreate(index, resolver, factory);
+                return container.Slot.GetOrCreate(index, resolver, Factory);
             }
 
-            return factory(resolver);
+            return Factory(resolver);
         }
     }
 }

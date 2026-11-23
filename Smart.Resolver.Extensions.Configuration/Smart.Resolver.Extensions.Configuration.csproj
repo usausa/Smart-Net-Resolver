@@ -3,6 +3,7 @@
   <PropertyGroup>
     <TargetFrameworks>net11.0;net10.0</TargetFrameworks>
     <RootNamespace>Smart</RootNamespace>
+    <IsAotCompatible>true</IsAotCompatible>
   </PropertyGroup>
 
   <PropertyGroup>
@@ -15,7 +16,7 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="11.0.0" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="11.0.0" />
-    <PackageReference Include="Usa.Smart.Core" Version="3.0.0" />
+    <PackageReference Include="Usa.Smart.Core" Version="3.2.0" />
   </ItemGroup>
 
   <ItemGroup>

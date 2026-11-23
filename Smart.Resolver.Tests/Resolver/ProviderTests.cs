@@ -35,6 +35,28 @@ public sealed class ProviderTests
     }
 
     [Fact]
+    public void ValueCreatedByCallbackProvider()
+    {
+        var config = new ResolverConfig();
+        config.Bind<int>().ToMethod(static _ => 5);
+
+        using var resolver = config.ToResolver();
+
+        Assert.Equal(5, resolver.Get<int>());
+    }
+
+    [Fact]
+    public void NullableValueCreatedByCallbackProvider()
+    {
+        var config = new ResolverConfig();
+        config.Bind<int?>().ToMethod(static _ => 5);
+
+        using var resolver = config.ToResolver();
+
+        Assert.Equal(5, resolver.Get<int?>());
+    }
+
+    [Fact]
     public void ObjectArrayCreatedByStandardProvider()
     {
         var config = new ResolverConfig();

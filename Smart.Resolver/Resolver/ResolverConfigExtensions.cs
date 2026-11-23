@@ -1,5 +1,7 @@
 namespace Smart.Resolver;
 
+using System.Diagnostics.CodeAnalysis;
+
 using Smart.Reflection;
 using Smart.Resolver.Builders;
 using Smart.Resolver.Handlers;
@@ -13,7 +15,7 @@ public static class ResolverConfigExtensions
         return new(config);
     }
 
-    public static ResolverConfig UseDelegateFactory<T>(this ResolverConfig config)
+    public static ResolverConfig UseDelegateFactory<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] T>(this ResolverConfig config)
         where T : IDelegateFactory
     {
         config.Components.Add<IDelegateFactory, T>();
@@ -26,7 +28,7 @@ public static class ResolverConfigExtensions
         return config;
     }
 
-    public static ResolverConfig UseFactoryBuilder<T>(this ResolverConfig config)
+    public static ResolverConfig UseFactoryBuilder<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] T>(this ResolverConfig config)
         where T : IFactoryBuilder
     {
         config.Components.Add<IFactoryBuilder, T>();
@@ -45,7 +47,7 @@ public static class ResolverConfigExtensions
         return config;
     }
 
-    public static ResolverConfig UseProcessor<T>(this ResolverConfig config)
+    public static ResolverConfig UseProcessor<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] T>(this ResolverConfig config)
         where T : IProcessor
     {
         config.Components.Add<IProcessor, T>();
@@ -58,7 +60,7 @@ public static class ResolverConfigExtensions
         return config;
     }
 
-    public static ResolverConfig UseInjector<T>(this ResolverConfig config)
+    public static ResolverConfig UseInjector<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] T>(this ResolverConfig config)
         where T : IInjector
     {
         config.Components.Add<IInjector, T>();
@@ -71,12 +73,14 @@ public static class ResolverConfigExtensions
         return config;
     }
 
+    [RequiresUnreferencedCode("Auto binding resolves types that are only known at runtime, so their constructors and properties may be trimmed.")]
     public static ResolverConfig UseAutoBinding(this ResolverConfig config)
     {
         config.Components.Add<IMissingHandler>(new SelfMissingHandler());
         return config;
     }
 
+    [RequiresUnreferencedCode("Auto binding resolves types that are only known at runtime, so their constructors and properties may be trimmed.")]
     public static ResolverConfig UseAutoBinding(this ResolverConfig config, IEnumerable<Type> ignoreTypes)
     {
         config.Components.Add<IMissingHandler>(new SelfMissingHandler(ignoreTypes));
@@ -119,7 +123,7 @@ public static class ResolverConfigExtensions
         return config;
     }
 
-    public static ResolverConfig UseMissingHandler<T>(this ResolverConfig config)
+    public static ResolverConfig UseMissingHandler<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] T>(this ResolverConfig config)
         where T : IMissingHandler
     {
         config.Components.Add<IMissingHandler, T>();

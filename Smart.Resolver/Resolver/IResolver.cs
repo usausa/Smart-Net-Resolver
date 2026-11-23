@@ -47,6 +47,10 @@ public interface IResolver : IServiceProvider, IDisposable
 
     // Inject
 
+    [RequiresUnreferencedCode("Inject uses the runtime type of the instance, so its properties may be trimmed.")]
     void Inject(object instance);
+
+    void Inject<[DynamicallyAccessedMembers(LinkerFlags.Injection)] T>(T instance)
+        where T : class;
 }
 #pragma warning restore CA1716

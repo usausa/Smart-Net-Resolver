@@ -11,7 +11,7 @@ using Smart.Resolver.Scopes;
 
 public sealed class BindingBuilder<T> : IBindingFactory, IBindingToInConstraintWithSyntax<T>
 {
-    [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors | DynamicallyAccessedMemberTypes.PublicProperties)]
+    [DynamicallyAccessedMembers(LinkerFlags.Binding)]
     private readonly Type targetType;
 
     private Func<ComponentContainer, IProvider> providerFactory = default!;
@@ -27,7 +27,7 @@ public sealed class BindingBuilder<T> : IBindingFactory, IBindingToInConstraintW
     private Dictionary<string, Func<ComponentContainer, IParameter>>? propertyValueFactories;
 
     public BindingBuilder(
-        [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors | DynamicallyAccessedMemberTypes.PublicProperties)] Type type)
+        [DynamicallyAccessedMembers(LinkerFlags.Binding)] Type type)
     {
         targetType = type;
     }
@@ -47,25 +47,21 @@ public sealed class BindingBuilder<T> : IBindingFactory, IBindingToInConstraintW
         return ToProvider(c => new StandardProvider(targetType, c));
     }
 
-    public IBindingInConstraintWithSyntax To<TImplementation>()
+    public IBindingInConstraintWithSyntax To<[DynamicallyAccessedMembers(LinkerFlags.Binding)] TImplementation>()
         where TImplementation : T
     {
         return ToProvider(static c => new StandardProvider(typeof(TImplementation), c));
     }
 
     public IBindingInConstraintWithSyntax To(
-        [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors | DynamicallyAccessedMemberTypes.PublicProperties)] Type implementationType)
+        [DynamicallyAccessedMembers(LinkerFlags.Binding)] Type implementationType)
     {
         return ToProvider(c => new StandardProvider(implementationType, c));
     }
 
     public IBindingInConstraintWithSyntax ToMethod(Func<IResolver, T> factory)
     {
-        var genericType = typeof(T);
-        var providerType = genericType.IsValueType
-            ? typeof(StructCallbackProvider<>).MakeGenericType(genericType)
-            : typeof(CallbackProvider<>).MakeGenericType(genericType);
-        var provider = (IProvider)Activator.CreateInstance(providerType, factory)!;
+        var provider = new CallbackProvider<T>(factory);
         return ToProvider(_ => provider);
     }
 

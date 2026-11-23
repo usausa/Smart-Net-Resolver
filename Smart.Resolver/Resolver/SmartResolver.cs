@@ -451,16 +451,7 @@ public sealed class SmartResolver : IResolver, IKernel, IDisposableTracker
 
         if (scope is null)
         {
-            return r =>
-            {
-                var instance = factory(r);
-                if ((instance is IDisposable disposable) && !ReferenceEquals(instance, r) && (r is IDisposableTracker tracker))
-                {
-                    tracker.TrackDisposable(disposable);
-                }
-
-                return instance;
-            };
+            return new TrackingAdaptor(factory).Resolve;
         }
 
         if (!scope.TransferDisposal())
@@ -468,16 +459,7 @@ public sealed class SmartResolver : IResolver, IKernel, IDisposableTracker
             return scope.Create(scopeResolver, factory);
         }
 
-        return scope.Create(scopeResolver, r =>
-        {
-            var instance = factory(r);
-            if ((instance is IDisposable disposable) && !ReferenceEquals(instance, r) && (r is IDisposableTracker tracker))
-            {
-                tracker.TrackDisposable(disposable);
-            }
-
-            return instance;
-        });
+        return scope.Create(scopeResolver, new TrackingAdaptor(factory).Resolve);
     }
 
     private static object? ResolveConstant(Binding binding, Func<IResolver, object> single, IResolver resolver)
@@ -499,6 +481,7 @@ public sealed class SmartResolver : IResolver, IKernel, IDisposableTracker
     // Inject
     //--------------------------------------------------------------------------------
 
+    [RequiresUnreferencedCode("Inject uses the runtime type of the instance, so its properties may be trimmed.")]
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void Inject(object instance)
     {
@@ -510,6 +493,18 @@ public sealed class SmartResolver : IResolver, IKernel, IDisposableTracker
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public void Inject<[DynamicallyAccessedMembers(LinkerFlags.Injection)] T>(T instance)
+        where T : class
+    {
+        var actions = FindInjectors<T>();
+        foreach (var action in actions)
+        {
+            action(this, instance);
+        }
+    }
+
+    [RequiresUnreferencedCode("Inject uses the runtime type of the instance, so its properties may be trimmed.")]
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     internal Action<IResolver, object>[] FindInjectors(Type type)
     {
         if (!injectorsCache.TryGetValue(type, out var actions))
@@ -520,7 +515,18 @@ public sealed class SmartResolver : IResolver, IKernel, IDisposableTracker
         return actions;
     }
 
-    private Action<IResolver, object>[] CreateInjectors(Type type)
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    internal Action<IResolver, object>[] FindInjectors<[DynamicallyAccessedMembers(LinkerFlags.Injection)] T>()
+    {
+        if (!injectorsCache.TryGetValue(typeof(T), out var actions))
+        {
+            actions = injectorsCache.AddIfNotExist(typeof(T), CreateInjectors(typeof(T)));
+        }
+
+        return actions;
+    }
+
+    private Action<IResolver, object>[] CreateInjectors([DynamicallyAccessedMembers(LinkerFlags.Injection)] Type type)
     {
         var binding = new Binding(type, null!);
         return injectors
@@ -601,6 +607,27 @@ public sealed class SmartResolver : IResolver, IKernel, IDisposableTracker
             InjectorCacheCount = injectorCacheCount;
             InjectorCacheWidth = injectorCacheWidth;
             InjectorCacheDepth = injectorCacheDepth;
+        }
+    }
+
+    private sealed class TrackingAdaptor : IFactoryWrapper
+    {
+        public Func<IResolver, object> Factory { get; }
+
+        public TrackingAdaptor(Func<IResolver, object> factory)
+        {
+            Factory = factory;
+        }
+
+        public object Resolve(IResolver resolver)
+        {
+            var instance = Factory(resolver);
+            if ((instance is IDisposable disposable) && !ReferenceEquals(instance, resolver) && (resolver is IDisposableTracker tracker))
+            {
+                tracker.TrackDisposable(disposable);
+            }
+
+            return instance;
         }
     }
 }

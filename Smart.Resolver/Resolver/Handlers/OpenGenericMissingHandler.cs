@@ -6,7 +6,6 @@ using Smart.ComponentModel;
 using Smart.Resolver.Bindings;
 using Smart.Resolver.Providers;
 
-[RequiresDynamicCode("OpenGenericMissingHandler uses MakeGenericType which is not supported in AOT environments.")]
 public sealed class OpenGenericMissingHandler : IMissingHandler
 {
     private readonly HashSet<Type> ignoreTypes;
@@ -23,6 +22,9 @@ public sealed class OpenGenericMissingHandler : IMissingHandler
 #pragma warning restore IDE0055
     }
 
+    [UnconditionalSuppressMessage("Trimming", "IL2055", Justification = "The closed implementation type shares the constructors and properties of the open type definition, which the binding keeps.")]
+    [UnconditionalSuppressMessage("Trimming", "IL2072", Justification = "The closed implementation type shares the constructors and properties of the open type definition, which the binding keeps.")]
+    [UnconditionalSuppressMessage("AOT", "IL3050", Justification = "Reference type arguments share code. For value type arguments, the caller makes the closed type available, for example by using it in code.")]
     public IEnumerable<Binding> Handle(ComponentContainer components, BindingTable table, Type type)
     {
         if (!type.IsGenericType || ignoreTypes.Contains(type))

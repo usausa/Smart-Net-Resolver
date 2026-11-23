@@ -158,10 +158,22 @@ public sealed class SmartChildResolver : IResolver, IContainer, IDisposableTrack
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public IEnumerable<object> GetAll(Type type, object? key) => FactoryEnumerable.Create<object>(this, resolver.FindFactoryEntry(this, type, key).Multiple);
 
+    [RequiresUnreferencedCode("Inject uses the runtime type of the instance, so its properties may be trimmed.")]
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void Inject(object instance)
     {
         var actions = resolver.FindInjectors(instance.GetType());
+        foreach (var action in actions)
+        {
+            action(this, instance);
+        }
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public void Inject<[DynamicallyAccessedMembers(LinkerFlags.Injection)] T>(T instance)
+        where T : class
+    {
+        var actions = resolver.FindInjectors<T>();
         foreach (var action in actions)
         {
             action(this, instance);

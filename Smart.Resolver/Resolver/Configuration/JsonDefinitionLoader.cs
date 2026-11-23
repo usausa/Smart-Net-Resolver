@@ -1,8 +1,11 @@
 namespace Smart.Resolver.Configuration;
 
+using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
+[RequiresUnreferencedCode("Resolver definitions resolve types by name at runtime, so their constructors and properties may be trimmed.")]
+[RequiresDynamicCode("Resolver definitions in JSON are deserialized with reflection.")]
 internal static class JsonDefinitionLoader
 {
     private static readonly JsonSerializerOptions JsonOptions = new()

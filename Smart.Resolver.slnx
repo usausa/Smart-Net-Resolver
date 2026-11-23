@@ -25,6 +25,7 @@
     <Project Path="Example.WebApplication/Example.WebApplication.csproj" />
   </Folder>
   <Folder Name="/Tests/">
+    <Project Path="Smart.Resolver.AotTests/Smart.Resolver.AotTests.csproj" />
     <Project Path="Smart.Resolver.CompatibilityTest/Smart.Resolver.CompatibilityTest.csproj" />
     <Project Path="Smart.Resolver.Tests/Smart.Resolver.Tests.csproj" />
   </Folder>

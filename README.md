@@ -7,6 +7,7 @@
 Smart.Resolver .NET is simplified resolver library, degradation version of Ninject.
 
 * ASP.NET Core / Generic Host support
+* Native AOT support
 * Transient, Singleton, Container(child) and custom scope supported
 * Callback, Constant provider supported
 * Property injection supported (optional)
@@ -190,6 +191,8 @@ public sealed class HasPropertyObject
 }
 ```
 
+`Inject<T>(T)` injects the properties of `T`, and `Inject(object)` injects the properties of the runtime type.
+
 ## Parameter
 
 Set constructor argument or property value.
@@ -337,6 +340,55 @@ public static class Program
 }
 ```
 
+## Native AOT
+
+Smart.Resolver and the extensions are trimming and Native AOT compatible.
+Bindings registered with `Bind<T>()` or `Bind(typeof(T))` and services registered with `IServiceCollection` work without additional settings.
+
+### APIs requiring unreferenced code
+
+The following APIs resolve types at runtime, and are marked with `RequiresUnreferencedCode` (and `RequiresDynamicCode`).
+
+| API | Alternative |
+|-|-|
+| `UseAutoBinding()` | Bind the types with `Bind<T>()`, or keep the constructors with `[DynamicDependency]` |
+| `Inject(object)` | Pass the instance as its class type to call `Inject<T>(T)`, which injects the properties of `T` |
+| `LoadXml()` / `LoadXmlFile()` / `LoadDefinition()` | Keep the constructors of the types in the definition with `[DynamicDependency]` |
+| `LoadJson()` / `LoadJsonFile()` | Deserialize `ResolverDefinition` with a source generated `JsonSerializerContext`, and use `LoadDefinition()` |
+| `BindConfig<TConfig>()` | Use `configuration.Bind(instance)` in the application, and register the instance with `ToConstant()` |
+
+Warnings at the call sites remain. Suppress them after keeping the members.
+
+```csharp
+[DynamicDependency(DynamicallyAccessedMemberTypes.PublicConstructors, typeof(Service))]
+[UnconditionalSuppressMessage("Trimming", "IL2026", Justification = "Constructors are kept by DynamicDependency.")]
+private static SmartResolver CreateResolver()
+{
+    var config = new ResolverConfig();
+    config.UseAutoBinding();
+    return config.ToResolver();
+}
+```
+
+```csharp
+// Source generated context for definitions
+[JsonSourceGenerationOptions(PropertyNameCaseInsensitive = true, UseStringEnumConverter = true)]
+[JsonSerializable(typeof(ResolverDefinition))]
+internal sealed partial class DefinitionContext : JsonSerializerContext;
+
+var definition = JsonSerializer.Deserialize(json, DefinitionContext.Default.ResolverDefinition)!;
+config.LoadDefinition(definition);
+```
+
+### Value types
+
+* Open generic bindings with value type arguments need native code for the closed type. Bind the closed type explicitly (e.g. `config.Bind<IGenericService<int>>().To<GenericService<int>>()`)
+* `IEnumerable<T>` of value types needs native code for `T[]`. Use `T[]` instead (e.g. `resolver.Get<Point[]>()` or a `Point[]` constructor parameter)
+
+### Property injection
+
+* Property injection for services registered with `IServiceCollection` needs the properties kept with `[DynamicDependency]`
+
 ## Other
 
 Ohter topics.
@@ -420,25 +472,26 @@ config.Bind<Parent>().ToSelf();
 ## Benchmark (for reference purpose only)
 
 ```
-BenchmarkDotNet v0.15.8, Windows 11 (10.0.26200.9168/25H2/2025Update/HudsonValley2)
-AMD Ryzen 9 5900X 3.70GHz, 1 CPU, 24 logical and 12 physical cores
-.NET SDK 10.0.400
-  [Host]    : .NET 10.0.11 (10.0.11, 10.0.1126.37416), X64 RyuJIT x86-64-v3
-  MediumRun : .NET 10.0.11 (10.0.11, 10.0.1126.37416), X64 RyuJIT x86-64-v3
+BenchmarkDotNet v0.16.0-preview.2, Windows 11 (10.0.26300.10075)
+AMD Ryzen 9 5900X 3.69GHz, 1 CPU, 24 logical and 12 physical cores
+Memory: 63.93 GB Total, 39.53 GB Available
+.NET SDK 11.0.100
+  [Host]    : .NET 11.0.0 (11.0.0, 11.0.26.53018), X64 RyuJIT x86-64-v3
+  MediumRun : .NET 11.0.0 (11.0.0, 11.0.26.53018), X64 RyuJIT x86-64-v3
 
 Job=MediumRun  Jit=RyuJit  Platform=X64  
 IterationCount=15  LaunchCount=6  WarmupCount=10  
 ```
 | Method            | Mean      | Error     | StdDev    | Median    | Min       | Max       | P90       | Gen0   | Allocated |
 |------------------ |----------:|----------:|----------:|----------:|----------:|----------:|----------:|-------:|----------:|
-| Singleton         |  1.335 ns | 0.0610 ns | 0.1701 ns |  1.257 ns |  1.181 ns |  1.803 ns |  1.614 ns |      - |         - |
-| Transient         |  3.993 ns | 0.0913 ns | 0.2544 ns |  3.980 ns |  3.595 ns |  4.518 ns |  4.356 ns | 0.0011 |      19 B |
-| Combined          |  6.646 ns | 0.1274 ns | 0.3552 ns |  6.628 ns |  6.041 ns |  7.542 ns |  7.143 ns | 0.0014 |      24 B |
-| Complex           | 28.686 ns | 0.4447 ns | 1.2397 ns | 28.592 ns | 26.525 ns | 31.766 ns | 30.252 ns | 0.0081 |     136 B |
-| Generics          |  3.123 ns | 0.0366 ns | 0.1020 ns |  3.114 ns |  2.910 ns |  3.346 ns |  3.248 ns | 0.0006 |      10 B |
-| MultipleSingleton |  1.702 ns | 0.0159 ns | 0.0444 ns |  1.691 ns |  1.618 ns |  1.798 ns |  1.756 ns |      - |         - |
-| MultipleTransient | 21.142 ns | 0.2722 ns | 0.7587 ns | 21.071 ns | 19.515 ns | 22.827 ns | 21.957 ns | 0.0110 |     184 B |
-| AspNet            | 70.618 ns | 0.5556 ns | 1.5303 ns | 70.584 ns | 66.738 ns | 74.371 ns | 72.556 ns | 0.0119 |     200 B |
+| Singleton         |  1.423 ns | 0.0067 ns | 0.0183 ns |  1.422 ns |  1.394 ns |  1.469 ns |  1.449 ns |      - |         - |
+| Transient         |  3.615 ns | 0.0394 ns | 0.1084 ns |  3.590 ns |  3.473 ns |  3.973 ns |  3.770 ns | 0.0011 |      19 B |
+| Combined          |  4.740 ns | 0.0640 ns | 0.1764 ns |  4.680 ns |  4.520 ns |  5.127 ns |  5.024 ns | 0.0014 |      24 B |
+| Complex           | 17.952 ns | 0.1276 ns | 0.3535 ns | 17.914 ns | 17.320 ns | 18.870 ns | 18.384 ns | 0.0081 |     136 B |
+| Generics          |  3.013 ns | 0.0580 ns | 0.1599 ns |  2.980 ns |  2.786 ns |  3.395 ns |  3.255 ns | 0.0006 |      10 B |
+| MultipleSingleton |  1.313 ns | 0.0062 ns | 0.0170 ns |  1.308 ns |  1.291 ns |  1.363 ns |  1.336 ns |      - |         - |
+| MultipleTransient | 17.602 ns | 0.1158 ns | 0.3210 ns | 17.542 ns | 17.052 ns | 18.466 ns | 18.044 ns | 0.0110 |     184 B |
+| AspNet            | 62.470 ns | 1.7136 ns | 4.6328 ns | 61.245 ns | 57.978 ns | 74.787 ns | 72.320 ns | 0.0119 |     200 B |
 
 ## Unsupported
 
