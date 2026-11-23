@@ -2,6 +2,7 @@ namespace Smart.Resolver.Scopes;
 
 using Smart.ComponentModel;
 using Smart.Resolver.Components;
+using Smart.Resolver.Providers;
 
 public sealed class SingletonScope : IScope, IDisposable
 {
@@ -47,9 +48,11 @@ public sealed class SingletonScope : IScope, IDisposable
         return objectFactory;
     }
 
-    private sealed class SingletonHolder
+    private sealed class SingletonHolder : IConstantSource
     {
         private readonly object value;
+
+        object IConstantSource.Value => value;
 
         public SingletonHolder(object value)
         {

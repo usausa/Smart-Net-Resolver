@@ -6,6 +6,7 @@ using System.Reflection.Emit;
 using System.Runtime.CompilerServices;
 
 using Smart.Reflection.Emit;
+using Smart.Resolver.Providers;
 
 [RequiresDynamicCode("EmitFactoryBuilder uses Reflection.Emit which is not supported in AOT environments.")]
 public sealed class EmitFactoryBuilder : IFactoryBuilder
@@ -266,6 +267,11 @@ public sealed class EmitFactoryBuilder : IFactoryBuilder
         if (constant is not null)
         {
             return new ConstantNode(constant);
+        }
+
+        if (UseConstantEmbedding && (factory.Target is IConstantSource source))
+        {
+            return new ConstantNode(source.Value);
         }
 
         if (UseInlineExpansion && (budget > 0) && Recipes.TryGetValue(factory, out var recipe))

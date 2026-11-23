@@ -3,6 +3,7 @@ namespace Smart.Resolver;
 using System.Runtime.InteropServices;
 
 using Smart.Resolver.Builders;
+using Smart.Resolver.Providers;
 using Smart.Resolver.Scopes;
 
 public sealed class EmitFactoryBuilderTests
@@ -140,6 +141,47 @@ public sealed class EmitFactoryBuilderTests
         var factory = new EmitFactoryBuilder().CreateFactory(typeof(ValueConsumer).GetConstructors().Single(), [scoped], [null], []);
 
         Assert.Throws<InvalidCastException>(() => factory(null!));
+    }
+
+    [Fact]
+    public void SingletonAndExpandedFactoryAreStoredInInterfaceArray()
+    {
+        using var resolver = new ResolverConfig().ToResolver();
+        using var scope = new SingletonScope(resolver.Components);
+        var builder = new EmitFactoryBuilder();
+        var singleton = scope.Create(resolver, Typed(static _ => new ValueObject()));
+        var expanded = builder.CreateFactory(typeof(ValueObject).GetConstructors().Single(), [], [], []);
+        var factory = builder.CreateArrayFactory(typeof(IValue), [singleton, expanded]);
+
+        var first = (IValue[])factory(null!);
+        var second = (IValue[])factory(null!);
+
+        Assert.Same(singleton(null!), first[0]);
+        Assert.Same(first[0], second[0]);
+        Assert.NotSame(first[1], second[1]);
+    }
+
+    [Fact]
+    public void ConstantsAreStoredInInterfaceArray()
+    {
+        var constant1 = new ValueObject();
+        var constant2 = new DerivedValueObject();
+        var factory = new EmitFactoryBuilder().CreateArrayFactory(
+            typeof(IValue),
+            [new ConstantProvider<IValue>(constant1).CreateFactory(null!, null!, null), new ConstantProvider<IValue>(constant2).CreateFactory(null!, null!, null)]);
+
+        var array = (IValue[])factory(null!);
+
+        Assert.Same(constant1, array[0]);
+        Assert.Same(constant2, array[1]);
+    }
+
+    [Fact]
+    public void ConstantOfUnrelatedTypeInArrayThrowsArrayTypeMismatchException()
+    {
+        var factory = new EmitFactoryBuilder().CreateArrayFactory(typeof(IValue), [new ConstantProvider<object>(new UnrelatedObject()).CreateFactory(null!, null!, null)]);
+
+        Assert.Throws<ArrayTypeMismatchException>(() => factory(null!));
     }
 
     private static Func<IResolver, T> Typed<T>(Func<IResolver, T> factory) => factory;

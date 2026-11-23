@@ -99,6 +99,44 @@ public sealed class ResolverTests
         Assert.Equal(3, objects.Count());
     }
 
+    [Fact]
+    public void SingletonAndTransientAreResolvedInArray()
+    {
+        var config = new ResolverConfig().UseArrayBinding();
+        config.Bind<IMultipleService>().To<MultipleService1>().InSingletonScope();
+        config.Bind<IMultipleService>().To<MultipleService2>().InTransientScope();
+        config.Bind<IMultipleService>().To<MultipleService3>().InSingletonScope();
+
+        using var resolver = config.ToResolver();
+        var first = resolver.Get<IEnumerable<IMultipleService>>().ToArray();
+        var second = resolver.Get<IEnumerable<IMultipleService>>().ToArray();
+
+        Assert.IsType<MultipleService1>(first[0]);
+        Assert.IsType<MultipleService2>(first[1]);
+        Assert.IsType<MultipleService3>(first[2]);
+        Assert.Same(first[0], second[0]);
+        Assert.NotSame(first[1], second[1]);
+        Assert.Same(first[2], second[2]);
+    }
+
+    [Fact]
+    public void ConstantsAreResolvedInArray()
+    {
+        var constant1 = new MultipleService1();
+        var constant2 = new MultipleService2();
+        var config = new ResolverConfig().UseArrayBinding();
+        config.Bind<IMultipleService>().ToConstant(constant1);
+        config.Bind<IMultipleService>().ToConstant(constant2);
+        config.Bind<IMultipleService>().To<MultipleService3>().InTransientScope();
+
+        using var resolver = config.ToResolver();
+        var objects = resolver.Get<IEnumerable<IMultipleService>>().ToArray();
+
+        Assert.Same(constant1, objects[0]);
+        Assert.Same(constant2, objects[1]);
+        Assert.IsType<MultipleService3>(objects[2]);
+    }
+
     public interface IMultipleService
     {
         void Execute();
